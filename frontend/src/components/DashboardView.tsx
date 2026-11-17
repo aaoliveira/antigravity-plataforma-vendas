@@ -9,6 +9,7 @@ import { SyncManager } from './SyncManager';
 import { MarketIntelligenceView } from './MarketIntelligenceView';
 import { FinancialEngineView } from './FinancialEngineView';
 import { FinancialDashboardView } from './FinancialDashboardView';
+import { ListingStudioView } from './ListingStudioView';
 
 const initialDemoCompanies: CompanyItem[] = [
   {
@@ -37,7 +38,7 @@ const initialDemoStores: StoreItem[] = [
 ];
 
 export const DashboardView: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'COMPANIES' | 'STORES' | 'CAPABILITIES' | 'SYNC' | 'MARKET' | 'FINANCIAL' | 'HEALTH'>('COMPANIES');
+  const [activeTab, setActiveTab] = useState<'COMPANIES' | 'STORES' | 'CAPABILITIES' | 'SYNC' | 'MARKET' | 'FINANCIAL' | 'AI_STUDIO' | 'HEALTH'>('COMPANIES');
   const [financialSubTab, setFinancialSubTab] = useState<'DASHBOARD' | 'ENGINE'>('DASHBOARD');
   const [companies, setCompanies] = useState<CompanyItem[]>(initialDemoCompanies);
   const [stores, setStores] = useState<StoreItem[]>(initialDemoStores);
@@ -125,6 +126,16 @@ export const DashboardView: React.FC = () => {
           Motor Financeiro
         </button>
         <button
+          onClick={() => setActiveTab('AI_STUDIO')}
+          className={`pb-3 px-1 border-b-2 transition-colors ${
+            activeTab === 'AI_STUDIO'
+              ? 'border-purple-500 text-purple-400 font-semibold'
+              : 'border-transparent text-slate-400 hover:text-slate-200'
+          }`}
+        >
+          AI Listing Studio
+        </button>
+        <button
           onClick={() => setActiveTab('HEALTH')}
           className={`pb-3 px-1 border-b-2 transition-colors ${
             activeTab === 'HEALTH'
@@ -181,6 +192,8 @@ export const DashboardView: React.FC = () => {
           {financialSubTab === 'DASHBOARD' ? <FinancialDashboardView /> : <FinancialEngineView />}
         </div>
       )}
+
+      {activeTab === 'AI_STUDIO' && <ListingStudioView />}
 
       {activeTab === 'HEALTH' && <HealthChecker />}
     </div>

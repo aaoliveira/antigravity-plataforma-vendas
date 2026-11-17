@@ -88,17 +88,17 @@ Nenhum requisito pode ser considerado concluído sem que os testes associados es
 
 | ID | Prioridade | Descrição do Requisito | Fase | Prompt Alvo | Tipo de Teste Planejado | Status Atual |
 |---|---|---|---|---|---|---|
-| **FR-LST-001** | P0 | Analisar qualidade de anúncio próprio com score explicável. | Fase 1 (MVP) | Prompt 10 | Unitário (Audit Score Engine) | `PLANNED` |
-| **FR-LST-002** | P0 | Gerar e otimizar títulos assistidos por IA. | Fase 1 (MVP) | Prompt 10 | Unitário (Prompt Versioning), Spring AI Mock | `PLANNED` |
-| **FR-LST-003** | P0 | Gerar descrições sem inventar especificações técnicas. | Fase 1 (MVP) | Prompt 10 | Unitário (Factual Guardrail), Spring AI Mock | `PLANNED` |
+| **FR-LST-001** | P0 | Analisar qualidade de anúncio próprio com score explicável. | Fase 1 (MVP) | Prompt 10 | Unitário (Audit Score Engine) | `VERIFIED (Prompt 10)` |
+| **FR-LST-002** | P0 | Gerar e otimizar títulos assistidos por IA. | Fase 1 (MVP) | Prompt 10 | Unitário (Prompt Versioning), Spring AI Mock | `VERIFIED (Prompt 10)` |
+| **FR-LST-003** | P0 | Gerar descrições sem inventar especificações técnicas. | Fase 1 (MVP) | Prompt 10 | Unitário (Factual Guardrail), Spring AI Mock | `VERIFIED (Prompt 10)` |
 | **FR-LST-004** | P1 | Sugerir categoria e atributos recomendados. | Fase 1 (MVP) | Prompt 10 | Unitário, Integração | `PLANNED` |
 | **FR-LST-005** | P1 | Sugerir palavras-chave relevantes. | Fase 1 (MVP) | Prompt 10 | Unitário (Keyword Ranking) | `PLANNED` |
 | **FR-LST-006** | P1 | Preparar e tratar imagens de produto. | Fase 2 | Prompt 15 | Integração (Image Processing Service) | `PLANNED` |
 | **FR-LST-007** | P1 | Criar rascunho de anúncio a partir de referência. | Fase 2 | Prompt 15 | Unitário (Template Transformation) | `PLANNED` |
-| **FR-LST-008** | P1 | Gerenciar versões e histórico de anúncios. | Fase 1 (MVP) | Prompt 10 | Integração (Audit Trail / JPA) | `PLANNED` |
+| **FR-LST-008** | P1 | Gerenciar versões e histórico de anúncios. | Fase 1 (MVP) | Prompt 10 | Integração (Audit Trail / JPA) | `VERIFIED (Prompt 10)` |
 | **FR-LST-009** | P1 | Publicar/atualizar anúncio por API com confirmação humana. | Fase 3 | Prompt 19 | Integração (Marketplace Write API), E2E | `PLANNED` |
 | **FR-LST-010** | P1 | Executar testes comparativos/AB observacionais. | Fase 3 | Prompt 18 | Unitário (Comparative Analytics) | `PLANNED` |
-| **FR-LST-011** | P0 | Distinguir recomendação de IA de métrica observada. | Fase 1 (MVP) | Prompt 10, Prompt 11 | Unitário (DTO Classifier), E2E | `PLANNED` |
+| **FR-LST-011** | P0 | Distinguir recomendação de IA de métrica observada. | Fase 1 (MVP) | Prompt 10, Prompt 11 | Unitário (DTO Classifier), E2E | `VERIFIED (Prompt 10)` |
 
 ---
 

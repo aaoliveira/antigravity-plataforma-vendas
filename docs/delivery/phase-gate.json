@@ -2,70 +2,70 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "project": "Seller Intelligence Platform",
   "gateSystemVersion": "1.0.0",
-  "currentPrompt": "09",
-  "promptTitle": "Painel financeiro, rentabilidade e relatórios do MVP",
+  "currentPrompt": "10",
+  "promptTitle": "AI Listing Studio: análise de anúncio e geração de conteúdo",
   "phase": "Fase 1 — MVP / P0",
   "status": "APPROVED",
-  "updatedAt": "2026-11-17T14:38:30-03:00",
+  "updatedAt": "2026-11-17T14:57:15-03:00",
   "evaluatedBy": "Antigravity AI Assistant",
   "criteria": [
     {
-      "id": "AC-09-1",
-      "description": "Dashboard financeiro consolidado com faturamento bruto, total de pedidos, ticket médio e margem de contribuição",
+      "id": "AC-10-1",
+      "description": "Interface AiProvider agnóstica com implementação configurável e FakeAiProvider exclusivo para perfil de teste",
       "status": "APPROVED",
-      "evidence": "FinancialDashboardService consolida grossRevenue, orderCount, averageTicket e contributionMarginValue/Percentage com BigDecimal e RoundingMode.HALF_EVEN. Testado em FinancialDashboardIntegrationTest#shouldConsolidateDashboardMetrics."
+      "evidence": "AiProvider desacoplado com implementação FakeAiProvider usada exclusivamente em testes (@Profile({\"test\", \"dev\", \"default\"})). RestAiProvider configurado para produção."
     },
     {
-      "id": "AC-09-2",
-      "description": "Visões e breakdowns filtráveis por produto/SKU, empresa, loja e marketplace",
+      "id": "AC-10-2",
+      "description": "Prompts versionados em arquivos externos, schemas estruturados de resposta e validação de saída",
       "status": "APPROVED",
-      "evidence": "Breakdown consolidado por SKU em ProductProfitabilityDto e por Loja/Canal em StoreProfitabilityDto com ordenação decrescente por receita. Testado em FinancialDashboardIntegrationTest#shouldFilterDashboardByMarketplaceAndStore."
+      "evidence": "Prompts versionados em resources/prompts/listing-title-v1.st e listing-description-v1.st com schemas JSON estritos de saída e validação em ListingStudioService."
     },
     {
-      "id": "AC-09-3",
-      "description": "Filtros de período e comparação com período equivalente anterior (com delta percentual e sinalização de lacunas)",
+      "id": "AC-10-3",
+      "description": "Motor de score de qualidade de anúncio explicável (0-100) com critérios auditáveis (título, descrição, ficha técnica, fotos)",
       "status": "APPROVED",
-      "evidence": "Comparação determinística de períodos equivalentes em PeriodComparisonDto com cálculo de delta percentual (revenueDeltaPercentage, ordersDeltaPercentage, marginDeltaPercentage) e flag isPreviousIncomplete."
+      "evidence": "ListingAuditEngine implementa score auditável de 0 a 100 ponderado em 4 pilares: Título (25%), Descrição (25%), Ficha Técnica (30%) e Fotos (20%) com evidências e recomendações. Testado em ListingAuditEngineTest."
     },
     {
-      "id": "AC-09-4",
-      "description": "Sinalização de cobertura, percentual de cálculos COMPLETE vs PARTIAL e data da última sincronização",
+      "id": "AC-10-4",
+      "description": "Factual Guardrail anti-alucinação: proibição de criar especificações inexistentes e identificação de atributos faltantes",
       "status": "APPROVED",
-      "evidence": "Header de integridade informando lastSyncedAt, calculationCoveragePercentage e contagem de pedidos com qualidade COMPLETE vs PARTIAL, com warning explícito de cálculo parcial."
+      "evidence": "Factual Guardrail ativo: o gerador é proibido de criar especificações, certificações ou garantias ausentes, marcando lacunas em missingRequiredAttributes e solicitando confirmação humana."
     },
     {
-      "id": "AC-09-5",
-      "description": "Tabela de pedidos com drill-down para memória de cálculo linha a linha reproduzível",
+      "id": "AC-10-5",
+      "description": "Proteção ativa contra prompt injection tratando dados de anúncios e avaliações como não confiáveis",
       "status": "APPROVED",
-      "evidence": "Endpoint /api/v1/financial/dashboard/orders e modal drill-down na UI apresentando passo a passo explicável das deduções (COGS, taxas canal, frete seller, impostos, embalagem, outros custos)."
+      "evidence": "AiPromptSanitizer desativa tentativas de injeção ([REDACTED_PROMPT_INJECTION]) e encapsula textos externos dentro de <untrusted_product_context> com aviso de segurança. Testado em AiPromptSanitizerTest."
     },
     {
-      "id": "AC-09-6",
-      "description": "Exportação CSV gerencial com timezone, data de geração, filtros aplicados e metadados de proveniência",
+      "id": "AC-10-6",
+      "description": "Gestão de versões, rascunhos, edição humana e comparação sem publicação externa no marketplace",
       "status": "APPROVED",
-      "evidence": "FinancialCsvExporter gera CSV RFC-4180 contendo metadados de auditoria: fuso horário, timestamp de geração, tenant ID, filtros aplicados, rótulo de proveniência IMPORTED e disclaimer legal."
+      "evidence": "Tabela listing_versions com histórico de rascunhos imutáveis, version_number incremental, status DRAFT/ACCEPTED e sem publicação externa no marketplace. Testado em shouldManageDraftVersionsAndAccept."
     },
     {
-      "id": "AC-09-7",
-      "description": "Unificação estrita dos serviços de domínio: totalizadores de tela e exportação CSV usam o mesmo motor",
+      "id": "AC-10-7",
+      "description": "Rastreabilidade de chamadas (modelo, versão, latência) e fallback com erro explícito sem texto fabricado",
       "status": "APPROVED",
-      "evidence": "FinancialDashboardService unifica as consultas de agregação da tela e as linhas de exportação CSV sobre as mesmas instâncias de OrderFinancialCalculation, garantindo consistência matemática ao centavo."
+      "evidence": "Tabela ai_generation_logs registra modelo, versão, latência e status (SUCCESS/ERROR). Quando indisponível, lança AiServiceUnavailableException sem texto fabricado."
     },
     {
-      "id": "AC-09-8",
-      "description": "Isolamento multi-tenant e controle de autorização RBAC para dados financeiros",
+      "id": "AC-10-8",
+      "description": "Isolamento multi-tenant absoluto em versões, logs e regras de auditoria",
       "status": "APPROVED",
-      "evidence": "Isolamento por tenantId obrigatório em todas as queries JPQL. RBAC implementado em validateFinancialAccess() bloqueando OPERATOR e VIEWER com status 403 Forbidden."
+      "evidence": "tenant_id obrigatório em todas as queries e tabelas. Isolamento verificado em ListingStudioIntegrationTest#shouldEnforceMultiTenantIsolation."
     },
     {
-      "id": "AC-09-9",
-      "description": "Bateria de testes automatizados de API, agregação, exportação CSV e componentes frontend com estados vazios/erro",
+      "id": "AC-10-9",
+      "description": "Bateria de testes automatizados cobrindo score, injeção de prompt, isolamento e componentes frontend",
       "status": "APPROVED",
-      "evidence": "93 testes backend passando (incluindo FinancialDashboardIntegrationTest) e 28 testes frontend Vitest passando (FinancialDashboardView.test.tsx), além de next lint e next build sem erros."
+      "evidence": "106 testes backend passando com sucesso e 33 testes frontend Vitest passando, além de pnpm lint e pnpm build com 0 erros."
     }
   ],
   "blockers": [],
-  "nextPrompt": "10",
-  "nextPromptTitle": "AI Listing Studio: análise de anúncio e geração de conteúdo",
+  "nextPrompt": "11",
+  "nextPromptTitle": "Extensão Chrome Manifest V3 complementar",
   "nextPromptPrerequisiteMet": true
 }

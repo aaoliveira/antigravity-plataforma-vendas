@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ListingRepository extends JpaRepository<Listing, UUID> {
+    Optional<Listing> findByTenantIdAndId(UUID tenantId, UUID id);
     Optional<Listing> findByTenantIdAndMarketplaceAndExternalListingId(UUID tenantId, Marketplace marketplace, String externalListingId);
     List<Listing> findByTenantId(UUID tenantId);
     List<Listing> findByTenantIdAndStoreId(UUID tenantId, UUID storeId);

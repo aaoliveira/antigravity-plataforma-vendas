@@ -283,6 +283,29 @@ Conforme estipulado no PRD ([docs/product/PRD.md](file:///home/alexandre/Projeto
 
 ---
 
+## DEC-017 / ADR-017 — AI Listing Studio: Provedor Agnóstico, Prompts Versionados, Proteção Anti-Hallucination e Score Explicável
+- **Data:** 2026-11-17
+- **Status:** `ACCEPTED`
+- **Contexto:** Endereçamento definitivo de **OQ-010** (Publicação e escopo de escrita no MVP), **OQ-013** (Provedor de IA e governança de dados) e **OQ-014** (Metodologia explicável de score de qualidade de anúncio). O AI Listing Studio deve fornecer análise auditável de anúncios próprios e geração assistida de títulos/descrições sem inventar características do produto e sem publicar diretamente no marketplace.
+- **Opções consideradas:**
+  1. Dependência acoplada a SDK proprietário de LLM, prompts dinâmicos em código e score de qualidade em formato caixa-preta (apenas um número de 0 a 100).
+  2. Arquitetura em camadas com:
+     - Porta `AiProvider` agnóstica com suporte a chamadas REST estruturadas e fallback explícito (`AiServiceUnavailableException`) que nunca fabrica respostas se a API falhar.
+     - Implementação de `FakeAiProvider` para testes automatizados sem rede externa e sem risco de vazamento de segredos.
+     - Prompts versionados em arquivos de recursos (`prompts/*.st`), schemas JSON estritos e validação de saída.
+     - Proteção contra prompt injection: sanitização e isolamento de dados de anúncios/avaliações externas em tags `<untrusted_product_context>`.
+     - Factual Guardrail anti-alucinação: proibição expressa de criar medidas, certificações, garantias ou especificações ausentes, marcando lacunas em `missing_attributes`.
+     - Score explicável de qualidade (0 a 100) ponderado em 4 pilares: Título (25%), Descrição (25%), Atributos/Ficha Técnica (30%) e Fotos/Imagens (20%), com detalhamento de evidências e recomendações acionáveis.
+     - Histórico de versões (`listing_versions`) com rastreabilidade de ator, prompt, modelo, timestamp e status de rascunho sem alteração no marketplace externo.
+- **Decisão:** Opção 2. Provedor agnóstico, prompts versionados em arquivo, score 100% explicável, proteção contra injection e persistência imutável de versões de rascunho.
+- **Justificativa:** Conformidade integral com as regras anti-alucinação do PRD, segurança contra vazamentos multi-tenant e garantia de que o seller mantenha controle total sobre o conteúdo publicado.
+- **Consequências:** Publicação direta no marketplace permanece bloqueada no MVP (reservada para a Fase 3 / Prompt 19 sob confirmação humana obrigatória).
+- **Requisitos relacionados:** FR-LST-001, FR-LST-002, FR-LST-003, FR-LST-008, FR-LST-011, OQ-010, OQ-013, OQ-014, PRD Seção 5.3.
+- **Responsável:** Time de IA e Engenharia de Backend.
+- **Revisão:** Fase 2 (Prompt 15 - Processamento de Imagens e PDFs de fornecedores).
+
+---
+
 # Parte 2: Decisões Propostas e Pendências Classificadas (PROPOSED)
 
 ## DEC-P05 — Política de Retenção de Dados e Expurgos Automáticos LGPD (Vinculada a OQ-007)
