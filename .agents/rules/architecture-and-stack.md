@@ -5,7 +5,7 @@ Toda implementação no repositório deve adotar estritamente o conjunto de tecn
 
 | Camada | Tecnologia Baseline | Papel e Restrições |
 |---|---|---|
-| **Linguagem Backend** | Java 21 LTS | Runtime estável, tipagem forte, Records e Virtual Threads quando aplicável. |
+| **Linguagem Backend** | Java 25 LTS | Runtime LTS atual, tipagem forte, Records e Virtual Threads quando aplicável. |
 | **Framework Backend** | Spring Boot 3.5.x | Spring Security, Spring Data JPA, Bean Validation, OpenAPI/Swagger. |
 | **Build Backend** | Apache Maven | Gerenciamento de dependências com lock e plugins de análise estática. |
 | **Modularidade Backend** | Spring Modulith & ArchUnit | Garantia em tempo de compilação dos limites modulares de domínio. |

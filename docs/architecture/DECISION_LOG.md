@@ -231,6 +231,22 @@ Conforme estipulado no PRD ([docs/product/PRD.md](file:///home/alexandre/Projeto
 
 ---
 
+## DEC-014 / ADR-014 — Atualização do Runtime Backend para Java 25 LTS
+- **Data:** 2026-11-17
+- **Status:** `ACCEPTED`
+- **Contexto:** A baseline Java 21 do DEC-009 foi escolhida na fundação e o PRD Seção 8.4 classifica Java 21 como referência não bloqueante. A plataforma solicita agora a atualização do runtime para Java 25, LTS atual em 2026.
+- **Opções consideradas:**
+  1. Manter Java 21 LTS, já fixado pelo DEC-009.
+  2. Atualizar o runtime e o bytecode do backend para Java 25 LTS, mantendo Spring Boot 3.5.x e as dependências atuais.
+- **Decisão:** Opção 2. Java 25 LTS passa a ser a baseline do backend; Maven compiler usa a propriedade `${java.version}` como fonte única do nível de release, e CI compila/testa com JDK 25.
+- **Justificativa:** Adotar a LTS atual prolonga a janela de suporte do runtime e alinha desenvolvimento, bytecode e CI. A mudança é isolada ao runtime/build; não exige migração de framework ou dependências. A próxima LTS planejada (Java 29, setembro de 2027) será avaliada separadamente.
+- **Consequências:** Desenvolvedores e CI precisam de JDK 25; artefatos backend passam a direcionar Java 25. DEC-009 fica substituído somente quanto à versão Java; os demais itens da stack permanecem válidos. O PRD Seção 8.4 permanece como referência não bloqueante e o registro histórico da aprovação do Prompt 02 não é reescrito.
+- **Requisitos relacionados:** DEC-009, PRD Seção 8.4, compatibilidade do build backend.
+- **Responsável:** Time de Engenharia.
+- **Revisão:** Quando Java 25 deixar de ser LTS ou diante da próxima decisão formal de runtime.
+
+---
+
 # Parte 2: Decisões Propostas e Pendências Classificadas (PROPOSED)
 
 ## DEC-P04 — Parametrização dos Regimes Tributários Brasileiros no Motor Financeiro (Vinculada a OQ-004 e OQ-005)

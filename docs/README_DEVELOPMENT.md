@@ -41,11 +41,11 @@ Toda sessão de desenvolvimento deve seguir o ciclo definido na skill [.agents/s
 | `docker compose down` | Derruba serviços preservando volumes. | `[DISPONÍVEL AGORA]` |
 | `docker compose down -v` | Derruba serviços e remove volumes efêmeros. | `[DISPONÍVEL AGORA]` |
 
-### 3.3 Backend (Java 21 / Spring Boot 3.5.x / Maven)
+### 3.3 Backend (Java 25 LTS / Spring Boot 3.5.x / Maven)
 
 | Comando | Finalidade | Estado Atual |
 |---|---|---|
-| `cd backend && ./mvnw clean compile` | Compila o monólito backend e valida bytecode Java 21. | `[DISPONÍVEL AGORA]` |
+| `cd backend && ./mvnw clean compile` | Compila o monólito backend e valida bytecode Java 25. | `[DISPONÍVEL AGORA]` |
 | `cd backend && ./mvnw test` | Executa testes unitários (JUnit 5, AssertJ, Mockito). | `[DISPONÍVEL AGORA]` |
 | `cd backend && ./mvnw clean verify` | Executa testes de integração e arquitetura (ArchUnit). | `[DISPONÍVEL AGORA]` |
 | `cd backend && ./mvnw spring-boot:run` | Inicia o servidor backend localmente (porta 8082). | `[DISPONÍVEL AGORA]` |

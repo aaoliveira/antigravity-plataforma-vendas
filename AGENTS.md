@@ -43,7 +43,7 @@ Se houver requisito ausente, endpoint não documentado, campo incerto ou regra f
 ---
 
 ## 4. Invariantes Técnicas e de Engenharia
-- **Monólito Modular:** Iniciar obrigatoriamente com monólito modular em Java 21 + Spring Boot 3.5.x; sem microsserviços prematuros.
+- **Monólito Modular:** Iniciar obrigatoriamente com monólito modular em Java 25 LTS + Spring Boot 3.5.x; sem microsserviços prematuros.
 - **Isolamento Multi-Tenant:** `tenant_id` é obrigatório em toda entidade, query, índice, validação de segurança e teste. Autorização é avaliada no backend; interface nunca é limite de segurança.
 - **Cálculo Financeiro Determinístico:** Usar exclusivamente `BigDecimal` com escala e arredondamento explícitos. LLM ou ponto flutuante binário (`float/double`) são estritamente proibidos para cálculos monetários.
 - **Proveniência de Dados:** Todo dado de mercado deve ter origem, timestamp de coleta, escopo e rótulo explícito (`OBSERVED`, `IMPORTED`, `ESTIMATED`, `AI_GENERATED` ou `UNAVAILABLE`). `UNAVAILABLE` nunca vira zero.

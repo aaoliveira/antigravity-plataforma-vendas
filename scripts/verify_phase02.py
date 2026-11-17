@@ -107,7 +107,7 @@ def main():
         ("Docker Compose Configuration Syntax & Services", check_docker_compose_config),
         ("Security Hygiene (.gitignore & .env.example placeholders)", check_security_and_env),
         ("Flyway Minimal Infrastructure (No premature business tables)", check_flyway_minimal_infrastructure),
-        ("Backend Compilation, ArchUnit & Health Tests (Maven / Java 21)", check_backend_compilation_and_tests),
+        ("Backend Compilation, ArchUnit & Health Tests (Maven / Java 25)", check_backend_compilation_and_tests),
         ("Frontend Lint, TypeScript Strict & Component Tests (Next.js / Vitest)", check_frontend_lint_and_tests),
         ("Phase Gate JSON Schema Integrity", check_phase_gate_json),
     ]

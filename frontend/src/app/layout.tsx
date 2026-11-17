@@ -39,7 +39,7 @@ export default function RootLayout({
         </main>
 
         <footer className="mt-auto border-t border-slate-800 bg-slate-900/20 py-6 text-center text-xs text-slate-500">
-          Seller Intelligence Platform &copy; 2026 — Monólito Modular &middot; Java 21 &middot; Next.js 15 &middot; PostgreSQL 18
+          Seller Intelligence Platform &copy; 2026 — Monólito Modular &middot; Java 25 LTS &middot; Next.js 15 &middot; PostgreSQL 18
         </footer>
       </body>
     </html>

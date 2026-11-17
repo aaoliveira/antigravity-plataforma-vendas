@@ -13,7 +13,7 @@ export default function HomePage() {
             Fundação Técnica e Governança do Monólito
           </h1>
           <p className="mt-3 text-base text-slate-300 leading-relaxed">
-            Estrutura operacional básica executando monólito modular Spring Boot (Java 21 LTS),
+            Estrutura operacional básica executando monólito modular Spring Boot (Java 25 LTS),
             frontend Next.js (App Router), banco relacional PostgreSQL 18 e mensageria RabbitMQ 4.x.
           </p>
         </div>
@@ -26,7 +26,7 @@ export default function HomePage() {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-5">
           <div className="text-xs uppercase font-semibold text-blue-400">Backend Core</div>
-          <div className="mt-2 text-lg font-bold text-white">Java 21 / Spring Boot 3.5</div>
+          <div className="mt-2 text-lg font-bold text-white">Java 25 LTS / Spring Boot 3.5</div>
           <p className="mt-1 text-xs text-slate-400">Spring Modulith, ArchUnit, Flyway e Bean Validation.</p>
         </div>
 

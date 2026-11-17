@@ -9,7 +9,7 @@ Construída com arquitetura de monólito modular orientada a evidências, isolam
 
 | Componente | Tecnologia | Papel / Versão |
 |---|---|---|
-| **Backend** | Java 21 LTS + Spring Boot 3.5.x | Monólito modular com Spring Modulith, ArchUnit, Flyway e Spring Security. |
+| **Backend** | Java 25 LTS + Spring Boot 3.5.x | Monólito modular com Spring Modulith, ArchUnit, Flyway e Spring Security. |
 | **Frontend Web** | Next.js 15 (App Router) + React 19 + TypeScript | UI com Tailwind CSS, shadcn/ui e Vitest. |
 | **Persistência** | PostgreSQL 18.x | Fonte única da verdade transacional. `NUMERIC` para dinheiro e `uuidv7()` nativo. |
 | **Cache & Lock** | Redis 7.x / 8.x | Cache volátil e controle de concorrência. |
@@ -27,7 +27,7 @@ antigravity-avantepro-clone/
 │   ├── rules/                    # Regras persistentes (anti-hallucination, stack, testing, phase-gates)
 │   └── skills/                   # Skills operacionais de automação e phase gate
 ├── .github/workflows/ci.yml      # Pipeline de Integração Contínua (CI)
-├── backend/                      # Monólito modular Spring Boot (Java 21)
+├── backend/                      # Monólito modular Spring Boot (Java 25)
 │   ├── pom.xml
 │   ├── mvnw                      # Maven Wrapper
 │   └── src/
@@ -49,7 +49,7 @@ antigravity-avantepro-clone/
 ## 3. Instruções Rápidas de Execução Local
 
 ### 3.1 Pré-requisitos
-- **Java 21 LTS** e **Maven 3.9+** (ou use `./mvnw`)
+- **Java 25 LTS** e **Maven 3.9+** (ou use `./mvnw`)
 - **Node.js 22+** e **pnpm 10+**
 - **Docker** e **Docker Compose**
 
