@@ -42,14 +42,14 @@ Nenhum requisito pode ser considerado concluído sem que os testes associados es
 
 | ID | Prioridade | Descrição do Requisito | Fase | Prompt Alvo | Tipo de Teste Planejado | Status Atual |
 |---|---|---|---|---|---|---|
-| **FR-MKT-001** | P0 | Pesquisar produtos por palavra-chave. | Fase 1 (MVP) | Prompt 07 | Integração (Search Service), Unitário | `PLANNED` |
-| **FR-MKT-002** | P0 | Pesquisar por URL ou identificador de anúncio. | Fase 1 (MVP) | Prompt 07 | Unitário (Normalizer), Integração | `PLANNED` |
-| **FR-MKT-003** | P0 | Filtrar por categoria, preço, marca, avaliações. | Fase 1 (MVP) | Prompt 07 | Unitário (Filter Engine), Integração (JPA/Query) | `PLANNED` |
-| **FR-MKT-004** | P0 | Visualizar detalhes e proveniência de indicadores. | Fase 1 (MVP) | Prompt 07 | Unitário (Provenance Metadata), E2E | `PLANNED` |
+| **FR-MKT-001** | P0 | Pesquisar produtos por palavra-chave. | Fase 1 (MVP) | Prompt 07 | Integração (Search Service), Unitário | `VERIFIED (Prompt 07)` |
+| **FR-MKT-002** | P0 | Pesquisar por URL ou identificador de anúncio. | Fase 1 (MVP) | Prompt 07 | Unitário (Normalizer), Integração | `VERIFIED (Prompt 07)` |
+| **FR-MKT-003** | P0 | Filtrar por categoria, preço, marca, avaliações. | Fase 1 (MVP) | Prompt 07 | Unitário (Filter Engine), Integração (JPA/Query) | `VERIFIED (Prompt 07)` |
+| **FR-MKT-004** | P0 | Visualizar detalhes e proveniência de indicadores. | Fase 1 (MVP) | Prompt 07 | Unitário (Provenance Metadata), E2E | `VERIFIED (Prompt 07)` |
 | **FR-MKT-005** | P1 | Analisar categoria e subcategoria agregadas. | Fase 2 | Prompt 13 | Unitário (Aggregator), Integração | `PLANNED` |
 | **FR-MKT-006** | P1 | Identificar tendências e sazonalidade históricas. | Fase 2 | Prompt 13 | Unitário (Time-Series Analysis) | `PLANNED` |
 | **FR-MKT-007** | P1 | Calcular concentração competitiva (Herfindahl-Hirschman). | Fase 2 | Prompt 13 | Unitário determinístico com fórmula documentada | `PLANNED` |
-| **FR-MKT-008** | P0 | Salvar pesquisas e listas de oportunidades. | Fase 1 (MVP) | Prompt 07 | Integração (JPA/Tenant), Unitário | `PLANNED` |
+| **FR-MKT-008** | P0 | Salvar pesquisas e listas de oportunidades. | Fase 1 (MVP) | Prompt 07 | Integração (JPA/Tenant), Unitário | `VERIFIED (Prompt 07)` |
 | **FR-MKT-009** | P1 | Exportar resultados em CSV/XLSX. | Fase 1 (MVP) | Prompt 07 | Unitário (File Generator), Integração | `PLANNED` |
 
 ---

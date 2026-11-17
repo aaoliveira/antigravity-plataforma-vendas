@@ -2,70 +2,70 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "project": "Seller Intelligence Platform",
   "gateSystemVersion": "1.0.0",
-  "currentPrompt": "06",
-  "promptTitle": "Sincronização de catálogo, anúncios e pedidos",
+  "currentPrompt": "07",
+  "promptTitle": "Market Intelligence: pesquisa e análise de produtos",
   "phase": "Fase 1 — MVP / P0",
   "status": "APPROVED",
-  "updatedAt": "2026-11-17T13:25:00-03:00",
+  "updatedAt": "2026-11-17T14:00:00-03:00",
   "evaluatedBy": "Antigravity AI Assistant",
   "criteria": [
     {
-      "id": "AC-06-1",
-      "description": "Modelo normalizado de Produto/SKU, Anúncio/Listing e Pedido/Order com isolamento de tenant e proveniência IMPORTED",
+      "id": "AC-07-1",
+      "description": "Domínio MarketIntelligence estruturalmente isolado de dados privados de seller com proveniência explícita",
       "status": "APPROVED",
-      "evidence": "Entidades Product, Listing, Order, OrderItem implementadas com tenant_id obrigatório, DataProvenance.IMPORTED e migração Flyway V5 validada em PostgreSQL 17."
+      "evidence": "Separado no pacote br.com.sellerintelligence.market com entidades MarketSearchSnapshot e MarketProductItem, rotulado com enum DataProvenance (OBSERVED, IMPORTED, ESTIMATED, UNAVAILABLE)."
     },
     {
-      "id": "AC-06-2",
-      "description": "Idempotência rigorosa por marketplace + store + external_id + resource_type sem duplicação em execuções repetidas",
+      "id": "AC-07-2",
+      "description": "Pesquisa de mercado por palavra-chave e por URL/ID de anúncio baseada exclusivamente em fontes oficiais autorizadas",
       "status": "APPROVED",
-      "evidence": "SyncIdempotencyIntegrationTest aprovou 3 testes: execuções repetidas de catálogo e pedidos geram 0 duplicatas e atualizações fora de ordem não sobrescrevem dados mais recentes."
+      "evidence": "Implementado em MercadoLivreMarketSearchProvider (/sites/MLB/search e /items/{id}); ShopeeMarketSearchProvider retorna UNAVAILABLE explicitamente sem recorrer a scraping ou bypass de termos."
     },
     {
-      "id": "AC-06-3",
-      "description": "Jobs assíncronos de sincronização com status, checkpoints, fila RabbitMQ e tratamento de falhas/DLQ",
+      "id": "AC-07-3",
+      "description": "Filtros reais suportados pela fonte oficial com ausência de campos preservada como UNAVAILABLE (nunca zero)",
       "status": "APPROVED",
-      "evidence": "SyncJobService, SyncJobRepository, RabbitMQConfig (sync.exchange, sync.job.queue, sync.dlx, sync.job.dlq), consumidor assíncrono e fallback para testes operacionais."
+      "evidence": "Filtros validados por query params suportados na API oficial; campos ausentes preservados como UNAVAILABLE no enum DataProvenance e tratados sem distorcer métricas."
     },
     {
-      "id": "AC-06-4",
-      "description": "Ingestão de webhooks com verificação de assinatura, deduplicação de eventos e proteção contra replay/fora de ordem",
+      "id": "AC-07-4",
+      "description": "Modelo de snapshot de mercado com rastreabilidade de collectedAt, canal, cobertura e metodologia de estimativa explicável",
       "status": "APPROVED",
-      "evidence": "WebhookService com verificação HMAC-SHA256, tabela webhook_events com constraint única (marketplace, external_event_id), testado em WebhookSecurityAndReplayTest (3 testes)."
+      "evidence": "Tabelas market_search_snapshots e market_product_items registram collected_at, source, coverage, confidence_interval e sales_estimation_methodology."
     },
     {
-      "id": "AC-06-5",
-      "description": "Importação de contingência via CSV com templates documentados, validação estrita linha por linha e relatório detalhado de erros",
+      "id": "AC-07-5",
+      "description": "Gestão de pesquisas salvas, produtos favoritados e notas contextuais com isolamento estrito por tenant_id",
       "status": "APPROVED",
-      "evidence": "CsvImportService com templates documentados, validação de schema e tipos linha a linha, retorno de CsvValidationReport e CsvRowError; CsvImportServiceTest aprovou 5 testes."
+      "evidence": "Entidades SavedSearch e SavedMarketProduct com índice único por tenant_id + external_item_id, validação em MarketIntelligenceService."
     },
     {
-      "id": "AC-06-6",
-      "description": "Preservação de dados ausentes como null/ausentes sem preenchimento artificial ou geração sintética de zeros",
+      "id": "AC-07-6",
+      "description": "Paginação de resultados, ordenação e tratamento defensivo para buscas sem correspondência ou fonte indisponível",
       "status": "APPROVED",
-      "evidence": "Campos opcionais preservados como nulos no banco e rotulados como UNAVAILABLE se ausentes da API oficial, em total conformidade com as regras anti-alucinação."
+      "evidence": "Suporte a limit e offset com bounds defensivos, retorno resiliente para zero itens ou marketplace não suportado com status claro."
     },
     {
-      "id": "AC-06-7",
-      "description": "Isolamento multi-tenant garantido em todas as leituras, buscas, escritas e exportações",
+      "id": "AC-07-7",
+      "description": "Bloqueio estrito de acesso cross-tenant em pesquisas salvas, produtos monitorados e notas",
       "status": "APPROVED",
-      "evidence": "SyncCrossTenantIntegrationTest comprovou negação de disparo de sincronização em loja de outro tenant com registro de auditoria ACCESS_DENIED e isolamento completo de catálogo."
+      "evidence": "Validado em SavedSearchesAndProductsIntegrationTest: tentativa de Tenant B alterar notas ou excluir produto salvo de Tenant A retorna 404/ResourceNotFoundException."
     },
     {
-      "id": "AC-06-8",
-      "description": "Interface web (Next.js) exibindo histórico de sincronizações, status de jobs, métricas e importação CSV",
+      "id": "AC-07-8",
+      "description": "Interface web (Next.js) com barra de pesquisa, filtros combináveis, badges visuais de proveniência e gestão de favoritos",
       "status": "APPROVED",
-      "evidence": "Componente SyncManager integrado ao DashboardView, testado com Vitest (3 testes aprovados) e build de produção do Next.js aprovado sem erros."
+      "evidence": "Componente MarketIntelligenceView.tsx integrado ao DashboardView, apresentando badges de proveniência (OBSERVED, ESTIMATED, UNAVAILABLE), notas contextuais e testes em MarketIntelligenceView.test.tsx."
     },
     {
-      "id": "AC-06-9",
-      "description": "Bateria de testes automatizados e script de verificação cobrindo idempotência, CSV, jobs e resiliência",
+      "id": "AC-07-9",
+      "description": "Bateria de testes automatizados e script de verificação cobrindo filtros, snapshots, salvamento e isolamento multi-tenant",
       "status": "APPROVED",
-      "evidence": "71 testes backend (0 falhas/erros), 16 testes frontend (Vitest) e 42 checagens em scripts/verify_phase06.py com 100% de sucesso."
+      "evidence": "77 testes backend passando (incluindo Testcontainers PostgreSQL 17 Flyway V1-V6), 20 testes frontend passando no Vitest, e script verify_phase07.py executado com 100% de aprovação."
     }
   ],
   "blockers": [],
-  "nextPrompt": "07",
-  "nextPromptTitle": "Market Intelligence: pesquisa e análise",
+  "nextPrompt": "08",
+  "nextPromptTitle": "Motor financeiro determinístico e versionado",
   "nextPromptPrerequisiteMet": true
 }
