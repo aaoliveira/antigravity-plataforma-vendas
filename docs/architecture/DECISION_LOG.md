@@ -267,6 +267,22 @@ Conforme estipulado no PRD ([docs/product/PRD.md](file:///home/alexandre/Projeto
 
 ---
 
+## DEC-016 / ADR-016 — Painel Financeiro e Relatórios por Regime de Competência no MVP (com Metadados de Origem e Consistência de Exportação)
+- **Data:** 2026-11-17
+- **Status:** `ACCEPTED`
+- **Contexto:** Endereçamento definitivo de **OQ-015** (Regime de Caixa vs. Regime de Competência). No MVP, os dados disponíveis dos marketplaces consistem em pedidos importados e calculados pelo motor financeiro na data do evento (`order_date`). Repasses e liquidações bancárias (escrow) dependem de conciliação aprofundada prevista para a Fase 2 (Prompt 17).
+- **Opções consideradas:**
+  1. Forjar regime de caixa presumindo prazos médios de D+14/D+30 sem dados reais de repasse.
+  2. Implementar visão primária executiva estritamente por **regime de competência** (baseado na data do pedido e cálculos fechados do motor financeiro), exibindo cobertura, status de cálculo e metadados de geração em todas as telas e exportações CSV.
+- **Decisão:** Opção 2. Painel financeiro do MVP opera 100% por regime de competência, unificando o serviço de domínio de agregação entre tela e CSV. A visão por regime de caixa fica reservada para o módulo de conciliação de repasses na Fase 2.
+- **Justificativa:** Conformidade com as normas contábeis, eliminação de estimativas arbitrárias de fluxo de caixa e garantia de que os totalizadores da tela e do arquivo exportado sejam idênticos ao centavo.
+- **Consequências:** Usuários visualizam faturamento e margem relativos ao período de realização das vendas, com clara sinalização da data da última sincronização.
+- **Requisitos relacionados:** FR-FIN-005, FR-DAS-001, FR-DAS-002, FR-DAS-005, OQ-015, PRD Seção 5.12.
+- **Responsável:** Especialista Financeiro / Engenheiro Backend.
+- **Revisão:** Fase 2 (Prompt 17 - Conciliação e Regime de Caixa).
+
+---
+
 # Parte 2: Decisões Propostas e Pendências Classificadas (PROPOSED)
 
 ## DEC-P05 — Política de Retenção de Dados e Expurgos Automáticos LGPD (Vinculada a OQ-007)

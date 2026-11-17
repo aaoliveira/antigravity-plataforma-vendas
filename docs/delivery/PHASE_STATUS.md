@@ -3,26 +3,27 @@
 ## 1. Visão Geral do Gate Atual
 
 - **Fase Atual:** Fase 1 — MVP / P0
-- **Prompt Ativo:** `Prompt 08 — Motor financeiro determinístico e versionado`
+- **Prompt Ativo Concluído:** `Prompt 09 — Painel financeiro, rentabilidade e relatórios do MVP`
 - **Status do Gate:** `APPROVED`
-- **Data da Avaliação:** 2026-11-17T14:22:00-03:00
+- **Próximo Prompt Liberado:** `Prompt 10 — AI Listing Studio: análise de anúncio e geração de conteúdo`
+- **Data da Avaliação:** 2026-11-17T14:38:45-03:00
 - **Responsável:** Antigravity AI Assistant & Engenharia
 
 ---
 
-## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 08)
+## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 09)
 
 | Critério de Aceite | Requisito Verificado | Evidência Comprovada | Avaliação |
 |---|---|---|---|
-| **1. Custo por SKU com Vigência** | Modelo de custo por SKU com moeda, unidade, origem, vigência e histórico temporal. | Tabela `sku_costs` com `NUMERIC(15, 4)`, entidade `SkuCost` e `SkuCostService` com encerramento automático de vigência de lotes anteriores. | `APROVADO` |
-| **2. Regras e Componentes Versionados** | Componentes de tarifa, comissão, frete, embalagem, tributos e custos variáveis versionados. | Entidades `FinancialRuleSet` e `FinancialRuleComponent` com auto-incremento de versão, vigência temporal e persistência Flyway V7. | `APROVADO` |
-| **3. Cálculo Determinístico em BigDecimal** | Escala e arredondamento (`HALF_EVEN`) estritamente definidos, sem uso de `float`/`double`. | `FinancialCalculationEngine` puro com `BigDecimal`, escala 2 para moeda e 4/6 para taxas, com proibição verificada por script de qualquer tipo `float`/`double`. | `APROVADO` |
-| **4. Margem, Preço Mínimo e Preço-Alvo** | Margem de contribuição por item/pedido, preço mínimo de equilíbrio e preço para margem alvo. | Casos de referência validados em `FinancialCalculationEngineTest` (ML acima de R$ 79 e ML abaixo com taxa fixa de R$ 6,00) e simulador de break-even. | `APROVADO` |
-| **5. Memória de Cálculo Explicável** | Memória linha a linha com componente, fonte, base de cálculo, alíquota e regras aplicadas. | Modelo `CalculationMemory` e `CalculationMemoryLine` persistido em JSONB (`memory_breakdown`) em cada item calculado e visualizável em tabela. | `APROVADO` |
-| **6. Qualidade do Cálculo e Alertas** | Classificação `COMPLETE`, `PARTIAL` ou `SIMULATED` com listagem de campos ausentes e premissas. | Ausência de COGS ou TAX marca `PARTIAL` e adiciona disclaimer explícito de que não representa lucro real nem apuração fiscal oficial. | `APROVADO` |
-| **7. Cancelamento, Devolução e Estorno** | Reversão de receita e custos conforme política contábil sem duplicação de receita. | Métodos `handleOrderCancellation` (margem zero) e `handleOrderReturn` (prejuízo de frete/embalagem negativo) testados em `FinancialOrderCalculationIntegrationTest`. | `APROVADO` |
-| **8. Imutabilidade e Não Recálculo Silencioso** | Alteração de regras não altera cálculos históricos fechados sem ação explícita auditada. | Cálculos fechados preservam vínculo com a versão histórica da regra; recálculo histórico exige método auditado `recalculateHistoricalOrder`. | `APROVADO` |
-| **9. Testes Numéricos e Multi-Tenant** | Casos de referência aprovados passando centavo a centavo e isolamento por `tenant_id`. | 88 testes backend aprovados (PostgreSQL 17 Testcontainers Flyway V1-V7 e ArchUnit), 24 testes frontend aprovados no Vitest e `verify_phase08.py` com 100% de sucesso. | `APROVADO` |
+| **1. KPIs Executivos do Dashboard** | Faturamento importado, quantidade de pedidos, ticket médio e margem de contribuição. | `FinancialDashboardService` consolida `grossRevenue`, `orderCount`, `averageTicket` e `contributionMarginValue/Percentage` com `BigDecimal` e `RoundingMode.HALF_EVEN`. Testado em `FinancialDashboardIntegrationTest#shouldConsolidateDashboardMetrics`. | `APROVADO` |
+| **2. Breakdowns Granulares** | Visões agrupadas por produto/SKU, empresa, loja e marketplace. | Breakdowns por SKU em `ProductProfitabilityDto` e por Loja/Canal em `StoreProfitabilityDto` ordenados por receita decrescente. Testado em `FinancialDashboardIntegrationTest#shouldFilterDashboardByMarketplaceAndStore`. | `APROVADO` |
+| **3. Comparação de Períodos Equivalentes** | Variação percentual ($\Delta\%$) de faturamento, pedidos e margem com períodos equivalentes. | Comparação determinística em `PeriodComparisonDto` com $\Delta\%$ (`revenueDeltaPercentage`, `ordersDeltaPercentage`, `marginDeltaPercentage`) e flag `isPreviousIncomplete`. | `APROVADO` |
+| **4. Alerta de Cobertura e Incompletude** | Indicação de % de cálculos `COMPLETE` vs `PARTIAL` e timestamp da última sincronização. | Header de integridade informando `lastSyncedAt`, `calculationCoveragePercentage` e contagem de pedidos completos vs parciais com banner de aviso para custos pendentes. | `APROVADO` |
+| **5. Tabela de Pedidos com Drill-Down** | Listagem detalhada de pedidos com modal/painel da memória de cálculo explicável. | Endpoint `/api/v1/financial/dashboard/orders` e modal drill-down na UI apresentando passo a passo explicável das deduções (COGS, taxas canal, frete seller, impostos, embalagem, outros custos). | `APROVADO` |
+| **6. Exportação CSV Gerencial** | Download de relatório com timezone, data/hora, filtros e metadados de proveniência. | `FinancialCsvExporter` gera CSV RFC-4180 contendo metadados de auditoria: fuso horário, timestamp de geração, tenant ID, filtros aplicados, proveniência `IMPORTED` e disclaimer legal. | `APROVADO` |
+| **7. Consistência Matemática Unificada** | Mesmas consultas e serviços de domínio compartilhados entre dashboard visual e CSV. | `FinancialDashboardService` unifica as consultas de agregação da tela e as linhas de exportação CSV sobre as mesmas instâncias de `OrderFinancialCalculation`, garantindo consistência matemática ao centavo. | `APROVADO` |
+| **8. Isolamento Multi-Tenant e RBAC** | Bloqueio de acesso a dados financeiros para outros tenants e para papéis restritos. | Isolamento por `tenantId` obrigatório em queries JPQL. RBAC implementado em `validateFinancialAccess()` bloqueando papéis `OPERATOR` e `VIEWER` com status 403 Forbidden. Testado em `shouldDenyAccessToRestrictedRoles` e `shouldIsolateDashboardBetweenTenants`. | `APROVADO` |
+| **9. Testes Automatizados e Estados Visuais** | Testes de API, testes de integração, testes de componentes frontend e estados vazios/erro. | 93 testes backend passando (incluindo `FinancialDashboardIntegrationTest`) e 28 testes frontend Vitest passando (`FinancialDashboardView.test.tsx`), além de `next lint` e `next build` com 0 erros. | `APROVADO` |
 
 ---
 
@@ -39,8 +40,8 @@
 | **06** | Sincronização de catálogo, anúncios e pedidos | Fase 1 | `APPROVED` | 2026-11-17 | Modelos normalizados, idempotência estrita, jobs assíncronos RabbitMQ, webhooks HMAC, contingência CSV, Flyway V5, UI SyncManager e 71 testes backend + 16 frontend. |
 | **07** | Market Intelligence: pesquisa e análise | Fase 1 | `APPROVED` | 2026-11-17 | Pesquisa pública de mercado via API autorizada, snapshots, proveniência explicável, buscas e produtos salvos, isolamento multi-tenant e 77 testes backend + 20 frontend. |
 | **08** | Motor financeiro determinístico e versionado | Fase 1 | `APPROVED` | 2026-11-17 | Endereçamento OQ-004 e OQ-005 no ADR DEC-015, custos por SKU, regras versionadas, cálculo em BigDecimal, memória de cálculo, UI de simulação e 88 testes backend + 24 frontend. |
-| **09** | Painel financeiro, rentabilidade e relatórios | Fase 1 | `NOT_STARTED` | — | Pré-requisito atendido: Prompt 08 aprovado com sucesso. Pronto para execução. |
-| **10** | AI Listing Studio: análise e geração de conteúdo | Fase 1 | `NOT_STARTED` | — | Aguarda aprovação do Prompt 09. |
+| **09** | Painel financeiro, rentabilidade e relatórios | Fase 1 | `APPROVED` | 2026-11-17 | Endereçamento OQ-015 no ADR DEC-016, agregação de faturamento e margem, comparação de períodos, exportação CSV RFC-4180 com metadados de proveniência, RBAC estrito e 93 testes backend + 28 frontend. |
+| **10** | AI Listing Studio: análise e geração de conteúdo | Fase 1 | `NOT_STARTED` | — | Liberado para execução. |
 | **11** | Extensão Chrome Manifest V3 complementar | Fase 1 | `NOT_STARTED` | — | Aguarda aprovação do Prompt 10. |
 | **12** | Homologação, segurança E2E e release do MVP | Fase 1 | `NOT_STARTED` | — | Fechamento da Fase 1 (MVP). |
 | **13** | Monitoramento contínuo de produtos e concorrentes | Fase 2 | `NOT_STARTED` | — | Expansão de inteligência. |
@@ -54,5 +55,4 @@
 ---
 
 ## 4. Liberação para o Próximo Passo
-- O **Prompt 08** foi integralmente verificado, validado e **APROVADO**.
-- O **Prompt 09 — Painel financeiro, rentabilidade e relatórios** está formalmente **DESBLOQUEADO** e pronto para execução.
+O **Prompt 09** foi completamente concluído, testado e **APROVADO**. O **Prompt 10 — AI Listing Studio: análise de anúncio e geração de conteúdo** está formalmente liberado para início.

@@ -110,7 +110,7 @@ Nenhum requisito pode ser considerado concluído sem que os testes associados es
 | **FR-FIN-002** | P0 | Configurar componentes de tarifa, comissão, frete e tributos. | Fase 1 (MVP) | Prompt 08 | Unitário, Integração (Versioned Rules) | `VERIFIED (Prompt 08)` |
 | **FR-FIN-003** | P0 | Calcular margem de contribuição por pedido e SKU. | Fase 1 (MVP) | Prompt 08 | Suíte Mínima de Regressão Financial (`FinancialCalculationEngineTest`) | `VERIFIED (Prompt 08)` |
 | **FR-FIN-004** | P0 | Calcular preço mínimo e simular preço-alvo. | Fase 1 (MVP) | Prompt 08 | Unitário determinístico (`BigDecimal`) | `VERIFIED (Prompt 08)` |
-| **FR-FIN-005** | P0 | Consolidar resultados por loja, marketplace e empresa. | Fase 1 (MVP) | Prompt 09 | Integração (Aggregation Queries) | `PLANNED` |
+| **FR-FIN-005** | P0 | Consolidar resultados por loja, marketplace e empresa. | Fase 1 (MVP) | Prompt 09 | Integração (Aggregation Queries) | `VERIFIED (Prompt 09)` |
 | **FR-FIN-006** | P0 | Tratar descontos, cancelamentos, devoluções e estornos. | Fase 1 (MVP) | Prompt 08 | Unitário, Integração (`FinancialOrderCalculationIntegrationTest`) | `VERIFIED (Prompt 08)` |
 | **FR-FIN-007** | P1 | Calcular margem após custo de Ads atribuído. | Fase 2 | Prompt 16 | Unitário (Attribution Allocation) | `PLANNED` |
 | **FR-FIN-008** | P1 | Apresentar DRE gerencial configurável. | Fase 2 | Prompt 17 | Integração (Financial Reporting Engine) | `PLANNED` |
@@ -163,11 +163,11 @@ Nenhum requisito pode ser considerado concluído sem que os testes associados es
 
 | ID | Prioridade | Descrição do Requisito | Fase | Prompt Alvo | Tipo de Teste Planejado | Status Atual |
 |---|---|---|---|---|---|---|
-| **FR-DAS-001** | P0 | Exibir painel consolidado de vendas e rentabilidade. | Fase 1 (MVP) | Prompt 09 | Integração (BI Aggregation), E2E | `PLANNED` |
-| **FR-DAS-002** | P0 | Comparar períodos equivalentes de faturamento/margem. | Fase 1 (MVP) | Prompt 09 | Unitário (Period Shifter), E2E | `PLANNED` |
-| **FR-DAS-003** | P1 | Exibir ranking ordenado de produtos e canais. | Fase 1 (MVP) | Prompt 09 | Unitário (Sorting/Filtering) | `PLANNED` |
+| **FR-DAS-001** | P0 | Exibir painel consolidado de vendas e rentabilidade. | Fase 1 (MVP) | Prompt 09 | Integração (BI Aggregation), E2E | `VERIFIED (Prompt 09)` |
+| **FR-DAS-002** | P0 | Comparar períodos equivalentes de faturamento/margem. | Fase 1 (MVP) | Prompt 09 | Unitário (Period Shifter), E2E | `VERIFIED (Prompt 09)` |
+| **FR-DAS-003** | P1 | Exibir ranking ordenado de produtos e canais. | Fase 1 (MVP) | Prompt 09 | Unitário (Sorting/Filtering) | `VERIFIED (Prompt 09)` |
 | **FR-DAS-004** | P1 | Exibir alertas e tarefas prioritárias no painel. | Fase 2 | Prompt 14 | Integração (Action Center Query) | `PLANNED` |
-| **FR-DAS-005** | P0 | Exportar relatórios gerenciais em formatos padrão. | Fase 1 (MVP) | Prompt 09 | Unitário (CSV/Spreadsheet Exporter) | `PLANNED` |
+| **FR-DAS-005** | P0 | Exportar relatórios gerenciais em formatos padrão. | Fase 1 (MVP) | Prompt 09 | Unitário (CSV/Spreadsheet Exporter) | `VERIFIED (Prompt 09)` |
 | **FR-DAS-006** | P1 | Agendar envio automatizado de relatórios por e-mail. | Fase 2 | Prompt 17 | Integração (Scheduled Job Service) | `PLANNED` |
 
 ---

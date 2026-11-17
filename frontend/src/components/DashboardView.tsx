@@ -8,6 +8,7 @@ import { MarketplaceCapabilities } from './MarketplaceCapabilities';
 import { SyncManager } from './SyncManager';
 import { MarketIntelligenceView } from './MarketIntelligenceView';
 import { FinancialEngineView } from './FinancialEngineView';
+import { FinancialDashboardView } from './FinancialDashboardView';
 
 const initialDemoCompanies: CompanyItem[] = [
   {
@@ -37,6 +38,7 @@ const initialDemoStores: StoreItem[] = [
 
 export const DashboardView: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'COMPANIES' | 'STORES' | 'CAPABILITIES' | 'SYNC' | 'MARKET' | 'FINANCIAL' | 'HEALTH'>('COMPANIES');
+  const [financialSubTab, setFinancialSubTab] = useState<'DASHBOARD' | 'ENGINE'>('DASHBOARD');
   const [companies, setCompanies] = useState<CompanyItem[]>(initialDemoCompanies);
   const [stores, setStores] = useState<StoreItem[]>(initialDemoStores);
 
@@ -156,7 +158,29 @@ export const DashboardView: React.FC = () => {
 
       {activeTab === 'MARKET' && <MarketIntelligenceView />}
 
-      {activeTab === 'FINANCIAL' && <FinancialEngineView />}
+      {activeTab === 'FINANCIAL' && (
+        <div className="space-y-6">
+          <div className="flex bg-slate-800 p-1 rounded-lg w-fit text-xs font-semibold text-slate-300">
+            <button
+              onClick={() => setFinancialSubTab('DASHBOARD')}
+              className={`px-3 py-1.5 rounded-md transition-colors ${
+                financialSubTab === 'DASHBOARD' ? 'bg-blue-600 text-white shadow' : 'hover:text-white'
+              }`}
+            >
+              Painel &amp; Relatórios
+            </button>
+            <button
+              onClick={() => setFinancialSubTab('ENGINE')}
+              className={`px-3 py-1.5 rounded-md transition-colors ${
+                financialSubTab === 'ENGINE' ? 'bg-blue-600 text-white shadow' : 'hover:text-white'
+              }`}
+            >
+              Simulador &amp; Regras
+            </button>
+          </div>
+          {financialSubTab === 'DASHBOARD' ? <FinancialDashboardView /> : <FinancialEngineView />}
+        </div>
+      )}
 
       {activeTab === 'HEALTH' && <HealthChecker />}
     </div>

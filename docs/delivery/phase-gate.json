@@ -2,70 +2,70 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "project": "Seller Intelligence Platform",
   "gateSystemVersion": "1.0.0",
-  "currentPrompt": "08",
-  "promptTitle": "Motor financeiro determinístico e versionado",
+  "currentPrompt": "09",
+  "promptTitle": "Painel financeiro, rentabilidade e relatórios do MVP",
   "phase": "Fase 1 — MVP / P0",
   "status": "APPROVED",
-  "updatedAt": "2026-11-17T14:22:00-03:00",
+  "updatedAt": "2026-11-17T14:38:30-03:00",
   "evaluatedBy": "Antigravity AI Assistant",
   "criteria": [
     {
-      "id": "AC-08-1",
-      "description": "Modelo de custo por SKU com moeda, unidade, origem, vigência e histórico temporal",
+      "id": "AC-09-1",
+      "description": "Dashboard financeiro consolidado com faturamento bruto, total de pedidos, ticket médio e margem de contribuição",
       "status": "APPROVED",
-      "evidence": "Implementado em SkuCost e SkuCostService; tabela sku_costs com NUMERIC(15, 4), currency, unit, origin, effective_from/to e fechamento de vigência automática ao cadastrar novo lote."
+      "evidence": "FinancialDashboardService consolida grossRevenue, orderCount, averageTicket e contributionMarginValue/Percentage com BigDecimal e RoundingMode.HALF_EVEN. Testado em FinancialDashboardIntegrationTest#shouldConsolidateDashboardMetrics."
     },
     {
-      "id": "AC-08-2",
-      "description": "Modelo versionado de componentes de tarifa, comissão, frete, embalagem, tributos parametrizados e outros custos variáveis",
+      "id": "AC-09-2",
+      "description": "Visões e breakdowns filtráveis por produto/SKU, empresa, loja e marketplace",
       "status": "APPROVED",
-      "evidence": "Entidades FinancialRuleSet e FinancialRuleComponent em V7__financial_engine.sql com enum FinancialComponentType, threshold_amount e versionamento automático incremental."
+      "evidence": "Breakdown consolidado por SKU em ProductProfitabilityDto e por Loja/Canal em StoreProfitabilityDto com ordenação decrescente por receita. Testado em FinancialDashboardIntegrationTest#shouldFilterDashboardByMarketplaceAndStore."
     },
     {
-      "id": "AC-08-3",
-      "description": "Domínio de cálculo determinístico em BigDecimal com escala e arredondamento (HALF_EVEN) explicitamente definidos",
+      "id": "AC-09-3",
+      "description": "Filtros de período e comparação com período equivalente anterior (com delta percentual e sinalização de lacunas)",
       "status": "APPROVED",
-      "evidence": "FinancialCalculationEngine implementado estritamente com BigDecimal, RoundingMode.HALF_EVEN, escalas 2 (moeda) e 4/6 (taxas/divisões) com zero tipos float ou double no código."
+      "evidence": "Comparação determinística de períodos equivalentes em PeriodComparisonDto com cálculo de delta percentual (revenueDeltaPercentage, ordersDeltaPercentage, marginDeltaPercentage) e flag isPreviousIncomplete."
     },
     {
-      "id": "AC-08-4",
-      "description": "Cálculo de margem de contribuição por item e pedido, preço mínimo (break-even) e preço-alvo",
+      "id": "AC-09-4",
+      "description": "Sinalização de cobertura, percentual de cálculos COMPLETE vs PARTIAL e data da última sincronização",
       "status": "APPROVED",
-      "evidence": "Testado em FinancialCalculationEngineTest (casos de referência ML acima e abaixo de R$ 79,00) e método simulatePrice() com resolução de tarifas com limiar."
+      "evidence": "Header de integridade informando lastSyncedAt, calculationCoveragePercentage e contagem de pedidos com qualidade COMPLETE vs PARTIAL, com warning explícito de cálculo parcial."
     },
     {
-      "id": "AC-08-5",
-      "description": "Memória de cálculo explicativa linha a linha indicando componente, fonte, regra aplicada e premissas",
+      "id": "AC-09-5",
+      "description": "Tabela de pedidos com drill-down para memória de cálculo linha a linha reproduzível",
       "status": "APPROVED",
-      "evidence": "Record CalculationMemory e CalculationMemoryLine serializados em JSON (memory_breakdown) em cada item de cálculo fechado e exposto na API e UI."
+      "evidence": "Endpoint /api/v1/financial/dashboard/orders e modal drill-down na UI apresentando passo a passo explicável das deduções (COGS, taxas canal, frete seller, impostos, embalagem, outros custos)."
     },
     {
-      "id": "AC-08-6",
-      "description": "Classificação de cálculo COMPLETE, PARTIAL ou SIMULATED com alerta e listagem de campos ausentes",
+      "id": "AC-09-6",
+      "description": "Exportação CSV gerencial com timezone, data de geração, filtros aplicados e metadados de proveniência",
       "status": "APPROVED",
-      "evidence": "Enum CalculationQuality; quando COGS ou TAX não são informados, marca PARTIAL, lista missingFields e exibe aviso de que não representa lucro líquido real nem apuração fiscal."
+      "evidence": "FinancialCsvExporter gera CSV RFC-4180 contendo metadados de auditoria: fuso horário, timestamp de geração, tenant ID, filtros aplicados, rótulo de proveniência IMPORTED e disclaimer legal."
     },
     {
-      "id": "AC-08-7",
-      "description": "Tratamento contábil e reversão correta para cancelamento, devolução e estorno sem duplicação de receita",
+      "id": "AC-09-7",
+      "description": "Unificação estrita dos serviços de domínio: totalizadores de tela e exportação CSV usam o mesmo motor",
       "status": "APPROVED",
-      "evidence": "Métodos handleOrderCancellation e handleOrderReturn em FinancialCalculationService testados em FinancialOrderCalculationIntegrationTest com perda irreversível negativa."
+      "evidence": "FinancialDashboardService unifica as consultas de agregação da tela e as linhas de exportação CSV sobre as mesmas instâncias de OrderFinancialCalculation, garantindo consistência matemática ao centavo."
     },
     {
-      "id": "AC-08-8",
-      "description": "Versionamento de regras com vigência temporal e preservação de cálculos históricos fechados",
+      "id": "AC-09-8",
+      "description": "Isolamento multi-tenant e controle de autorização RBAC para dados financeiros",
       "status": "APPROVED",
-      "evidence": "Criação de nova versão de regra mantém cálculos antigos vinculados à sua versão histórica; recálculo histórico exige chamada explícita auditada recalculateHistoricalOrder."
+      "evidence": "Isolamento por tenantId obrigatório em todas as queries JPQL. RBAC implementado em validateFinancialAccess() bloqueando OPERATOR e VIEWER com status 403 Forbidden."
     },
     {
-      "id": "AC-08-9",
-      "description": "Bateria de testes de referência numéricos exatos, sem float/double e com isolamento multi-tenant",
+      "id": "AC-09-9",
+      "description": "Bateria de testes automatizados de API, agregação, exportação CSV e componentes frontend com estados vazios/erro",
       "status": "APPROVED",
-      "evidence": "88 testes backend aprovados (incluindo Testcontainers Postgres 17 Flyway V1-V7 e ArchUnit), 24 testes frontend aprovados no Vitest, e script verify_phase08.py com 100% de sucesso."
+      "evidence": "93 testes backend passando (incluindo FinancialDashboardIntegrationTest) e 28 testes frontend Vitest passando (FinancialDashboardView.test.tsx), além de next lint e next build sem erros."
     }
   ],
   "blockers": [],
-  "nextPrompt": "09",
-  "nextPromptTitle": "Painel financeiro, rentabilidade e relatórios",
+  "nextPrompt": "10",
+  "nextPromptTitle": "AI Listing Studio: análise de anúncio e geração de conteúdo",
   "nextPromptPrerequisiteMet": true
 }
