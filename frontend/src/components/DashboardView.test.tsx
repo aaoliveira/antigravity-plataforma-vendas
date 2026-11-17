@@ -51,7 +51,7 @@ describe('DashboardView (Mobile-First & Hierarchical Navigation)', () => {
   it('filters navigation items using the search input', () => {
     render(<DashboardView />);
 
-    const searchInput = screen.getByPlaceholderText(/Buscar módulos e ferramentas.../i);
+    const searchInput = screen.getByPlaceholderText(/Buscar módulo/i);
     fireEvent.change(searchInput, { target: { value: 'DRE' } });
 
     // DRE should be visible in filtered results
