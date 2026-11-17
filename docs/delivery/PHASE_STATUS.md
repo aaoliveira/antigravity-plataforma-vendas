@@ -3,26 +3,26 @@
 ## 1. Visão Geral do Gate Atual
 
 - **Fase Atual:** Fase 1 — MVP / P0
-- **Prompt Ativo:** `Prompt 04 — Organizações, CNPJs, lojas e gestão de acessos`
+- **Prompt Ativo:** `Prompt 05 — Framework de conectores e autorização OAuth de marketplaces`
 - **Status do Gate:** `APPROVED`
-- **Data da Avaliação:** 2026-11-17T12:48:00-03:00
+- **Data da Avaliação:** 2026-11-17T13:05:00-03:00
 - **Responsável:** Antigravity AI Assistant & Engenharia
 
 ---
 
-## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 04)
+## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 05)
 
 | Critério de Aceite | Requisito Verificado | Evidência Comprovada | Avaliação |
 |---|---|---|---|
-| **1. CRUD Empresa/CNPJ e Regime Tributário** | Cadastro, edição e desativação de empresas com validação matemática de CNPJ sem consulta à RFB e regime informativo. | `CompanyService`, `CnpjValidator` e endpoints `/api/v1/companies`; `CnpjValidatorTest` aprovou 16 casos de teste. | `APROVADO` |
-| **2. CRUD Store/MarketplaceAccount** | Lojas vinculadas a empresas do tenant com identificação de canal (`MERCADO_LIVRE`, `SHOPEE`, `AMAZON`, `OUTRO`). | `StoreService` e endpoints `/api/v1/stores` com metadados não secretos e status de conexão. | `APROVADO` |
-| **3. Bloqueio Estrito de Vínculo Cross-Tenant** | Tentativa de associar loja a empresa pertencente a outro tenant é bloqueada com 403 e auditada. | `CompanyAndStoreIntegrationTest` comprovou negação de vínculo cross-tenant com `TENANT_ACCESS_DENIED` e auditoria `ACCESS_DENIED`. | `APROVADO` |
-| **4. Convites de Usuário com Validade e Uso Único** | Convites com token criptográfico seguro, expiração de 7 dias, uso único (`ACCEPTED`) e atribuição de papel e escopo. | `InvitationService` e `/api/v1/invitations`; reutilização e expiração testadas com 400 Bad Request em `ScopeAndInvitationIntegrationTest`. | `APROVADO` |
-| **5. Isolamento de Escopo Granular (Loja A vs Loja B)** | Usuário restrito à Loja A não consulta Loja B via API nem UI. | `ScopeAndInvitationIntegrationTest` comprovou que analista restrito à Loja A recebe 200 OK na Loja A e 403 Forbidden na Loja B. | `APROVADO` |
-| **6. Trilha de Auditoria Persistente** | Registro estruturado de `COMPANY_CREATED`, `COMPANY_UPDATED`, `STORE_CREATED`, `STORE_UPDATED`, `INVITATION_CREATED`, `INVITATION_ACCEPTED` e `ACCESS_DENIED`. | Eventos persistidos em `audit_events` e validados nos testes de integração. | `APROVADO` |
-| **7. Migração Flyway V3** | Tabelas `companies`, `stores`, `user_invitations` e `membership_scopes` com constraints de unicidade e integridade. | `V3__companies_stores_invitations.sql` executada e validada com PostgreSQL 17 Testcontainers. | `APROVADO` |
-| **8. Interface Web (Next.js)** | UI para listar, cadastrar, editar e desativar empresas e lojas com validação visual de CNPJ e aviso de transparência. | Componentes `CompanyManager`, `StoreManager`, `DashboardView` e `cnpj.ts`; linter, typecheck e build estático aprovados sem erros. | `APROVADO` |
-| **9. Testes Automatizados e Script Operacional** | Bateria completa de testes automatizados e script de verificação. | 45 testes no backend, 10 testes no frontend (Vitest) e 25 verificações em `verify_phase04.py` com 100% de sucesso. | `APROVADO` |
+| **1. Porta e Modelo de Conectores** | Interface `MarketplaceConnector` com matriz de capacidades explícitas (`SUPPORTED`, `UNSUPPORTED`, `PENDING_VALIDATION`). | `MarketplaceConnector`, `ConnectorCapability`, `ConnectorCapabilityType` e `CapabilityStatus` definidos estritamente alinhados à matriz de capacidades de APIs oficiais. | `APROVADO` |
+| **2. Registry Desacoplado** | Localização e injeção dinâmica de conectores por canal sem condicionais acopladas na camada de aplicação. | `MarketplaceConnectorRegistry` implementado e coberto por testes unitários (`MarketplaceConnectorRegistryTest`: 3 testes). | `APROVADO` |
+| **3. Fluxo OAuth Seguro** | State CSRF criptográfico, troca de authorization code, renovação de refresh token e revogação. | Implementações oficiais para Mercado Livre e Shopee com validação de expiração e uso único do state, além de auditoria de tentativas inválidas. | `APROVADO` |
+| **4. Criptografia em Repouso (AES-GCM)** | Proteção de tokens com AES-256-GCM com IV aleatório de 12 bytes; tokens nunca trafegam em texto plano nem em logs. | `TokenCryptoService` testado em `TokenCryptoServiceTest` (4 testes); DTOs de leitura e logs omitem tokens em texto plano. | `APROVADO` |
+| **5. Isolamento Multi-Tenant de Credenciais** | Credenciais e states OAuth associados obrigatoriamente a `tenant_id` e `store_id`. | `V4__marketplace_connectors.sql` cria `marketplace_credentials` e `oauth_states`; tentativas cross-tenant bloqueadas com 403 e auditadas (`MarketplaceOAuthIntegrationTest`). | `APROVADO` |
+| **6. Cliente HTTP Resiliente** | Timeouts definidos, suporte a headers de rate limit e política de backoff exponencial. | Configurações explícitas de timeout (5s conexão / 10s leitura), headers de cota e backoff configurados nos conectores. | `APROVADO` |
+| **7. Conector Simulado (Fake/Mock)** | Fake connector estritamente restrito a perfis de teste e proibido em produção. | `FakeMarketplaceConnector` restrito por `@Profile("test")` e validado em tempo de compilação e execução. | `APROVADO` |
+| **8. Interface Web (Next.js)** | UI com matriz de capacidades por marketplace e status de autorização das lojas. | Componente `MarketplaceCapabilities` integrado na aba de conectores de `DashboardView`; 3 testes Vitest e build de produção aprovados sem erros. | `APROVADO` |
+| **9. Testes Automatizados e Script Operacional** | Bateria completa cobrindo CSRF, tokens, isolamento e resiliência com execução do script de verificação. | 57 testes backend (0 falhas), 13 testes frontend e 24 verificações em `verify_phase05.py` com 100% de sucesso. | `APROVADO` |
 
 ---
 
@@ -35,8 +35,8 @@
 | **02** | Bootstrap do monorepo e ambiente local | Fase 1 | `APPROVED` | 2026-11-17 | Monorepo criado, Spring Boot 3.5, Next.js 15, Docker Compose saudável, Flyway V1, CI workflow e testes passando. |
 | **03** | Identidade, autenticação e isolamento multi-tenant | Fase 1 | `APPROVED` | 2026-11-17 | Spring Security JWT, User sem senha, Organization, Membership RBAC, TenantContextFilter, auditoria e 20 testes passando. |
 | **04** | Organizações, CNPJs, lojas e gestão de acessos | Fase 1 | `APPROVED` | 2026-11-17 | CRUD empresas/CNPJs sem consulta RFB, lojas por marketplace, convites com escopo granular, UI Next.js, Flyway V3 e 45 testes backend + 10 frontend. |
-| **05** | Framework de conectores e autorização OAuth | Fase 1 | `NOT_STARTED` | — | Próximo prompt da sequência (Fase 1 - MVP). |
-| **06** | Sincronização de catálogo, anúncios e pedidos | Fase 1 | `NOT_STARTED` | — | Aguarda aprovação do Prompt 05. |
+| **05** | Framework de conectores e autorização OAuth | Fase 1 | `APPROVED` | 2026-11-17 | Port MarketplaceConnector, registry, OAuth oficial ML/Shopee, AES-256-GCM para tokens, Flyway V4, UI Next.js e 57 testes backend + 13 frontend. |
+| **06** | Sincronização de catálogo, anúncios e pedidos | Fase 1 | `NOT_STARTED` | — | Aguarda início da Fase 1 — Prompt 06. |
 | **07** | Market Intelligence: pesquisa e análise | Fase 1 | `NOT_STARTED` | — | Aguarda aprovação do Prompt 06. |
 | **08** | Motor financeiro determinístico e versionado | Fase 1 | `NOT_STARTED` | — | Aguarda aprovação do Prompt 07. |
 | **09** | Painel financeiro, rentabilidade e relatórios | Fase 1 | `NOT_STARTED` | — | Aguarda aprovação do Prompt 08. |
@@ -54,5 +54,5 @@
 ---
 
 ## 4. Liberação para o Próximo Passo
-Com a aprovação do **Prompt 04**, a estrutura hierárquica `Tenant → Empresas/CNPJs → Lojas/MarketplaceAccounts`, convites com escopos restritos e interface web estão operacionais e testadas. O projeto está apto para receber e executar o:
-👉 **Prompt 05 — Framework de conectores e autorização OAuth**.
+Com a aprovação formal do **Prompt 05**, o framework de conectores, o fluxo OAuth resiliente e a persistência criptografada de credenciais com isolamento estrito por tenant estão operacionais e validados. O projeto está oficialmente apto e liberado para receber e executar o:
+👉 **Prompt 06 — Sincronização de catálogo, anúncios e pedidos**.

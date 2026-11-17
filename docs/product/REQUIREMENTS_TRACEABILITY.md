@@ -26,15 +26,15 @@ Nenhum requisito pode ser considerado concluído sem que os testes associados es
 
 | ID | Prioridade | Descrição do Requisito | Fase | Prompt Alvo | Tipo de Teste Planejado | Status Atual |
 |---|---|---|---|---|---|---|
-| **FR-INT-001** | P0 | Conectar conta por fluxo OAuth/autorizado aplicável. | Fase 1 (MVP) | Prompt 05 | Integração (OAuth Handshake), MockServer | `PLANNED` |
-| **FR-INT-002** | P0 | Renovar tokens e tratar expiração/revogação. | Fase 1 (MVP) | Prompt 05 | Unitário, Integração com WireMock | `PLANNED` |
+| **FR-INT-001** | P0 | Conectar conta por fluxo OAuth/autorizado aplicável. | Fase 1 (MVP) | Prompt 05 | Integração (OAuth Handshake), MockServer | `VERIFIED (Prompt 05)` |
+| **FR-INT-002** | P0 | Renovar tokens e tratar expiração/revogação. | Fase 1 (MVP) | Prompt 05 | Unitário, Integração com WireMock | `VERIFIED (Prompt 05)` |
 | **FR-INT-003** | P0 | Sincronizar catálogo e anúncios próprios. | Fase 1 (MVP) | Prompt 06 | Integração (RabbitMQ Worker), Testcontainers | `PLANNED` |
 | **FR-INT-004** | P0 | Sincronizar pedidos próprios com idempotência. | Fase 1 (MVP) | Prompt 06 | Integração (Idempotency Key), Unitário | `PLANNED` |
 | **FR-INT-005** | P1 | Sincronizar campanhas e métricas de Ads autorizadas. | Fase 2 | Prompt 16 | Integração (Ads API Adapter), Unitário | `PLANNED` |
-| **FR-INT-006** | P0 | Exibir saúde, histórico e última sincronização. | Fase 1 (MVP) | Prompt 05, Prompt 06 | Unitário, Integração (REST API) | `PLANNED` |
+| **FR-INT-006** | P0 | Exibir saúde, histórico e última sincronização. | Fase 1 (MVP) | Prompt 05, Prompt 06 | Unitário, Integração (REST API) | `VERIFIED (Prompt 05)` |
 | **FR-INT-007** | P0 | Processar webhooks/eventos com proteção contra replay. | Fase 1 (MVP) | Prompt 06 | Integração (Signature Verification), Idempotência | `PLANNED` |
 | **FR-INT-008** | P0 | Disponibilizar importação CSV como contingência. | Fase 1 (MVP) | Prompt 06 | Unitário (CSV Parser), Integração | `PLANNED` |
-| **FR-INT-009** | P1 | Catálogo de capacidades por marketplace. | Fase 1 (MVP) | Prompt 05 | Unitário (Matrix Registry), Integração | `PLANNED` |
+| **FR-INT-009** | P1 | Catálogo de capacidades por marketplace. | Fase 1 (MVP) | Prompt 05 | Unitário (Matrix Registry), Integração | `VERIFIED (Prompt 05)` |
 
 ---
 

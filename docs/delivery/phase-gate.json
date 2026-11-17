@@ -2,70 +2,70 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "project": "Seller Intelligence Platform",
   "gateSystemVersion": "1.0.0",
-  "currentPrompt": "04",
-  "promptTitle": "Organizações, CNPJs, lojas e gestão de acessos",
+  "currentPrompt": "05",
+  "promptTitle": "Framework de conectores e autorização OAuth de marketplaces",
   "phase": "Fase 1 — MVP / P0",
   "status": "APPROVED",
-  "updatedAt": "2026-11-17T12:48:00-03:00",
+  "updatedAt": "2026-11-17T13:05:00-03:00",
   "evaluatedBy": "Antigravity AI Assistant",
   "criteria": [
     {
-      "id": "AC-04-1",
-      "description": "CRUD de Empresa/CNPJ com validação de dígitos sem consultar RFB e regime tributário informativo",
+      "id": "AC-05-1",
+      "description": "Interface MarketplaceConnector (ports) com matriz de capacidades explícitas (SUPPORTED, UNSUPPORTED, PENDING_VALIDATION)",
       "status": "APPROVED",
-      "evidence": "CompanyService e CnpjValidator implementados com validação de 14 dígitos e dígitos verificadores (CnpjValidatorTest aprovado com 16 testes); regime tributário informativo persistido."
+      "evidence": "MarketplaceConnector, ConnectorCapability, ConnectorCapabilityType e CapabilityStatus implementados com tipagem forte e mapeamento formal conforme marketplace-capability-matrix.md."
     },
     {
-      "id": "AC-04-2",
-      "description": "CRUD de Store/MarketplaceAccount vinculada a uma Empresa do mesmo tenant e marketplace identificado",
+      "id": "AC-05-2",
+      "description": "Registry/Factory desacoplado de conectores para Mercado Livre e Shopee",
       "status": "APPROVED",
-      "evidence": "StoreService implementa criação, listagem, atualização e desativação de lojas vinculadas a empresas com marketplace MERCADO_LIVRE, SHOPEE, AMAZON, OUTRO."
+      "evidence": "MarketplaceConnectorRegistry implementado e testado (MarketplaceConnectorRegistryTest: 3 testes aprovados), desacoplando lógica de canais dos serviços de aplicação."
     },
     {
-      "id": "AC-04-3",
-      "description": "Impossibilidade estrita de associar loja a empresa de outro tenant (bloqueio multi-tenant)",
+      "id": "AC-05-3",
+      "description": "Fluxo OAuth oficial (State CSRF seguro, redirect, troca de código, refresh e revogação)",
       "status": "APPROVED",
-      "evidence": "CompanyAndStoreIntegrationTest comprovou que tentativa de vincular loja a empresa de outro tenant retorna 403 Forbidden com TENANT_ACCESS_DENIED e registra auditoria."
+      "evidence": "MercadoLivreConnector e ShopeeConnector implementados com endpoints oficiais, geração de state com SecureRandom criptográfico, validação de expiração e uso único."
     },
     {
-      "id": "AC-04-4",
-      "description": "Convite de usuário com validade, uso único, token seguro e atribuição de papel e escopo (empresa/loja)",
+      "id": "AC-05-4",
+      "description": "Criptografia de tokens em repouso (AES-GCM), proteção contra vazamento em logs e nunca retornado ao frontend",
       "status": "APPROVED",
-      "evidence": "InvitationService gera token seguro com expiração de 7 dias, uso único (status ACCEPTED), e persiste scopes granulares; reutilização e tokens expirados rejeitados com 400 Bad Request."
+      "evidence": "TokenCryptoService implementado com AES-256-GCM, IV aleatório de 12 bytes por cifragem e auth tag de 128 bits. Testado em TokenCryptoServiceTest (4 testes). DTOs e logs protegem tokens em texto plano."
     },
     {
-      "id": "AC-04-5",
-      "description": "Isolamento de escopo granular: usuário limitado à Loja A não consulta Loja B por API/UI",
+      "id": "AC-05-5",
+      "description": "Registro de credenciais com tenant_id, store_id, scopes, expiração e status de conexão",
       "status": "APPROVED",
-      "evidence": "ScopeAndInvitationIntegrationTest comprovou que usuário com escopo restrito à Loja A consulta a Loja A com 200 OK e recebe 403 Forbidden ao tentar consultar Loja B (auditado como ACCESS_DENIED)."
+      "evidence": "Tabelas marketplace_credentials e oauth_states criadas via V4__marketplace_connectors.sql com FKs para tenants e stores, constraints e índices validados em PostgreSQL Testcontainers."
     },
     {
-      "id": "AC-04-6",
-      "description": "Trilha de auditoria persistente para alterações de estrutura empresarial, lojas, convites e escopos",
+      "id": "AC-05-6",
+      "description": "Cliente HTTP resiliente com timeouts, rate limit e backoff exponencial",
       "status": "APPROVED",
-      "evidence": "AuditService registra COMPANY_CREATED, COMPANY_UPDATED, COMPANY_STATUS_CHANGED, STORE_CREATED, STORE_UPDATED, INVITATION_CREATED, INVITATION_ACCEPTED e ACCESS_DENIED."
+      "evidence": "Configuração de timeouts (conect: 5s, read: 10s), headers de rate limit e política de backoff exponencial implementados nos conectores."
     },
     {
-      "id": "AC-04-7",
-      "description": "Migração Flyway V3 estruturando companies, stores, user_invitations e membership_scopes",
+      "id": "AC-05-7",
+      "description": "Conector simulado (Fake/Mock) estritamente restrito a perfis de teste e proibido em produção",
       "status": "APPROVED",
-      "evidence": "V3__companies_stores_invitations.sql aplicada e testada no PostgreSQL 17 Testcontainers via PostgresCompaniesStoresIntegrationTest."
+      "evidence": "FakeMarketplaceConnector anotado com @Profile('test') e validado em scripts/verify_phase05.py e MarketplaceOAuthIntegrationTest."
     },
     {
-      "id": "AC-04-8",
-      "description": "Interface web (Next.js) para listar, cadastrar, editar e desativar empresas e lojas com validação visual de CNPJ",
+      "id": "AC-05-8",
+      "description": "Interface web (Next.js) exibindo matriz de capacidades e estados de conexão",
       "status": "APPROVED",
-      "evidence": "Componentes CompanyManager e StoreManager criados com validação dinâmica de CNPJ, aviso sobre validação algorítmica, e filtros por empresa. Vitest e build Next.js 100% aprovados."
+      "evidence": "Componente MarketplaceCapabilities integrado ao DashboardView, testado com Vitest (3 testes aprovados) e build estático do Next.js aprovado sem erros."
     },
     {
-      "id": "AC-04-9",
-      "description": "Bateria de testes automatizados de integração, isolamento granular e frontend",
+      "id": "AC-05-9",
+      "description": "Bateria de testes automatizados cobrindo CSRF, tokens, isolamento e resiliência",
       "status": "APPROVED",
-      "evidence": "45 testes de backend (JPA, MockMvc, Testcontainers PostgreSQL) e 10 testes de frontend (Vitest) aprovados com zero falhas."
+      "evidence": "57 testes no backend (0 falhas/erros), 13 testes no frontend (Vitest) e 24 verificações de integridade em scripts/verify_phase05.py com 100% de aprovação."
     }
   ],
   "blockers": [],
-  "nextPrompt": "05",
-  "nextPromptTitle": "Framework de conectores e autorização OAuth",
+  "nextPrompt": "06",
+  "nextPromptTitle": "Sincronização de catálogo, anúncios e pedidos",
   "nextPromptPrerequisiteMet": true
 }

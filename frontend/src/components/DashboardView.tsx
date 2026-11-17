@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { CompanyManager, CompanyItem } from './CompanyManager';
 import { StoreManager, StoreItem } from './StoreManager';
 import { HealthChecker } from './HealthChecker';
+import { MarketplaceCapabilities } from './MarketplaceCapabilities';
 
 const initialDemoCompanies: CompanyItem[] = [
   {
@@ -32,7 +33,7 @@ const initialDemoStores: StoreItem[] = [
 ];
 
 export const DashboardView: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'COMPANIES' | 'STORES' | 'HEALTH'>('COMPANIES');
+  const [activeTab, setActiveTab] = useState<'COMPANIES' | 'STORES' | 'CAPABILITIES' | 'HEALTH'>('COMPANIES');
   const [companies, setCompanies] = useState<CompanyItem[]>(initialDemoCompanies);
   const [stores, setStores] = useState<StoreItem[]>(initialDemoStores);
 
@@ -79,6 +80,16 @@ export const DashboardView: React.FC = () => {
           Lojas & Marketplaces ({stores.length})
         </button>
         <button
+          onClick={() => setActiveTab('CAPABILITIES')}
+          className={`pb-3 px-1 border-b-2 transition-colors ${
+            activeTab === 'CAPABILITIES'
+              ? 'border-blue-500 text-blue-400 font-semibold'
+              : 'border-transparent text-slate-400 hover:text-slate-200'
+          }`}
+        >
+          Capacidades &amp; Conectores
+        </button>
+        <button
           onClick={() => setActiveTab('HEALTH')}
           className={`pb-3 px-1 border-b-2 transition-colors ${
             activeTab === 'HEALTH'
@@ -105,6 +116,8 @@ export const DashboardView: React.FC = () => {
           onAddStore={handleAddStore}
         />
       )}
+
+      {activeTab === 'CAPABILITIES' && <MarketplaceCapabilities />}
 
       {activeTab === 'HEALTH' && <HealthChecker />}
     </div>
