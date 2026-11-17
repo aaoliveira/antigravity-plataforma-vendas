@@ -328,6 +328,28 @@ Conforme estipulado no PRD ([docs/product/PRD.md](file:///home/alexandre/Projeto
 
 ---
 
+## DEC-019 / ADR-019 — Monitoramento Temporal de Concorrentes: Watchlists Imutáveis, Deduplicação de Mudanças, Lacunas Explícitas sem Interpolação e Retenção de 12 Meses
+- **Data:** 2026-11-17
+- **Status:** `ACCEPTED`
+- **Contexto:** Necessidade de permitir que o vendedor monitore anúncios, produtos e concorrentes ao longo do tempo (FR-CMP-002 a FR-CMP-008 e FR-MON-001 a FR-MON-005). A integridade do histórico depende de regras estritas: fontes autorizadas, ausência de interpolação forjada em falhas de coleta, deduplicação de alertas e preservação do histórico mesmo após desativação de itens da watchlist.
+- **Opções consideradas:**
+  1. Raspagem não autorizada com interpolação linear contínua (fabricando pontos de preço ausentes para desenhar gráficos contínuos) e deleção em cascata de histórico.
+  2. Arquitetura determinística, transparente e em conformidade estrita:
+     - **Watchlists com Preservação de Histórico:** Itens podem ser adicionados, pausados ou desativados (`status: UNTRACKED`). Snapshots anteriores são imutáveis e protegidos contra deleção acidental (`ON DELETE RESTRICT`).
+     - **Snapshots com Proveniência Auditável:** Cada coleta armazena timestamp original, preço em `NUMERIC(15, 2)`, status do anúncio (`ACTIVE`, `PAUSED`, `OUT_OF_STOCK`, etc.), reputação do seller e rótulo explícito `OBSERVED`. Vendas privadas ou estoque não fornecido são gravados como `UNAVAILABLE` e nunca transformados em zero ou afirmados sem comprovação oficial.
+     - **Diff Engine com Deduplicação Determinística:** Compara snapshots adjacentes calculando variação absoluta e percentual de preço em `BigDecimal`. Cada evento gera um hash SHA-256 (`tenant_id + item_id + event_type + previous + current + date_bucket`) com constraint `uk_event_hash` impedindo duplicações.
+     - **Série Temporal com Sinalização Explícita de Lacunas (Gaps):** Quando o intervalo entre coletas sucessivas ultrapassar $1,5 \times \text{frequência}$ ou houver falha de coleta (`COLLECTION_FAILED`), o serviço emite um ponto de dados explícito com status `GAP`. É **terminantemente proibido interpolar preços silenciosamente**. A interface exibe a taxa de cobertura real e os períodos sem dados.
+     - **Alertas com Cooldown Configurável:** Limiares de alerta (ex: variação de preço $> 5\%$) avaliados com deduplicação por chave única de cooldown (`uk_monitoring_alert_dedup`) para evitar disparos repetitivos em sequência.
+     - **Retenção e Particionamento:** Snapshots mantidos por 12 meses conforme proposta DEC-P05, indexados por `(tenant_id, item_id, collected_at)` para viabilizar consultas temporais rápidas e expurgo automatizado de dados obsoletos.
+- **Decisão:** Opção 2.
+- **Justificativa:** Atendimento integral às regras anti-alucinação do PRD, rigor financeiro determinístico, prevenção contra poluição de dados e conformidade técnica.
+- **Consequências:** Gráficos de monitoramento terão descontinuidades visíveis quando houver falhas de coleta ou interrupções de serviço, o que confere credibilidade absoluta aos dados apresentados ao seller.
+- **Requisitos relacionados:** FR-CMP-002 a FR-CMP-008, FR-MON-001 a FR-MON-005, NFR-SEC-002, NFR-PER-001, OQ-002, OQ-007, PRD Seção 5.5 e 5.10.
+- **Responsável:** Engenheiro Backend / Arquiteto de Software.
+- **Revisão:** Fase 2 (Prompt 14 - Smart Alerts e Action Center).
+
+---
+
 # Parte 2: Decisões Propostas e Pendências Classificadas (PROPOSED)
 
 ## DEC-P05 — Política de Retenção de Dados e Expurgos Automáticos LGPD (Vinculada a OQ-007)

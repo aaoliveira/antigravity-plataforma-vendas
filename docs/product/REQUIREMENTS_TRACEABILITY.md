@@ -58,14 +58,14 @@ Nenhum requisito pode ser considerado concluído sem que os testes associados es
 
 | ID | Prioridade | Descrição do Requisito | Fase | Prompt Alvo | Tipo de Teste Planejado | Status Atual |
 |---|---|---|---|---|---|---|
-| **FR-CMP-001** | P0 | Cadastrar concorrente por perfil/loja ou anúncio. | Fase 1 (MVP) | Prompt 07 | Integração (JPA), Unitário | `PLANNED` |
-| **FR-CMP-002** | P1 | Agrupar concorrentes em listas personalizadas. | Fase 2 | Prompt 13 | Unitário, Integração | `PLANNED` |
-| **FR-CMP-003** | P1 | Monitorar preço e atributos observáveis. | Fase 2 | Prompt 13 | Integração (Worker de Snapshot), Unitário | `PLANNED` |
-| **FR-CMP-004** | P1 | Detectar novos anúncios, remoções ou pausas observadas. | Fase 2 | Prompt 13 | Unitário (Diff Engine), Integração | `PLANNED` |
-| **FR-CMP-005** | P1 | Comparar anúncio próprio com concorrentes. | Fase 2 | Prompt 13 | Unitário (Comparison DTO), E2E | `PLANNED` |
-| **FR-CMP-006** | P1 | Exibir histórico temporal de preços e concorrência. | Fase 2 | Prompt 13 | Integração (Timeseries Query) | `PLANNED` |
-| **FR-CMP-007** | P1 | Gerar alerta de mudança relevante em concorrente. | Fase 2 | Prompt 14 | Unitário (Rule Evaluator), Integração | `PLANNED` |
-| **FR-CMP-008** | P1 | Identificar reputação e indicadores públicos de seller. | Fase 2 | Prompt 13 | Unitário (Metadata Validator) | `PLANNED` |
+| **FR-CMP-001** | P0 | Cadastrar concorrente por perfil/loja ou anúncio. | Fase 1/2 | Prompt 07, Prompt 13 | Integração (JPA/Watchlist), Unitário | `VERIFIED (Prompt 13)` |
+| **FR-CMP-002** | P1 | Agrupar concorrentes em listas personalizadas. | Fase 2 | Prompt 13 | Unitário (WatchlistService), Integração | `VERIFIED (Prompt 13)` |
+| **FR-CMP-003** | P1 | Monitorar preço e atributos observáveis. | Fase 2 | Prompt 13 | Integração (CollectorService), Unitário | `VERIFIED (Prompt 13)` |
+| **FR-CMP-004** | P1 | Detectar novos anúncios, remoções ou pausas observadas. | Fase 2 | Prompt 13 | Unitário (Diff Engine), Integração | `VERIFIED (Prompt 13)` |
+| **FR-CMP-005** | P1 | Comparar anúncio próprio com concorrentes. | Fase 2 | Prompt 13 | Unitário (ComparisonService), E2E | `VERIFIED (Prompt 13)` |
+| **FR-CMP-006** | P1 | Exibir histórico temporal de preços e concorrência. | Fase 2 | Prompt 13 | Integração (TimelineService), Unitário | `VERIFIED (Prompt 13)` |
+| **FR-CMP-007** | P1 | Gerar alerta de mudança relevante em concorrente. | Fase 2 | Prompt 13, Prompt 14 | Unitário (AlertService), Deduplicação | `VERIFIED (Prompt 13)` |
+| **FR-CMP-008** | P1 | Identificar reputação e indicadores públicos de seller. | Fase 2 | Prompt 13 | Unitário (Metadata Provenance) | `VERIFIED (Prompt 13)` |
 
 ---
 
@@ -138,11 +138,11 @@ Nenhum requisito pode ser considerado concluído sem que os testes associados es
 
 | ID | Prioridade | Descrição do Requisito | Fase | Prompt Alvo | Tipo de Teste Planejado | Status Atual |
 |---|---|---|---|---|---|---|
-| **FR-MON-001** | P1 | Criar listas de observação (watchlists) de produtos. | Fase 2 | Prompt 13 | Integração (JPA/Tenant) | `PLANNED` |
-| **FR-MON-002** | P1 | Registrar histórico temporal de preços e atributos. | Fase 2 | Prompt 13 | Integração (Append-Only Snapshot Storage) | `PLANNED` |
-| **FR-MON-003** | P1 | Acompanhar vendas estimadas apenas com metodologia explícita. | Fase 2 | Prompt 13 | Unitário (Estimative Labeling) | `PLANNED` |
-| **FR-MON-004** | P1 | Configurar alertas por variação percentual ou nominal. | Fase 2 | Prompt 14 | Unitário (Rule Trigger Simulator) | `PLANNED` |
-| **FR-MON-005** | P1 | Exibir gráficos temporais com marcação de lacunas. | Fase 2 | Prompt 13 | Frontend Component Test (Recharts) | `PLANNED` |
+| **FR-MON-001** | P1 | Criar listas de observação (watchlists) de produtos. | Fase 2 | Prompt 13 | Integração (JPA/Tenant), Unitário | `VERIFIED (Prompt 13)` |
+| **FR-MON-002** | P1 | Registrar histórico temporal de preços e atributos. | Fase 2 | Prompt 13 | Integração (Append-Only Snapshot Storage) | `VERIFIED (Prompt 13)` |
+| **FR-MON-003** | P1 | Acompanhar vendas estimadas apenas com metodologia explícita. | Fase 2 | Prompt 13 | Unitário (Estimative Labeling & Provenance) | `VERIFIED (Prompt 13)` |
+| **FR-MON-004** | P1 | Configurar alertas por variação percentual ou nominal. | Fase 2 | Prompt 13, Prompt 14 | Unitário (Rule Trigger Simulator) | `VERIFIED (Prompt 13)` |
+| **FR-MON-005** | P1 | Exibir gráficos temporais com marcação de lacunas. | Fase 2 | Prompt 13 | Frontend Component Test (Vitest / Gaps) | `VERIFIED (Prompt 13)` |
 
 ---
 

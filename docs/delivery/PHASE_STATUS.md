@@ -2,12 +2,28 @@
 
 ## 1. Visão Geral do Gate Atual
 
-- **Fase Atual:** Fase 1 — MVP / Gate de Lançamento (Concluída)
-- **Prompt Ativo:** `Prompt 12 — Homologação, segurança, E2E e release do MVP`
+- **Fase Atual:** Fase 2 — Expansão de Inteligência & Monitoramento
+- **Prompt Concluído:** `Prompt 13 — Monitoramento contínuo de produtos e concorrentes`
 - **Status do Gate:** `APPROVED`
-- **Data de Aprovação:** 2026-11-17T15:52:00-03:00
-- **Responsável:** Antigravity AI Assistant & Engenharia de Release
-- **Próximo Prompt Liberado:** `Prompt 13 — Monitoramento contínuo de produtos e concorrentes (Fase 2)`
+- **Data de Conclusão:** 2026-11-17T16:15:00-03:00
+- **Responsável:** Antigravity AI Assistant & Engenharia de Dados
+- **Próximo Prompt Liberado:** `Prompt 14 — Smart Alerts e Action Center`
+
+---
+
+## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 13 — Monitoramento Contínuo)
+
+| Critério de Aceite | Requisito Verificado | Evidência Comprovada | Avaliação |
+|---|---|---|---|
+| **AC-13-1: Watchlists Multi-Tenant** | Watchlists de produtos, anúncios e vendedores por tenant com adição/remoção lógica e preservação estrita de histórico temporal. | Entidades `Watchlist` e `WatchlistItem` isoladas por `tenantId`. Remoção lógica via `status = UNTRACKED` com integridade referencial `ON DELETE RESTRICT` garantindo preservação integral do histórico de snapshots. 4 testes em `MonitoringWatchlistServiceTest`. | `APROVADO` |
+| **AC-13-2: Snapshots & Proveniência** | Snapshots periódicos coletados via conectores/fontes autorizadas com timestamp, status e proveniência `OBSERVED` explícita. | `MonitoringSnapshot` com `BigDecimal NUMERIC(15, 2)`, proveniência fixa `OBSERVED` e suporte a `CollectionStatus` (`SUCCESS`, `COLLECTION_FAILED`, `GAP`). Falhas de coleta são registradas com status e mensagem sem quebrar o pipeline. | `APROVADO` |
+| **AC-13-3: Diff Determinístico & Deduplicação** | Detecção determinística de mudanças (preço em R$ e %, status de anúncio) gerando eventos imutáveis com hash de deduplicação. | `MonitoringDiffEngine` calculando variações com precisão e arredondamento `HALF_EVEN`, detectando transições (`OUT_OF_STOCK`, `REACTIVATED`) e gerando hash SHA-256 com constraint única no PostgreSQL (`uk_monitoring_change_event_hash`). 3 testes em `MonitoringDiffEngineTest`. | `APROVADO` |
+| **AC-13-4: Séries Temporais & Zero Interpolação** | Série temporal histórica com representação explícita de lacunas de coleta (`GAP` / `COLLECTION_FAILED`) sem interpolação silenciosa. | `MonitoringTimelineService` detecta intervalos $> 1.5 \times \text{frequência}$ e injeta pontos explícitos com `CollectionStatus.GAP` e `price = null` (estritamente sem alucinação de dados). Cálculo de taxa de cobertura de coleta implementado. 2 testes em `MonitoringTimelineServiceTest`. | `APROVADO` |
+| **AC-13-5: Regras de Alerta & Cooldown** | Configuração de limiares de alerta e geração de notificações deduplicadas por janela temporal (cooldown). | `MonitoringAlertService` com regras de variação percentual de preço e ruptura de estoque. Deduplicação determinística no PostgreSQL via `uk_monitoring_alerts_dedup` e chave por janela de cooldown. 2 testes em `MonitoringAlertServiceTest`. | `APROVADO` |
+| **AC-13-6: Comparador Próprio vs Concorrente** | Comparador lado a lado de anúncio próprio vs concorrente monitorado com identificação de campos ausentes. | `CompetitorComparisonService` confrontando listagem própria contra concorrente com cálculo de delta financeiro em R$ e %, e disclaimers obrigatórios de `UNAVAILABLE` para estoque real e volume de vendas de terceiros. 1 teste em `CompetitorComparisonServiceTest`. | `APROVADO` |
+| **AC-13-7: ADR DEC-019 & Retenção de 12 Meses** | ADR DEC-019 formalizando retenção de snapshots por 12 meses, particionamento e índices compostos no PostgreSQL. | Registrado formalmente **ADR DEC-019** em `docs/architecture/DECISION_LOG.md`. Migration Flyway V9 (`V9__competitor_and_product_monitoring.sql`) cria 6 tabelas, índices de série temporal e constraints de deduplicação. | `APROVADO` |
+| **AC-13-8: Suíte de Testes Automatizados** | Suítes unitárias, integração com PostgreSQL real (Testcontainers) e Vitest frontend. | 14 novos testes de backend (100% aprovados, totalizando 146 no backend), 5 novos testes Vitest em `CompetitorMonitoringView.test.tsx` (totalizando 38 no frontend), 13 na extensão e 5 jornadas E2E Playwright. | `APROVADO` |
+| **AC-13-9: Rastreabilidade de Requisitos** | Atualização de rastreabilidade (`FR-CMP-002` a `008`, `FR-MON-001` a `005`) e conformidade de preflight. | Matriz atualizada em `REQUIREMENTS_TRACEABILITY.md` com status `VERIFIED (Prompt 13)`. Script `scripts/verify_phase13.py` validado com 100% PASS em todos os 9 critérios. | `APROVADO` |
 
 ---
 
@@ -44,7 +60,7 @@
 | **10** | AI Listing Studio: análise e geração de conteúdo | Fase 1 | `APPROVED` | 2026-11-17 | Endereçamento OQ-010, OQ-013 e OQ-014 no ADR DEC-017, AiProvider agnóstico, score auditável (4 pilares), guardrail anti-alucinação, defesa contra prompt injection, rascunhos imutáveis e 106 testes backend + 33 frontend. |
 | **11** | Extensão Chrome Manifest V3 complementar | Fase 1 | `APPROVED` | 2026-11-17 | Endereçamento OQ-003 no ADR DEC-018, Manifest V3 em TypeScript/React/Vite, permissões mínimas (activeTab e storage), zero scraping hostil, parser canônico ML/Shopee e 13 testes automatizados. |
 | **12** | Homologação, segurança E2E e release do MVP | Fase 1 | `APPROVED` | 2026-11-17 | Fechamento da Fase 1 (MVP). Playwright E2E (5/5), testes adversariais cross-tenant, OWASP Top 10, anti-SSRF, rate limiting, DR drill (RTO 0.54s, RPO 0), p95 184ms, SBOM e GO para release (183 testes). |
-| **13** | Monitoramento contínuo de produtos e concorrentes | Fase 2 | `NOT_STARTED` | — | Expansão de inteligência. |
+| **13** | Monitoramento contínuo de produtos e concorrentes | Fase 2 | `APPROVED` | 2026-11-17 | Watchlists de concorrentes, histórico temporal sem interpolação de lacunas, detecção determinística de mudanças com hash SHA-256, alertas com cooldown deduplicado e ADR DEC-019. |
 | **14** | Smart Alerts e Action Center | Fase 2 | `NOT_STARTED` | — | Automação e tarefas. |
 | **15** | Product Discovery avançado: PDFs e busca por imagem | Fase 2 | `NOT_STARTED` | — | Leitura de catálogos de fornecedores. |
 | **16** | Ads Intelligence e rentabilidade de campanhas | Fase 2 | `NOT_STARTED` | — | Gestão de anúncios patrocinados. |
@@ -54,7 +70,7 @@
 
 ---
 
-## 4. Conclusão da Fase 1 (MVP) e Liberação para a Fase 2
-O **Prompt 12** encerrou com sucesso a **Fase 1 — MVP / P0**.
-Todos os 183 testes automatizados (backend, frontend, extensão e E2E) estão passando sem falhas.
-A plataforma está oficialmente homologada e liberada para o **Prompt 13 — Monitoramento contínuo de produtos e concorrentes (Fase 2)**.
+## 4. Conclusão do Prompt 13 e Liberação para o Prompt 14
+O **Prompt 13 — Monitoramento contínuo de produtos e concorrentes** foi concluído e aprovado com 100% de conformidade.
+Todos os critérios de aceite (AC-13-1 a AC-13-9) foram verificados objetivamente com testes de backend (146 testes), frontend (38 testes), extensão (13 testes) e E2E Playwright (5 testes), totalizando 202 testes automatizados aprovados no monorepo.
+A plataforma está oficialmente liberada para o **Prompt 14 — Smart Alerts e Action Center (Fase 2)**.
