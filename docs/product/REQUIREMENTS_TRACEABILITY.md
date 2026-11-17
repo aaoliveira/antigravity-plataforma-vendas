@@ -73,14 +73,14 @@ Nenhum requisito pode ser considerado concluído sem que os testes associados es
 
 | ID | Prioridade | Descrição do Requisito | Fase | Prompt Alvo | Tipo de Teste Planejado | Status Atual |
 |---|---|---|---|---|---|---|
-| **FR-DIS-001** | P1 | Criar ranking de oportunidades com critérios configuráveis. | Fase 2 | Prompt 15 | Unitário (Scoring Engine) | `PLANNED` |
-| **FR-DIS-002** | P1 | Buscar produto semelhante por imagem. | Fase 2 | Prompt 15 | Integração (Visual Search Provider) | `PLANNED` |
-| **FR-DIS-003** | P1 | Enviar PDF de catálogo de fornecedor. | Fase 2 | Prompt 15 | Integração (S3 Upload / Antivirus / Validation) | `PLANNED` |
-| **FR-DIS-004** | P1 | Extrair itens, EAN, descrição, preço, peso e dimensões. | Fase 2 | Prompt 15 | Unitário (Extraction Parser), Prompt Injection Guard | `PLANNED` |
-| **FR-DIS-005** | P1 | Comparar itens do catálogo com dados do mercado. | Fase 2 | Prompt 15 | Unitário (Similarity Matcher) | `PLANNED` |
-| **FR-DIS-006** | P1 | Comparar fornecedores, custos e MOQ. | Fase 2 | Prompt 15 | Unitário, Integração | `PLANNED` |
-| **FR-DIS-007** | P1 | Simular margem dos itens identificados no catálogo. | Fase 2 | Prompt 15 | Unitário (Financial Engine Integration) | `PLANNED` |
-| **FR-DIS-008** | P1 | Exportar ranking e catálogo processado. | Fase 2 | Prompt 15 | Unitário (Exporter) | `PLANNED` |
+| **FR-DIS-001** | P1 | Criar ranking de oportunidades com critérios configuráveis. | Fase 2 | Prompt 15 | Unitário (Scoring Engine) | `VERIFIED (Prompt 15)` |
+| **FR-DIS-002** | P1 | Buscar produto semelhante por imagem. | Fase 2 | Prompt 15 | Integração (Visual Search Provider) | `VERIFIED (Prompt 15)` |
+| **FR-DIS-003** | P1 | Enviar PDF de catálogo de fornecedor. | Fase 2 | Prompt 15 | Integração (Secure Upload / Magic Bytes / Size limit) | `VERIFIED (Prompt 15)` |
+| **FR-DIS-004** | P1 | Extrair itens, EAN, descrição, preço, peso e dimensões. | Fase 2 | Prompt 15 | Unitário (Extraction Parser), Anti-Prompt Injection | `VERIFIED (Prompt 15)` |
+| **FR-DIS-005** | P1 | Comparar itens do catálogo com dados do mercado. | Fase 2 | Prompt 15 | Unitário (Similarity Matcher), EAN e Semântico | `VERIFIED (Prompt 15)` |
+| **FR-DIS-006** | P1 | Comparar fornecedores, custos e MOQ. | Fase 2 | Prompt 15 | Unitário, Integração, Revisão Humana Mandatória | `VERIFIED (Prompt 15)` |
+| **FR-DIS-007** | P1 | Simular margem dos itens identificados no catálogo. | Fase 2 | Prompt 15 | Unitário (Estimativa Determinística de Margem) | `VERIFIED (Prompt 15)` |
+| **FR-DIS-008** | P1 | Exportar ranking e catálogo processado. | Fase 2 | Prompt 15 | Unitário, Controller e Interface Web | `VERIFIED (Prompt 15)` |
 
 ---
 

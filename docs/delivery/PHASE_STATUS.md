@@ -3,11 +3,30 @@
 ## 1. Visão Geral do Gate Atual
 
 - **Fase Atual:** Fase 2 — Expansão de Inteligência & Monitoramento
-- **Prompt Concluído:** `Prompt 14 — Smart Alerts e Action Center`
+- **Prompt Concluído:** `Prompt 15 — Product Discovery avançado: catálogos PDF e busca por imagem`
 - **Status do Gate:** `APPROVED`
-- **Data de Conclusão:** 2026-11-17T16:35:00-03:00
+- **Data de Conclusão:** 2026-11-17T17:05:00-03:00
 - **Responsável:** Antigravity AI Assistant & Engenharia de Dados
-- **Próximo Prompt Liberado:** `Prompt 15 — Product Discovery avançado: PDFs e busca por imagem`
+- **Próximo Prompt Liberado:** `Prompt 16 — Ads Intelligence e rentabilidade de campanhas`
+
+---
+
+## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 15 — Product Discovery Avançado & Fornecedores)
+
+| Critério de Aceite | Requisito Verificado | Evidência Comprovada | Avaliação |
+|---|---|---|---|
+| **AC-15-1: Upload Seguro & Validação de Arquivos** | Validação de magic bytes (%PDF-, PNG, JPEG), limite de 25MB e proteção estrita contra path traversal. | `SecureFileUploadValidator` inspeciona os primeiros bytes reais do buffer, valida MIME e sanitiza filenames com UUID. Testado em `SecureFileUploadValidatorTest`. | `APROVADO` |
+| **AC-15-2: Sanitização Anti-Prompt Injection (OWASP LLM01)** | Neutralização de injeções de prompt e instruções maliciosas contidas em documentos não confiáveis de fornecedores. | `UntrustedTextSanitizer` detecta padrões de injeção de sistema/jailbreak em regex insensível e substitui por `[REDACTED_SUSPICIOUS_PROMPT_INJECTION]`. Testado em `UntrustedTextSanitizerTest`. | `APROVADO` |
+| **AC-15-3: Validação Matemática de Checksum EAN** | Validação de dígitos verificadores de EAN-8, EAN-13 e GTIN-14 via algoritmo de ponderação alternada módulo 10. | `EanChecksumValidator` validando matematicamente códigos de barras legítimos e rejeitando dígitos espúrios. Testado em `EanChecksumValidatorTest`. | `APROVADO` |
+| **AC-15-4: Extração Estruturada com Apache PDFBox 3.0** | Leitura vetorial de PDFs com extração de itens, preço, SKU, EAN, peso e dimensões com score de confiança. | `PdfCatalogExtractionService` com Apache PDFBox 3.0, heurísticas de regex, sinalização de necessidade de OCR para PDFs digitalizados e pontuação de confiança por campo. Testado em `PdfCatalogExtractionServiceTest`. | `APROVADO` |
+| **AC-15-5: Revisão Humana Mandatória** | Estado `PENDING_REVIEW` inicial; nenhum item vira dado mestre sem conferência explícita do seller. | `CatalogReviewService` com transição controlada `reviewAndConfirmItem` (`REVIEWED`) e `rejectItem` (`REJECTED`). Testado em `CatalogReviewServiceTest`. | `APROVADO` |
+| **AC-15-6: Correspondência de Mercado por Similaridade** | Comparação com produtos de mercado gerando candidatos (`CANDIDATE`) com score de 0.0 a 1.0 (EAN e texto). | `ProductSimilarityMatcherService` calculando similaridade exata EAN (0.98) e semântica de título sem associar automaticamente sem confirmação. Testado em `ProductSimilarityMatcherServiceTest`. | `APROVADO` |
+| **AC-15-7: Margem Bruta Estimada Determinística** | Cálculo determinístico de margem potencial `(Preço - Custo) / Preço` via `BigDecimal` com escala e arredondamento explícitos. | Implementado com `BigDecimal` e `RoundingMode.HALF_EVEN`, exibindo valores transparentes na memória de cálculo e interface. | `APROVADO` |
+| **AC-15-8: Confirmação Manual de Matches (Zero Ação Automática)** | Seller decide explicitamente quais candidatos aprovar (`CONFIRMED`) ou rejeitar (`REJECTED`). Proibição de compras ou publicações automáticas. | `confirmMatch` e `rejectMatch` implementados; zero integrações de compra externa ou publicação automática desautorizada. | `APROVADO` |
+| **AC-15-9: Busca Visual & Migração Flyway V11** | Busca por imagem de produto e persistência relacional com isolamento multi-tenant. | `VisualSearchService` validando PNG/JPEG; Flyway V11 criando 4 tabelas, constraints e índices de tenant no PostgreSQL 17 testado via Testcontainers em `PostgresDiscoveryIntegrationTest`. | `APROVADO` |
+| **AC-15-10: Frontend Integrado & Suítes de Teste** | Interface visual rica com abas de catálogos, itens, similaridade e busca visual, testes Vitest e verificação automatizada. | `ProductDiscoveryView.tsx` com 5 testes Vitest passando (49 totais no frontend), build Next.js 15 sem erros, 182 testes backend passando e `scripts/verify_phase15.py` com 100% PASS. | `APROVADO` |
+
+---
 
 ---
 

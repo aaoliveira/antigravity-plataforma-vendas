@@ -12,6 +12,7 @@ import { FinancialDashboardView } from './FinancialDashboardView';
 import { ListingStudioView } from './ListingStudioView';
 import { CompetitorMonitoringView } from './CompetitorMonitoringView';
 import { ActionCenterView } from './ActionCenterView';
+import { ProductDiscoveryView } from './ProductDiscoveryView';
 
 const initialDemoCompanies: CompanyItem[] = [
   {
@@ -40,7 +41,7 @@ const initialDemoStores: StoreItem[] = [
 ];
 
 export const DashboardView: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'COMPANIES' | 'STORES' | 'CAPABILITIES' | 'SYNC' | 'MARKET' | 'MONITORING' | 'ACTION_CENTER' | 'FINANCIAL' | 'AI_STUDIO' | 'HEALTH'>('COMPANIES');
+  const [activeTab, setActiveTab] = useState<'COMPANIES' | 'STORES' | 'CAPABILITIES' | 'SYNC' | 'MARKET' | 'MONITORING' | 'ACTION_CENTER' | 'DISCOVERY' | 'FINANCIAL' | 'AI_STUDIO' | 'HEALTH'>('COMPANIES');
   const [financialSubTab, setFinancialSubTab] = useState<'DASHBOARD' | 'ENGINE'>('DASHBOARD');
   const [companies, setCompanies] = useState<CompanyItem[]>(initialDemoCompanies);
   const [stores, setStores] = useState<StoreItem[]>(initialDemoStores);
@@ -140,6 +141,17 @@ export const DashboardView: React.FC = () => {
           <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Fase 2</span>
         </button>
         <button
+          onClick={() => setActiveTab('DISCOVERY')}
+          className={`pb-3 px-1 border-b-2 transition-colors flex items-center gap-1.5 ${
+            activeTab === 'DISCOVERY'
+              ? 'border-amber-500 text-amber-400 font-semibold'
+              : 'border-transparent text-slate-400 hover:text-slate-200'
+          }`}
+        >
+          <span>Product Discovery</span>
+          <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">Fase 2</span>
+        </button>
+        <button
           onClick={() => setActiveTab('FINANCIAL')}
           className={`pb-3 px-1 border-b-2 transition-colors ${
             activeTab === 'FINANCIAL'
@@ -196,6 +208,8 @@ export const DashboardView: React.FC = () => {
       {activeTab === 'MONITORING' && <CompetitorMonitoringView />}
 
       {activeTab === 'ACTION_CENTER' && <ActionCenterView />}
+
+      {activeTab === 'DISCOVERY' && <ProductDiscoveryView />}
 
       {activeTab === 'FINANCIAL' && (
         <div className="space-y-6">

@@ -374,6 +374,30 @@ Conforme estipulado no PRD ([docs/product/PRD.md](file:///home/alexandre/Projeto
 
 ---
 
+## DEC-021 / ADR-021 — Product Discovery Avançado: Processamento Seguro de Catálogos PDF, Sanitização Anti-Prompt Injection, Validação Humana Mandatória de Extrações e Similaridade Vetorial
+- **Data:** 2026-11-17
+- **Status:** `ACCEPTED`
+- **Contexto:** Necessidade de permitir ao seller processar catálogos de fornecedores em PDF/imagem para localizar oportunidades de produtos, cadastrar itens com dados extraídos e buscar similares no mercado com simulação preliminar de viabilidade financeira (FR-DIS-001 a FR-DIS-008). Arquivos externos de fornecedores contêm riscos críticos: arquivos maliciosos, estouro de memória, texto OCR impreciso e vetores de **Prompt Injection** indireto disfarçados em especificações técnicas.
+- **Opções consideradas:**
+  1. Envio de PDFs brutos diretamente a LLMs sem sanitização, aceitação cega de dados extraídos como produtos oficiais e compras/anúncios automáticos.
+  2. Arquitetura determinística, segura e com validação humana mandatória:
+     - **Upload Seguro e Armazenamento Privado:** Inspeção rigorosa de MIME types através de magic bytes (`%PDF-`, `\x89PNG`, `\xFF\xD8\xFF`), limite rígido de 25 MB por arquivo, nomes canônicos baseados em UUID interno (anti-path traversal) e isolamento multi-tenant (`tenant_id`).
+     - **Defesa Anti-Prompt Injection em Documentos Não Confiáveis (`UNTRUSTED`):** Todo texto e metadados extraídos de catálogos passam pelo componente `UntrustedTextSanitizer`, que neutraliza instruções maliciosas (ex: "ignore previous instructions", "system prompt", tags de injeção e caracteres de controle invisíveis) antes de qualquer parsing ou processamento.
+     - **Extração com Confiança por Campo e Validação de EAN-13:** Extração estruturada de atributos essenciais (nome, código de fornecedor, EAN-13, descrição, preço de custo, peso e dimensões) atribuindo score de confiança (0.0 a 1.0) para cada campo e validação de dígito verificador módulo 10 para códigos EAN/GTIN.
+     - **Revisão Humana Mandatória (`PENDING_REVIEW`):** Nenhum item extraído é gravado como produto confirmado sem revisão e aceite explícito do usuário.
+     - **Similaridade Vetorial e Candidatos de Mercado:** Comparação com base de produtos e mercado utilizando score de similaridade (0.0 a 1.0). Nenhum candidato de produto é afirmado como correspondência definitiva sem confirmação humana (`CANDIDATE` -> `CONFIRMED` / `REJECTED`).
+     - **Simulação de Viabilidade Financeira:** Integração direta com `FinancialEngine` calculando margem potencial com rótulo explícito `ESTIMATED` para tributos ou fretes presumidos.
+     - **Invariante de Segurança e PRD (Zero Ações Externas Automáticas):** O módulo é exclusivamente de pesquisa e descoberta; é **estritamente proibido comprar produtos, contatar fornecedores ou publicar anúncios automaticamente em marketplaces**.
+     - **Exclusão Segura e Retenção LGPD:** Catálogos e itens podem ser excluídos pelo seller a qualquer momento com expurgo seguro de arquivos em disco e cascata no banco.
+- **Decisão:** Opção 2.
+- **Justificativa:** Conformidade integral com as regras anti-alucinação, proteção contra segurança ofensiva (OWASP LLM01 / Prompt Injection), integridade cadastral e conformidade com LGPD.
+- **Consequências:** Processamento de catálogos exige confirmação humana para promoção a produto mestre; extrações ambíguas são marcadas com baixa confiança e arquivos malformados são rejeitados na borda.
+- **Requisitos relacionados:** FR-DIS-001 a FR-DIS-008, NFR-SEC-002, NFR-SEC-005, NFR-AI-001, NFR-AI-002, PRD Seção 5.6.
+- **Responsável:** Engenheiro Backend / Arquiteto de Software.
+- **Revisão:** Fase 2 (Prompt 16 - Ads Intelligence).
+
+---
+
 # Parte 2: Decisões Propostas e Pendências Classificadas (PROPOSED)
 
 ## DEC-P05 — Política de Retenção de Dados e Expurgos Automáticos LGPD (Vinculada a OQ-007)

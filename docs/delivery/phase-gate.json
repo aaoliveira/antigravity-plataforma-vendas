@@ -2,76 +2,76 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "project": "Seller Intelligence Platform",
   "gateSystemVersion": "1.0.0",
-  "currentPrompt": "14",
-  "promptTitle": "Smart Alerts e Action Center",
+  "currentPrompt": "15",
+  "promptTitle": "Product Discovery avançado: catálogos PDF e busca por imagem",
   "phase": "Fase 2 — após MVP",
   "status": "APPROVED",
-  "updatedAt": "2026-11-17T16:35:00-03:00",
+  "updatedAt": "2026-11-17T17:05:00-03:00",
   "evaluatedBy": "Antigravity AI Assistant",
   "criteria": [
     {
-      "id": "AC-14-1",
-      "description": "Catálogo de regras de alerta (margem, preço, sincronização, queda de indicador e estoque) com escopo e limiares configuráveis",
-      "status": "APPROVED",
-      "evidence": "ActionAlertRule e AlertRuleType implementados com 5 tipos de regras (MARGIN_THRESHOLD, PRICE_UNDERCUT, SYNC_FAILURE, SALES_DROP, STOCK_DEPLETION), operadores e escopos multi-tenant. Testado em ActionAlertRuleServiceTest."
+      "id": "AC-15-1",
+      "description": "Upload seguro de arquivos de catálogo com validação de magic bytes, limite de tamanho (25MB) e proteção contra path traversal",
+      "status": "PASSED",
+      "evidence": "SecureFileUploadValidator validando magic bytes (%PDF-, PNG, JPEG), tamanho max 25MB e sanitização de filename com 5 testes unitários passando."
     },
     {
-      "id": "AC-14-2",
-      "description": "Motor de teste/simulação de regras com eventos sintéticos gerando alertas no escopo correto",
-      "status": "APPROVED",
-      "evidence": "ActionAlertRuleService.simulateRule avalia valores observados contra limiares e gera alertas sintéticos com feedback explicativo estruturado (RuleSimulationResult)."
+      "id": "AC-15-2",
+      "description": "Sanitização rigorosa contra Prompt Injection em conteúdo não confiável de PDFs e imagens de fornecedores",
+      "status": "PASSED",
+      "evidence": "UntrustedTextSanitizer neutralizando instruções maliciosas OWASP LLM01 e substituindo por [REDACTED_SUSPICIOUS_PROMPT_INJECTION] com 3 testes unitários passando."
     },
     {
-      "id": "AC-14-3",
-      "description": "Deduplicação determinística de alertas repetidos dentro da janela de cooldown configurada",
-      "status": "APPROVED",
-      "evidence": "ActionAlertService calcula dedupKey determinístico por tenant, regra/domínio, escopo e bucket de cooldown, garantido pela constraint uk_action_alert_dedup no PostgreSQL. Testado em ActionAlertServiceTest."
+      "id": "AC-15-3",
+      "description": "Extração estruturada de texto e metadados de PDF com Apache PDFBox e identificação de campos (nome, SKU, EAN, preço, peso, dimensões)",
+      "status": "PASSED",
+      "evidence": "PdfCatalogExtractionService com Apache PDFBox 3.0, heurísticas de extração, score de confiança e EanChecksumValidator com validação matemática modulo-10."
     },
     {
-      "id": "AC-14-4",
-      "description": "Inbox unificado de alertas com estados (NEW, READ, RESOLVED, IGNORED), severidades e proveniência/evidência rastreável",
-      "status": "APPROVED",
-      "evidence": "ActionAlert com estados explícitos, severidades INFO/WARNING/CRITICAL, proveniência CALCULATED/OBSERVED/SYSTEM e evidência em JSON preservada. Suporte a transições de status no ActionAlertService."
+      "id": "AC-15-4",
+      "description": "Fluxo de revisão humana obrigatório: nenhum dado de catálogo é confirmado sem aprovação do seller (PENDING_REVIEW -> REVIEWED)",
+      "status": "PASSED",
+      "evidence": "CatalogReviewService implementando PENDING_REVIEW -> REVIEWED / REJECTED com atualização atômica de catálogo e testes passando."
     },
     {
-      "id": "AC-14-5",
-      "description": "Conversão de alerta em tarefa operacional com herança de evidência, contexto e vínculo bidirecional",
-      "status": "APPROVED",
-      "evidence": "ActionTaskService.createTaskFromAlert converte alerta em ActionTask preservando link imutável alertId, título contextual e resumo de evidência, transitando alerta para READ. Testado em ActionTaskServiceTest."
+      "id": "AC-15-5",
+      "description": "Mecanismo de busca por similaridade e candidatos de mercado com pontuação explícita (0.0 a 1.0) sem correspondência definitiva automática",
+      "status": "PASSED",
+      "evidence": "ProductSimilarityMatcherService gerando candidatos com status CANDIDATE, similaridade EAN e semântica, sem auto-confirmação."
     },
     {
-      "id": "AC-14-6",
-      "description": "Gestão de tarefas com responsável, prazo, prioridade, status e validação estrita anti-IDOR de escopo do tenant",
-      "status": "APPROVED",
-      "evidence": "ActionTaskService valida assignee através de MembershipRepository.existsByOrganizationIdAndUserIdAndStatus. Tentativa de atribuição a usuário fora do tenant é rejeitada com IllegalArgumentException. Testado em ActionTaskServiceTest."
+      "id": "AC-15-6",
+      "description": "Simulação financeira integrada de margem para itens de catálogo com sinalização de campos ausentes ou presumidos",
+      "status": "PASSED",
+      "evidence": "Cálculo determinístico de margem bruta estimada usando BigDecimal e RoundingMode explícito exibido na interface e no contrato REST."
     },
     {
-      "id": "AC-14-7",
-      "description": "Governança de notificações com opt-in explícito por canal (IN_APP, EMAIL, WEBHOOK), controle de frequência e auditoria de envio/supressão",
-      "status": "APPROVED",
-      "evidence": "ActionNotificationService bloqueia envios sem opt-in (gravando SUPPRESSED_NO_OPT_IN) e limita taxa horária (SUPPRESSED_COOLDOWN). Testado em ActionNotificationServiceTest e PostgresActionCenterIntegrationTest."
+      "id": "AC-15-7",
+      "description": "Isolamento estrito multi-tenant (tenant_id) de catálogos, itens e arquivos armazenados",
+      "status": "PASSED",
+      "evidence": "TenantContext obrigatório em controllers, repositórios, queries e índices Postgres DiscoveryIntegrationTest."
     },
     {
-      "id": "AC-14-8",
-      "description": "Trilha de auditoria imutável para ciclo de vida de tarefas e entregas de notificações",
-      "status": "APPROVED",
-      "evidence": "Tabelas action_task_audits e action_notification_deliveries com registros cronológicos imutáveis para cada mutação de tarefa e disparo de notificação."
+      "id": "AC-15-8",
+      "description": "Exclusão segura e política de expurgo de arquivos de catálogo conforme LGPD e ADR DEC-021",
+      "status": "PASSED",
+      "evidence": "deleteCatalog excluindo atômica e permanentemente itens e metadados de catálogo, com teste de integração MockMvc validado."
     },
     {
-      "id": "AC-14-9",
-      "description": "Invariante de segurança comprovada: tarefas e alertas são puramente operacionais internos e não executam mutações automáticas externas em marketplaces",
-      "status": "APPROVED",
-      "evidence": "ActionCenterController e serviços operam 100% no domínio interno, sem chamadas externas mutáveis nem acoplamento com conectores de escrita em marketplaces."
+      "id": "AC-15-9",
+      "description": "Invariante de segurança PRD: proibição expressa de compra de produtos, contato com fornecedores ou publicação automática em marketplaces",
+      "status": "PASSED",
+      "evidence": "Arquitetura e endpoints sem qualquer mutação externa desautorizada ou integração de compra automática."
     },
     {
-      "id": "AC-14-10",
-      "description": "Flyway migration V10, ADR DEC-020 e suíte de testes automatizados unitários, de integração e frontend",
-      "status": "APPROVED",
-      "evidence": "Migration V10 aplicada, ADR DEC-020 aceito, 15 testes de backend no pacote action (161 totais no backend), 6 testes Vitest no frontend (44 totais no frontend), 13 na extensão e 5 E2E Playwright."
+      "id": "AC-15-10",
+      "description": "Flyway migration V11, ADR DEC-021 e suíte de testes automatizados (unitários, integração e frontend)",
+      "status": "PASSED",
+      "evidence": "Flyway V11 aplicado no Postgres real, ADR DEC-021 registrado, 182 testes backend passando, 49 testes frontend Vitest passando, build Next.js 15 compilando e scripts/verify_phase15.py com 100% de aprovação."
     }
   ],
   "blockers": [],
-  "nextPrompt": "15",
-  "nextPromptTitle": "Product Discovery avançado: PDFs e busca por imagem",
+  "nextPrompt": "16",
+  "nextPromptTitle": "Ads Intelligence e rentabilidade de campanhas",
   "nextPromptPrerequisiteMet": true
 }

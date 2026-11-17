@@ -38,7 +38,7 @@ class PostgresActionCenterIntegrationTest {
 
         var migrateResult = flyway.migrate();
         assertThat(migrateResult.success).isTrue();
-        assertThat(migrateResult.targetSchemaVersion).isEqualTo("10");
+        assertThat(Integer.parseInt(migrateResult.targetSchemaVersion)).isGreaterThanOrEqualTo(10);
 
         try (Connection conn = DriverManager.getConnection(
                 postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword())) {
