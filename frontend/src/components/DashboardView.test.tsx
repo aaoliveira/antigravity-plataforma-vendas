@@ -79,4 +79,36 @@ describe('DashboardView (Mobile-First & Hierarchical Navigation)', () => {
     // Drawer should be closed
     expect(screen.queryByText('Menu Principal')).toBeNull();
   });
+
+  it('navigates to system guide module and switches between guide tabs', () => {
+    render(<DashboardView />);
+
+    // Switch to Guide
+    const guideBtns = screen.getAllByRole('button', { name: /Guia do Sistema/i });
+    fireEvent.click(guideBtns[0]);
+
+    // Check Guide is active
+    expect(screen.getByRole('heading', { name: 'Guia do Sistema & Operação' })).toBeDefined();
+    expect(screen.getByRole('heading', { name: 'Catálogo Funcional da Seller Intelligence Platform' })).toBeDefined();
+
+    // Switch to Setup tab
+    const setupTabBtn = screen.getByRole('button', { name: /Passo a Passo de Configuração/i });
+    fireEvent.click(setupTabBtn);
+    expect(screen.getByRole('heading', { name: 'Guia Completo de Instalação e Inicialização Local' })).toBeDefined();
+
+    // Switch to Extension tab
+    const extTabBtn = screen.getByRole('button', { name: /Extensão Chrome/i });
+    fireEvent.click(extTabBtn);
+    expect(screen.getByRole('heading', { name: 'Extensão Contextual Chrome (Manifest V3)' })).toBeDefined();
+
+    // Switch to Testing tab
+    const testTabBtn = screen.getByRole('button', { name: /Como Testar Localmente/i });
+    fireEvent.click(testTabBtn);
+    expect(screen.getByRole('heading', { name: 'Guia de Testes Automatizados e Homologação Local' })).toBeDefined();
+
+    // Switch to Deploy tab
+    const deployTabBtn = screen.getByRole('button', { name: /Publicação em Produção/i });
+    fireEvent.click(deployTabBtn);
+    expect(screen.getByRole('heading', { name: 'Guia de Publicação e Operação em Produção' })).toBeDefined();
+  });
 });

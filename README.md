@@ -131,7 +131,17 @@ A Seller Intelligence Platform implementa uma camada arquitetural avançada de s
 
 ---
 
-## 5. Governança e Regras Invariantes
+## 5. Manual do Sistema, Guia Operacional e Extensão
+
+Para documentação exaustiva de cada módulo funcional, procedimentos de inicialização, uso da extensão e publicação:
+- **Manual do Sistema & Guia de Operações:** [docs/guide/SYSTEM_MANUAL_AND_OPERATIONS_GUIDE.md](docs/guide/SYSTEM_MANUAL_AND_OPERATIONS_GUIDE.md)
+- **Módulo Interativo no Frontend:** Acesse a aba **Guia do Sistema & Operação** no menu lateral da aplicação web.
+- **Extensão de Navegador (Chrome Manifest V3):** Localizada em `extension/`, com permissões mínimas (`activeTab`, `storage`) e compatibilidade homologada para Mercado Livre e Shopee.
+- **Roteiro de Testes Automatizados:** Cobertura de 75 testes no frontend (`pnpm --dir frontend run test`), testes do backend (`mvn test`) e scripts de verificação de integridade (`python3 scripts/verify_phase21.py`).
+
+---
+
+## 6. Governança e Regras Invariantes
 - **Preflight Obrigatório:** Consulte [AGENTS.md](AGENTS.md) antes de cada etapa de desenvolvimento.
 - **Hierarquia de Evidências:** `PRD.md` > `DECISION_LOG.md` > Critérios de Aceite > Código/Testes > Docs Oficiais.
 - **Anti-Alucinação:** Dados de mercado recebem rótulos estritos (`OBSERVED`, `IMPORTED`, `ESTIMATED`, `UNAVAILABLE`). Proibido inventar dados de concorrentes ou converter indisponíveis em zero. Cálculos monetários exclusivamente com `BigDecimal`.

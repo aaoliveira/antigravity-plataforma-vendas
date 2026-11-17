@@ -16,6 +16,7 @@ import { ProductDiscoveryView } from './ProductDiscoveryView';
 import { ReconciliationAndDreView } from './ReconciliationAndDreView';
 import { ConversationalAssistantView } from './ConversationalAssistantView';
 import { ComplianceDashboardView } from './ComplianceDashboardView';
+import { SystemGuideView } from './SystemGuideView';
 
 export type TabKey =
   | 'COMPANIES'
@@ -31,7 +32,8 @@ export type TabKey =
   | 'AI_STUDIO'
   | 'ASSISTANT'
   | 'COMPLIANCE'
-  | 'HEALTH';
+  | 'HEALTH'
+  | 'GUIDE';
 
 interface NavItem {
   id: TabKey;
@@ -211,6 +213,14 @@ export const DashboardView: React.FC = () => {
         label: 'Diagnóstico de Infraestrutura',
         shortLabel: 'Diagnóstico',
         description: 'Métricas de saúde e conectividade com Postgres, RabbitMQ e Redis',
+        pillar: 'GOVERNANCE',
+      },
+      {
+        id: 'GUIDE',
+        label: 'Guia do Sistema & Operação',
+        shortLabel: 'Guia do Sistema',
+        badge: 'Manual',
+        description: 'Manual de funcionamento dos módulos, setup local, extensão e deploy',
         pillar: 'GOVERNANCE',
       },
     ],
@@ -647,6 +657,8 @@ export const DashboardView: React.FC = () => {
                 </div>
               </div>
             )}
+
+            {activeTab === 'GUIDE' && <SystemGuideView />}
           </div>
 
           {/* Footer inside content area */}
