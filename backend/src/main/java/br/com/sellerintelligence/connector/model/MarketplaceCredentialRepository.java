@@ -17,6 +17,8 @@ public interface MarketplaceCredentialRepository extends JpaRepository<Marketpla
 
     Optional<MarketplaceCredential> findByStoreId(UUID storeId);
 
+    Optional<MarketplaceCredential> findByTenantIdAndStoreId(UUID tenantId, UUID storeId);
+
     List<MarketplaceCredential> findByTenantId(UUID tenantId);
 
     void deleteByStoreId(UUID storeId);

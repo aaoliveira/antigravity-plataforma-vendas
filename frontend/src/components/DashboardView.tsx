@@ -5,6 +5,7 @@ import { CompanyManager, CompanyItem } from './CompanyManager';
 import { StoreManager, StoreItem } from './StoreManager';
 import { HealthChecker } from './HealthChecker';
 import { MarketplaceCapabilities } from './MarketplaceCapabilities';
+import { SyncManager } from './SyncManager';
 
 const initialDemoCompanies: CompanyItem[] = [
   {
@@ -33,7 +34,7 @@ const initialDemoStores: StoreItem[] = [
 ];
 
 export const DashboardView: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'COMPANIES' | 'STORES' | 'CAPABILITIES' | 'HEALTH'>('COMPANIES');
+  const [activeTab, setActiveTab] = useState<'COMPANIES' | 'STORES' | 'CAPABILITIES' | 'SYNC' | 'HEALTH'>('COMPANIES');
   const [companies, setCompanies] = useState<CompanyItem[]>(initialDemoCompanies);
   const [stores, setStores] = useState<StoreItem[]>(initialDemoStores);
 
@@ -90,6 +91,16 @@ export const DashboardView: React.FC = () => {
           Capacidades &amp; Conectores
         </button>
         <button
+          onClick={() => setActiveTab('SYNC')}
+          className={`pb-3 px-1 border-b-2 transition-colors ${
+            activeTab === 'SYNC'
+              ? 'border-blue-500 text-blue-400 font-semibold'
+              : 'border-transparent text-slate-400 hover:text-slate-200'
+          }`}
+        >
+          Sincronização &amp; Catálogo
+        </button>
+        <button
           onClick={() => setActiveTab('HEALTH')}
           className={`pb-3 px-1 border-b-2 transition-colors ${
             activeTab === 'HEALTH'
@@ -118,6 +129,8 @@ export const DashboardView: React.FC = () => {
       )}
 
       {activeTab === 'CAPABILITIES' && <MarketplaceCapabilities />}
+
+      {activeTab === 'SYNC' && <SyncManager />}
 
       {activeTab === 'HEALTH' && <HealthChecker />}
     </div>

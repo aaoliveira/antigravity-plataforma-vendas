@@ -3,26 +3,26 @@
 ## 1. Visão Geral do Gate Atual
 
 - **Fase Atual:** Fase 1 — MVP / P0
-- **Prompt Ativo:** `Prompt 05 — Framework de conectores e autorização OAuth de marketplaces`
+- **Prompt Ativo:** `Prompt 06 — Sincronização de catálogo, anúncios e pedidos`
 - **Status do Gate:** `APPROVED`
-- **Data da Avaliação:** 2026-11-17T13:05:00-03:00
+- **Data da Avaliação:** 2026-11-17T13:25:00-03:00
 - **Responsável:** Antigravity AI Assistant & Engenharia
 
 ---
 
-## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 05)
+## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 06)
 
 | Critério de Aceite | Requisito Verificado | Evidência Comprovada | Avaliação |
 |---|---|---|---|
-| **1. Porta e Modelo de Conectores** | Interface `MarketplaceConnector` com matriz de capacidades explícitas (`SUPPORTED`, `UNSUPPORTED`, `PENDING_VALIDATION`). | `MarketplaceConnector`, `ConnectorCapability`, `ConnectorCapabilityType` e `CapabilityStatus` definidos estritamente alinhados à matriz de capacidades de APIs oficiais. | `APROVADO` |
-| **2. Registry Desacoplado** | Localização e injeção dinâmica de conectores por canal sem condicionais acopladas na camada de aplicação. | `MarketplaceConnectorRegistry` implementado e coberto por testes unitários (`MarketplaceConnectorRegistryTest`: 3 testes). | `APROVADO` |
-| **3. Fluxo OAuth Seguro** | State CSRF criptográfico, troca de authorization code, renovação de refresh token e revogação. | Implementações oficiais para Mercado Livre e Shopee com validação de expiração e uso único do state, além de auditoria de tentativas inválidas. | `APROVADO` |
-| **4. Criptografia em Repouso (AES-GCM)** | Proteção de tokens com AES-256-GCM com IV aleatório de 12 bytes; tokens nunca trafegam em texto plano nem em logs. | `TokenCryptoService` testado em `TokenCryptoServiceTest` (4 testes); DTOs de leitura e logs omitem tokens em texto plano. | `APROVADO` |
-| **5. Isolamento Multi-Tenant de Credenciais** | Credenciais e states OAuth associados obrigatoriamente a `tenant_id` e `store_id`. | `V4__marketplace_connectors.sql` cria `marketplace_credentials` e `oauth_states`; tentativas cross-tenant bloqueadas com 403 e auditadas (`MarketplaceOAuthIntegrationTest`). | `APROVADO` |
-| **6. Cliente HTTP Resiliente** | Timeouts definidos, suporte a headers de rate limit e política de backoff exponencial. | Configurações explícitas de timeout (5s conexão / 10s leitura), headers de cota e backoff configurados nos conectores. | `APROVADO` |
-| **7. Conector Simulado (Fake/Mock)** | Fake connector estritamente restrito a perfis de teste e proibido em produção. | `FakeMarketplaceConnector` restrito por `@Profile("test")` e validado em tempo de compilação e execução. | `APROVADO` |
-| **8. Interface Web (Next.js)** | UI com matriz de capacidades por marketplace e status de autorização das lojas. | Componente `MarketplaceCapabilities` integrado na aba de conectores de `DashboardView`; 3 testes Vitest e build de produção aprovados sem erros. | `APROVADO` |
-| **9. Testes Automatizados e Script Operacional** | Bateria completa cobrindo CSRF, tokens, isolamento e resiliência com execução do script de verificação. | 57 testes backend (0 falhas), 13 testes frontend e 24 verificações em `verify_phase05.py` com 100% de sucesso. | `APROVADO` |
+| **1. Modelo Normalizado de Catálogo e Pedidos** | Entidades `Product`, `Listing`, `Order` e `OrderItem` com isolamento por `tenant_id` e metadados de proveniência (`DataProvenance.IMPORTED`). | Implementadas com JPA, Bean Validation e migração Flyway `V5__catalog_listings_orders_sync.sql` validada no PostgreSQL 17 Testcontainers. | `APROVADO` |
+| **2. Idempotência por Canal e Recurso** | Chave composta de idempotência `(tenant_id, marketplace, store_id, external_id, resource_type)` impedindo duplicações. | `SyncIdempotencyIntegrationTest` comprovou que execuções repetidas do mesmo lote geram 0 duplicatas e atualizações fora de ordem não sobrescrevem registros mais recentes. | `APROVADO` |
+| **3. Jobs Assíncronos com RabbitMQ** | Filas, DLQ, política de retry com backoff exponencial e rastreabilidade de status/checkpoints (`SyncJob`). | `SyncJobService`, `RabbitMQConfig` (`sync.exchange`, `sync.job.queue`, `sync.dlx`, `sync.job.dlq`) e consumidor com controle transacional e checkpoints. | `APROVADO` |
+| **4. Webhooks com Assinatura e Anti-Replay** | Validação de assinatura HMAC-SHA256, deduplicação por `(marketplace, external_event_id)` e proteção contra out-of-order. | `WebhookService` e `WebhookController` testados em `WebhookSecurityAndReplayTest` (3 testes aprovados). | `APROVADO` |
+| **5. Importação CSV de Contingência** | Templates documentados para catálogo e pedidos, validação linha a linha e relatório de erros (`CsvValidationReport`). | `CsvImportService` testado em `CsvImportServiceTest` (5 testes): linhas inválidas são rejeitadas com linha e motivo, sem corrupção parcial de dados válidos. | `APROVADO` |
+| **6. Preservação de Dados Ausentes** | Campos não fornecidos pelas APIs permanecem `null` sem valores sintéticos ou zeros fictícios. | Campos opcionais mapeados como nulos e rotulados como `UNAVAILABLE` quando ausentes da fonte oficial, sem geração de dados sintéticos. | `APROVADO` |
+| **7. Isolamento Multi-Tenant** | Bloqueio de acesso a sincronizações, anúncios e pedidos pertencentes a outras organizações. | `SyncCrossTenantIntegrationTest` comprovou bloqueio de disparos cross-tenant com auditoria `ACCESS_DENIED` e isolamento estrito de catálogo e pedidos. | `APROVADO` |
+| **8. Interface Web (Next.js)** | UI de histórico de jobs, métricas de itens importados/falhos, reprocessamento e upload CSV com download de template. | Componente `SyncManager` integrado na aba "Sincronização & Catálogo" de `DashboardView`; 3 testes Vitest e build de produção Next.js aprovados sem erros. | `APROVADO` |
+| **9. Testes Automatizados e Verificação** | Bateria completa cobrindo idempotência, CSV, jobs e resiliência com execução do script de verificação. | 71 testes backend (0 falhas), 16 testes frontend (Vitest) e 42 checagens em `verify_phase06.py` com 100% de sucesso. | `APROVADO` |
 
 ---
 
@@ -36,8 +36,8 @@
 | **03** | Identidade, autenticação e isolamento multi-tenant | Fase 1 | `APPROVED` | 2026-11-17 | Spring Security JWT, User sem senha, Organization, Membership RBAC, TenantContextFilter, auditoria e 20 testes passando. |
 | **04** | Organizações, CNPJs, lojas e gestão de acessos | Fase 1 | `APPROVED` | 2026-11-17 | CRUD empresas/CNPJs sem consulta RFB, lojas por marketplace, convites com escopo granular, UI Next.js, Flyway V3 e 45 testes backend + 10 frontend. |
 | **05** | Framework de conectores e autorização OAuth | Fase 1 | `APPROVED` | 2026-11-17 | Port MarketplaceConnector, registry, OAuth oficial ML/Shopee, AES-256-GCM para tokens, Flyway V4, UI Next.js e 57 testes backend + 13 frontend. |
-| **06** | Sincronização de catálogo, anúncios e pedidos | Fase 1 | `NOT_STARTED` | — | Aguarda início da Fase 1 — Prompt 06. |
-| **07** | Market Intelligence: pesquisa e análise | Fase 1 | `NOT_STARTED` | — | Aguarda aprovação do Prompt 06. |
+| **06** | Sincronização de catálogo, anúncios e pedidos | Fase 1 | `APPROVED` | 2026-11-17 | Modelos normalizados, idempotência estrita, jobs assíncronos RabbitMQ, webhooks HMAC, contingência CSV, Flyway V5, UI SyncManager e 71 testes backend + 16 frontend. |
+| **07** | Market Intelligence: pesquisa e análise | Fase 1 | `NOT_STARTED` | — | Aguarda início da Fase 1 — Prompt 07. |
 | **08** | Motor financeiro determinístico e versionado | Fase 1 | `NOT_STARTED` | — | Aguarda aprovação do Prompt 07. |
 | **09** | Painel financeiro, rentabilidade e relatórios | Fase 1 | `NOT_STARTED` | — | Aguarda aprovação do Prompt 08. |
 | **10** | AI Listing Studio: análise e geração de conteúdo | Fase 1 | `NOT_STARTED` | — | Aguarda aprovação do Prompt 09. |
@@ -54,5 +54,5 @@
 ---
 
 ## 4. Liberação para o Próximo Passo
-Com a aprovação formal do **Prompt 05**, o framework de conectores, o fluxo OAuth resiliente e a persistência criptografada de credenciais com isolamento estrito por tenant estão operacionais e validados. O projeto está oficialmente apto e liberado para receber e executar o:
-👉 **Prompt 06 — Sincronização de catálogo, anúncios e pedidos**.
+Com a aprovação formal do **Prompt 06**, os modelos de produtos, anúncios e pedidos, o motor de sincronização assíncrono idempotente com RabbitMQ, os webhooks protegidos contra replay e a contingência CSV estão plenamente operacionais e testados. O projeto está oficialmente apto e liberado para receber e executar o:
+👉 **Prompt 07 — Market Intelligence: pesquisa e análise**.

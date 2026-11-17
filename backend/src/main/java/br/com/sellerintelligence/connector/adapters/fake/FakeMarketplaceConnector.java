@@ -72,4 +72,74 @@ public class FakeMarketplaceConnector implements MarketplaceConnector {
     public boolean validateConnection(String accessToken, String externalAccountId) {
         return accessToken != null && !accessToken.isBlank();
     }
+
+    @Override
+    public ConnectorSyncBatch<ConnectorListing> fetchListings(String accessToken, String externalAccountId, String cursor, int limit) {
+        if ("END".equals(cursor)) {
+            return new ConnectorSyncBatch<>(List.of(), null, false);
+        }
+        List<ConnectorListing> sampleListings = List.of(
+                new ConnectorListing(
+                        "FAKE-ITEM-001",
+                        "SKU-TEST-001",
+                        "Produto Teste 1 Fake Marketplace",
+                        "ACTIVE",
+                        new java.math.BigDecimal("99.90"),
+                        "BRL",
+                        50,
+                        10,
+                        "gold_special",
+                        "https://fake.local/item/1",
+                        "https://fake.local/thumb/1.jpg",
+                        "{\"raw\": true}",
+                        java.time.Instant.now()
+                ),
+                new ConnectorListing(
+                        "FAKE-ITEM-002",
+                        "SKU-TEST-002",
+                        "Produto Teste 2 Fake Marketplace",
+                        "PAUSED",
+                        new java.math.BigDecimal("149.00"),
+                        "BRL",
+                        15,
+                        2,
+                        "gold_pro",
+                        "https://fake.local/item/2",
+                        "https://fake.local/thumb/2.jpg",
+                        "{\"raw\": true}",
+                        java.time.Instant.now()
+                )
+        );
+        return new ConnectorSyncBatch<>(sampleListings, "END", false);
+    }
+
+    @Override
+    public ConnectorSyncBatch<ConnectorOrder> fetchOrders(String accessToken, String externalAccountId, java.time.Instant from, String cursor, int limit) {
+        if ("END".equals(cursor)) {
+            return new ConnectorSyncBatch<>(List.of(), null, false);
+        }
+        ConnectorOrderItem item1 = new ConnectorOrderItem(
+                "FAKE-ITEM-001",
+                "SKU-TEST-001",
+                "Produto Teste 1 Fake Marketplace",
+                new java.math.BigDecimal("99.90"),
+                1,
+                new java.math.BigDecimal("12.98")
+        );
+        ConnectorOrder order1 = new ConnectorOrder(
+                "FAKE-ORDER-99901",
+                "PAID",
+                new java.math.BigDecimal("99.90"),
+                "BRL",
+                java.time.Instant.now().minusSeconds(3600),
+                "comprador_teste_1",
+                "SHIP-88801",
+                new java.math.BigDecimal("15.50"),
+                new java.math.BigDecimal("12.98"),
+                List.of(item1),
+                "{\"order_raw\": true}",
+                java.time.Instant.now()
+        );
+        return new ConnectorSyncBatch<>(List.of(order1), "END", false);
+    }
 }

@@ -24,4 +24,8 @@ public interface StoreRepository extends JpaRepository<Store, UUID> {
     List<Store> findByCompanyId(UUID companyId);
 
     long countByCompanyId(UUID companyId);
+
+    Optional<Store> findByIdAndTenantId(UUID id, UUID tenantId);
+
+    Optional<Store> findByMarketplaceAndExternalAccountId(Marketplace marketplace, String externalAccountId);
 }

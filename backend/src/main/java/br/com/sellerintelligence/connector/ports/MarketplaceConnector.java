@@ -28,4 +28,12 @@ public interface MarketplaceConnector {
     void revokeToken(String accessToken, String externalAccountId);
 
     boolean validateConnection(String accessToken, String externalAccountId);
+
+    default ConnectorSyncBatch<ConnectorListing> fetchListings(String accessToken, String externalAccountId, String cursor, int limit) {
+        return new ConnectorSyncBatch<>(List.of(), null, false);
+    }
+
+    default ConnectorSyncBatch<ConnectorOrder> fetchOrders(String accessToken, String externalAccountId, java.time.Instant from, String cursor, int limit) {
+        return new ConnectorSyncBatch<>(List.of(), null, false);
+    }
 }

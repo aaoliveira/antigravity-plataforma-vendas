@@ -2,70 +2,70 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "project": "Seller Intelligence Platform",
   "gateSystemVersion": "1.0.0",
-  "currentPrompt": "05",
-  "promptTitle": "Framework de conectores e autorização OAuth de marketplaces",
+  "currentPrompt": "06",
+  "promptTitle": "Sincronização de catálogo, anúncios e pedidos",
   "phase": "Fase 1 — MVP / P0",
   "status": "APPROVED",
-  "updatedAt": "2026-11-17T13:05:00-03:00",
+  "updatedAt": "2026-11-17T13:25:00-03:00",
   "evaluatedBy": "Antigravity AI Assistant",
   "criteria": [
     {
-      "id": "AC-05-1",
-      "description": "Interface MarketplaceConnector (ports) com matriz de capacidades explícitas (SUPPORTED, UNSUPPORTED, PENDING_VALIDATION)",
+      "id": "AC-06-1",
+      "description": "Modelo normalizado de Produto/SKU, Anúncio/Listing e Pedido/Order com isolamento de tenant e proveniência IMPORTED",
       "status": "APPROVED",
-      "evidence": "MarketplaceConnector, ConnectorCapability, ConnectorCapabilityType e CapabilityStatus implementados com tipagem forte e mapeamento formal conforme marketplace-capability-matrix.md."
+      "evidence": "Entidades Product, Listing, Order, OrderItem implementadas com tenant_id obrigatório, DataProvenance.IMPORTED e migração Flyway V5 validada em PostgreSQL 17."
     },
     {
-      "id": "AC-05-2",
-      "description": "Registry/Factory desacoplado de conectores para Mercado Livre e Shopee",
+      "id": "AC-06-2",
+      "description": "Idempotência rigorosa por marketplace + store + external_id + resource_type sem duplicação em execuções repetidas",
       "status": "APPROVED",
-      "evidence": "MarketplaceConnectorRegistry implementado e testado (MarketplaceConnectorRegistryTest: 3 testes aprovados), desacoplando lógica de canais dos serviços de aplicação."
+      "evidence": "SyncIdempotencyIntegrationTest aprovou 3 testes: execuções repetidas de catálogo e pedidos geram 0 duplicatas e atualizações fora de ordem não sobrescrevem dados mais recentes."
     },
     {
-      "id": "AC-05-3",
-      "description": "Fluxo OAuth oficial (State CSRF seguro, redirect, troca de código, refresh e revogação)",
+      "id": "AC-06-3",
+      "description": "Jobs assíncronos de sincronização com status, checkpoints, fila RabbitMQ e tratamento de falhas/DLQ",
       "status": "APPROVED",
-      "evidence": "MercadoLivreConnector e ShopeeConnector implementados com endpoints oficiais, geração de state com SecureRandom criptográfico, validação de expiração e uso único."
+      "evidence": "SyncJobService, SyncJobRepository, RabbitMQConfig (sync.exchange, sync.job.queue, sync.dlx, sync.job.dlq), consumidor assíncrono e fallback para testes operacionais."
     },
     {
-      "id": "AC-05-4",
-      "description": "Criptografia de tokens em repouso (AES-GCM), proteção contra vazamento em logs e nunca retornado ao frontend",
+      "id": "AC-06-4",
+      "description": "Ingestão de webhooks com verificação de assinatura, deduplicação de eventos e proteção contra replay/fora de ordem",
       "status": "APPROVED",
-      "evidence": "TokenCryptoService implementado com AES-256-GCM, IV aleatório de 12 bytes por cifragem e auth tag de 128 bits. Testado em TokenCryptoServiceTest (4 testes). DTOs e logs protegem tokens em texto plano."
+      "evidence": "WebhookService com verificação HMAC-SHA256, tabela webhook_events com constraint única (marketplace, external_event_id), testado em WebhookSecurityAndReplayTest (3 testes)."
     },
     {
-      "id": "AC-05-5",
-      "description": "Registro de credenciais com tenant_id, store_id, scopes, expiração e status de conexão",
+      "id": "AC-06-5",
+      "description": "Importação de contingência via CSV com templates documentados, validação estrita linha por linha e relatório detalhado de erros",
       "status": "APPROVED",
-      "evidence": "Tabelas marketplace_credentials e oauth_states criadas via V4__marketplace_connectors.sql com FKs para tenants e stores, constraints e índices validados em PostgreSQL Testcontainers."
+      "evidence": "CsvImportService com templates documentados, validação de schema e tipos linha a linha, retorno de CsvValidationReport e CsvRowError; CsvImportServiceTest aprovou 5 testes."
     },
     {
-      "id": "AC-05-6",
-      "description": "Cliente HTTP resiliente com timeouts, rate limit e backoff exponencial",
+      "id": "AC-06-6",
+      "description": "Preservação de dados ausentes como null/ausentes sem preenchimento artificial ou geração sintética de zeros",
       "status": "APPROVED",
-      "evidence": "Configuração de timeouts (conect: 5s, read: 10s), headers de rate limit e política de backoff exponencial implementados nos conectores."
+      "evidence": "Campos opcionais preservados como nulos no banco e rotulados como UNAVAILABLE se ausentes da API oficial, em total conformidade com as regras anti-alucinação."
     },
     {
-      "id": "AC-05-7",
-      "description": "Conector simulado (Fake/Mock) estritamente restrito a perfis de teste e proibido em produção",
+      "id": "AC-06-7",
+      "description": "Isolamento multi-tenant garantido em todas as leituras, buscas, escritas e exportações",
       "status": "APPROVED",
-      "evidence": "FakeMarketplaceConnector anotado com @Profile('test') e validado em scripts/verify_phase05.py e MarketplaceOAuthIntegrationTest."
+      "evidence": "SyncCrossTenantIntegrationTest comprovou negação de disparo de sincronização em loja de outro tenant com registro de auditoria ACCESS_DENIED e isolamento completo de catálogo."
     },
     {
-      "id": "AC-05-8",
-      "description": "Interface web (Next.js) exibindo matriz de capacidades e estados de conexão",
+      "id": "AC-06-8",
+      "description": "Interface web (Next.js) exibindo histórico de sincronizações, status de jobs, métricas e importação CSV",
       "status": "APPROVED",
-      "evidence": "Componente MarketplaceCapabilities integrado ao DashboardView, testado com Vitest (3 testes aprovados) e build estático do Next.js aprovado sem erros."
+      "evidence": "Componente SyncManager integrado ao DashboardView, testado com Vitest (3 testes aprovados) e build de produção do Next.js aprovado sem erros."
     },
     {
-      "id": "AC-05-9",
-      "description": "Bateria de testes automatizados cobrindo CSRF, tokens, isolamento e resiliência",
+      "id": "AC-06-9",
+      "description": "Bateria de testes automatizados e script de verificação cobrindo idempotência, CSV, jobs e resiliência",
       "status": "APPROVED",
-      "evidence": "57 testes no backend (0 falhas/erros), 13 testes no frontend (Vitest) e 24 verificações de integridade em scripts/verify_phase05.py com 100% de aprovação."
+      "evidence": "71 testes backend (0 falhas/erros), 16 testes frontend (Vitest) e 42 checagens em scripts/verify_phase06.py com 100% de sucesso."
     }
   ],
   "blockers": [],
-  "nextPrompt": "06",
-  "nextPromptTitle": "Sincronização de catálogo, anúncios e pedidos",
+  "nextPrompt": "07",
+  "nextPromptTitle": "Market Intelligence: pesquisa e análise",
   "nextPromptPrerequisiteMet": true
 }
