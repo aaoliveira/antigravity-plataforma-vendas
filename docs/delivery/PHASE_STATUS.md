@@ -2,18 +2,35 @@
 
 ## 1. Visão Geral do Gate Atual
 
-- **Fase Atual:** Fase 3 — Expansão
-- **Prompt Concluído:** `Prompt 19 — Expansão de conectores para Amazon e outros marketplaces`
+- **Fase Atual:** Fase 3 — Segurança e Compliance
+- **Prompt Concluído:** `Prompt 20 — Auditoria completa de segurança, compliance e proteção de contas dos marketplaces`
 - **Status do Gate:** `APPROVED`
-- **Data de Conclusão:** 2026-11-17T18:14:00-03:00
-- **Responsável:** Antigravity AI Assistant & Engenharia de Plataforma
-- **Último Prompt Aprovado:** `Prompt 19 — Expansão de conectores para Amazon e outros marketplaces`
-- **Próximo Prompt Disponível:** `Prompt 20 — Auditoria completa de segurança e conformidade da plataforma`
-- **Nota de Escopo:** Conector oficial da Amazon SP-API implementado sob a interface `MarketplaceConnector` sem alterar contratos existentes. Não implementação de múltiplos canais simultaneamente conforme diretriz vinculante.
+- **Data de Conclusão:** 2026-11-17T19:18:00-03:00
+- **Responsável:** Antigravity AI Assistant & Engenharia de Segurança de Aplicações
+- **Último Prompt Aprovado:** `Prompt 20 — Auditoria completa de segurança, compliance e proteção de contas dos marketplaces`
+- **Próximo Prompt Disponível:** `Prompt 21 — Implementação do Continuous Monitoring e automações avançadas`
+- **Nota de Escopo:** Auditoria formal com OWASP ASVS v4 e matriz de conformidade independente para Mercado Livre, Shopee, Amazon, TikTok Shop, Magalu e SHEIN. Componente central `MarketplaceComplianceGuard` implementado sob política rígida FAIL CLOSED, quarentena de HTTP 429, Circuit Breaker, controle mandatória de aprovação humana para ações mutáveis e bloqueio de canais não homologados (`UNVERIFIED_COMPLIANCE`).
 
 ---
 
-## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 19 — Expansão de Conectores: Amazon SP-API)
+## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 20 — Auditoria de Segurança e Proteção de Contas)
+
+| Critério de Aceite | Requisito Verificado | Evidência Comprovada | Avaliação |
+|---|---|---|---|
+| **AC-20-1: Relatório Executivo e Detalhado de Auditoria** | Auditoria ASVS e OWASP cobrindo todos os módulos, vulnerabilidades identificadas e avaliação de risco por marketplace. | `docs/security/SECURITY_AUDIT_REPORT.md` com metodologia ASVS, inventário de riscos VULN-001 a VULN-010 e parecer técnico formal APPROVED. | `APROVADO` |
+| **AC-20-2: Matriz Individual de Conformidade por Marketplace** | Matriz individual detalhada para Mercado Livre, Shopee, Amazon, TikTok Shop, Magalu e SHEIN com URLs oficiais e limites operacionais. | `docs/security/MARKETPLACE_COMPLIANCE_MATRIX.md` com status padronizados (`COMPLIANT`, `UNVERIFIED_COMPLIANCE`), links oficiais e regras de cada canal. | `APROVADO` |
+| **AC-20-3: Plano de Remediação & Decisões de Compliance** | Formalização de SLAs, cronograma de mitigação e log estruturado de decisões de governança técnica. | `docs/security/SECURITY_REMEDIATION_PLAN.md` com matriz de remediação REM-001 a REM-010 e `docs/security/COMPLIANCE_DECISIONS.md` com decisões CD-001 a CD-008. | `APROVADO` |
+| **AC-20-4: Diretrizes de Integração & Relatório de Testes** | Diretrizes técnicas contendo as 15 regras inegociáveis de desenvolvimento e proibição estrita de scraping não autorizado. | `docs/security/MARKETPLACE_INTEGRATION_GUIDELINES.md` e `docs/security/SECURITY_TEST_REPORT.md` consolidando suítes de teste de segurança. | `APROVADO` |
+| **AC-20-5: Implementação do Marketplace Compliance Guard** | Componente central `MarketplaceComplianceGuard` operando sob política estrita FAIL CLOSED. | `MarketplaceComplianceGuard.java` verificando status da loja, expiração de tokens, limites de taxa e autorização de canal. | `APROVADO` |
+| **AC-20-6: Governança Mandatória Human-in-the-Loop** | Mutações comerciais críticas (`MUTABLE_CRITICAL`: preços, estoque, anúncios) exigem aprovação humana prévia explícita. | `MarketplaceComplianceGuard` bloqueando mutações desautorizadas com código `HUMAN_APPROVAL_REQUIRED` e registrando evento de auditoria `DENIED`. | `APROVADO` |
+| **AC-20-7: Bloqueio Estrito de Canais Não Homologados** | Canais sem certificação formal de parceria (`TIKTOK_SHOP`, `MAGALU`, `SHEIN`) permanecem bloqueados para produção. | Canais registrados como `UNVERIFIED_COMPLIANCE`, gerando exceção `UNVERIFIED_MARKETPLACE_BLOCKED` ao tentar conectar lojas ou disparar chamadas. | `APROVADO` |
+| **AC-20-8: Proteção Multi-Tenant & Sanitização de Credenciais** | Isolamento total por `tenant_id` e filtragem regex universal de segredos e tokens nos logs e mensagens de erro. | `STORE_NOT_FOUND_OR_CROSS_TENANT` disparado em tentativas de IDOR; regex `SENSITIVE_PATTERN` em `ComplianceViolationException` e `AuditService` mascarando com `[REDACTED]`. | `APROVADO` |
+| **AC-20-9: Suíte Automatizada Cobrindo os 15 Cenários Mandatórios** | Testes unitários e de integração cobrindo os 15 cenários de segurança e conformidade do prompt. | `MarketplaceComplianceGuardTest.java` com 15 testes dedicados (cenários 01 a 15) passando com 100% de sucesso. | `APROVADO` |
+| **AC-20-10: Atualização de Governança, README e DECISION_LOG** | Registro do ADR DEC-025, atualização do README principal e script de verificação 100% verde. | ADR DEC-025 registrado em `docs/architecture/DECISION_LOG.md`, README.md com seção de conformidade e `scripts/verify_phase20.py` com 100% PASS. | `APROVADO` |
+
+---
+
+## 3. Verificação Objetiva dos Critérios de Aceite (Prompt 19 — Expansão de Conectores: Amazon SP-API)
 
 | Critério de Aceite | Requisito Verificado | Evidência Comprovada | Avaliação |
 |---|---|---|---|

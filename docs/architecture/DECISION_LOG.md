@@ -470,6 +470,28 @@ Conforme estipulado no PRD ([docs/product/PRD.md](file:///home/alexandre/Projeto
 
 ---
 
+## DEC-025 / ADR-025 — Marketplace Compliance Guard, Governança Estrita Fail-Closed e Proteção de Contas Comerciais
+- **Data:** 2026-11-17
+- **Status:** `ACCEPTED`
+- **Contexto:** Auditoria completa de segurança, compliance e proteção de contas dos marketplaces (Prompt 20). Interações automatizadas com marketplaces apresentam riscos críticos existenciais para o negócio do seller: suspensão de contas por automação abusiva, banimento por scraping ilegítimo, saturação de rate limits (HTTP 429), falhas de circuit breaker, vazamento cross-tenant e exposição de tokens OAuth em logs ou relatórios de erro.
+- **Opções consideradas:**
+  1. Manter validações espalhadas em controllers e rotinas isoladas de sincronização sem política centralizada de recusa preventiva. (Inseguro, propenso a regressões e sem garantias formais contra abusos).
+  2. Implementar uma camada arquitetural centralizada com o componente `MarketplaceComplianceGuard`:
+     - **Política Fail-Closed Absoluta:** Rejeição imediata de qualquer operação cuja autorização, loja ativa, credencial e conformidade documental não possam ser atestadas deterministicamente.
+     - **Bloqueio Preventivo de Canais Não Homologados (`UNVERIFIED_COMPLIANCE`):** Marketplaces sem parceria formal ou homologação concluída (TikTok Shop, Magalu, SHEIN) permanecem sumariamente bloqueados para conexão ou chamadas em produção (`UNVERIFIED_MARKETPLACE_BLOCKED`).
+     - **Governança Human-in-the-Loop para Ações Mutáveis:** Operações que alteram dados no canal (`MUTABLE_CRITICAL`: publicar anúncio, mudar preço, alterar estoque) exigem aprovação explícita do seller (`humanApproved == true`). Sem ela, a operação é rejeitada com `HUMAN_APPROVAL_REQUIRED`.
+     - **Circuit Breaker e Cooldown de HTTP 429:** Quarentena automática de 60s em caso de limite esgotado e abertura de circuito após 5 falhas consecutivas, impedindo que tarefas em segundo plano continuem bombardeando endpoints externos.
+     - **Sanitização Universal de Credenciais:** Mascaramento de tokens e senhas (`[REDACTED]`) em exceções (`ComplianceViolationException`) e logs de auditoria (`AuditService`).
+     - **Proibição Inegociável de Scraping Ilegítimo:** Vedado o uso de solvers de CAPTCHA, evasão anti-bot ou proxies para contorno de quotas.
+- **Decisão:** Opção 2.
+- **Justificativa:** Proteção prioritária das contas dos sellers, eliminação do risco de processos jurídicos por violação de termos de uso de marketplaces e alinhamento integral com OWASP ASVS e LGPD.
+- **Consequências:** Todas as chamadas de conectores passam por verificação prévia no `MarketplaceComplianceGuard`; operações críticas são 100% auditadas com trilha imutável; canais sem certificação são impedidos de operar em produção.
+- **Requisitos relacionados:** PRD Seções 3.1, 4.1, 5.1, NFR-SEC-001, NFR-SEC-002, NFR-REL-002, OWASP ASVS v4.0.3, LGPD.
+- **Responsável:** Application Security Lead / Arquiteto de Software.
+- **Revisão:** Fase 3 (Segurança e Compliance).
+
+---
+
 # Parte 2: Decisões Propostas e Pendências Classificadas (PROPOSED)
 
 ## DEC-P05 — Política de Retenção de Dados e Expurgos Automáticos LGPD (Vinculada a OQ-007)

@@ -26,6 +26,13 @@ security:
   rate-limit:
     enabled: false
 
+seller:
+  compliance:
+    allow-fake-marketplace: true
+    circuit-breaker:
+      threshold: 5
+      cooldown-seconds: 60
+
 logging:
   level:
     br.com.sellerintelligence: INFO

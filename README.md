@@ -104,7 +104,26 @@ docker compose down
 
 ---
 
-## 4. Governança e Regras Invariantes
+## 4. Segurança, Compliance e Proteção de Contas
+
+A Seller Intelligence Platform implementa uma camada arquitetural avançada de segurança e conformidade operacional orientada à proteção absoluta das contas comerciais dos vendedores:
+
+- **Política FAIL CLOSED:** Toda interação externa com marketplaces passa pelo `MarketplaceComplianceGuard`. Qualquer operação com legitimidade incerta, loja desconectada ou token expirado é sumariamente bloqueada no backend antes de consumir chamadas remotas.
+- **Proteção contra Automação Abusiva (Circuit Breaker & 429 Cooldown):** Em caso de HTTP 429 (`Too Many Requests`), a loja é colocada em quarentena temporária baseada no cabeçalho `Retry-After`. Cinco erros consecutivos (HTTP 401, 403 ou 5xx) acionam a abertura do Circuit Breaker (`CIRCUIT_BREAKER_OPEN`), interrompendo requisições em cascata.
+- **Governança Human-in-the-Loop para Mutações Críticas:** Operações comerciais que alteram preços, publicam anúncios ou modificam estoque (`OperationRiskLevel.MUTABLE_CRITICAL`) exigem consentimento explícito e aprovação humana do seller (`humanApproved == true`). Mutações autônomas sem supervisão são rejeitadas com `HUMAN_APPROVAL_REQUIRED`.
+- **Bloqueio Estrito de Canais Não Homologados (`UNVERIFIED_COMPLIANCE`):** Marketplaces em fase de homologação documental (TikTok Shop, Magalu, SHEIN) permanecem categoricamente bloqueados para produção até a conclusão de parcerias oficiais e concessão de credenciais.
+- **Isolamento Multi-Tenant e Sanitização de Credenciais:** Tokens OAuth 2.0 são criptografados com AES-256-GCM em repouso e sistematicamente mascarados com `[REDACTED]` em logs e mensagens de erro.
+- **Documentação de Segurança:**
+  - Relatório de Auditoria: [docs/security/SECURITY_AUDIT_REPORT.md](docs/security/SECURITY_AUDIT_REPORT.md)
+  - Matriz de Conformidade por Canal: [docs/security/MARKETPLACE_COMPLIANCE_MATRIX.md](docs/security/MARKETPLACE_COMPLIANCE_MATRIX.md)
+  - Plano de Remediação: [docs/security/SECURITY_REMEDIATION_PLAN.md](docs/security/SECURITY_REMEDIATION_PLAN.md)
+  - Relatório de Testes de Segurança: [docs/security/SECURITY_TEST_REPORT.md](docs/security/SECURITY_TEST_REPORT.md)
+  - Diretrizes Técnicas de Integração: [docs/security/MARKETPLACE_INTEGRATION_GUIDELINES.md](docs/security/MARKETPLACE_INTEGRATION_GUIDELINES.md)
+  - Registro de Decisões de Compliance: [docs/security/COMPLIANCE_DECISIONS.md](docs/security/COMPLIANCE_DECISIONS.md)
+
+---
+
+## 5. Governança e Regras Invariantes
 - **Preflight Obrigatório:** Consulte [AGENTS.md](AGENTS.md) antes de cada etapa de desenvolvimento.
 - **Hierarquia de Evidências:** `PRD.md` > `DECISION_LOG.md` > Critérios de Aceite > Código/Testes > Docs Oficiais.
 - **Anti-Alucinação:** Dados de mercado recebem rótulos estritos (`OBSERVED`, `IMPORTED`, `ESTIMATED`, `UNAVAILABLE`). Proibido inventar dados de concorrentes ou converter indisponíveis em zero. Cálculos monetários exclusivamente com `BigDecimal`.

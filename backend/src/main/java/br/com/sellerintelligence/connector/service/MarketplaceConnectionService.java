@@ -2,6 +2,9 @@ package br.com.sellerintelligence.connector.service;
 
 import br.com.sellerintelligence.audit.domain.AuditResult;
 import br.com.sellerintelligence.audit.domain.AuditService;
+import br.com.sellerintelligence.compliance.domain.ComplianceStatus;
+import br.com.sellerintelligence.compliance.exception.ComplianceViolationException;
+import br.com.sellerintelligence.compliance.service.MarketplaceComplianceGuard;
 import br.com.sellerintelligence.connector.crypto.TokenCryptoService;
 import br.com.sellerintelligence.connector.model.*;
 import br.com.sellerintelligence.connector.ports.MarketplaceConnector;
@@ -44,6 +47,7 @@ public class MarketplaceConnectionService {
     private final TokenCryptoService tokenCryptoService;
     private final AuditService auditService;
     private final br.com.sellerintelligence.infrastructure.security.UrlSecurityValidator urlSecurityValidator;
+    private final MarketplaceComplianceGuard complianceGuard;
 
     public MarketplaceConnectionService(
             MarketplaceConnectorRegistry connectorRegistry,
@@ -54,7 +58,8 @@ public class MarketplaceConnectionService {
             ScopeAuthorizationService scopeAuthorizationService,
             TokenCryptoService tokenCryptoService,
             AuditService auditService,
-            br.com.sellerintelligence.infrastructure.security.UrlSecurityValidator urlSecurityValidator) {
+            br.com.sellerintelligence.infrastructure.security.UrlSecurityValidator urlSecurityValidator,
+            MarketplaceComplianceGuard complianceGuard) {
         this.connectorRegistry = connectorRegistry;
         this.credentialRepository = credentialRepository;
         this.oauthStateRepository = oauthStateRepository;
@@ -64,6 +69,7 @@ public class MarketplaceConnectionService {
         this.tokenCryptoService = tokenCryptoService;
         this.auditService = auditService;
         this.urlSecurityValidator = urlSecurityValidator;
+        this.complianceGuard = complianceGuard;
     }
 
     @Transactional
@@ -73,6 +79,21 @@ public class MarketplaceConnectionService {
 
         Store store = storeRepository.findByIdAndTenantIdWithCompany(storeId, tenantId)
                 .orElseThrow(() -> new TenantAccessDeniedException("Store not found or does not belong to this organization"));
+
+        if (complianceGuard.getComplianceStatus(store.getMarketplace()) == ComplianceStatus.UNVERIFIED_COMPLIANCE
+                || complianceGuard.getComplianceStatus(store.getMarketplace()) == ComplianceStatus.NON_COMPLIANT) {
+            auditService.recordEvent(
+                    tenantId,
+                    actor.getId().toString(),
+                    "COMPLIANCE_BLOCKED",
+                    "Store",
+                    store.getId().toString(),
+                    "OAuth initiation blocked: Marketplace " + store.getMarketplace() + " compliance is UNVERIFIED_COMPLIANCE (Fail Closed).",
+                    AuditResult.DENIED
+            );
+            throw new ComplianceViolationException("UNVERIFIED_MARKETPLACE_BLOCKED",
+                    "Marketplace " + store.getMarketplace() + " compliance status is UNVERIFIED_COMPLIANCE. Connection blocked under FAIL CLOSED policy.");
+        }
 
         MarketplaceConnector connector = connectorRegistry.getConnector(store.getMarketplace());
 
@@ -206,6 +227,8 @@ public class MarketplaceConnectionService {
             credential.setStatus("REVOKED");
             credentialRepository.save(credential);
         }
+
+        complianceGuard.resetCircuit(storeId);
 
         store.setConnectionStatus(ConnectionStatus.DISCONNECTED);
         store = storeRepository.save(store);

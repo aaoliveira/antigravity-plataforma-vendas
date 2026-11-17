@@ -60,6 +60,13 @@ connectors:
     sp-api-base-url: ${AMAZON_SP_API_BASE_URL:https://sellingpartnerapi-na.amazon.com}
     marketplace-id: ${AMAZON_MARKETPLACE_ID:A2Q3Y263D00KWC}
 
+seller:
+  compliance:
+    circuit-breaker:
+      threshold: 5
+      cooldown-seconds: 60
+    allow-fake-marketplace: false
+
 logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{trace_id:-}] [%X{tenant_id:-}] %-5level %logger{36} - %msg%n"

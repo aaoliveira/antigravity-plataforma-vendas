@@ -2,76 +2,76 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "project": "Seller Intelligence Platform",
   "gateSystemVersion": "1.0.0",
-  "currentPrompt": "19",
-  "promptTitle": "Expansão de conectores para Amazon e outros marketplaces",
-  "phase": "Fase 3 — expansão",
+  "currentPrompt": "20",
+  "promptTitle": "Auditoria completa de segurança, compliance e proteção de contas dos marketplaces",
+  "phase": "Fase 3 — segurança e compliance",
   "status": "APPROVED",
-  "updatedAt": "2026-11-17T18:13:00-03:00",
+  "updatedAt": "2026-11-17T19:17:00-03:00",
   "evaluatedBy": "Antigravity AI Assistant",
   "criteria": [
     {
-      "id": "AC-19-1",
-      "description": "Matriz formal de capacidades e documentação técnica da Amazon SP-API preenchida antes da implementação do código",
-      "status": "PASSED",
-      "evidence": "docs/connectors/AMAZON_SP_API.md e ADR DEC-024 detalhando endpoints LWA, SP-API e marketplace ID Brasil (A2Q3Y263D00KWC)."
+      "id": "AC-20-1",
+      "description": "Relatório executivo e detalhado de auditoria de segurança em docs/security/SECURITY_AUDIT_REPORT.md cobrindo vulnerabilidades, riscos e evidências",
+      "status": "MET",
+      "evidence": "docs/security/SECURITY_AUDIT_REPORT.md elaborado com metodologia OWASP ASVS e avaliação independente de cada canal."
     },
     {
-      "id": "AC-19-2",
-      "description": "Implementação do adaptador AmazonSpApiConnector em conformidade estrita com a interface MarketplaceConnector",
-      "status": "PASSED",
-      "evidence": "Classe AmazonSpApiConnector implementando a porta MarketplaceConnector sem alterar os contratos de domínio existentes, testada em AmazonSpApiConnectorContractTest."
+      "id": "AC-20-2",
+      "description": "Matriz individual de conformidade por marketplace em docs/security/MARKETPLACE_COMPLIANCE_MATRIX.md para Mercado Livre, Shopee, Amazon, TikTok Shop, Magalu e SHEIN",
+      "status": "MET",
+      "evidence": "docs/security/MARKETPLACE_COMPLIANCE_MATRIX.md com status COMPLIANT, NON_COMPLIANT, PARTIALLY_COMPLIANT e UNVERIFIED_COMPLIANCE."
     },
     {
-      "id": "AC-19-3",
-      "description": "Fluxo OAuth LWA (Login with Amazon) com geração de URL de consentimento Seller Central BR e troca de autorização por tokens",
-      "status": "PASSED",
-      "evidence": "Métodos generateAuthorizationUrl e exchangeAuthorizationCode no padrão oficial Amazon LWA com validação de credenciais."
+      "id": "AC-20-3",
+      "description": "Plano de remediação estruturado e registro de decisões de compliance em docs/security/SECURITY_REMEDIATION_PLAN.md e docs/security/COMPLIANCE_DECISIONS.md",
+      "status": "MET",
+      "evidence": "Documentação formalizando bloqueios fail-closed e cronograma de adequação de canais."
     },
     {
-      "id": "AC-19-4",
-      "description": "Renovação automática de access token (refresh token) e validação de saúde de conexão (marketplaceParticipations)",
-      "status": "PASSED",
-      "evidence": "Implementação de refreshAccessToken e validateConnection invocando o endpoint oficial /sellers/v1/marketplaceParticipations."
+      "id": "AC-20-4",
+      "description": "Diretrizes de integração e relatório de testes de segurança em docs/security/MARKETPLACE_INTEGRATION_GUIDELINES.md e docs/security/SECURITY_TEST_REPORT.md",
+      "status": "MET",
+      "evidence": "Diretrizes técnicas para desenvolvedores e relatório de testes de segurança da plataforma."
     },
     {
-      "id": "AC-19-5",
-      "description": "Sincronização suportada de catálogo (fetchListings) e pedidos (fetchOrders) respeitando paginação por cursor",
-      "status": "PASSED",
-      "evidence": "Métodos de sincronização mapeando para ConnectorListing e ConnectorOrder com cursores de paginação (pageToken / NextToken)."
+      "id": "AC-20-5",
+      "description": "Implementação do componente central Marketplace Compliance Guard operando sob política FAIL CLOSED",
+      "status": "MET",
+      "evidence": "Componente MarketplaceComplianceGuard validando status de conexão, expiração de token, bloqueios operacionais e autorização de canal."
     },
     {
-      "id": "AC-19-6",
-      "description": "Tratamento de rate limits oficiais (HTTP 429), retries com backoff e cabeçalhos x-amzn-RateLimit-Limit",
-      "status": "PASSED",
-      "evidence": "Intercepção de HttpClientErrorException.TooManyRequests com conversão para BusinessException AMAZON_RATE_LIMIT_EXCEEDED."
+      "id": "AC-20-6",
+      "description": "Governança estrita de ações mutáveis exigindo aprovação humana mandatória prévia antes de qualquer publicação ou alteração de preços",
+      "status": "MET",
+      "evidence": "Compliance guard bloqueando mutações automáticas não autorizadas e exigindo confirmação explícita do seller."
     },
     {
-      "id": "AC-19-7",
-      "description": "Segregação e proteção estrita de campos não suportados ou restritos (RDT / PII de compradores não inventados nem falseados)",
-      "status": "PASSED",
-      "evidence": "Capacidades de busca pública, tendências e Ads marcadas explicitamente como UNSUPPORTED; PII restrita sem RDT tratada como nula sem inventar dados."
+      "id": "AC-20-7",
+      "description": "Bloqueio estrito de canais e recursos com conformidade não confirmada (UNVERIFIED_COMPLIANCE) em produção",
+      "status": "MET",
+      "evidence": "TikTok Shop, Magalu e SHEIN mantidos categoricamente bloqueados para produção até certificação de parceiro comercial."
     },
     {
-      "id": "AC-19-8",
-      "description": "Criptografia de credenciais (AES-256-GCM) e isolamento multi-tenant por store e tenant_id",
-      "status": "PASSED",
-      "evidence": "Credenciais da Amazon persistidas em marketplace_credentials via TokenCryptoService com isolamento de tenant e loja."
+      "id": "AC-20-8",
+      "description": "Proteção multi-tenant e sanitização estrita de credenciais e tokens em logs, mensagens e exceções",
+      "status": "MET",
+      "evidence": "Isolamento multi-tenant garantido e filtros de log impedindo vazamento de tokens, senhas ou PII."
     },
     {
-      "id": "AC-19-9",
-      "description": "Regressão zero: conectores existentes (Mercado Livre e Shopee) permanecem 100% operacionais com todos os testes passando",
-      "status": "PASSED",
-      "evidence": "Suíte completa de testes do backend executada com 227 testes passando sem falhas (BUILD SUCCESS) e regras ArchUnit aprovadas."
+      "id": "AC-20-9",
+      "description": "Suíte automatizada de testes de conformidade e segurança cobrindo os 15 cenários mandatórios do prompt",
+      "status": "MET",
+      "evidence": "Testes unitários e de integração validando bloqueio de operações, tokens expirados/revogados, 429, circuit breaker e RBAC."
     },
     {
-      "id": "AC-19-10",
-      "description": "Frontend atualizado com a matriz de capacidades da Amazon e suíte de testes Vitest passando",
-      "status": "PASSED",
-      "evidence": "MarketplaceCapabilities.tsx exibindo Amazon SP-API, 64 testes Vitest passando e script scripts/verify_phase19.py com 100% PASS."
+      "id": "AC-20-10",
+      "description": "Atualização do README.md, ADR DEC-025 em DECISION_LOG.md e script scripts/verify_phase20.py 100% verde",
+      "status": "MET",
+      "evidence": "Documentos mestres atualizados e script automatizado de verificação do gate executado com sucesso."
     }
   ],
   "blockers": [],
-  "nextPrompt": "20",
-  "nextPromptTitle": "Auditoria completa de segurança e conformidade da plataforma",
+  "nextPrompt": "21",
+  "nextPromptTitle": "Implementação do Continuous Monitoring e automações avançadas",
   "nextPromptPrerequisiteMet": true
 }
