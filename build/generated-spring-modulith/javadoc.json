@@ -1,1 +1,1 @@
-[{"name":"br.com.sellerintelligence.ai.engine.AiPromptSanitizer","methods":[{"name":"sanitizeText","signature":"sanitizeText(java.lang.String)","comment":"Sanitiza e remove tentativas de prompt injection de textos não confiáveis de anúncios ou reviews."},{"name":"buildUntrustedContextXml","signature":"buildUntrustedContextXml(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Map)","comment":"Empacota atributos e textos não confiáveis do produto dentro da fronteira XML segura."}]}]
+[]

@@ -1,0 +1,1 @@
+import{p as c}from"./assets/marketplaceUrlParser-UpoExCPe.js";typeof chrome<"u"&&chrome.runtime&&chrome.runtime.onMessage&&chrome.runtime.onMessage.addListener((e,a,n)=>{if(e&&e.type==="INSPECT_PAGE_META"){const r=document.querySelector('link[rel="canonical"]'),t=r&&r.getAttribute("href")||window.location.href,o=c(t,document.title);n({success:!0,data:o})}return!0});

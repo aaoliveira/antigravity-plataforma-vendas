@@ -306,6 +306,28 @@ Conforme estipulado no PRD ([docs/product/PRD.md](file:///home/alexandre/Projeto
 
 ---
 
+## DEC-018 / ADR-018 — Extensão Chrome Manifest V3: Interface Contextual Segura, Permissão activeTab sob Demanda e Sem Coleta Hostil
+- **Data:** 2026-11-17
+- **Status:** `ACCEPTED`
+- **Contexto:** Endereçamento definitivo de **OQ-003** (Uso da extensão como interface contextual vs. fonte de captura permitida). A extensão deve conectar a experiência de navegação do vendedor no Mercado Livre ou Shopee à plataforma web da Seller Intelligence Platform, sem violar as políticas do Chrome Web Store Developer Program (Limited Use Policy) e sem contornar termos de serviço dos marketplaces.
+- **Opções consideradas:**
+  1. Extensão invasiva com scripts de injeção global (`<all_urls>`), monitoramento contínuo em segundo plano e raspagem oculta de páginas/preços de concorrentes ou dados de sessão.
+  2. Extensão Manifest V3 com arquitetura em TypeScript/React/Vite com:
+     - Permissão estritamente limitada a `activeTab` e storage local efêmero (`chrome.storage.session` / memória), sem ler cookies do marketplace e sem armazenar segredos ou senhas.
+     - Ação disparada exclusivamente por iniciativa explícita do usuário ao abrir o popup ou clicar no botão de envio para a plataforma.
+     - Content script mínimo focado apenas em identificar o identificador canônico público da página atual (ex.: `MLB12345678` ou `item_id` da Shopee) a partir do URL/DOM canônico aberto na aba ativa.
+     - Autenticação federada com a aplicação web da plataforma (verificação de sessão ativa via handshake com o backend e abertura de link seguro).
+     - Proibição absoluta de automação de cliques, compras, logins, alteração de preços ou publicação de anúncios no marketplace.
+     - Tratamento seguro de erros de conexão com o backend sem vazamento de dados sensíveis ou tokens.
+- **Decisão:** Opção 2. Extensão Manifest V3 leve, transparente, focada em produtividade contextual sob demanda e 100% aderente às diretrizes de permissões mínimas.
+- **Justificativa:** Conformidade integral com a LGPD, aprovação sem restrições na Chrome Web Store, prevenção contra vazamento de credenciais de sellers e garantia de segurança operacional.
+- **Consequências:** Nenhuma coleta oculta em background é realizada. O usuário precisa interagir com a extensão para inspecionar um produto ou enviar o item para o AI Listing Studio / Pesquisa de Mercado na plataforma web.
+- **Requisitos relacionados:** FR-LST-011, NFR-SEC-004, NFR-PRV-001, OQ-003, ADR DEC-012, PRD Seção 5.14, 8.2 e 12.4.
+- **Responsável:** Engenheiro Frontend / Segurança.
+- **Revisão:** Fase 2 (Prompt 13 - Monitoramento sob Demanda).
+
+---
+
 # Parte 2: Decisões Propostas e Pendências Classificadas (PROPOSED)
 
 ## DEC-P05 — Política de Retenção de Dados e Expurgos Automáticos LGPD (Vinculada a OQ-007)

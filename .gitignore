@@ -26,12 +26,14 @@ backend/.mvn/wrapper/maven-wrapper.jar
 *.jar
 *.war
 
-# Frontend (Node / Next.js)
+# Frontend & Extension (Node / Next.js / Vite)
+node_modules/
 frontend/node_modules/
 frontend/.next/
 frontend/out/
 frontend/dist/
 frontend/.pnpm-store/
+extension/node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

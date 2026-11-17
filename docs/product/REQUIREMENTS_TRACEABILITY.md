@@ -98,7 +98,7 @@ Nenhum requisito pode ser considerado concluído sem que os testes associados es
 | **FR-LST-008** | P1 | Gerenciar versões e histórico de anúncios. | Fase 1 (MVP) | Prompt 10 | Integração (Audit Trail / JPA) | `VERIFIED (Prompt 10)` |
 | **FR-LST-009** | P1 | Publicar/atualizar anúncio por API com confirmação humana. | Fase 3 | Prompt 19 | Integração (Marketplace Write API), E2E | `PLANNED` |
 | **FR-LST-010** | P1 | Executar testes comparativos/AB observacionais. | Fase 3 | Prompt 18 | Unitário (Comparative Analytics) | `PLANNED` |
-| **FR-LST-011** | P0 | Distinguir recomendação de IA de métrica observada. | Fase 1 (MVP) | Prompt 10, Prompt 11 | Unitário (DTO Classifier), E2E | `VERIFIED (Prompt 10)` |
+| **FR-LST-011** | P0 | Distinguir recomendação de IA de métrica observada. | Fase 1 (MVP) | Prompt 10, Prompt 11 | Unitário (DTO Classifier), E2E | `VERIFIED (Prompt 10, Prompt 11)` |
 
 ---
 

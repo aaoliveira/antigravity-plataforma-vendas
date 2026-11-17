@@ -2,70 +2,70 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "project": "Seller Intelligence Platform",
   "gateSystemVersion": "1.0.0",
-  "currentPrompt": "10",
-  "promptTitle": "AI Listing Studio: análise de anúncio e geração de conteúdo",
+  "currentPrompt": "11",
+  "promptTitle": "Extensão Chrome Manifest V3 complementar",
   "phase": "Fase 1 — MVP / P0",
   "status": "APPROVED",
-  "updatedAt": "2026-11-17T14:57:15-03:00",
+  "updatedAt": "2026-11-17T15:07:55-03:00",
   "evaluatedBy": "Antigravity AI Assistant",
   "criteria": [
     {
-      "id": "AC-10-1",
-      "description": "Interface AiProvider agnóstica com implementação configurável e FakeAiProvider exclusivo para perfil de teste",
+      "id": "AC-11-1",
+      "description": "Estrutura do projeto da extensão em TypeScript, React e Vite compilando para Manifest V3 com popup e scripts",
       "status": "APPROVED",
-      "evidence": "AiProvider desacoplado com implementação FakeAiProvider usada exclusivamente em testes (@Profile({\"test\", \"dev\", \"default\"})). RestAiProvider configurado para produção."
+      "evidence": "Projeto em extension/ compilando para Manifest V3 com popup React, serviceWorker.js, contentScript.js e assets compilados em dist/."
     },
     {
-      "id": "AC-10-2",
-      "description": "Prompts versionados em arquivos externos, schemas estruturados de resposta e validação de saída",
+      "id": "AC-11-2",
+      "description": "Manifest V3 configurado com permissões mínimas justificadas (activeTab, storage de sessão) sem permissões hostis",
       "status": "APPROVED",
-      "evidence": "Prompts versionados em resources/prompts/listing-title-v1.st e listing-description-v1.st com schemas JSON estritos de saída e validação em ListingStudioService."
+      "evidence": "Manifest V3 configurado com activeTab e storage estritamente necessários. Ausência de permissões hostis como <all_urls> e cookies de marketplace."
     },
     {
-      "id": "AC-10-3",
-      "description": "Motor de score de qualidade de anúncio explicável (0-100) com critérios auditáveis (título, descrição, ficha técnica, fotos)",
+      "id": "AC-11-3",
+      "description": "Content script e parser canônico de URL/ID restrito aos marketplaces suportados (Mercado Livre e Shopee)",
       "status": "APPROVED",
-      "evidence": "ListingAuditEngine implementa score auditável de 0 a 100 ponderado em 4 pilares: Título (25%), Descrição (25%), Ficha Técnica (30%) e Fotos (20%) com evidências e recomendações. Testado em ListingAuditEngineTest."
+      "evidence": "marketplaceUrlParser.ts extrai IDs canônicos MLB (Mercado Livre) e item_id (Shopee), bloqueando páginas de checkout, carrinho e contas privadas."
     },
     {
-      "id": "AC-10-4",
-      "description": "Factual Guardrail anti-alucinação: proibição de criar especificações inexistentes e identificação de atributos faltantes",
+      "id": "AC-11-4",
+      "description": "Ação explícita do usuário para inspecionar e enviar o URL/ID à plataforma sem coleta oculta em background",
       "status": "APPROVED",
-      "evidence": "Factual Guardrail ativo: o gerador é proibido de criar especificações, certificações ou garantias ausentes, marcando lacunas em missingRequiredAttributes e solicitando confirmação humana."
+      "evidence": "O envio do URL/ID para a plataforma é disparado única e exclusivamente mediante clique explícito do usuário nos botões do popup."
     },
     {
-      "id": "AC-10-5",
-      "description": "Proteção ativa contra prompt injection tratando dados de anúncios e avaliações como não confiáveis",
+      "id": "AC-11-5",
+      "description": "Autenticação segura e status de conexão com o backend sem persistir tokens sensíveis em storage inseguro",
       "status": "APPROVED",
-      "evidence": "AiPromptSanitizer desativa tentativas de injeção ([REDACTED_PROMPT_INJECTION]) e encapsula textos externos dentro de <untrusted_product_context> com aviso de segurança. Testado em AiPromptSanitizerTest."
+      "evidence": "Handshake de sessão e status online/offline com o backend sem persistir tokens sensíveis ou credenciais em LocalStorage inseguro."
     },
     {
-      "id": "AC-10-6",
-      "description": "Gestão de versões, rascunhos, edição humana e comparação sem publicação externa no marketplace",
+      "id": "AC-11-6",
+      "description": "Abertura contextual do item na aplicação web (AI Listing Studio / Pesquisa de Mercado)",
       "status": "APPROVED",
-      "evidence": "Tabela listing_versions com histórico de rascunhos imutáveis, version_number incremental, status DRAFT/ACCEPTED e sem publicação externa no marketplace. Testado em shouldManageDraftVersionsAndAccept."
+      "evidence": "Abertura contextual direta no AI Listing Studio (?tab=AI_STUDIO&externalId=...) ou Pesquisa de Mercado (?tab=MARKET&query=...)."
     },
     {
-      "id": "AC-10-7",
-      "description": "Rastreabilidade de chamadas (modelo, versão, latência) e fallback com erro explícito sem texto fabricado",
+      "id": "AC-11-7",
+      "description": "Conformidade comprovada: ausência total de scraping não autorizado, automação de compra ou alteração de preços",
       "status": "APPROVED",
-      "evidence": "Tabela ai_generation_logs registra modelo, versão, latência e status (SUCCESS/ERROR). Quando indisponível, lança AiServiceUnavailableException sem texto fabricado."
+      "evidence": "antiScrapingGuard.ts proíbe terminantemente leitura de cookies, compra automática, alteração de preços ou publicação de anúncios."
     },
     {
-      "id": "AC-10-8",
-      "description": "Isolamento multi-tenant absoluto em versões, logs e regras de auditoria",
+      "id": "AC-11-8",
+      "description": "Tratamento seguro de erros de conexão sem vazamento de tokens ou dados sensíveis",
       "status": "APPROVED",
-      "evidence": "tenant_id obrigatório em todas as queries e tabelas. Isolamento verificado em ListingStudioIntegrationTest#shouldEnforceMultiTenantIsolation."
+      "evidence": "Tratamento amigável de erros e avisos explicativos sem expor tokens ou dados de rede sensíveis."
     },
     {
-      "id": "AC-10-9",
-      "description": "Bateria de testes automatizados cobrindo score, injeção de prompt, isolamento e componentes frontend",
+      "id": "AC-11-9",
+      "description": "Bateria de testes automatizados cobrindo parsing de URLs, mensagens internas, permissões e componentes de UI",
       "status": "APPROVED",
-      "evidence": "106 testes backend passando com sucesso e 33 testes frontend Vitest passando, além de pnpm lint e pnpm build com 0 erros."
+      "evidence": "13 testes automatizados na extensão (marketplaceUrlParser.test.ts, antiScrapingGuard.test.ts, Popup.test.tsx) passando com 100% de sucesso."
     }
   ],
   "blockers": [],
-  "nextPrompt": "11",
-  "nextPromptTitle": "Extensão Chrome Manifest V3 complementar",
+  "nextPrompt": "12",
+  "nextPromptTitle": "Homologação, segurança E2E e release do MVP",
   "nextPromptPrerequisiteMet": true
 }

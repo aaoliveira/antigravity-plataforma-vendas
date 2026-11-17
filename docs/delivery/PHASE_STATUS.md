@@ -3,27 +3,27 @@
 ## 1. Visão Geral do Gate Atual
 
 - **Fase Atual:** Fase 1 — MVP / P0
-- **Prompt Ativo Concluído:** `Prompt 10 — AI Listing Studio: análise de anúncio e geração de conteúdo`
+- **Prompt Ativo Concluído:** `Prompt 11 — Extensão Chrome Manifest V3 complementar`
 - **Status do Gate:** `APPROVED`
-- **Próximo Prompt Liberado:** `Prompt 11 — Extensão Chrome Manifest V3 complementar`
-- **Data da Avaliação:** 2026-11-17T14:57:35-03:00
+- **Próximo Prompt Liberado:** `Prompt 12 — Homologação, segurança E2E e release do MVP`
+- **Data da Avaliação:** 2026-11-17T15:08:20-03:00
 - **Responsável:** Antigravity AI Assistant & Engenharia
 
 ---
 
-## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 10)
+## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 11)
 
 | Critério de Aceite | Requisito Verificado | Evidência Comprovada | Avaliação |
 |---|---|---|---|
-| **1. Provedor de IA Agnóstico** | Interface `AiProvider` e `FakeAiProvider` configurado exclusivamente para profile de teste sem chamada externa. | Porta desacoplada `AiProvider` com `FakeAiProvider` ativo em `@Profile({"test", "dev", "default"})` e `RestAiProvider` pronto para produção. | `APROVADO` |
-| **2. Prompts Versionados e Schemas JSON** | Prompts em arquivos de recursos (`prompts/*.st`), schemas de resposta e validação rigorosa. | Prompts `listing-title-v1.st` e `listing-description-v1.st` versionados em arquivos de recursos com schemas JSON e validação estrita. | `APROVADO` |
-| **3. Score de Qualidade Auditável** | Cálculo determinístico de score (0-100) ponderado (Título 25%, Descrição 25%, Atributos 30%, Fotos 20%) com justificativas. | `ListingAuditEngine` implementa pontuação transparente baseada nos 4 pilares com recomendações acionáveis. Testado em `ListingAuditEngineTest`. | `APROVADO` |
-| **4. Factual Guardrail Anti-Alucinação** | Proibição de inventar medidas, certificações, materiais ou garantias; marcação de lacunas com pedido de confirmação. | Factual Guardrail ativado: a IA não inventa dados e marca atributos pendentes em `missingRequiredAttributes`, solicitando confirmação humana. | `APROVADO` |
-| **5. Proteção contra Prompt Injection** | Sanitização e encapsulamento em `<untrusted_product_context>`, prevenindo evasão de instruções e vazamento. | `AiPromptSanitizer` desativa tentativas hostis com `[REDACTED_PROMPT_INJECTION]` e encapsula conteúdo em XML com aviso de segurança. Testado em `AiPromptSanitizerTest`. | `APROVADO` |
-| **6. Gestão de Versões e Rascunhos** | Criação, edição, histórico e comparação de rascunhos (`listing_versions`) sem publicação no marketplace. | Tabela `listing_versions` com numeração incremental, status `DRAFT`/`ACCEPTED` e garantia de não-modificação do anúncio externo. Testado em `shouldManageDraftVersionsAndAccept`. | `APROVADO` |
-| **7. Fallback Explícito e Auditoria** | Registro de modelo, prompt, latência e status, com erro explícito (`AI_SERVICE_UNAVAILABLE`) sem texto fabricado. | `AiGenerationLog` persiste auditoria de modelo, versão e latência. Em caso de indisponibilidade, lança `AiServiceUnavailableException` sem inventar respostas. | `APROVADO` |
-| **8. Isolamento Multi-Tenant** | `tenant_id` obrigatório em todas as entidades e consultas do estúdio de IA. | `tenant_id` obrigatório em todas as tabelas e queries JPQL. Isolamento comprovado em `ListingStudioIntegrationTest#shouldEnforceMultiTenantIsolation`. | `APROVADO` |
-| **9. Suíte de Testes Automatizados** | Testes de unidade do score, testes adversariais de prompt injection, integração com fake provider e componentes React. | 106 testes backend passando (`BUILD SUCCESS`) e 33 testes frontend Vitest passando, além de `next lint` e `next build` com 0 erros. | `APROVADO` |
+| **1. Estrutura Manifest V3** | Projeto TypeScript + React + Vite compilando para Manifest V3 com popup, service worker e scripts. | Projeto compilado em `extension/dist/` contendo `manifest.json`, `popup.html`, `serviceWorker.js` e `contentScript.js`. | `APROVADO` |
+| **2. Permissões Mínimas Justificadas** | Uso estrito de `activeTab` e `storage` de sessão sem permissões amplas (`<all_urls>`, cookies de marketplace). | `manifest.json` restrito a `activeTab` e `storage`, sem `<all_urls>` e sem permissão de cookies de marketplace. Justificado no `README.md`. | `APROVADO` |
+| **3. Parser Canônico de URL/ID** | Extração de ID canônico (MLB e Shopee) restrita aos marketplaces suportados a partir da aba ativa. | `marketplaceUrlParser.ts` extrai IDs `MLB` (Mercado Livre) e `item_id` (Shopee) e rejeita páginas de checkout, carrinho e domínios não suportados. | `APROVADO` |
+| **4. Ação Explícita do Usuário** | Envio de URL/ID disparado unicamente por clique do usuário no popup, sem scraping em background. | Nenhuma coleta em segundo plano; a navegação contextual e abertura de abas só ocorre mediante clique nos botões do popup. | `APROVADO` |
+| **5. Autenticação Segura & Status** | Status de sessão e verificação com backend sem persistir tokens sensíveis em storage inseguro. | Verificação de status via `CHECK_BACKEND_STATUS` em memória sem armazenamento de credenciais sensíveis ou tokens em LocalStorage. | `APROVADO` |
+| **6. Abertura Contextual na Web** | Links contextuais para abrir o item inspecionado no AI Listing Studio ou Pesquisa de Mercado. | Popup aciona navegação direta para `/?tab=AI_STUDIO&externalId=...` e `/?tab=MARKET&query=...` via mensagem para o service worker. | `APROVADO` |
+| **7. Ausência de Coleta Hostil** | Zero automação de compras, cliques, alteração de preços ou publicação de anúncios no marketplace. | `antiScrapingGuard.ts` bloqueia em tempo de execução ações como `READ_COOKIES`, `AUTOMATE_PURCHASE` e `CHANGE_PRICE`. | `APROVADO` |
+| **8. Tratamento Seguro de Erros** | Tratamento de falhas de rede e páginas não suportadas sem expor segredos ou falhar silenciosamente. | Popup apresenta estados amigáveis de página não suportada e erros de comunicação sem expor tokens ou dados técnicos. | `APROVADO` |
+| **9. Suíte de Testes da Extensão** | Testes automatizados de parsing de URLs, mensagens internas, permissões e componentes React do popup. | 13 testes automatizados em Vitest cobrindo `marketplaceUrlParser.test.ts`, `antiScrapingGuard.test.ts` e `Popup.test.tsx` com 100% de aprovação. | `APROVADO` |
 
 ---
 
@@ -42,8 +42,8 @@
 | **08** | Motor financeiro determinístico e versionado | Fase 1 | `APPROVED` | 2026-11-17 | Endereçamento OQ-004 e OQ-005 no ADR DEC-015, custos por SKU, regras versionadas, cálculo em BigDecimal, memória de cálculo, UI de simulação e 88 testes backend + 24 frontend. |
 | **09** | Painel financeiro, rentabilidade e relatórios | Fase 1 | `APPROVED` | 2026-11-17 | Endereçamento OQ-015 no ADR DEC-016, agregação de faturamento e margem, comparação de períodos, exportação CSV RFC-4180 com metadados de proveniência, RBAC estrito e 93 testes backend + 28 frontend. |
 | **10** | AI Listing Studio: análise e geração de conteúdo | Fase 1 | `APPROVED` | 2026-11-17 | Endereçamento OQ-010, OQ-013 e OQ-014 no ADR DEC-017, AiProvider agnóstico, score auditável (4 pilares), guardrail anti-alucinação, defesa contra prompt injection, rascunhos imutáveis e 106 testes backend + 33 frontend. |
-| **11** | Extensão Chrome Manifest V3 complementar | Fase 1 | `NOT_STARTED` | — | Liberado para execução. |
-| **12** | Homologação, segurança E2E e release do MVP | Fase 1 | `NOT_STARTED` | — | Fechamento da Fase 1 (MVP). |
+| **11** | Extensão Chrome Manifest V3 complementar | Fase 1 | `APPROVED` | 2026-11-17 | Endereçamento OQ-003 no ADR DEC-018, Manifest V3 em TypeScript/React/Vite, permissões mínimas (activeTab e storage), zero scraping hostil, parser canônico ML/Shopee e 13 testes automatizados. |
+| **12** | Homologação, segurança E2E e release do MVP | Fase 1 | `NOT_STARTED` | — | Fechamento da Fase 1 (MVP). Liberado para execução. |
 | **13** | Monitoramento contínuo de produtos e concorrentes | Fase 2 | `NOT_STARTED` | — | Expansão de inteligência. |
 | **14** | Smart Alerts e Action Center | Fase 2 | `NOT_STARTED` | — | Automação e tarefas. |
 | **15** | Product Discovery avançado: PDFs e busca por imagem | Fase 2 | `NOT_STARTED` | — | Leitura de catálogos de fornecedores. |
@@ -55,4 +55,4 @@
 ---
 
 ## 4. Liberação para o Próximo Passo
-O **Prompt 10** foi completamente concluído, testado e **APROVADO**. O **Prompt 11 — Extensão Chrome Manifest V3 complementar** está formalmente liberado para início.
+O **Prompt 11** foi completamente concluído, testado e **APROVADO**. O **Prompt 12 — Homologação, segurança E2E e release do MVP** (fechamento oficial da Fase 1 — MVP) está formalmente liberado para início.
