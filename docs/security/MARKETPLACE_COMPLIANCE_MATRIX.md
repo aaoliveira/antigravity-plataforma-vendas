@@ -296,3 +296,15 @@ Todos os recursos de integração, sincronização, inteligência de mercado e a
 | **TikTok Shop** | `UNVERIFIED_COMPLIANCE` | `UNVERIFIED_COMPLIANCE` | `UNVERIFIED_COMPLIANCE` | `UNVERIFIED_COMPLIANCE` | `UNVERIFIED_COMPLIANCE` | **`UNVERIFIED_COMPLIANCE` (Bloqueado)** |
 | **Magalu** | `UNVERIFIED_COMPLIANCE` | `UNVERIFIED_COMPLIANCE` | `UNVERIFIED_COMPLIANCE` | `UNVERIFIED_COMPLIANCE` | `UNVERIFIED_COMPLIANCE` | **`UNVERIFIED_COMPLIANCE` (Bloqueado)** |
 | **SHEIN** | `UNVERIFIED_COMPLIANCE` | `UNVERIFIED_COMPLIANCE` | `UNVERIFIED_COMPLIANCE` | `UNVERIFIED_COMPLIANCE` | `UNVERIFIED_COMPLIANCE` | **`UNVERIFIED_COMPLIANCE` (Bloqueado)** |
+
+---
+
+## 4. Governança Contínua de Políticas
+Todas as políticas, termos de uso e ciclos de vida de APIs listados nesta matriz são monitorados continuadamente pelo **Continuous Marketplace Compliance Engine**. Detalhes de arquitetura, ciclo de vida, diretrizes e inventário oficial de políticas encontram-se em:
+- [docs/compliance/CONTINUOUS_COMPLIANCE_ARCHITECTURE.md](../compliance/CONTINUOUS_COMPLIANCE_ARCHITECTURE.md)
+- [docs/compliance/POLICY_MONITORING_GUIDELINES.md](../compliance/POLICY_MONITORING_GUIDELINES.md)
+- [docs/compliance/COMPLIANCE_LIFECYCLE.md](../compliance/COMPLIANCE_LIFECYCLE.md)
+- [docs/compliance/COMPLIANCE_INCIDENT_PLAYBOOK.md](../compliance/COMPLIANCE_INCIDENT_PLAYBOOK.md)
+- [docs/compliance/SAFE_REACTIVATION.md](../compliance/SAFE_REACTIVATION.md)
+- [docs/compliance/MARKETPLACE_POLICY_REGISTRY.md](../compliance/MARKETPLACE_POLICY_REGISTRY.md)
+

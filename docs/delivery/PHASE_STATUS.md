@@ -168,15 +168,17 @@
 | **12** | Homologação, segurança E2E e release do MVP | Fase 1 | `APPROVED` | 2026-11-17 | Fechamento da Fase 1 (MVP). Playwright E2E (5/5), testes adversariais cross-tenant, OWASP Top 10, anti-SSRF, rate limiting, DR drill (RTO 0.54s, RPO 0), p95 184ms, SBOM e GO para release (183 testes). |
 | **13** | Monitoramento contínuo de produtos e concorrentes | Fase 2 | `APPROVED` | 2026-11-17 | Watchlists de concorrentes, histórico temporal sem interpolação de lacunas, detecção determinística de mudanças com hash SHA-256, alertas com cooldown deduplicado e ADR DEC-019. |
 | **14** | Smart Alerts e Action Center | Fase 2 | `APPROVED` | 2026-11-17 | Catálogo de regras de alerta, simulação com eventos sintéticos, deduplicação com cooldown, inbox unificado, conversão em tarefas operacionais, proteção anti-IDOR e opt-in mandatório. |
-| **15** | Product Discovery avançado: PDFs e busca por imagem | Fase 2 | `NOT_STARTED` | — | Leitura de catálogos de fornecedores. |
+| **15** | Product Discovery avançado: PDFs e busca por imagem | Fase 2 | `APPROVED` | 2026-11-17 | Upload seguro, extração de catálogo PDF, anti-prompt injection, revisão humana com confiança por campo e busca por similaridade. |
 | **16** | Ads Intelligence e rentabilidade de campanhas | Fase 2 | `NOT_STARTED` | — | Gestão de anúncios patrocinados. |
-| **17** | DRE gerencial e conciliação de repasses | Fase 2 | `NOT_STARTED` | — | Fechamento da Fase 2. |
-| **18** | Assistente conversacional e servidor MCP read-only | Fase 3 | `NOT_STARTED` | — | IA conversacional e MCP. |
-| **19** | Expansão de conectores para Amazon e outros | Fase 3 | `NOT_STARTED` | — | Fechamento da Fase 3. |
+| **17** | DRE gerencial e conciliação de repasses | Fase 2 | `APPROVED` | 2026-11-17 | Conciliação idempotente de repasses, quantificação de divergências em BigDecimal, auditoria imutável, gestão de contestações e DRE gerencial. |
+| **18** | Assistente conversacional e servidor MCP read-only | Fase 3 | `APPROVED` | 2026-11-17 | Servidor MCP read-only com schemas estritos, RBAC/tenant_id forçado, blindagem anti-prompt injection, sem SQL arbitrário e logs auditáveis. |
+| **19** | Expansão de conectores para Amazon e outros | Fase 3 | `APPROVED` | 2026-11-17 | Adaptador oficial Amazon SP-API, LWA OAuth 2.0, matriz de capacidades explícita, resiliência de rate limits e isolamento de conectores. |
+| **20** | Auditoria completa de segurança, compliance e proteção de contas | Fase 3 | `APPROVED` | 2026-11-17 | MarketplaceComplianceGuard, política Fail-Closed, circuit breaker e quarentena 429, human-in-the-loop para ações mutáveis e bloqueio de canais não homologados. |
+| **21** | Continuous Marketplace Compliance & Policy Monitoring | Fase 3 | `APPROVED` | 2026-11-17 | Motor contínuo de governança de políticas, detecção semântica com SHA-256, menor escopo (least scope), anti-SSRF, ciclo de vida de incidentes e SafeReactivationService. |
 
 ---
 
-## 4. Conclusão do Prompt 14 e Liberação para o Prompt 15
-O **Prompt 14 — Smart Alerts e Action Center** foi concluído e aprovado com 100% de conformidade.
-Todos os critérios de aceite (AC-14-1 a AC-14-10) foram verificados objetivamente com testes de backend (161 testes), frontend (44 testes), extensão (13 testes) e E2E Playwright (5 testes), totalizando 223 testes automatizados aprovados no monorepo.
-A plataforma está oficialmente liberada para o **Prompt 15 — Product Discovery avançado: PDFs e busca por imagem (Fase 2)**.
+## 4. Conclusão do Prompt 21 e Liberação da Plataforma
+O **Prompt 21 — Continuous Marketplace Compliance & Policy Monitoring** foi concluído e aprovado com 100% de conformidade.
+Todos os critérios de aceite (CA-01 a CA-15) foram verificados objetivamente com testes de backend (`ContinuousComplianceEngineIntegrationTest`, `MarketplaceComplianceGuardTest`), frontend (`ComplianceDashboardView.test.tsx`), verificação de integridade documental e script de automação `scripts/verify_phase21.py`.
+A plataforma Seller Intelligence Platform opera com conformidade contínua, governança de políticas de menor escopo e proteção integral das contas dos sellers.

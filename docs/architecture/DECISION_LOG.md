@@ -492,6 +492,30 @@ Conforme estipulado no PRD ([docs/product/PRD.md](file:///home/alexandre/Projeto
 
 ---
 
+## DEC-026 / ADR-026 — Continuous Marketplace Compliance Engine, Governança de Políticas de Menor Escopo e Reativação Segura
+- **Data:** 2026-11-17
+- **Status:** `ACCEPTED`
+- **Contexto:** Endereçamento dos requisitos de conformidade contínua, governança de políticas e mitigação de riscos regulatórios em integrações de marketplaces (Prompt 21). Mudanças nos termos de uso, diretrizes de desenvolvedores, escopos OAuth e ciclos de vida de APIs podem invalidar premissas técnicas da plataforma e expor sellers ao risco de suspensão de contas caso alterações não sejam detectadas e tratadas preventivamente.
+- **Opções consideradas:**
+  1. Monitorar páginas esporadicamente por scraping ad-hoc ou depender de e-mails manuais para intervenção emergencial. (Inseguro, reativo e com alto risco de omissão regulatória).
+  2. Implementar uma arquitetura abrangente de governança contínua (**Continuous Marketplace Compliance Engine**) com:
+     - **Catálogo Centralizado de Políticas:** Tabela `marketplace_policies` com URLs oficiais canônicas para os 6 marketplaces, verificação diária e semanal com hash SHA-256 e controle de integridade.
+     - **Detecção Semântica de Mudanças:** `PolicyChangeDetector` com normalização de HTML/whitespace que diferencia alterações cosméticas (`FORMATTING_ONLY` / `INFORMATIONAL`) de alterações substantivas (`SUBSTANTIVE` / `CRITICAL`), evitando alarmes falsos.
+     - **Análise de Impacto Funcional e Risco Determinístico:** `ComplianceImpactAnalyzer` e `RiskAssessmentEngine` que mapeiam a cláusula alterada para as features concretas da plataforma (`PRICE_UPDATE`, `CATALOG_UPDATE`, `ORDER_SYNC`).
+     - **Princípio do Menor Escopo (Least Scope Enforcement):** Em caso de risco crítico, o `AutomaticComplianceEnforcer` suspende preventivamente **apenas a feature afetada** via `FeatureEnforcementRecord`, preservando fluxos não correlacionados.
+     - **Blindagem Anti-SSRF:** `UrlSecurityValidator` restringe requisições de monitoramento estritamente a domínios oficiais na allowlist (`ALLOWED_POLICY_DOMAINS`), bloqueando localhost, redes privadas RFC 1918 e metadados de nuvem.
+     - **Proibição Estrita de Reativação Automática:** Nenhuma feature suspensa é restaurada automaticamente. O `SafeReactivationService` exige identificação do operador responsável, justificativa circunstanciada e evidência de testes automatizados (`testEvidenceRunId`), persistindo registro imutável em `safe_reactivation_logs`.
+     - **Validação de Escopos e Ciclos de Vida de API:** `PermissionAuthorizationValidator` e `ApiLifecycleMonitor` rastreiam permissões ativas em lojas e alertam sobre endpoints `DEPRECATED` e datas de `SUNSET`.
+     - **Painel Administrativo Unificado:** `ComplianceDashboardController` e `ComplianceDashboardView.tsx` provendo visibilidade de políticas, incidentes, status de APIs e gestão de reativações.
+- **Decisão:** Opção 2.
+- **Justificativa:** Mitigação proativa de riscos, proteção absoluta das contas dos sellers contra banimentos e respeito estrito aos termos de integração dos marketplaces parceiros.
+- **Consequências:** Conformidade contínua passa a ser uma propriedade arquitetural viva, auditável e verificável por testes automatizados em todo o ciclo de vida da plataforma.
+- **Requisitos relacionados:** CA-01 a CA-15 (Prompt 21), PRD Seções 3.1, 4.1, 5.1, 6.1, OWASP ASVS v4.0.3, LGPD.
+- **Responsável:** Staff Software Engineer / Application Security Engineer.
+- **Revisão:** Fase 3 (Segurança e Compliance Contínuo).
+
+---
+
 # Parte 2: Decisões Propostas e Pendências Classificadas (PROPOSED)
 
 ## DEC-P05 — Política de Retenção de Dados e Expurgos Automáticos LGPD (Vinculada a OQ-007)

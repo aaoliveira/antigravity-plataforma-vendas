@@ -113,6 +113,14 @@ A Seller Intelligence Platform implementa uma camada arquitetural avançada de s
 - **Governança Human-in-the-Loop para Mutações Críticas:** Operações comerciais que alteram preços, publicam anúncios ou modificam estoque (`OperationRiskLevel.MUTABLE_CRITICAL`) exigem consentimento explícito e aprovação humana do seller (`humanApproved == true`). Mutações autônomas sem supervisão são rejeitadas com `HUMAN_APPROVAL_REQUIRED`.
 - **Bloqueio Estrito de Canais Não Homologados (`UNVERIFIED_COMPLIANCE`):** Marketplaces em fase de homologação documental (TikTok Shop, Magalu, SHEIN) permanecem categoricamente bloqueados para produção até a conclusão de parcerias oficiais e concessão de credenciais.
 - **Isolamento Multi-Tenant e Sanitização de Credenciais:** Tokens OAuth 2.0 são criptografados com AES-256-GCM em repouso e sistematicamente mascarados com `[REDACTED]` em logs e mensagens de erro.
+- **Continuous Marketplace Compliance Engine:** Monitoramento permanente de termos de uso, políticas para desenvolvedores, escopos OAuth e ciclos de vida de APIs para Mercado Livre, Shopee, Amazon, TikTok Shop, Magalu e SHEIN. Implementa detecção semântica com hash SHA-256, contenção preventiva Fail Closed no menor escopo afetado (Least Scope), blindagem anti-SSRF e protocolo de reativação estritamente governado e não-automático (`SafeReactivationService`).
+  - Arquitetura de Conformidade Contínua: [docs/compliance/CONTINUOUS_COMPLIANCE_ARCHITECTURE.md](docs/compliance/CONTINUOUS_COMPLIANCE_ARCHITECTURE.md)
+  - Diretrizes de Monitoramento: [docs/compliance/POLICY_MONITORING_GUIDELINES.md](docs/compliance/POLICY_MONITORING_GUIDELINES.md)
+  - Ciclo de Vida de Políticas: [docs/compliance/COMPLIANCE_LIFECYCLE.md](docs/compliance/COMPLIANCE_LIFECYCLE.md)
+  - Playbook de Incidentes: [docs/compliance/COMPLIANCE_INCIDENT_PLAYBOOK.md](docs/compliance/COMPLIANCE_INCIDENT_PLAYBOOK.md)
+  - Protocolo de Reativação Segura: [docs/compliance/SAFE_REACTIVATION.md](docs/compliance/SAFE_REACTIVATION.md)
+  - Registro Oficial de Políticas: [docs/compliance/MARKETPLACE_POLICY_REGISTRY.md](docs/compliance/MARKETPLACE_POLICY_REGISTRY.md)
+  - Relatório de Testes de Conformidade: [docs/compliance/CONTINUOUS_COMPLIANCE_TEST_REPORT.md](docs/compliance/CONTINUOUS_COMPLIANCE_TEST_REPORT.md)
 - **Documentação de Segurança:**
   - Relatório de Auditoria: [docs/security/SECURITY_AUDIT_REPORT.md](docs/security/SECURITY_AUDIT_REPORT.md)
   - Matriz de Conformidade por Canal: [docs/security/MARKETPLACE_COMPLIANCE_MATRIX.md](docs/security/MARKETPLACE_COMPLIANCE_MATRIX.md)

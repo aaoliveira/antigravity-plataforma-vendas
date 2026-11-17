@@ -2,76 +2,106 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "project": "Seller Intelligence Platform",
   "gateSystemVersion": "1.0.0",
-  "currentPrompt": "20",
-  "promptTitle": "Auditoria completa de segurança, compliance e proteção de contas dos marketplaces",
-  "phase": "Fase 3 — segurança e compliance",
+  "currentPrompt": "21",
+  "promptTitle": "Implementação do Continuous Marketplace Compliance & Policy Monitoring",
+  "phase": "Fase 3 — segurança e compliance contínuo",
   "status": "APPROVED",
-  "updatedAt": "2026-11-17T19:17:00-03:00",
+  "updatedAt": "2026-11-17T19:40:00-03:00",
   "evaluatedBy": "Antigravity AI Assistant",
   "criteria": [
     {
-      "id": "AC-20-1",
-      "description": "Relatório executivo e detalhado de auditoria de segurança em docs/security/SECURITY_AUDIT_REPORT.md cobrindo vulnerabilidades, riscos e evidências",
+      "id": "CA-01",
+      "description": "Monitoramento periódico de fontes oficiais cadastradas com frequências configuráveis",
       "status": "MET",
-      "evidence": "docs/security/SECURITY_AUDIT_REPORT.md elaborado com metodologia OWASP ASVS e avaliação independente de cada canal."
+      "evidence": "PolicyMonitoringEngine e MarketplacePolicyRegistryService configurados com frequências diárias e semanais e hashes SHA-256."
     },
     {
-      "id": "AC-20-2",
-      "description": "Matriz individual de conformidade por marketplace em docs/security/MARKETPLACE_COMPLIANCE_MATRIX.md para Mercado Livre, Shopee, Amazon, TikTok Shop, Magalu e SHEIN",
+      "id": "CA-02",
+      "description": "Detecção de alterações relevantes em políticas preservando conteúdo anterior e atual com hashes SHA-256",
       "status": "MET",
-      "evidence": "docs/security/MARKETPLACE_COMPLIANCE_MATRIX.md com status COMPLIANT, NON_COMPLIANT, PARTIALLY_COMPLIANT e UNVERIFIED_COMPLIANCE."
+      "evidence": "PolicyChangeDetector normaliza formatação, detecta diffs semânticos e preserva snapshots históricos na tabela marketplace_policy_changes."
     },
     {
-      "id": "AC-20-3",
-      "description": "Plano de remediação estruturado e registro de decisões de compliance em docs/security/SECURITY_REMEDIATION_PLAN.md e docs/security/COMPLIANCE_DECISIONS.md",
+      "id": "CA-03",
+      "description": "Rastreabilidade completa de impacto entre marketplace, política, endpoint, conector e funcionalidade",
       "status": "MET",
-      "evidence": "Documentação formalizando bloqueios fail-closed e cronograma de adequação de canais."
+      "evidence": "ComplianceImpactAnalyzer mapeia cláusulas de políticas para funcionalidades concretas da plataforma (PRICE_UPDATE, CATALOG_UPDATE, etc.)."
     },
     {
-      "id": "AC-20-4",
-      "description": "Diretrizes de integração e relatório de testes de segurança em docs/security/MARKETPLACE_INTEGRATION_GUIDELINES.md e docs/security/SECURITY_TEST_REPORT.md",
+      "id": "CA-04",
+      "description": "Avaliação determinística de riscos (CRITICAL, HIGH, MEDIUM, LOW, INFORMATIONAL)",
       "status": "MET",
-      "evidence": "Diretrizes técnicas para desenvolvedores e relatório de testes de segurança da plataforma."
+      "evidence": "RiskAssessmentEngine avalia deterministamente risco por criticidade funcional e natureza da alteração contratual."
     },
     {
-      "id": "AC-20-5",
-      "description": "Implementação do componente central Marketplace Compliance Guard operando sob política FAIL CLOSED",
+      "id": "CA-05",
+      "description": "Bloqueio preventivo automático antes da próxima execução de funcionalidade de risco crítico",
       "status": "MET",
-      "evidence": "Componente MarketplaceComplianceGuard validando status de conexão, expiração de token, bloqueios operacionais e autorização de canal."
+      "evidence": "AutomaticComplianceEnforcer e MarketplaceComplianceGuard aplicam bloqueio preventivo Fail-Closed a operações de risco crítico."
     },
     {
-      "id": "AC-20-6",
-      "description": "Governança estrita de ações mutáveis exigindo aprovação humana mandatória prévia antes de qualquer publicação ou alteração de preços",
+      "id": "CA-06",
+      "description": "Isolamento de escopo aplicando menor bloqueio necessário sem suspender o canal inteiro indiscriminadamente",
       "status": "MET",
-      "evidence": "Compliance guard bloqueando mutações automáticas não autorizadas e exigindo confirmação explícita do seller."
+      "evidence": "FeatureEnforcementRecord restringe estritamente a funcionalidade afetada (ex.: PRICE_UPDATE), mantendo sincronização de pedidos e catálogo ativas."
     },
     {
-      "id": "AC-20-7",
-      "description": "Bloqueio estrito de canais e recursos com conformidade não confirmada (UNVERIFIED_COMPLIANCE) em produção",
+      "id": "CA-07",
+      "description": "Verificação contínua de permissões, escopos OAuth, tokens expirados e revogados",
       "status": "MET",
-      "evidence": "TikTok Shop, Magalu e SHEIN mantidos categoricamente bloqueados para produção até certificação de parceiro comercial."
+      "evidence": "PermissionAuthorizationValidator verifica escopos requeridos, revogações parciais e previne operações não autorizadas."
     },
     {
-      "id": "AC-20-8",
-      "description": "Proteção multi-tenant e sanitização estrita de credenciais e tokens em logs, mensagens e exceções",
+      "id": "CA-08",
+      "description": "Monitoramento do ciclo de vida das APIs, novas versões e avisos de depreciação",
       "status": "MET",
-      "evidence": "Isolamento multi-tenant garantido e filtros de log impedindo vazamento de tokens, senhas ou PII."
+      "evidence": "ApiLifecycleMonitor rastreia endpoints em status DEPRECATED e calcula avisos de sunset preventivos."
     },
     {
-      "id": "AC-20-9",
-      "description": "Suíte automatizada de testes de conformidade e segurança cobrindo os 15 cenários mandatórios do prompt",
+      "id": "CA-09",
+      "description": "Gestão completa de incidentes de compliance com ciclo OPEN a CLOSED e planos de remediação",
       "status": "MET",
-      "evidence": "Testes unitários e de integração validando bloqueio de operações, tokens expirados/revogados, 429, circuit breaker e RBAC."
+      "evidence": "ComplianceIncidentService gerencia ciclo de vida OPEN -> IN_ANALYSIS -> RESOLVED -> CLOSED com auditoria completa."
     },
     {
-      "id": "AC-20-10",
-      "description": "Atualização do README.md, ADR DEC-025 em DECISION_LOG.md e script scripts/verify_phase20.py 100% verde",
+      "id": "CA-10",
+      "description": "Notificações e alertas deduplicados com controle de frequência para administradores",
       "status": "MET",
-      "evidence": "Documentos mestres atualizados e script automatizado de verificação do gate executado com sucesso."
+      "evidence": "ComplianceNotificationService aplica deduplicação por hash de chave e janela de cooldown de 5 minutos."
+    },
+    {
+      "id": "CA-11",
+      "description": "Processo formal de reativação segura sem restauração automática de funcionalidades bloqueadas",
+      "status": "MET",
+      "evidence": "SafeReactivationService proíbe reativação automática e exige aprovador humano, justificativa e evidência de teste."
+    },
+    {
+      "id": "CA-12",
+      "description": "Trilha imutável de auditoria registrando todas as alterações, bloqueios, decisões e reativações",
+      "status": "MET",
+      "evidence": "Tabelas safe_reactivation_logs e audit_events persistem histórico imutável com usuário, data/hora e justificativa."
+    },
+    {
+      "id": "CA-13",
+      "description": "Segurança rigorosa contra SSRF com allowlist de domínios oficiais e proteção de segredos",
+      "status": "MET",
+      "evidence": "UrlSecurityValidator.validatePolicyMonitoringUrl restringe requisições a domínios na allowlist e bloqueia redes privadas e metadados de nuvem."
+    },
+    {
+      "id": "CA-14",
+      "description": "Suíte completa de testes automatizados cobrindo os 20 cenários mandatórios do prompt",
+      "status": "MET",
+      "evidence": "ContinuousComplianceEngineIntegrationTest (13 testes, 20 aspectos) e ComplianceDashboardView.test.tsx (5 testes) aprovados com 100% de sucesso."
+    },
+    {
+      "id": "CA-15",
+      "description": "Documentação obrigatória em docs/compliance/ e atualização dos documentos de governança",
+      "status": "MET",
+      "evidence": "7 documentos completos em docs/compliance/, ADR DEC-026 em DECISION_LOG.md e referências no README e relatórios de segurança."
     }
   ],
   "blockers": [],
-  "nextPrompt": "21",
-  "nextPromptTitle": "Implementação do Continuous Monitoring e automações avançadas",
+  "nextPrompt": "22",
+  "nextPromptTitle": "Próxima fase do roadmap",
   "nextPromptPrerequisiteMet": true
 }

@@ -15,6 +15,7 @@ import { ActionCenterView } from './ActionCenterView';
 import { ProductDiscoveryView } from './ProductDiscoveryView';
 import { ReconciliationAndDreView } from './ReconciliationAndDreView';
 import { ConversationalAssistantView } from './ConversationalAssistantView';
+import { ComplianceDashboardView } from './ComplianceDashboardView';
 
 const initialDemoCompanies: CompanyItem[] = [
   {
@@ -43,7 +44,7 @@ const initialDemoStores: StoreItem[] = [
 ];
 
 export const DashboardView: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'COMPANIES' | 'STORES' | 'CAPABILITIES' | 'SYNC' | 'MARKET' | 'MONITORING' | 'ACTION_CENTER' | 'DISCOVERY' | 'FINANCIAL' | 'RECONCILIATION_DRE' | 'AI_STUDIO' | 'ASSISTANT' | 'HEALTH'>('COMPANIES');
+  const [activeTab, setActiveTab] = useState<'COMPANIES' | 'STORES' | 'CAPABILITIES' | 'SYNC' | 'MARKET' | 'MONITORING' | 'ACTION_CENTER' | 'DISCOVERY' | 'FINANCIAL' | 'RECONCILIATION_DRE' | 'AI_STUDIO' | 'ASSISTANT' | 'COMPLIANCE' | 'HEALTH'>('COMPANIES');
   const [financialSubTab, setFinancialSubTab] = useState<'DASHBOARD' | 'ENGINE'>('DASHBOARD');
   const [companies, setCompanies] = useState<CompanyItem[]>(initialDemoCompanies);
   const [stores, setStores] = useState<StoreItem[]>(initialDemoStores);
@@ -196,6 +197,17 @@ export const DashboardView: React.FC = () => {
           <span className="text-[10px] px-1.5 py-0.2 rounded bg-violet-500/20 text-violet-300 border border-violet-500/30">Fase 3</span>
         </button>
         <button
+          onClick={() => setActiveTab('COMPLIANCE')}
+          className={`pb-3 px-1 border-b-2 transition-colors flex items-center gap-1.5 ${
+            activeTab === 'COMPLIANCE'
+              ? 'border-emerald-500 text-emerald-400 font-semibold'
+              : 'border-transparent text-slate-400 hover:text-slate-200'
+          }`}
+        >
+          <span>Compliance &amp; Políticas</span>
+          <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Fase 3</span>
+        </button>
+        <button
           onClick={() => setActiveTab('HEALTH')}
           className={`pb-3 px-1 border-b-2 transition-colors ${
             activeTab === 'HEALTH'
@@ -264,6 +276,8 @@ export const DashboardView: React.FC = () => {
       {activeTab === 'AI_STUDIO' && <ListingStudioView />}
 
       {activeTab === 'ASSISTANT' && <ConversationalAssistantView />}
+
+      {activeTab === 'COMPLIANCE' && <ComplianceDashboardView />}
 
       {activeTab === 'HEALTH' && <HealthChecker />}
     </div>

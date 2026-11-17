@@ -124,5 +124,6 @@ A arquitetura e os controles implementados satisfazem integralmente os 15 crité
 4. Isolamento multi-tenant garantido em todas as camadas sem risco de IDOR.
 5. Aprovação humana mandatória para ações mutáveis.
 6. Canais não homologados permanecem categoricamente bloqueados.
+7. Monitoramento contínuo de políticas, termos de uso e ciclos de vida de APIs ativo através do **Continuous Marketplace Compliance Engine** (`AutomaticComplianceEnforcer`, `PolicyMonitoringEngine`, `SafeReactivationService`).
 
-**Parecer Final:** `APPROVED`. A plataforma está protegida e em conformidade estrita para as operações com Mercado Livre, Shopee e Amazon, mantendo sob quarentena e bloqueio os canais e funcionalidades não autorizados.
+**Parecer Final:** `APPROVED`. A plataforma está protegida e em conformidade estrita para as operações com Mercado Livre, Shopee e Amazon, mantendo sob quarentena e bloqueio os canais e funcionalidades não autorizados, com governança e auditoria permanente de políticas.

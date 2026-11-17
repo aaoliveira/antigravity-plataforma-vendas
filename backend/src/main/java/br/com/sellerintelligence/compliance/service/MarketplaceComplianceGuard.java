@@ -45,6 +45,7 @@ public class MarketplaceComplianceGuard {
     private final StoreRepository storeRepository;
     private final MarketplaceCredentialRepository credentialRepository;
     private final AuditService auditService;
+    private final AutomaticComplianceEnforcer complianceEnforcer;
 
     private final int circuitBreakerThreshold;
     private final long circuitCooldownSeconds;
@@ -62,12 +63,14 @@ public class MarketplaceComplianceGuard {
             StoreRepository storeRepository,
             MarketplaceCredentialRepository credentialRepository,
             AuditService auditService,
+            @org.springframework.context.annotation.Lazy AutomaticComplianceEnforcer complianceEnforcer,
             @Value("${seller.compliance.circuit-breaker.threshold:5}") int circuitBreakerThreshold,
             @Value("${seller.compliance.circuit-breaker.cooldown-seconds:60}") long circuitCooldownSeconds,
             @Value("${seller.compliance.allow-fake-marketplace:false}") boolean allowFakeMarketplace) {
         this.storeRepository = storeRepository;
         this.credentialRepository = credentialRepository;
         this.auditService = auditService;
+        this.complianceEnforcer = complianceEnforcer;
         this.circuitBreakerThreshold = circuitBreakerThreshold > 0 ? circuitBreakerThreshold : DEFAULT_CIRCUIT_BREAKER_THRESHOLD;
         this.circuitCooldownSeconds = circuitCooldownSeconds > 0 ? circuitCooldownSeconds : DEFAULT_CIRCUIT_COOLDOWN_SECONDS;
         this.allowFakeMarketplace = allowFakeMarketplace;
@@ -104,6 +107,20 @@ public class MarketplaceComplianceGuard {
             OperationRiskLevel riskLevel,
             boolean humanApproved,
             String actorId) {
+        return checkOperation(tenantId, storeId, marketplace, null, riskLevel, humanApproved, actorId);
+    }
+
+    /**
+     * Evaluates operation with specific feature name under Principle of Least Scope enforcement.
+     */
+    public ComplianceCheckResult checkOperation(
+            UUID tenantId,
+            UUID storeId,
+            Marketplace marketplace,
+            String featureName,
+            OperationRiskLevel riskLevel,
+            boolean humanApproved,
+            String actorId) {
 
         if (tenantId == null || marketplace == null) {
             return failClosed(tenantId, storeId, marketplace, actorId,
@@ -119,7 +136,15 @@ public class MarketplaceComplianceGuard {
                             ". Operations are blocked in production under FAIL CLOSED policy.");
         }
 
-        // 2. Store verification and multi-tenant isolation
+        // 2. Feature enforcement check (Least-scope enforcement)
+        if (complianceEnforcer != null && complianceEnforcer.isFeatureRestricted(marketplace, featureName)) {
+            return failClosed(tenantId, storeId, marketplace, actorId,
+                    "FEATURE_ENFORCEMENT_RESTRICTED",
+                    "Feature " + (featureName != null ? featureName : "ALL_OPERATIONS") + " on " + marketplace +
+                            " is currently SUSPENDED/RESTRICTED by Continuous Compliance Engine.");
+        }
+
+        // 3. Store verification and multi-tenant isolation
         if (storeId != null) {
             Optional<Store> storeOpt = storeRepository.findByIdAndTenantId(storeId, tenantId);
             if (storeOpt.isEmpty()) {
@@ -203,8 +228,22 @@ public class MarketplaceComplianceGuard {
             OperationRiskLevel riskLevel,
             boolean humanApproved,
             String actorId) {
+        enforceOperation(tenantId, storeId, marketplace, null, riskLevel, humanApproved, actorId);
+    }
 
-        ComplianceCheckResult result = checkOperation(tenantId, storeId, marketplace, riskLevel, humanApproved, actorId);
+    /**
+     * Enforces compliance check for specific feature name under Principle of Least Scope.
+     */
+    public void enforceOperation(
+            UUID tenantId,
+            UUID storeId,
+            Marketplace marketplace,
+            String featureName,
+            OperationRiskLevel riskLevel,
+            boolean humanApproved,
+            String actorId) {
+
+        ComplianceCheckResult result = checkOperation(tenantId, storeId, marketplace, featureName, riskLevel, humanApproved, actorId);
         if (!result.allowed()) {
             HttpStatus status = HttpStatus.FORBIDDEN;
             if ("RATE_LIMIT_COOLDOWN_ACTIVE".equals(result.code())) {
