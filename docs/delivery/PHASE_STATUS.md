@@ -3,11 +3,28 @@
 ## 1. Visão Geral do Gate Atual
 
 - **Fase Atual:** Fase 2 — Expansão de Inteligência & Monitoramento
-- **Prompt Concluído:** `Prompt 13 — Monitoramento contínuo de produtos e concorrentes`
+- **Prompt Concluído:** `Prompt 14 — Smart Alerts e Action Center`
 - **Status do Gate:** `APPROVED`
-- **Data de Conclusão:** 2026-11-17T16:15:00-03:00
+- **Data de Conclusão:** 2026-11-17T16:35:00-03:00
 - **Responsável:** Antigravity AI Assistant & Engenharia de Dados
-- **Próximo Prompt Liberado:** `Prompt 14 — Smart Alerts e Action Center`
+- **Próximo Prompt Liberado:** `Prompt 15 — Product Discovery avançado: PDFs e busca por imagem`
+
+---
+
+## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 14 — Smart Alerts e Action Center)
+
+| Critério de Aceite | Requisito Verificado | Evidência Comprovada | Avaliação |
+|---|---|---|---|
+| **AC-14-1: Catálogo de Regras Parametrizáveis** | Catálogo com 5 tipos de regras (margem, preço, sync, vendas, estoque), escopos e limiares com precisão decimal. | Entidades `ActionAlertRule` e `AlertRuleType` com operadores `LESS_THAN`, `GREATER_THAN`, `EQUALS` e escopos multi-tenant. Testado em `ActionAlertRuleServiceTest`. | `APROVADO` |
+| **AC-14-2: Motor de Simulação com Eventos Sintéticos** | Avaliação e teste de regras com valores simulados sem poluição de dados privados. | Método `simulateRule` em `ActionAlertRuleService` retornando `RuleSimulationResult` com justificativa explicativa e opção de persistir alerta gerado. | `APROVADO` |
+| **AC-14-3: Deduplicação com Janela de Cooldown** | Deduplicação determinística de alertas repetidos evitando fadiga de alertas. | `ActionAlertService` com cálculo determinístico de `dedupKey` SHA-256 e constraint única `uk_action_alert_dedup` no PostgreSQL. Testado em `ActionAlertServiceTest`. | `APROVADO` |
+| **AC-14-4: Inbox Unificado de Alertas** | Centralização com estados (`NEW`, `READ`, `RESOLVED`, `IGNORED`), severidades e proveniência rastreável. | `ActionAlert` com proveniência (`CALCULATED`, `OBSERVED`, `SYSTEM`), payload JSON de contexto e endpoints de transição de status em `ActionCenterController`. | `APROVADO` |
+| **AC-14-5: Conversão em Tarefa com Link Rastreável** | Conversão de alerta em tarefa operacional com herança de evidência e vínculo bidirecional. | `ActionTaskService.createTaskFromAlert` preservando link `alert_id`, transicionando alerta para `READ` e herdando contexto. Testado em `ActionTaskServiceTest`. | `APROVADO` |
+| **AC-14-6: Proteção Anti-IDOR de Atribuição** | Proibição estrita de atribuição de tarefas a usuários externos à organização tenant. | Validação `validateAssignee` contra `MembershipRepository` rejeitando usuários fora do tenant com `IllegalArgumentException`. Testado em `ActionTaskServiceTest`. | `APROVADO` |
+| **AC-14-7: Governança de Opt-In & Controle de Taxa** | Notificações externas exigem consentimento prévio e respeitam frequência máxima por hora. | `ActionNotificationService` gravando `SUPPRESSED_NO_OPT_IN` para canais sem consentimento e `SUPPRESSED_COOLDOWN` ao atingir limite. Testado em `ActionNotificationServiceTest`. | `APROVADO` |
+| **AC-14-8: Trilha de Auditoria Imutável** | Rastreabilidade do ciclo de vida das tarefas e histórico de disparos de notificação. | Tabelas `action_task_audits` e `action_notification_deliveries` gravando cronologia imutável com ator, transições e status de entrega. | `APROVADO` |
+| **AC-14-9: Invariante de Segurança (Zero Auto-Mutação)** | Tarefas são exclusivamente de controle interno, sem disparos automáticos de mutação externa em marketplaces. | `ActionCenterController` sem referências ou invocações de escrita para conectores externos de marketplaces. | `APROVADO` |
+| **AC-14-10: Banco V10, ADR DEC-020 & Testes Integrados** | Migration V10, ADR DEC-020 e suítes completas de testes automatizados. | Migration V10 aplicada no PostgreSQL, ADR DEC-020 aceito, 15 novos testes backend (161 totais), 6 novos testes frontend (44 totais), 13 extensão e 5 E2E. | `APROVADO` |
 
 ---
 
@@ -61,7 +78,7 @@
 | **11** | Extensão Chrome Manifest V3 complementar | Fase 1 | `APPROVED` | 2026-11-17 | Endereçamento OQ-003 no ADR DEC-018, Manifest V3 em TypeScript/React/Vite, permissões mínimas (activeTab e storage), zero scraping hostil, parser canônico ML/Shopee e 13 testes automatizados. |
 | **12** | Homologação, segurança E2E e release do MVP | Fase 1 | `APPROVED` | 2026-11-17 | Fechamento da Fase 1 (MVP). Playwright E2E (5/5), testes adversariais cross-tenant, OWASP Top 10, anti-SSRF, rate limiting, DR drill (RTO 0.54s, RPO 0), p95 184ms, SBOM e GO para release (183 testes). |
 | **13** | Monitoramento contínuo de produtos e concorrentes | Fase 2 | `APPROVED` | 2026-11-17 | Watchlists de concorrentes, histórico temporal sem interpolação de lacunas, detecção determinística de mudanças com hash SHA-256, alertas com cooldown deduplicado e ADR DEC-019. |
-| **14** | Smart Alerts e Action Center | Fase 2 | `NOT_STARTED` | — | Automação e tarefas. |
+| **14** | Smart Alerts e Action Center | Fase 2 | `APPROVED` | 2026-11-17 | Catálogo de regras de alerta, simulação com eventos sintéticos, deduplicação com cooldown, inbox unificado, conversão em tarefas operacionais, proteção anti-IDOR e opt-in mandatório. |
 | **15** | Product Discovery avançado: PDFs e busca por imagem | Fase 2 | `NOT_STARTED` | — | Leitura de catálogos de fornecedores. |
 | **16** | Ads Intelligence e rentabilidade de campanhas | Fase 2 | `NOT_STARTED` | — | Gestão de anúncios patrocinados. |
 | **17** | DRE gerencial e conciliação de repasses | Fase 2 | `NOT_STARTED` | — | Fechamento da Fase 2. |
@@ -70,7 +87,7 @@
 
 ---
 
-## 4. Conclusão do Prompt 13 e Liberação para o Prompt 14
-O **Prompt 13 — Monitoramento contínuo de produtos e concorrentes** foi concluído e aprovado com 100% de conformidade.
-Todos os critérios de aceite (AC-13-1 a AC-13-9) foram verificados objetivamente com testes de backend (146 testes), frontend (38 testes), extensão (13 testes) e E2E Playwright (5 testes), totalizando 202 testes automatizados aprovados no monorepo.
-A plataforma está oficialmente liberada para o **Prompt 14 — Smart Alerts e Action Center (Fase 2)**.
+## 4. Conclusão do Prompt 14 e Liberação para o Prompt 15
+O **Prompt 14 — Smart Alerts e Action Center** foi concluído e aprovado com 100% de conformidade.
+Todos os critérios de aceite (AC-14-1 a AC-14-10) foram verificados objetivamente com testes de backend (161 testes), frontend (44 testes), extensão (13 testes) e E2E Playwright (5 testes), totalizando 223 testes automatizados aprovados no monorepo.
+A plataforma está oficialmente liberada para o **Prompt 15 — Product Discovery avançado: PDFs e busca por imagem (Fase 2)**.

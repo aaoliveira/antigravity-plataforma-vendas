@@ -150,12 +150,12 @@ Nenhum requisito pode ser considerado concluído sem que os testes associados es
 
 | ID | Prioridade | Descrição do Requisito | Fase | Prompt Alvo | Tipo de Teste Planejado | Status Atual |
 |---|---|---|---|---|---|---|
-| **FR-ACT-001** | P1 | Centralizar alertas por severidade e domínio. | Fase 2 | Prompt 14 | Integração (Alert Repository) | `PLANNED` |
-| **FR-ACT-002** | P1 | Configurar regras personalizadas de alerta. | Fase 2 | Prompt 14 | Unitário (Rule Evaluation Engine) | `PLANNED` |
-| **FR-ACT-003** | P1 | Converter recomendação ou alerta em tarefa operacional. | Fase 2 | Prompt 14 | Unitário, Integração (Task Service) | `PLANNED` |
-| **FR-ACT-004** | P1 | Atribuir responsável, prazo, prioridade e status à tarefa. | Fase 2 | Prompt 14 | Integração (RBAC & Audit Trail) | `PLANNED` |
-| **FR-ACT-005** | P1 | Acompanhar conclusão e resultado posterior da ação. | Fase 2 | Prompt 14 | Unitário, E2E | `PLANNED` |
-| **FR-ACT-006** | P1 | Enviar notificações por e-mail e in-app com opt-in. | Fase 2 | Prompt 14 | Integração (Notification Service / Mock SMTP) | `PLANNED` |
+| **FR-ACT-001** | P1 | Centralizar alertas por severidade e domínio. | Fase 2 | Prompt 14 | Integração (Alert Repository / Inbox) | `VERIFIED (Prompt 14)` |
+| **FR-ACT-002** | P1 | Configurar regras personalizadas de alerta. | Fase 2 | Prompt 14 | Unitário (Rule Evaluation & Simulator) | `VERIFIED (Prompt 14)` |
+| **FR-ACT-003** | P1 | Converter recomendação ou alerta em tarefa operacional. | Fase 2 | Prompt 14 | Unitário, Integração (Task Service) | `VERIFIED (Prompt 14)` |
+| **FR-ACT-004** | P1 | Atribuir responsável, prazo, prioridade e status à tarefa. | Fase 2 | Prompt 14 | Integração (Anti-IDOR & Audit Trail) | `VERIFIED (Prompt 14)` |
+| **FR-ACT-005** | P1 | Acompanhar conclusão e resultado posterior da ação. | Fase 2 | Prompt 14 | Unitário, Integração, UI (Vitest) | `VERIFIED (Prompt 14)` |
+| **FR-ACT-006** | P1 | Enviar notificações por e-mail e in-app com opt-in. | Fase 2 | Prompt 14 | Integração (Opt-In & Frequency Guardrail) | `VERIFIED (Prompt 14)` |
 
 ---
 
@@ -166,7 +166,7 @@ Nenhum requisito pode ser considerado concluído sem que os testes associados es
 | **FR-DAS-001** | P0 | Exibir painel consolidado de vendas e rentabilidade. | Fase 1 (MVP) | Prompt 09 | Integração (BI Aggregation), E2E | `VERIFIED (Prompt 09)` |
 | **FR-DAS-002** | P0 | Comparar períodos equivalentes de faturamento/margem. | Fase 1 (MVP) | Prompt 09 | Unitário (Period Shifter), E2E | `VERIFIED (Prompt 09)` |
 | **FR-DAS-003** | P1 | Exibir ranking ordenado de produtos e canais. | Fase 1 (MVP) | Prompt 09 | Unitário (Sorting/Filtering) | `VERIFIED (Prompt 09)` |
-| **FR-DAS-004** | P1 | Exibir alertas e tarefas prioritárias no painel. | Fase 2 | Prompt 14 | Integração (Action Center Query) | `PLANNED` |
+| **FR-DAS-004** | P1 | Exibir alertas e tarefas prioritárias no painel. | Fase 2 | Prompt 14 | Integração (Action Center Query / Dashboard) | `VERIFIED (Prompt 14)` |
 | **FR-DAS-005** | P0 | Exportar relatórios gerenciais em formatos padrão. | Fase 1 (MVP) | Prompt 09 | Unitário (CSV/Spreadsheet Exporter) | `VERIFIED (Prompt 09)` |
 | **FR-DAS-006** | P1 | Agendar envio automatizado de relatórios por e-mail. | Fase 2 | Prompt 17 | Integração (Scheduled Job Service) | `PLANNED` |
 

@@ -350,6 +350,30 @@ Conforme estipulado no PRD ([docs/product/PRD.md](file:///home/alexandre/Projeto
 
 ---
 
+## DEC-020 / ADR-020 — Smart Alerts, Action Center e Governança de Notificações com Opt-In Estrito sem Mutações Externas Automatizadas
+- **Data:** 2026-11-17
+- **Status:** `ACCEPTED`
+- **Contexto:** Necessidade de transformar análises e anomalias de mercado, finanças, sincronização e estoque em alertas operacionais priorizados e tarefas operacionais rastreáveis (FR-ACT-001 a FR-ACT-006). A plataforma deve evitar spam de notificações, garantir consentimento explícito (opt-in) para canais de saída, manter auditoria imutável do ciclo de vida das tarefas e proibir terminantemente qualquer execução automática de mutações em marketplaces externos sem aprovação humana expressa.
+- **Opções consideradas:**
+  1. Alertas soltos disparando mutações automáticas em marketplaces (ex: pausar anúncio ou alterar preço sem autorização) e envio indiscriminado de e-mails/webhooks.
+  2. Arquitetura determinística e governada de alertas e tarefas:
+     - **Catálogo de Regras Parametrizáveis:** Regras suportadas para margem mínima (`MARGIN_THRESHOLD`), desvio de preço (`PRICE_UNDERCUT`), falha de sincronização (`SYNC_FAILURE`), queda de vendas (`SALES_DROP`) e ruptura de estoque (`STOCK_DEPLETION`).
+     - **Escopo e Limiares:** Regras com escopo por organização, empresa, loja ou marketplace, com limiares numéricos, operadores (`LESS_THAN`, `GREATER_THAN`) e janelas temporais.
+     - **Deduplicação Determinística com Cooldown:** Alertas recorrentes do mesmo evento/regra no mesmo escopo são deduplicados via hash determinístico com janela de cooldown no PostgreSQL (`uk_action_alert_dedup`).
+     - **Inbox Operacional Auditável:** Estados explícitos de alerta (`NEW`, `READ`, `RESOLVED`, `IGNORED`), severidades (`INFO`, `WARNING`, `CRITICAL`) e proveniência rastreável (`OBSERVED`, `CALCULATED`, `SYSTEM`) com contexto de evidência preservado.
+     - **Action Center com Tarefas Rastreáveis:** Alertas podem ser convertidos em tarefas contendo prioridade, responsável (`assigned_to`), prazo (`due_date`), status (`TODO`, `IN_PROGRESS`, `DONE`, `CANCELLED`) e vínculo com o alerta de origem.
+     - **Validação Estrita Anti-IDOR de Atribuição:** Uma tarefa só pode ser atribuída a usuários membros da mesma organização/tenant. Tentativas de atribuição cross-tenant são rejeitadas com erro de segurança.
+     - **Opt-in Mandatório e Controle de Frequência:** Notificações externas (`EMAIL`, `WEBHOOK`) exigem consentimento ativo explícito (`is_opted_in = true`). Sem opt-in, o envio é suprimido com registro em `action_notification_deliveries` (`SUPPRESSED_NO_OPT_IN`). Limite de frequência por hora configurável.
+     - **Invariante de Segurança PRD (Zero Ações Externas Automáticas):** Alertas e tarefas são de controle interno do seller. O sistema nunca dispara chamadas de mutação em APIs de marketplaces de forma automatizada a partir do Action Center.
+- **Decisão:** Opção 2.
+- **Justificativa:** Conformidade estrita com o PRD (Seções 5.11 e 6.5), LGPD/anti-spam, segurança multi-tenant (anti-IDOR) e proteção contra riscos operacionais e financeiros ao vendedor.
+- **Consequências:** Todas as ações de mitigação sugeridas pelo Action Center dependem de execução humana auditada; o fluxo de tarefas é 100% rastreável e nenhuma notificação é disparada sem consentimento do destinatário.
+- **Requisitos relacionados:** FR-ACT-001 a FR-ACT-006, NFR-SEC-002, NFR-SEC-004, NFR-PRV-001, OQ-011, PRD Seção 5.11.
+- **Responsável:** Engenheiro Backend / Arquiteto de Software.
+- **Revisão:** Fase 2 (Prompt 15 - Product Discovery avançado).
+
+---
+
 # Parte 2: Decisões Propostas e Pendências Classificadas (PROPOSED)
 
 ## DEC-P05 — Política de Retenção de Dados e Expurgos Automáticos LGPD (Vinculada a OQ-007)

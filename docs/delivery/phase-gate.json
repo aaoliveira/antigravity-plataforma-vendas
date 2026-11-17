@@ -2,70 +2,76 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "project": "Seller Intelligence Platform",
   "gateSystemVersion": "1.0.0",
-  "currentPrompt": "13",
-  "promptTitle": "Monitoramento contínuo de produtos e concorrentes",
+  "currentPrompt": "14",
+  "promptTitle": "Smart Alerts e Action Center",
   "phase": "Fase 2 — após MVP",
   "status": "APPROVED",
-  "updatedAt": "2026-11-17T16:15:00-03:00",
+  "updatedAt": "2026-11-17T16:35:00-03:00",
   "evaluatedBy": "Antigravity AI Assistant",
   "criteria": [
     {
-      "id": "AC-13-1",
-      "description": "Watchlists de produtos, anúncios e vendedores por tenant com adição/remoção lógica e preservação estrita de histórico temporal",
+      "id": "AC-14-1",
+      "description": "Catálogo de regras de alerta (margem, preço, sincronização, queda de indicador e estoque) com escopo e limiares configuráveis",
       "status": "APPROVED",
-      "evidence": "Entidades Watchlist e WatchlistItem implementadas com isolamento por tenantId. Remoção de item é soft (status=UNTRACKED) preservando chaves estrangeiras e integridade referencial dos snapshots coletados."
+      "evidence": "ActionAlertRule e AlertRuleType implementados com 5 tipos de regras (MARGIN_THRESHOLD, PRICE_UNDERCUT, SYNC_FAILURE, SALES_DROP, STOCK_DEPLETION), operadores e escopos multi-tenant. Testado em ActionAlertRuleServiceTest."
     },
     {
-      "id": "AC-13-2",
-      "description": "Snapshots periódicos coletados via conectores/fontes autorizadas com timestamp, status e proveniência OBSERVED explícita",
+      "id": "AC-14-2",
+      "description": "Motor de teste/simulação de regras com eventos sintéticos gerando alertas no escopo correto",
       "status": "APPROVED",
-      "evidence": "Entidade MonitoringSnapshot com preço em BigDecimal NUMERIC(15, 2), proveniência fixa OBSERVED e CollectionStatus (SUCCESS, COLLECTION_FAILED, GAP). Falhas de coleta são registradas sem derrubar pipeline."
+      "evidence": "ActionAlertRuleService.simulateRule avalia valores observados contra limiares e gera alertas sintéticos com feedback explicativo estruturado (RuleSimulationResult)."
     },
     {
-      "id": "AC-13-3",
-      "description": "Detecção determinística de mudanças (preço em R$ e %, status de anúncio) gerando eventos imutáveis com hash de deduplicação",
+      "id": "AC-14-3",
+      "description": "Deduplicação determinística de alertas repetidos dentro da janela de cooldown configurada",
       "status": "APPROVED",
-      "evidence": "MonitoringDiffEngine calcula variações com precisão e escala HALF_EVEN, detecta transições de status (OUT_OF_STOCK, REACTIVATED) e gera hash SHA-256 único garantido pela constraint uk_monitoring_change_event_hash."
+      "evidence": "ActionAlertService calcula dedupKey determinístico por tenant, regra/domínio, escopo e bucket de cooldown, garantido pela constraint uk_action_alert_dedup no PostgreSQL. Testado em ActionAlertServiceTest."
     },
     {
-      "id": "AC-13-4",
-      "description": "Série temporal histórica com representação explícita de lacunas de coleta (GAP / COLLECTION_FAILED) sem interpolação silenciosa",
+      "id": "AC-14-4",
+      "description": "Inbox unificado de alertas com estados (NEW, READ, RESOLVED, IGNORED), severidades e proveniência/evidência rastreável",
       "status": "APPROVED",
-      "evidence": "MonitoringTimelineService detecta intervalos > 1.5x frequência de checagem e injeta pontos com CollectionStatus.GAP e price=null (zero interpolação/alucinação). Métricas de cobertura de coleta calculadas."
+      "evidence": "ActionAlert com estados explícitos, severidades INFO/WARNING/CRITICAL, proveniência CALCULATED/OBSERVED/SYSTEM e evidência em JSON preservada. Suporte a transições de status no ActionAlertService."
     },
     {
-      "id": "AC-13-5",
-      "description": "Configuração de limiares de alerta e geração de notificações deduplicadas por janela temporal (cooldown)",
+      "id": "AC-14-5",
+      "description": "Conversão de alerta em tarefa operacional com herança de evidência, contexto e vínculo bidirecional",
       "status": "APPROVED",
-      "evidence": "MonitoringAlertService avalia regras de preço/estoque, aplica janela de cooldown configurável e deduplica via constraint uk_monitoring_alerts_dedup no PostgreSQL."
+      "evidence": "ActionTaskService.createTaskFromAlert converte alerta em ActionTask preservando link imutável alertId, título contextual e resumo de evidência, transitando alerta para READ. Testado em ActionTaskServiceTest."
     },
     {
-      "id": "AC-13-6",
-      "description": "Comparador lado a lado de anúncio próprio vs concorrente monitorado com identificação de campos ausentes",
+      "id": "AC-14-6",
+      "description": "Gestão de tarefas com responsável, prazo, prioridade, status e validação estrita anti-IDOR de escopo do tenant",
       "status": "APPROVED",
-      "evidence": "CompetitorComparisonService confronta anúncio próprio contra concorrente com cálculo de delta financeiro em R$ e %, exibindo explicitamente disclaimers de UNAVAILABLE para estoque real e vendas de terceiros."
+      "evidence": "ActionTaskService valida assignee através de MembershipRepository.existsByOrganizationIdAndUserIdAndStatus. Tentativa de atribuição a usuário fora do tenant é rejeitada com IllegalArgumentException. Testado em ActionTaskServiceTest."
     },
     {
-      "id": "AC-13-7",
-      "description": "ADR DEC-019 formalizando retenção de snapshots por 12 meses, particionamento e índices compostos no PostgreSQL",
+      "id": "AC-14-7",
+      "description": "Governança de notificações com opt-in explícito por canal (IN_APP, EMAIL, WEBHOOK), controle de frequência e auditoria de envio/supressão",
       "status": "APPROVED",
-      "evidence": "Registrado ADR DEC-019 em docs/architecture/DECISION_LOG.md formalizando retenção de 12 meses, não-interpolação e deduplicação. Flyway V9 cria tabelas, índices e constraints no PostgreSQL."
+      "evidence": "ActionNotificationService bloqueia envios sem opt-in (gravando SUPPRESSED_NO_OPT_IN) e limita taxa horária (SUPPRESSED_COOLDOWN). Testado em ActionNotificationServiceTest e PostgresActionCenterIntegrationTest."
     },
     {
-      "id": "AC-13-8",
-      "description": "Suítes de testes automatizados (unitários, integração com PostgreSQL e Vitest frontend) validando regras e isolamento multi-tenant",
+      "id": "AC-14-8",
+      "description": "Trilha de auditoria imutável para ciclo de vida de tarefas e entregas de notificações",
       "status": "APPROVED",
-      "evidence": "14 testes unitários e de integração no backend (incluindo Testcontainers PostgreSQL e MockMvc) + 5 testes Vitest no frontend. Suíte completa de 146 testes backend + 38 frontend + 13 extensão + 5 E2E passando com 100% de sucesso."
+      "evidence": "Tabelas action_task_audits e action_notification_deliveries com registros cronológicos imutáveis para cada mutação de tarefa e disparo de notificação."
     },
     {
-      "id": "AC-13-9",
-      "description": "Atualização de rastreabilidade (FR-CMP-002 a 008, FR-MON-001 a 005) e status de fase",
+      "id": "AC-14-9",
+      "description": "Invariante de segurança comprovada: tarefas e alertas são puramente operacionais internos e não executam mutações automáticas externas em marketplaces",
       "status": "APPROVED",
-      "evidence": "Requisitos FR-CMP-002 a FR-CMP-008 e FR-MON-001 a FR-MON-005 marcados como VERIFIED (Prompt 13) em REQUIREMENTS_TRACEABILITY.md. Script verify_phase13.py executado com 100% PASS."
+      "evidence": "ActionCenterController e serviços operam 100% no domínio interno, sem chamadas externas mutáveis nem acoplamento com conectores de escrita em marketplaces."
+    },
+    {
+      "id": "AC-14-10",
+      "description": "Flyway migration V10, ADR DEC-020 e suíte de testes automatizados unitários, de integração e frontend",
+      "status": "APPROVED",
+      "evidence": "Migration V10 aplicada, ADR DEC-020 aceito, 15 testes de backend no pacote action (161 totais no backend), 6 testes Vitest no frontend (44 totais no frontend), 13 na extensão e 5 E2E Playwright."
     }
   ],
   "blockers": [],
-  "nextPrompt": "14",
-  "nextPromptTitle": "Smart Alerts e Action Center",
+  "nextPrompt": "15",
+  "nextPromptTitle": "Product Discovery avançado: PDFs e busca por imagem",
   "nextPromptPrerequisiteMet": true
 }
