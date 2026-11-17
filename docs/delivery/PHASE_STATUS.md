@@ -3,26 +3,26 @@
 ## 1. Visão Geral do Gate Atual
 
 - **Fase Atual:** Fase 1 — MVP / P0
-- **Prompt Ativo:** `Prompt 07 — Market Intelligence: pesquisa e análise de produtos`
+- **Prompt Ativo:** `Prompt 08 — Motor financeiro determinístico e versionado`
 - **Status do Gate:** `APPROVED`
-- **Data da Avaliação:** 2026-11-17T14:00:00-03:00
+- **Data da Avaliação:** 2026-11-17T14:22:00-03:00
 - **Responsável:** Antigravity AI Assistant & Engenharia
 
 ---
 
-## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 07)
+## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 08)
 
 | Critério de Aceite | Requisito Verificado | Evidência Comprovada | Avaliação |
 |---|---|---|---|
-| **1. Domínio Market Intelligence Isolado** | Separação estrita entre dados observados de mercado (`OBSERVED`) e operações privadas de seller (`IMPORTED`). | Módulo `market` isolado com `MarketSearchSnapshot`, `MarketProductItem` e rotulagem estrita de proveniência `DataProvenance`. | `APROVADO` |
-| **2. Pesquisa de Mercado Autorizada** | Pesquisa por palavra-chave e URL/ID através de rotas oficiais documentadas (Mercado Livre `/sites/MLB/search`, etc.). | `MercadoLivreMarketSearchProvider` integrado à API pública; `ShopeeMarketSearchProvider` retorna `UNAVAILABLE` sem scraping ilegal. | `APROVADO` |
-| **3. Filtros Reais e Dados Ausentes** | Filtros de categoria, preço, marca e avaliação; dados não disponibilizados aparecem como `UNAVAILABLE` (nunca zero). | Filtros validados por query params suportados na API oficial; ausência preservada como `UNAVAILABLE` sem distorcer métricas. | `APROVADO` |
-| **4. Modelo de Snapshots e Estimativas** | Snapshots com `collectedAt`, cobertura, fonte e metodologia/intervalo de confiança explícitos quando estimado. | Tabelas `market_search_snapshots` e `market_product_items` gravam `confidence_interval` e `sales_estimation_methodology`. | `APROVADO` |
-| **5. Pesquisas e Produtos Salvos** | Salvar buscas, produtos e notas por organização com isolamento por `tenant_id`. | Entidades `SavedSearch` e `SavedMarketProduct` com índice único composto e queries com `tenant_id` obrigatório. | `APROVADO` |
-| **6. Paginação e Resiliência** | Paginação, ordenação e tratamento para zero resultados ou indisponibilidade temporária sem quebra. | Suporte a limit/offset com bounds seguros e respostas resilientes para zero itens encontrados. | `APROVADO` |
-| **7. Isolamento Multi-Tenant** | Bloqueio de acesso cross-tenant em buscas salvas, produtos salvos e notas contextuais. | Testado em `SavedSearchesAndProductsIntegrationTest`: Tenant B é rejeitado com 404 ao tentar acessar ou mutar dados de Tenant A. | `APROVADO` |
-| **8. Interface Web (Next.js)** | Barra de busca, filtros, listagem com badges de proveniência (`OBSERVED`/`ESTIMATED`/`UNAVAILABLE`) e favoritos. | Componente `MarketIntelligenceView.tsx` integrado ao `DashboardView`, com visualização de notas, badges e favoritos. | `APROVADO` |
-| **9. Testes Automatizados e Verificação** | Testes de integração, unitários, validação multi-tenant e script `verify_phase07.py`. | 77 testes backend passando (incluindo Testcontainers Postgres 17 Flyway V1–V6), 20 testes frontend passando e `verify_phase07.py` com 100% de sucesso. | `APROVADO` |
+| **1. Custo por SKU com Vigência** | Modelo de custo por SKU com moeda, unidade, origem, vigência e histórico temporal. | Tabela `sku_costs` com `NUMERIC(15, 4)`, entidade `SkuCost` e `SkuCostService` com encerramento automático de vigência de lotes anteriores. | `APROVADO` |
+| **2. Regras e Componentes Versionados** | Componentes de tarifa, comissão, frete, embalagem, tributos e custos variáveis versionados. | Entidades `FinancialRuleSet` e `FinancialRuleComponent` com auto-incremento de versão, vigência temporal e persistência Flyway V7. | `APROVADO` |
+| **3. Cálculo Determinístico em BigDecimal** | Escala e arredondamento (`HALF_EVEN`) estritamente definidos, sem uso de `float`/`double`. | `FinancialCalculationEngine` puro com `BigDecimal`, escala 2 para moeda e 4/6 para taxas, com proibição verificada por script de qualquer tipo `float`/`double`. | `APROVADO` |
+| **4. Margem, Preço Mínimo e Preço-Alvo** | Margem de contribuição por item/pedido, preço mínimo de equilíbrio e preço para margem alvo. | Casos de referência validados em `FinancialCalculationEngineTest` (ML acima de R$ 79 e ML abaixo com taxa fixa de R$ 6,00) e simulador de break-even. | `APROVADO` |
+| **5. Memória de Cálculo Explicável** | Memória linha a linha com componente, fonte, base de cálculo, alíquota e regras aplicadas. | Modelo `CalculationMemory` e `CalculationMemoryLine` persistido em JSONB (`memory_breakdown`) em cada item calculado e visualizável em tabela. | `APROVADO` |
+| **6. Qualidade do Cálculo e Alertas** | Classificação `COMPLETE`, `PARTIAL` ou `SIMULATED` com listagem de campos ausentes e premissas. | Ausência de COGS ou TAX marca `PARTIAL` e adiciona disclaimer explícito de que não representa lucro real nem apuração fiscal oficial. | `APROVADO` |
+| **7. Cancelamento, Devolução e Estorno** | Reversão de receita e custos conforme política contábil sem duplicação de receita. | Métodos `handleOrderCancellation` (margem zero) e `handleOrderReturn` (prejuízo de frete/embalagem negativo) testados em `FinancialOrderCalculationIntegrationTest`. | `APROVADO` |
+| **8. Imutabilidade e Não Recálculo Silencioso** | Alteração de regras não altera cálculos históricos fechados sem ação explícita auditada. | Cálculos fechados preservam vínculo com a versão histórica da regra; recálculo histórico exige método auditado `recalculateHistoricalOrder`. | `APROVADO` |
+| **9. Testes Numéricos e Multi-Tenant** | Casos de referência aprovados passando centavo a centavo e isolamento por `tenant_id`. | 88 testes backend aprovados (PostgreSQL 17 Testcontainers Flyway V1-V7 e ArchUnit), 24 testes frontend aprovados no Vitest e `verify_phase08.py` com 100% de sucesso. | `APROVADO` |
 
 ---
 
@@ -38,8 +38,8 @@
 | **05** | Framework de conectores e autorização OAuth | Fase 1 | `APPROVED` | 2026-11-17 | Port MarketplaceConnector, registry, OAuth oficial ML/Shopee, AES-256-GCM para tokens, Flyway V4, UI Next.js e 57 testes backend + 13 frontend. |
 | **06** | Sincronização de catálogo, anúncios e pedidos | Fase 1 | `APPROVED` | 2026-11-17 | Modelos normalizados, idempotência estrita, jobs assíncronos RabbitMQ, webhooks HMAC, contingência CSV, Flyway V5, UI SyncManager e 71 testes backend + 16 frontend. |
 | **07** | Market Intelligence: pesquisa e análise | Fase 1 | `APPROVED` | 2026-11-17 | Pesquisa pública de mercado via API autorizada, snapshots, proveniência explicável, buscas e produtos salvos, isolamento multi-tenant e 77 testes backend + 20 frontend. |
-| **08** | Motor financeiro determinístico e versionado | Fase 1 | `NOT_STARTED` | — | Pré-requisito atendido: Prompt 07 aprovado com sucesso. Pronto para execução. |
-| **09** | Painel financeiro, rentabilidade e relatórios | Fase 1 | `NOT_STARTED` | — | Aguarda aprovação do Prompt 08. |
+| **08** | Motor financeiro determinístico e versionado | Fase 1 | `APPROVED` | 2026-11-17 | Endereçamento OQ-004 e OQ-005 no ADR DEC-015, custos por SKU, regras versionadas, cálculo em BigDecimal, memória de cálculo, UI de simulação e 88 testes backend + 24 frontend. |
+| **09** | Painel financeiro, rentabilidade e relatórios | Fase 1 | `NOT_STARTED` | — | Pré-requisito atendido: Prompt 08 aprovado com sucesso. Pronto para execução. |
 | **10** | AI Listing Studio: análise e geração de conteúdo | Fase 1 | `NOT_STARTED` | — | Aguarda aprovação do Prompt 09. |
 | **11** | Extensão Chrome Manifest V3 complementar | Fase 1 | `NOT_STARTED` | — | Aguarda aprovação do Prompt 10. |
 | **12** | Homologação, segurança E2E e release do MVP | Fase 1 | `NOT_STARTED` | — | Fechamento da Fase 1 (MVP). |
@@ -54,5 +54,5 @@
 ---
 
 ## 4. Liberação para o Próximo Passo
-- O **Prompt 07** foi integralmente verificado, validado e **APROVADO**.
-- O **Prompt 08 — Motor financeiro determinístico e versionado** está formalmente **DESBLOQUEADO** e pronto para execução sob as regras permanentes de engenharia e cálculo monetário determinístico (`BigDecimal`).
+- O **Prompt 08** foi integralmente verificado, validado e **APROVADO**.
+- O **Prompt 09 — Painel financeiro, rentabilidade e relatórios** está formalmente **DESBLOQUEADO** e pronto para execução.

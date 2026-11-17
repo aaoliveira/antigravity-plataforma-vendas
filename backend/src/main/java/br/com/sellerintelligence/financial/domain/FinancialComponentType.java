@@ -1,0 +1,12 @@
+package br.com.sellerintelligence.financial.domain;
+
+public enum FinancialComponentType {
+    MARKETPLACE_COMMISSION_PERCENTAGE,
+    MARKETPLACE_FIXED_FEE,
+    MARKETPLACE_FIXED_FEE_THRESHOLD,
+    SHIPPING_SELLER_COST,
+    PACKAGING_COST,
+    TAX_PERCENTAGE,
+    OTHER_VARIABLE_PERCENTAGE,
+    OTHER_VARIABLE_FIXED
+}

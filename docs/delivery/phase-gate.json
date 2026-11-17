@@ -2,70 +2,70 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "project": "Seller Intelligence Platform",
   "gateSystemVersion": "1.0.0",
-  "currentPrompt": "07",
-  "promptTitle": "Market Intelligence: pesquisa e análise de produtos",
+  "currentPrompt": "08",
+  "promptTitle": "Motor financeiro determinístico e versionado",
   "phase": "Fase 1 — MVP / P0",
   "status": "APPROVED",
-  "updatedAt": "2026-11-17T14:00:00-03:00",
+  "updatedAt": "2026-11-17T14:22:00-03:00",
   "evaluatedBy": "Antigravity AI Assistant",
   "criteria": [
     {
-      "id": "AC-07-1",
-      "description": "Domínio MarketIntelligence estruturalmente isolado de dados privados de seller com proveniência explícita",
+      "id": "AC-08-1",
+      "description": "Modelo de custo por SKU com moeda, unidade, origem, vigência e histórico temporal",
       "status": "APPROVED",
-      "evidence": "Separado no pacote br.com.sellerintelligence.market com entidades MarketSearchSnapshot e MarketProductItem, rotulado com enum DataProvenance (OBSERVED, IMPORTED, ESTIMATED, UNAVAILABLE)."
+      "evidence": "Implementado em SkuCost e SkuCostService; tabela sku_costs com NUMERIC(15, 4), currency, unit, origin, effective_from/to e fechamento de vigência automática ao cadastrar novo lote."
     },
     {
-      "id": "AC-07-2",
-      "description": "Pesquisa de mercado por palavra-chave e por URL/ID de anúncio baseada exclusivamente em fontes oficiais autorizadas",
+      "id": "AC-08-2",
+      "description": "Modelo versionado de componentes de tarifa, comissão, frete, embalagem, tributos parametrizados e outros custos variáveis",
       "status": "APPROVED",
-      "evidence": "Implementado em MercadoLivreMarketSearchProvider (/sites/MLB/search e /items/{id}); ShopeeMarketSearchProvider retorna UNAVAILABLE explicitamente sem recorrer a scraping ou bypass de termos."
+      "evidence": "Entidades FinancialRuleSet e FinancialRuleComponent em V7__financial_engine.sql com enum FinancialComponentType, threshold_amount e versionamento automático incremental."
     },
     {
-      "id": "AC-07-3",
-      "description": "Filtros reais suportados pela fonte oficial com ausência de campos preservada como UNAVAILABLE (nunca zero)",
+      "id": "AC-08-3",
+      "description": "Domínio de cálculo determinístico em BigDecimal com escala e arredondamento (HALF_EVEN) explicitamente definidos",
       "status": "APPROVED",
-      "evidence": "Filtros validados por query params suportados na API oficial; campos ausentes preservados como UNAVAILABLE no enum DataProvenance e tratados sem distorcer métricas."
+      "evidence": "FinancialCalculationEngine implementado estritamente com BigDecimal, RoundingMode.HALF_EVEN, escalas 2 (moeda) e 4/6 (taxas/divisões) com zero tipos float ou double no código."
     },
     {
-      "id": "AC-07-4",
-      "description": "Modelo de snapshot de mercado com rastreabilidade de collectedAt, canal, cobertura e metodologia de estimativa explicável",
+      "id": "AC-08-4",
+      "description": "Cálculo de margem de contribuição por item e pedido, preço mínimo (break-even) e preço-alvo",
       "status": "APPROVED",
-      "evidence": "Tabelas market_search_snapshots e market_product_items registram collected_at, source, coverage, confidence_interval e sales_estimation_methodology."
+      "evidence": "Testado em FinancialCalculationEngineTest (casos de referência ML acima e abaixo de R$ 79,00) e método simulatePrice() com resolução de tarifas com limiar."
     },
     {
-      "id": "AC-07-5",
-      "description": "Gestão de pesquisas salvas, produtos favoritados e notas contextuais com isolamento estrito por tenant_id",
+      "id": "AC-08-5",
+      "description": "Memória de cálculo explicativa linha a linha indicando componente, fonte, regra aplicada e premissas",
       "status": "APPROVED",
-      "evidence": "Entidades SavedSearch e SavedMarketProduct com índice único por tenant_id + external_item_id, validação em MarketIntelligenceService."
+      "evidence": "Record CalculationMemory e CalculationMemoryLine serializados em JSON (memory_breakdown) em cada item de cálculo fechado e exposto na API e UI."
     },
     {
-      "id": "AC-07-6",
-      "description": "Paginação de resultados, ordenação e tratamento defensivo para buscas sem correspondência ou fonte indisponível",
+      "id": "AC-08-6",
+      "description": "Classificação de cálculo COMPLETE, PARTIAL ou SIMULATED com alerta e listagem de campos ausentes",
       "status": "APPROVED",
-      "evidence": "Suporte a limit e offset com bounds defensivos, retorno resiliente para zero itens ou marketplace não suportado com status claro."
+      "evidence": "Enum CalculationQuality; quando COGS ou TAX não são informados, marca PARTIAL, lista missingFields e exibe aviso de que não representa lucro líquido real nem apuração fiscal."
     },
     {
-      "id": "AC-07-7",
-      "description": "Bloqueio estrito de acesso cross-tenant em pesquisas salvas, produtos monitorados e notas",
+      "id": "AC-08-7",
+      "description": "Tratamento contábil e reversão correta para cancelamento, devolução e estorno sem duplicação de receita",
       "status": "APPROVED",
-      "evidence": "Validado em SavedSearchesAndProductsIntegrationTest: tentativa de Tenant B alterar notas ou excluir produto salvo de Tenant A retorna 404/ResourceNotFoundException."
+      "evidence": "Métodos handleOrderCancellation e handleOrderReturn em FinancialCalculationService testados em FinancialOrderCalculationIntegrationTest com perda irreversível negativa."
     },
     {
-      "id": "AC-07-8",
-      "description": "Interface web (Next.js) com barra de pesquisa, filtros combináveis, badges visuais de proveniência e gestão de favoritos",
+      "id": "AC-08-8",
+      "description": "Versionamento de regras com vigência temporal e preservação de cálculos históricos fechados",
       "status": "APPROVED",
-      "evidence": "Componente MarketIntelligenceView.tsx integrado ao DashboardView, apresentando badges de proveniência (OBSERVED, ESTIMATED, UNAVAILABLE), notas contextuais e testes em MarketIntelligenceView.test.tsx."
+      "evidence": "Criação de nova versão de regra mantém cálculos antigos vinculados à sua versão histórica; recálculo histórico exige chamada explícita auditada recalculateHistoricalOrder."
     },
     {
-      "id": "AC-07-9",
-      "description": "Bateria de testes automatizados e script de verificação cobrindo filtros, snapshots, salvamento e isolamento multi-tenant",
+      "id": "AC-08-9",
+      "description": "Bateria de testes de referência numéricos exatos, sem float/double e com isolamento multi-tenant",
       "status": "APPROVED",
-      "evidence": "77 testes backend passando (incluindo Testcontainers PostgreSQL 17 Flyway V1-V6), 20 testes frontend passando no Vitest, e script verify_phase07.py executado com 100% de aprovação."
+      "evidence": "88 testes backend aprovados (incluindo Testcontainers Postgres 17 Flyway V1-V7 e ArchUnit), 24 testes frontend aprovados no Vitest, e script verify_phase08.py com 100% de sucesso."
     }
   ],
   "blockers": [],
-  "nextPrompt": "08",
-  "nextPromptTitle": "Motor financeiro determinístico e versionado",
+  "nextPrompt": "09",
+  "nextPromptTitle": "Painel financeiro, rentabilidade e relatórios",
   "nextPromptPrerequisiteMet": true
 }

@@ -106,17 +106,17 @@ Nenhum requisito pode ser considerado concluído sem que os testes associados es
 
 | ID | Prioridade | Descrição do Requisito | Fase | Prompt Alvo | Tipo de Teste Planejado | Status Atual |
 |---|---|---|---|---|---|---|
-| **FR-FIN-001** | P0 | Cadastrar custo de aquisição e custos adicionais por SKU. | Fase 1 (MVP) | Prompt 08 | Unitário, Integração (Vigência Temporal) | `PLANNED` |
-| **FR-FIN-002** | P0 | Configurar componentes de tarifa, comissão, frete e tributos. | Fase 1 (MVP) | Prompt 08 | Unitário, Integração (Versioned Rules) | `PLANNED` |
-| **FR-FIN-003** | P0 | Calcular margem de contribuição por pedido e SKU. | Fase 1 (MVP) | Prompt 08 | Suíte Mínima de Regressão Financeira (10 casos) | `PLANNED` |
-| **FR-FIN-004** | P0 | Calcular preço mínimo e simular preço-alvo. | Fase 1 (MVP) | Prompt 08 | Unitário determinístico (`BigDecimal`) | `PLANNED` |
+| **FR-FIN-001** | P0 | Cadastrar custo de aquisição e custos adicionais por SKU. | Fase 1 (MVP) | Prompt 08 | Unitário, Integração (Vigência Temporal) | `VERIFIED (Prompt 08)` |
+| **FR-FIN-002** | P0 | Configurar componentes de tarifa, comissão, frete e tributos. | Fase 1 (MVP) | Prompt 08 | Unitário, Integração (Versioned Rules) | `VERIFIED (Prompt 08)` |
+| **FR-FIN-003** | P0 | Calcular margem de contribuição por pedido e SKU. | Fase 1 (MVP) | Prompt 08 | Suíte Mínima de Regressão Financial (`FinancialCalculationEngineTest`) | `VERIFIED (Prompt 08)` |
+| **FR-FIN-004** | P0 | Calcular preço mínimo e simular preço-alvo. | Fase 1 (MVP) | Prompt 08 | Unitário determinístico (`BigDecimal`) | `VERIFIED (Prompt 08)` |
 | **FR-FIN-005** | P0 | Consolidar resultados por loja, marketplace e empresa. | Fase 1 (MVP) | Prompt 09 | Integração (Aggregation Queries) | `PLANNED` |
-| **FR-FIN-006** | P0 | Tratar descontos, cancelamentos, devoluções e estornos. | Fase 1 (MVP) | Prompt 08 | Unitário (Casos 4, 5 e 6 da Regressão) | `PLANNED` |
+| **FR-FIN-006** | P0 | Tratar descontos, cancelamentos, devoluções e estornos. | Fase 1 (MVP) | Prompt 08 | Unitário, Integração (`FinancialOrderCalculationIntegrationTest`) | `VERIFIED (Prompt 08)` |
 | **FR-FIN-007** | P1 | Calcular margem após custo de Ads atribuído. | Fase 2 | Prompt 16 | Unitário (Attribution Allocation) | `PLANNED` |
 | **FR-FIN-008** | P1 | Apresentar DRE gerencial configurável. | Fase 2 | Prompt 17 | Integração (Financial Reporting Engine) | `PLANNED` |
 | **FR-FIN-009** | P1 | Exibir Curva ABC e rentabilidade por SKU. | Fase 2 | Prompt 17 | Unitário (Pareto Analysis Engine) | `PLANNED` |
-| **FR-FIN-010** | P0 | Versionar regras de cálculo sem corromper fechados. | Fase 1 (MVP) | Prompt 08 | Unitário (Historical Rule Immutability) | `PLANNED` |
-| **FR-FIN-011** | P0 | Informar dados incompletos e qualidade do cálculo. | Fase 1 (MVP) | Prompt 08 | Unitário (Completeness Flags) | `PLANNED` |
+| **FR-FIN-010** | P0 | Versionar regras de cálculo sem corromper fechados. | Fase 1 (MVP) | Prompt 08 | Unitário, Integração (`FinancialOrderCalculationIntegrationTest`) | `VERIFIED (Prompt 08)` |
+| **FR-FIN-011** | P0 | Informar dados incompletos e qualidade do cálculo. | Fase 1 (MVP) | Prompt 08 | Unitário (`CalculationQuality.PARTIAL` / `CalculationMemory`) | `VERIFIED (Prompt 08)` |
 
 ---
 

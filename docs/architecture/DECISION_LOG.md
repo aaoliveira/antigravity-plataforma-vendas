@@ -247,13 +247,27 @@ Conforme estipulado no PRD ([docs/product/PRD.md](file:///home/alexandre/Projeto
 
 ---
 
-# Parte 2: Decisões Propostas e Pendências Classificadas (PROPOSED)
+## DEC-015 / ADR-015 — Motor Financeiro Determinístico em BigDecimal, Regras Parametrizadas e Memória de Cálculo Explicável
+- **Data:** 2026-11-17
+- **Status:** `ACCEPTED`
+- **Contexto:** Endereçamento definitivo de **OQ-004** (Catálogo de componentes de margem) e **OQ-005** (Parametrização fiscal sem presunção tributária oficial). O sistema calcula margem de contribuição, preço mínimo e simulações por SKU/pedido, exigindo rastreabilidade centavo a centavo e proibição absoluta de pontos flutuantes (`float`/`double`) ou IA na fórmula.
+- **Opções consideradas:**
+  1. Integrar motor tributário externo ou embutir regras fiscais presumidas de ICMS/ST/DIFAL. (Inviável no MVP e viola regra anti-alucinação de apuração fiscal oficial).
+  2. Implementar motor determinístico agnóstico em `BigDecimal` (`HALF_EVEN`) com regras versionadas compostas por:
+     - Componentes de Dedução: Custo de Aquisição (COGS com vigência), Comissão Percentual, Tarifa Fixa (com threshold de valor), Frete/Logística Seller, Embalagem, Alíquota Tributária Parametrizada informada pelo seller, e Outros Custos Variáveis.
+     - Indicador de Qualidade do Cálculo: `COMPLETE`, `PARTIAL` (com lista de campos ausentes e disclaimer de que não é lucro real) e `SIMULATED`.
+     - Tratamento Contábil de Eventos: cancelamento reverte receita e taxas proporcionais; devoluções registram custos irreversíveis como prejuízo.
+     - Memória de cálculo completa e reproduzível exportável linha a linha.
+- **Decisão:** Opção 2. Motor determinístico puro em Java com `BigDecimal`, componentes parametrizáveis com vigência temporal e persistência imutável de cálculos fechados vinculados à versão da regra utilizada.
+- **Justificativa:** Precisão matemática exata, conformidade contábil, isolamento de responsabilidade fiscal (o sistema é gerencial e não consultor tributário oficial) e total transparência para o vendedor.
+- **Consequências:** Mudanças em regras tarifárias ou fiscais criam nova versão (`version + 1`) com vigência, sem recalcular silenciosamente pedidos passados já fechados.
+- **Requisitos relacionados:** FR-FIN-001 a 006, FR-FIN-010, FR-FIN-011, OQ-004, OQ-005, ADR DEC-005.
+- **Responsável:** Especialista Financeiro / Engenheiro Backend.
+- **Revisão:** A cada novo tipo de componente financeiro adicionado.
 
-## DEC-P04 — Parametrização dos Regimes Tributários Brasileiros no Motor Financeiro (Vinculada a OQ-004 e OQ-005)
-- **Status:** `PROPOSED` / `PENDING_REVIEW` (Classificação: **P0**)
-- **Contexto:** Definir a parametrização de alíquotas de Simples Nacional (com faixas de faturamento RBT12), Lucro Presumido e Lucro Real nas regras de dedução de impostos sobre vendas.
-- **Proposta Inicial da Engenharia:** Criar modelo de configuração fiscal por empresa/CNPJ onde o usuário informa sua alíquota efetiva ou seleciona seu anexo/faixa, gerando uma taxa percentual parametrizada aplicável à receita bruta de cada pedido.
-- **Pendência:** Homologação com especialista fiscal/contábil no Prompt 08 antes de codificar o motor.
+---
+
+# Parte 2: Decisões Propostas e Pendências Classificadas (PROPOSED)
 
 ## DEC-P05 — Política de Retenção de Dados e Expurgos Automáticos LGPD (Vinculada a OQ-007)
 - **Status:** `PROPOSED` / `PENDING_REVIEW` (Classificação: **P0**)
