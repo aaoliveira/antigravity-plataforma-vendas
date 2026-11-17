@@ -2,70 +2,52 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "project": "Seller Intelligence Platform",
   "gateSystemVersion": "1.0.0",
-  "currentPrompt": "00",
-  "promptTitle": "Constituição do projeto, contexto e proteção contra alucinações",
-  "phase": "Fase 0 — Fundação / Descoberta Técnica",
+  "currentPrompt": "01",
+  "promptTitle": "Descoberta técnica, viabilidade e ADRs",
+  "phase": "Fase 0 — Descoberta Técnica & Viabilidade",
   "status": "APPROVED",
-  "updatedAt": "2026-11-17T10:54:00-03:00",
+  "updatedAt": "2026-11-17T11:07:30-03:00",
   "evaluatedBy": "Antigravity AI Assistant",
   "criteria": [
     {
-      "id": "AC-00-1",
-      "description": "PRD original presente em docs/product/PRD.md e não reescrito nem resumido",
+      "id": "AC-01-1",
+      "description": "Todas as capacidades que entrarão no MVP têm fonte oficial registrada ou estão explicitamente marcadas como não confirmadas",
       "status": "APPROVED",
-      "evidence": "Arquivo docs/product/PRD.md verificado com 965 linhas idênticas ao documento original via diff -u sem divergências."
+      "evidence": "Matriz em docs/architecture/marketplace-capability-matrix.md auditou documentações oficiais de Mercado Livre e Shopee vigentes em 17/11/2026, mapeando endpoints confirmados e pendências de aprovação."
     },
     {
-      "id": "AC-00-2",
-      "description": "Existência dos 4 arquivos de regras e a skill indicada com instruções coerentes",
+      "id": "AC-01-2",
+      "description": "Cada endpoint e escopo mencionado está associado à documentação oficial consultada e à data de consulta",
       "status": "APPROVED",
-      "evidence": "Arquivos anti-hallucination.md, architecture-and-stack.md, testing-and-quality.md, phase-gates.md e SKILL.md criados em .agents/ com diretrizes completas."
+      "evidence": "Registrados endpoints, métodos, URLs e regras OAuth com data de consulta 17/11/2026 para Mercado Livre Developers e Shopee Open Platform v2."
     },
     {
-      "id": "AC-00-3",
-      "description": "AGENTS.md na raiz instrui o agente a reler as regras e o PRD antes de cada prompt",
+      "id": "AC-01-3",
+      "description": "Dados competitivos sem fonte autorizada estão excluídos do MVP ou classificados como pendência bloqueante",
       "status": "APPROVED",
-      "evidence": "AGENTS.md criado na raiz do repositório estipulando hierarquia de evidências e preflight compulsório."
+      "evidence": "ADR DEC-011 aprovado limitando inteligência competitiva a dados públicos observáveis ou estimativas explicáveis com selo ESTIMATED; métricas privadas de terceiros marcadas como UNAVAILABLE."
     },
     {
-      "id": "AC-00-4",
-      "description": "OPEN_QUESTIONS.md contém todas as 15 OQs do PRD sem respostas inventadas",
+      "id": "AC-01-4",
+      "description": "A matriz diferencia dados próprios, dados públicos observáveis, dados licenciados, estimativas e dados indisponíveis",
       "status": "APPROVED",
-      "evidence": "docs/product/OPEN_QUESTIONS.md transcreve fielmente OQ-001 a OQ-015, todas com estado OPEN."
+      "evidence": "Classificação rigorosa em 5 categorias (IMPORTED, OBSERVED, LICENSED, ESTIMATED, UNAVAILABLE) formalizada na Seção 4 da matriz de capacidades."
     },
     {
-      "id": "AC-00-5",
-      "description": "DECISION_LOG.md separa decisões definidas de decisões pendentes",
+      "id": "AC-01-5",
+      "description": "ADRs estão escritos, numerados, com contexto, decisão, alternativas, consequências e estado PROPOSED ou ACCEPTED",
       "status": "APPROVED",
-      "evidence": "docs/architecture/DECISION_LOG.md cataloga DEC-001 a DEC-009 como ACCEPTED e DEC-P01 a DEC-P05 como PROPOSED."
+      "evidence": "DECISION_LOG.md atualizado com 13 ADRs aprovados (DEC-001 a DEC-013) e 3 propostas de implementação pendentes de validação contábil/jurídica (DEC-P04 a DEC-P06)."
     },
     {
-      "id": "AC-00-6",
-      "description": "Mapa de rastreabilidade cobre todos os IDs FR e NFR do PRD",
+      "id": "AC-01-6",
+      "description": "Nenhuma OQ crítica foi encerrada por inferência do agente",
       "status": "APPROVED",
-      "evidence": "docs/product/REQUIREMENTS_TRACEABILITY.md mapeia 100% dos requisitos funcionais (FR-ID, FR-INT, FR-MKT, FR-CMP, FR-DIS, FR-LST, FR-FIN, FR-ADS, FR-MON, FR-ACT, FR-DAS, FR-REC, FR-AI) e requisitos não funcionais."
-    },
-    {
-      "id": "AC-00-7",
-      "description": "PHASE_STATUS.md e phase-gate.json possuem status consistente e evidência de verificação",
-      "status": "APPROVED",
-      "evidence": "Ambos os arquivos sincronizados e refletindo status APPROVED com evidências registradas."
-    },
-    {
-      "id": "AC-00-8",
-      "description": "Nenhum código de funcionalidade de negócio foi criado ou modificado",
-      "status": "APPROVED",
-      "evidence": "Repositório contém exclusivamente artefatos de governança, regras, especificações e documentação de suporte."
-    },
-    {
-      "id": "AC-00-9",
-      "description": "Nenhum endpoint, métrica ou integração descrito como confirmado sem fonte",
-      "status": "APPROVED",
-      "evidence": "Adesão integral às regras anti-alucinação; mapeamento de capacidades pendentes delegado à descoberta do Prompt 01."
+      "evidence": "OPEN_QUESTIONS.md auditou OQ-001 a OQ-015 com classificação P0/P1/P2; nenhuma OQ foi unilateralmente encerrada como RESOLVED; recomendações técnicas e decisões necessárias foram registradas."
     }
   ],
   "blockers": [],
-  "nextPrompt": "01",
-  "nextPromptTitle": "Descoberta técnica, viabilidade e ADRs",
+  "nextPrompt": "02",
+  "nextPromptTitle": "Bootstrap do monorepo e ambiente local",
   "nextPromptPrerequisiteMet": true
 }

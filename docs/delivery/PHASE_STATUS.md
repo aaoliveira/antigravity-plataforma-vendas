@@ -2,27 +2,25 @@
 
 ## 1. Visão Geral do Gate Atual
 
-- **Fase Atual:** Fase 0 — Fundação & Descoberta Técnica
-- **Prompt Ativo:** `Prompt 00 — Constituição do projeto, contexto e proteção contra alucinações`
+- **Fase Atual:** Fase 0 — Descoberta Técnica & Viabilidade
+- **Prompt Ativo:** `Prompt 01 — Descoberta técnica, viabilidade e ADRs`
 - **Status do Gate:** `APPROVED`
-- **Data da Avaliação:** 2026-11-17T10:54:00-03:00
+- **Data da Avaliação:** 2026-11-17T11:07:30-03:00
 - **Responsável:** Antigravity AI Assistant & Engenharia
 
 ---
 
-## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 00)
+## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 01)
 
 | Critério de Aceite | Requisito Verificado | Evidência Comprovada | Avaliação |
 |---|---|---|---|
-| **1. PRD íntegro e não resumido** | `docs/product/PRD.md` idêntico ao documento original fornecido. | Cópia exata de `prompts/PRD.md` validada com `diff -u` (965 linhas, zero divergências). | `APROVADO` |
-| **2. Quatro regras e skill persistentes** | `.agents/rules/*.md` e `.agents/skills/mvp-phase-gate/SKILL.md` criados e consistentes. | Arquivos `anti-hallucination.md`, `architecture-and-stack.md`, `testing-and-quality.md`, `phase-gates.md` e `SKILL.md` criados com diretrizes completas. | `APROVADO` |
-| **3. Diretiva permanente no AGENTS.md** | `AGENTS.md` na raiz instrui o agente a reler as regras e o PRD antes de qualquer prompt. | `AGENTS.md` criado na raiz contendo hierarquia de evidências e preflight obrigatório. | `APROVADO` |
-| **4. OPEN_QUESTIONS fiel ao PRD** | `docs/product/OPEN_QUESTIONS.md` transcreve OQ-001 a OQ-015 do PRD sem resoluções inventadas. | Tabela transcrevendo as 15 questões abertas, todas marcadas como `OPEN`. | `APROVADO` |
-| **5. DECISION_LOG estruturado** | `docs/architecture/DECISION_LOG.md` separa decisões aceitas de pendências. | 9 ADRs aprovadas (`ACCEPTED`) e 5 decisões propostas/pendentes (`PROPOSED`). | `APROVADO` |
-| **6. Rastreabilidade completa de requisitos** | `docs/product/REQUIREMENTS_TRACEABILITY.md` cobre todos os IDs FR e NFR do PRD. | Matriz completa cobrindo 100% dos IDs FR (FR-ID, FR-INT, FR-MKT, FR-CMP, FR-DIS, FR-LST, FR-FIN, FR-ADS, FR-MON, FR-ACT, FR-DAS, FR-REC, FR-AI) e NFRs. | `APROVADO` |
-| **7. Consistência documental e de máquina** | `PHASE_STATUS.md` e `phase-gate.json` possuem status consistente e evidências. | Arquivos sincronizados em estado `APPROVED` com evidências explícitas. | `APROVADO` |
-| **8. Sem código de negócio prematuro** | Nenhum código, tela, entidade de domínio ou dado sintético criado. | Verificado via `git status`: apenas artefatos de governança e documentação foram adicionados. | `APROVADO` |
-| **9. Sem invenção de endpoints ou métricas** | Ausência total de endpoints, scopes, métricas ou integrações fictícias. | Regras estritas aplicadas; conectores e capacidades delegados à investigação oficial do Prompt 01. | `APROVADO` |
+| **1. Capacidades do MVP com fonte oficial** | Endpoints de ML e Shopee para catálogo, pedidos e pagamentos mapeados com base oficial. | [docs/architecture/marketplace-capability-matrix.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/architecture/marketplace-capability-matrix.md) detalha APIs oficiais de Mercado Livre Developers e Shopee Open Platform v2. | `APROVADO` |
+| **2. Endpoints e escopos com data e URLs** | URLs oficiais, métodos HTTP, modelos OAuth e data de consulta registrados. | Documentações auditadas em 17/11/2026; registrado modelo sem escopos na URL para ML e assinatura HMAC-SHA256 (`sign`) para Shopee. | `APROVADO` |
+| **3. Exclusão de dados competitivos ilegítimos** | Dados de concorrentes sem fonte autorizada excluídos ou tratados como pendência. | ADR [DEC-011](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/architecture/DECISION_LOG.md#dec-011--adr-011--inteligência-competitiva-limitada-a-dados-públicos-oficiais-e-separação-de-estimativas) veda scraping de pedidos/faturamento de terceiros e marca ausências como `UNAVAILABLE`. | `APROVADO` |
+| **4. Diferenciação em 5 categorias de dados** | Segregação estrutural entre dados próprios, observáveis, licenciados, estimativas e indisponíveis. | Formalizado na Seção 4 da matriz (`IMPORTED`, `OBSERVED`, `LICENSED`, `ESTIMATED`, `UNAVAILABLE`). | `APROVADO` |
+| **5. ADRs completos e numerados** | ADRs para stack, monólito, tenancy, conectores, proveniência, financeiro e extensão. | [docs/architecture/DECISION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/architecture/DECISION_LOG.md) contém DEC-001 a DEC-013 (`ACCEPTED`) e DEC-P04 a DEC-P06 (`PROPOSED`). | `APROVADO` |
+| **6. Nenhuma OQ crítica encerrada por inferência** | OQ-001 a OQ-015 auditadas com prioridade de bloqueio P0/P1/P2 sem falsas resoluções. | [docs/product/OPEN_QUESTIONS.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/product/OPEN_QUESTIONS.md) contém auditoria com propostas técnicas e próximos passos; nenhuma OQ foi marcada como `RESOLVED`. | `APROVADO` |
+| **7. Automação de Verificação** | Script de testes e validação automática executado com sucesso. | `python3 scripts/verify_phase01.py` executou 7 verificações com 100% de sucesso. | `APROVADO` |
 
 ---
 
@@ -30,9 +28,9 @@
 
 | Prompt | Título | Fase | Status | Data de Aprovação | Evidências / Notas |
 |---|---|---|---|---|---|
-| **00** | Constituição do projeto, contexto e proteção contra alucinações | Fase 0 | `APPROVED` | 2026-11-17 | Constituição das regras, PRD, rastreabilidade, OQs e ADRs baseline. |
-| **01** | Descoberta técnica, viabilidade e ADRs | Fase 0 | `NOT_STARTED` | — | Próximo prompt a ser executado. |
-| **02** | Bootstrap do monorepo e ambiente local | Fase 1 | `NOT_STARTED` | — | Aguarda aprovação do Prompt 01. |
+| **00** | Constituição do projeto, contexto e proteção contra alucinações | Fase 0 | `APPROVED` | 2026-11-17 | Constituição das regras, PRD integral, rastreabilidade, OQs e ADRs baseline. |
+| **01** | Descoberta técnica, viabilidade e ADRs | Fase 0 | `APPROVED` | 2026-11-17 | Matriz de capacidades ML/Shopee, ADRs DEC-010 a DEC-013, auditoria OQ P0/P1/P2 e script de validação. |
+| **02** | Bootstrap do monorepo e ambiente local | Fase 1 | `NOT_STARTED` | — | Próximo prompt da sequência (Fase 1 - MVP). |
 | **03** | Identidade, autenticação e isolamento multi-tenant | Fase 1 | `NOT_STARTED` | — | Aguarda aprovação do Prompt 02. |
 | **04** | Organizações, CNPJs, lojas e gestão de acessos | Fase 1 | `NOT_STARTED` | — | Aguarda aprovação do Prompt 03. |
 | **05** | Framework de conectores e autorização OAuth | Fase 1 | `NOT_STARTED` | — | Aguarda aprovação do Prompt 04. |
@@ -54,4 +52,4 @@
 ---
 
 ## 4. Liberação para o Próximo Passo
-Com a aprovação do `Prompt 00`, o repositório está plenamente constituído sob regras anti-alucinação inquebráveis e governança rigorosa. O projeto está apto para receber e executar o **Prompt 01 (Descoberta técnica, viabilidade e ADRs)**.
+Com a conclusão da **Fase 0 (Prompts 00 e 01)**, as incertezas técnicas foram sanadas, as fontes oficiais auditadas e os ADRs estruturados. O projeto está oficialmente autorizado a iniciar a **Fase 1 (MVP)** com o **Prompt 02 — Bootstrap do monorepo e ambiente local**.

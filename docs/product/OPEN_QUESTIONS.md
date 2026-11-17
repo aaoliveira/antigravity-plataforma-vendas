@@ -1,35 +1,40 @@
-# Questões em Aberto (Open Questions) — Seller Intelligence Platform
+# Questões em Aberto (Open Questions) — Auditoria da Fase 0 (Prompt 01)
 
-## Diretriz de Governança
-Este documento reúne as questões em aberto identificadas no PRD oficial ([docs/product/PRD.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/product/PRD.md), Seção 20) que bloqueiam decisões arquiteturais, de escopo, de integrações ou fiscais.
-Em estrita conformidade com as regras anti-alucinação ([.agents/rules/anti-hallucination.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/.agents/rules/anti-hallucination.md)), **nenhuma questão pode ser respondida por suposição ou dedução**. Resoluções só podem ser registradas após decisão humana formal, evidência documental oficial ou deliberação técnica/jurídica aprovada.
-
----
-
-## Tabela Consolidada de Questões em Aberto (PRD Seção 20)
-
-| ID | Questão | Por que importa | Responsável Sugerido | Estado | Impacto no Projeto |
-|---|---|---|---|---|---|
-| **OQ-001** | Quais endpoints, escopos e permissões estarão disponíveis para cada marketplace e região? | Define o que pode ser sincronizado e exibido sem violação de termos de uso ou falhas de autorização. | Tech Lead / Integrações | `OPEN` | Bloqueia escopo final dos conectores ML/Shopee (Prompts 01 e 05). |
-| **OQ-002** | Quais dados competitivos podem ser obtidos legitimamente e com que frequência? | Define a viabilidade, cobertura e custo da inteligência de mercado sem scraping hostil. | Produto / Jurídico / Integrações | `OPEN` | Condiciona arquitetura de Market Intelligence (Prompt 07). |
-| **OQ-003** | A extensão será usada apenas como interface contextual ou também como fonte de captura permitida? | Impacta políticas da Chrome Web Store, privacidade do usuário e arquitetura do backend. | Produto / Jurídico | `OPEN` | Define arquitetura da extensão Manifest V3 (Prompt 11). |
-| **OQ-004** | Qual é o conjunto exato de componentes da margem por marketplace/modalidade? | Evita resultados financeiros incorretos e processos decisórios errôneos do seller. | Produto / Financeiro | `OPEN` | Define motor financeiro e fórmulas determinísticas (Prompt 08). |
-| **OQ-005** | Como serão tratados regimes tributários e particularidades por UF/categoria? | Afeta parametrização fiscal e complexidade de cálculo de impostos variáveis. | Financeiro / Especialista Fiscal | `OPEN` | Define modelo de impostos configuráveis (Prompt 08). |
-| **OQ-006** | Quais provedores/fontes de Ads oferecem granularidade por campanha, SKU e período? | Define métricas disponíveis (ROAS, ACOS, TACOS) e modelo de atribuição. | Integrações / Produto | `OPEN` | Bloqueia módulo de Ads Intelligence (Prompt 16 - Fase 2). |
-| **OQ-007** | Qual política de retenção para snapshots, pedidos, dados pessoais e arquivos? | Impacta conformidade com LGPD, dimensionamento de storage e custos operacionais. | Segurança / Privacidade | `OPEN` | Define ciclo de vida dos dados e expurgos automáticos (Prompt 01). |
-| **OQ-008** | Qual volume inicial esperado de organizações, SKUs, pedidos e snapshots por dia? | Base indispensável para dimensionamento de banco de dados, filas e infraestrutura. | Produto / Engenharia | `OPEN` | Impacta estratégia de particionamento e índices (Prompt 02). |
-| **OQ-009** | Quais idiomas/moedas/regiões serão suportados no lançamento? | Impacta normalização de dados, tipos monetários e experiência do usuário (UX). | Produto | `OPEN` | Valida se BRL/Português é exclusivo no MVP (Prompt 02). |
-| **OQ-010** | A publicação de anúncios entra no MVP ou somente na Fase 2? | Define o escopo de operações externas mutáveis e o risco operacional correspondente. | Produto | `OPEN` | Determina se Prompt 10 inclui envio à API ou apenas rascunho local. |
-| **OQ-011** | Quais canais de notificação serão suportados primeiro? | Impacta arquitetura de mensageria, preferências de usuários e custos de provedores. | Produto / Engenharia | `OPEN` | Define escopo de notificações nos Prompts 12 e 14. |
-| **OQ-012** | MCP será lançado como servidor remoto multi-tenant, integração interna ou ambos? | Define arquitetura de autenticação, distribuição e segurança das ferramentas de IA. | Arquitetura / Produto | `OPEN` | Condiciona desenho do módulo MCP na Fase 3 (Prompt 18). |
-| **OQ-013** | Quais provedores de IA serão aprovados e quais dados podem ser enviados a cada provedor? | Impacta privacidade (LGPD), confidencialidade comercial, custo e governança de dados. | Segurança / IA / Produto | `OPEN` | Define configuração do Spring AI e provedores aceitos (Prompt 10). |
-| **OQ-014** | Qual será a metodologia inicial do score de anúncio e score de oportunidade? | Garante explicabilidade e evita acusações de causalidade ou falsas promessas de vendas. | Produto / Data | `OPEN` | Define algoritmo de scoring explicável (Prompt 10). |
-| **OQ-015** | O dashboard financeiro priorizará regime de caixa, competência ou oferecerá ambos? | Evita ambiguidade contábil nos relatórios gerenciais de DRE e conciliação. | Financeiro / Produto | `OPEN` | Define consultas analíticas do dashboard financeiro (Prompt 09). |
+## Diretriz de Governança e Regra Anti-Alucinação
+Este documento reúne a auditoria das questões em aberto identificadas no PRD oficial ([docs/product/PRD.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/product/PRD.md), Seção 20).
+Em estrita conformidade com as regras anti-alucinação ([.agents/rules/anti-hallucination.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/.agents/rules/anti-hallucination.md)):
+- **Nenhuma questão crítica foi encerrada por inferência do agente.**
+- Cada questão recebeu classificação de prioridade de bloqueio (**P0: Bloqueio do MVP**, **P1: Bloqueio da Fase 2**, **P2: Bloqueio da Fase 3**).
+- Foram registradas as evidências oficiais levantadas na Descoberta Técnica do **Prompt 01**, a recomendação técnica da engenharia e a decisão humana requerida.
 
 ---
 
-## Procedimento para Resolução de Questões
-Quando uma questão for deliberada:
-1. Deve ser emitido ou atualizado um ADR correspondente em `docs/architecture/DECISION_LOG.md`.
-2. O estado no quadro acima mudará de `OPEN` para `RESOLVED` (ou `DEFERRED` se postergado para fases futuras), acompanhado da data e link para a decisão.
-3. Nenhuma alteração de código ou schema pode assumir uma resolução que permaneça em estado `OPEN`.
+## Tabela Consolidada e Auditoria de Questões em Aberto
+
+| ID | Pri. | Questão | Evidência Levantada no Prompt 01 | Recomendação da Engenharia / Proposta | Estado Atual | Responsável & Próximo Passo |
+|---|---|---|---|---|---|---|
+| **OQ-001** | **P0** | Quais endpoints, escopos e permissões estarão disponíveis para cada marketplace e região? | Documentação oficial de ML e Shopee auditada em 17/11/2026. Mapeados endpoints de catálogo, pedidos e pagamentos em [docs/architecture/marketplace-capability-matrix.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/architecture/marketplace-capability-matrix.md). ML não usa escopos na URL; Shopee exige assinatura HMAC-SHA256 (`sign`). | Adotar matriz de capacidades e fluxos OAuth detalhados no ADR DEC-010. | `IN_REVIEW` *(Evidência Oficial Registrada)* | Tech Lead de Integrações: validar credenciais de sandbox no Prompt 05. |
+| **OQ-002** | **P1** | Quais dados competitivos podem ser obtidos legitimamente e com que frequência? | ML `/sites/MLB/search` e `/trends` fornecem títulos, preços e categorias públicas. Scraping para capturar faturamento privado ou pedidos de concorrentes viola termos e controles técnicos (DEC-004 e DEC-011). | Usar somente dados públicos observáveis (`OBSERVED`) e tratar métricas de vendas de terceiros como estimativas com rótulo `ESTIMATED`. Dados privados ausentes marcados como `UNAVAILABLE`. | `IN_REVIEW` *(Proposta Registrada em DEC-011)* | Jurídico / Produto: validar texto de disclaimer ao usuário. |
+| **OQ-003** | **P1** | A extensão será usada apenas como interface contextual ou também como fonte de captura permitida? | Chrome Web Store Limited Use Policy proíbe coleta oculta ou desnecessária. | Usar permissão `activeTab` disparada unicamente por ação do usuário, comunicando-se com o backend por token efêmero e sem armazenar segredos (ADR DEC-012). | `IN_REVIEW` *(Proposta Registrada em DEC-012)* | Produto / Segurança: validar modelo de interação no Prompt 11. |
+| **OQ-004** | **P0** | Qual é o conjunto exato de componentes da margem por marketplace/modalidade? | Endpoints de tarifas mapeados: ML `/orders/{id}` (`sale_fee`) e `/shipments/{id}/costs`; Shopee `/payment/get_escrow_detail` (`commission_fee`, `service_fee`, `transaction_fee`, frete). | Implementar fórmula determinística versionada em `BigDecimal` no Prompt 08: `Receita Líquida - Custo SKU - Tarifas - Frete Seller - Impostos - Custos Variáveis`. | `OPEN` *(Bloqueio P0 do Prompt 08)* | Especialista Financeiro / PO: aprovar catálogo de componentes no Prompt 08. |
+| **OQ-005** | **P0** | Como serão tratados regimes tributários e particularidades por UF/categoria? | Variação tributária complexa (Simples Nacional faixas RBT12, Lucro Presumido, ICMS-ST, Difal). | Parametrização por empresa/CNPJ onde o seller cadastra sua alíquota efetiva média ou seleciona sua faixa (DEC-P04). | `OPEN` *(Bloqueio P0 do Prompt 08)* | Especialista Fiscal / Contador: validar modelo de parametrização no Prompt 08. |
+| **OQ-006** | **P1** | Quais provedores/fontes de Ads oferecem granularidade por campanha, SKU e período? | Mercado Ads exige escopo aprovado `advertising/product_ads`; Shopee Ads exige aprovação direta de parceria de negócio (Whitelisting). | Postergar integração de Ads para a Fase 2 (Prompt 16), iniciando processo de certificação de parceiro comercial. | `OPEN` *(Bloqueio P1 da Fase 2)* | Integrações / Comercial: submeter aplicação aos programas de Ads. |
+| **OQ-007** | **P0** | Qual política de retenção para snapshots, pedidos, dados pessoais e arquivos? | LGPD exige minimização de dados e eliminação de dados de compradores após entrega. | Proposta DEC-P05: snapshots de mercado por 12 meses; logs de auditoria por 5 anos; anonimização de PII de compradores após 90 dias da entrega. | `OPEN` *(Bloqueio P0 em Revisão)* | DPO / Jurídico: aprovar prazos de expurgo antes do Prompt 03/06. |
+| **OQ-008** | **P0** | Qual volume inicial esperado de organizações, SKUs, pedidos e snapshots por dia? | Sem volumetria oficial aprovada no PRD. | Proposta técnica de sizing para MVP: 500 organizações, 100k SKUs, 50k pedidos/dia, dimensionando índices e conexão pool no PostgreSQL 18. | `OPEN` *(Bloqueio P0 do Sizing)* | Product Owner: homologar premissas de sizing no Prompt 02. |
+| **OQ-009** | **P0** | Quais idiomas/moedas/regiões serão suportados no lançamento? | Mercado Livre Brasil (MLB) e Shopee Brasil (BR) operam exclusivamente em BRL e Português do Brasil. | MVP mono-moeda (BRL) e idioma exclusivo Português (`pt-BR`). Suporte multi-moeda fica reservado para Fase 3 (Amazon/expansão). | `IN_REVIEW` *(Proposta Técnica Formulada)* | Product Owner: aprovação formal para Prompt 02. |
+| **OQ-010** | **P0** | A publicação de anúncios entra no MVP ou somente na Fase 2/3? | Endpoints existem (ML `POST /items`, Shopee `POST /product/add_item`), mas criam risco operacional de escrita externa em contas de terceiros. | Manter no MVP apenas geração assistida e rascunhos de anúncios (Prompt 10); publicação direta com confirmação humana na Fase 3 (Prompt 19). | `IN_REVIEW` *(Recomendação de Risco Mínimo)* | Product Owner: deliberação formal sobre escopo de escrita no MVP. |
+| **OQ-011** | **P1** | Quais canais de notificação serão suportados primeiro? | E-mail (SMTP/SES) e notificações in-app têm menor complexidade e custo zero de infraestrutura no MVP. | Priorizar e-mail e in-app no MVP; WhatsApp e webhooks de saída na Fase 2 (Prompt 14). | `OPEN` *(Planejado para Prompt 14)* | Produto / Engenharia. |
+| **OQ-012** | **P2** | MCP será lançado como servidor remoto multi-tenant, integração interna ou ambos? | Protocolo MCP em evolução; ferramentas mutáveis exigem cautela. | Servidor MCP remoto read-only isolado por tenant na Fase 3 (Prompt 18), reforçado pelo ADR DEC-007. | `OPEN` *(Planejado para Prompt 18)* | Arquiteto de Software. |
+| **OQ-013** | **P0** | Quais provedores de IA serão aprovados e quais dados podem ser enviados a cada provedor? | Spring AI oferece camada agnóstica (`AiProvider`). LGPD veda uso de dados confidenciais para treino global (NFR-PRV-002). | Contratar provedores com termos corporativos de zero data retention/training (ex.: OpenAI API com contrato de privacidade ou Google Cloud Vertex AI / Gemini). | `OPEN` *(Bloqueio P0 do Prompt 10)* | Segurança / Jurídico / PO: selecionar e aprovar provedor antes do Prompt 10. |
+| **OQ-014** | **P0** | Qual será a metodologia inicial do score de anúncio e score de oportunidade? | O score não pode prometer vendas causais ou atuar como caixa preta. | Proposta DEC-P06: score de 0 a 100 com pesos explícitos e auditáveis (título 25%, ficha técnica 30%, fotos 25%, preço 20%). | `OPEN` *(Bloqueio P0 do Prompt 10)* | Product Owner / Data: validar fórmula do score antes do Prompt 10. |
+| **OQ-015** | **P0** | O dashboard financeiro priorizará regime de caixa, competência ou oferecerá ambos? | Vendas geram pedidos em data T, mas repasses (escrow) ocorrem em T+N dias. | Visão primária de DRE e margem por competência (data do pedido), com aba de conciliação por regime de caixa (data do repasse). | `OPEN` *(Bloqueio P0 do Prompt 09)* | Especialista Financeiro: homologar visão contábil no Prompt 09. |
+
+---
+
+## 3. Resumo dos Bloqueios Críticos para os Próximos Prompts
+
+- **Para o Prompt 02 (Bootstrap):** Aprovar OQ-008 (Sizing inicial) e OQ-009 (Escopo Brasil / BRL / pt-BR).
+- **Para o Prompt 03 (Identidade/Tenancy):** Aprovar OQ-007 (Política de retenção e PII).
+- **Para o Prompt 05 (Conectores OAuth):** Validar credenciais de sandbox e app registration (OQ-001).
+- **Para o Prompt 08/09 (Motor Financeiro e Dashboard):** Validar componentes e regras tributárias (OQ-004, OQ-005 e OQ-015).
+- **Para o Prompt 10 (AI Studio):** Aprovar provedor de IA e metodologia de score (OQ-010, OQ-013 e OQ-014).

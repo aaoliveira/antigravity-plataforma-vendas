@@ -2,6 +2,7 @@
 
 ## 1. Visão Geral
 Esta matriz mapeia todos os requisitos funcionais (**FR**) e não funcionais (**NFR**) catalogados no PRD oficial ([docs/product/PRD.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/product/PRD.md), Seções 5 e 7) para as respectivas fases de desenvolvimento, prompts de execução e suítes de testes automatizados planejadas.
+A viabilidade técnica, fontes oficiais e matriz de capacidades foram auditadas no **Prompt 01** e documentadas em [docs/architecture/marketplace-capability-matrix.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/architecture/marketplace-capability-matrix.md) e [docs/architecture/DECISION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/architecture/DECISION_LOG.md) (ADRs DEC-010 a DEC-013).
 
 Nenhum requisito pode ser considerado concluído sem que os testes associados estejam implementados e aprovados pelo phase gate correspondente.
 

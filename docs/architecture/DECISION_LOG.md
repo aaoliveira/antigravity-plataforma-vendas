@@ -2,9 +2,9 @@
 
 ## Visão Geral
 Este documento registra formalmente as Decisões de Arquitetura de Software (ADRs) da **Seller Intelligence Platform**.
-Conforme estipulado no PRD ([docs/product/PRD.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/product/PRD.md), Seção 19 e 21), este registro divide-se estritamente entre:
-- **Parte 1: Decisões Aprovadas (Baseline Vinculante pelo PRD e Prompt 00)** — `ACCEPTED`
-- **Parte 2: Decisões Propostas / Pendentes de Validação Técnica** — `PROPOSED` (vinculadas ao Prompt 01 e às Open Questions)
+Conforme estipulado no PRD ([docs/product/PRD.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/product/PRD.md), Seção 19 e 21) e refinado pela Descoberta Técnica do **Prompt 01**, este registro estrutura-se em:
+- **Parte 1: Decisões de Arquitetura Aprovadas (ACCEPTED)**
+- **Parte 2: Decisões Propostas e Pendências Classificadas (PROPOSED)**
 
 ---
 
@@ -13,17 +13,17 @@ Conforme estipulado no PRD ([docs/product/PRD.md](file:///home/alexandre/Projeto
 ## DEC-001 / ADR-001 — Adoção de Monólito Modular com Processamento Assíncrono
 - **Data:** 2026-11-17
 - **Status:** `ACCEPTED`
-- **Contexto:** Necessidade de construir uma plataforma SaaS com diversos domínios interligados (Identidade, Tenancy, Conectores, Catálogo, Financeiro, IA, BI) sem a sobrecarga operacional prematura e a complexidade de redes distribuídas de microsserviços.
+- **Contexto:** Necessidade de construir uma plataforma SaaS com múltiplos domínios interligados (Identidade, Tenancy, Conectores, Catálogo, Financeiro, IA, BI) sem a sobrecarga operacional prematura e latência de rede de microsserviços.
 - **Opções consideradas:**
-  1. Microsserviços distribuídos desde o início (Kubernetes, gRPC, bancos por serviço).
+  1. Microsserviços distribuídos desde o início (Kubernetes, gRPC, bancos separados por serviço).
   2. Monólito tradicional acoplado sem limites de domínio.
   3. Monólito modular com fronteiras de módulos reforçadas e workers assíncronos.
-- **Decisão:** Opção 3. Adotar monólito modular em Spring Boot com Spring Modulith e ArchUnit para garantia de fronteiras, com mensageria assíncrona via RabbitMQ.
-- **Justificativa:** Menor complexidade operacional, transações ACID simplificadas no PostgreSQL, deploy unificado e facilidade de refatoração, mantendo separação estrita para futura extração se justificada por métricas reais de escala.
-- **Consequências:** Exige disciplina estrita de arquitetura para não violar limites de pacotes; dependências cíclicas são bloqueadas pelo ArchUnit no build.
+- **Decisão:** Opção 3. Adotar monólito modular em Spring Boot com Spring Modulith e ArchUnit para garantia de fronteiras, com mensageria assíncrona via RabbitMQ 4.x.
+- **Justificativa:** Menor complexidade operacional, transações ACID garantidas no PostgreSQL, deploy unificado e facilidade de refatoração, mantendo limites limpos para futura extração caso métricas reais de escala justifiquem.
+- **Consequências:** Exige disciplina estrita de arquitetura para não violar limites de pacotes; dependências cíclicas entre módulos são bloqueadas pelo ArchUnit no build do Maven.
 - **Requisitos relacionados:** NFR-SCL-001, NFR-MNT-001, PRD Seção 8.1.
 - **Responsável:** Tech Lead / Arquiteto de Software.
-- **Revisão:** Fase 3 ou quando um domínio atingir gargalo específico de IO/CPU não solucionável verticalmente.
+- **Revisão:** Fase 3 ou quando um domínio atingir gargalo comprovado de concorrência ou escala.
 
 ---
 
@@ -36,11 +36,11 @@ Conforme estipulado no PRD ([docs/product/PRD.md](file:///home/alexandre/Projeto
   2. Banco relacional PostgreSQL 18.x com tipos `NUMERIC` para valores monetários.
   3. Arquitetura híbrida transacional e analítica prematura.
 - **Decisão:** Opção 2. PostgreSQL 18.x como fonte primária da verdade transacional, usando `NUMERIC` / `BigDecimal`.
-- **Justificativa:** Maturidade excepcional, suporte a JSONB para payloads variáveis de marketplaces, garantias ACID, índices avançados e suporte nativo a Row-Level Security (RLS) para defesa em profundidade multi-tenant.
-- **Consequências:** Requer modelagem cuidadosa de índices e particionamento temporal para tabelas de histórico e snapshots de mercado em volumes elevados.
+- **Justificativa:** Maturidade excepcional, suporte a JSONB para payloads variáveis de marketplaces, garantias ACID, índices avançados, suporte nativo a `uuidv7()` (PostgreSQL 18) e Row-Level Security (RLS) para defesa em profundidade multi-tenant.
+- **Consequências:** Requer modelagem cuidadosa de índices compostos (`tenant_id, ...`) e particionamento temporal para tabelas de histórico e snapshots de mercado em volumes elevados.
 - **Requisitos relacionados:** FR-FIN-001 a 006, NFR-SEC-002, PRD Seção 6.2 e 8.4.
 - **Responsável:** Engenheiro de Dados / Arquiteto de Software.
-- **Revisão:** Avaliar storage analítico dedicado (ClickHouse ou particionamento) apenas se o volume de snapshots ultrapassar a capacidade do PostgreSQL na Fase 2.
+- **Revisão:** Avaliar storage analítico dedicado (ClickHouse ou particionamento nativo) apenas se o volume de snapshots ultrapassar a capacidade do PostgreSQL na Fase 2.
 
 ---
 
@@ -49,9 +49,9 @@ Conforme estipulado no PRD ([docs/product/PRD.md](file:///home/alexandre/Projeto
 - **Status:** `ACCEPTED`
 - **Contexto:** A plataforma integra múltiplos canais (Mercado Livre e Shopee no MVP; Amazon, TikTok Shop e Magalu nas fases seguintes). Cada canal possui particularidades de autenticação, taxonomia, termos e estruturas de dados.
 - **Opções consideradas:**
-  1. Condicionais espalhados nas entidades e serviços centrais (`if (channel == "ML") ...`).
+  1. Condicionais espalhados nas entidades e serviços centrais (`if (channel == "MERCADO_LIVRE") ...`).
   2. Camada desacoplada de adaptadores implementando interfaces agnósticas de domínio (`MarketplaceConnector`).
-- **Decisão:** Opção 2. Interface abstrata comum de conectores com adaptadores dedicados e isolados por marketplace.
+- **Decisão:** Opção 2. Interface abstrata comum de conectores com adaptadores dedicados e isolados por marketplace (`MercadoLivreConnectorAdapter`, `ShopeeConnectorAdapter`).
 - **Justificativa:** Protege o modelo de domínio central contra mudanças frequentes de APIs externas; permite plugar novos marketplaces sem impactar regras existentes.
 - **Consequências:** Necessidade de manter DTOs de normalização e conversores bidirecionais entre os modelos externos e internos.
 - **Requisitos relacionados:** FR-INT-001 a 009, NFR-MNT-001, PRD Seção 8.3.
@@ -67,12 +67,12 @@ Conforme estipulado no PRD ([docs/product/PRD.md](file:///home/alexandre/Projeto
 - **Opções consideradas:**
   1. Scraping não autorizado contornando proteções, CAPTCHAs e bloqueios técnicos.
   2. Exclusivamente APIs oficiais/autorizadas pelo seller, arquivos enviados pelo usuário (CSV/XLSX) e fontes de dados devidamente licenciadas.
-- **Decisão:** Opção 2. É proibido qualquer mecanismo de scraping hostil ou que burle autenticações, limites de taxa ou termos de serviço.
+- **Decisão:** Opção 2. É expressamente proibido qualquer mecanismo de scraping hostil ou que burle autenticações, limites de taxa ou termos de serviço.
 - **Justificativa:** Segurança jurídica para os usuários e para o produto, sustentabilidade operacional, conformidade com LGPD e prevenção contra bloqueios permanentes de IP/contas.
 - **Consequências:** Indicadores que os canais não disponibilizarem legitimamente serão declarados como `UNAVAILABLE` ou estimados com rotulagem explícita e explicável, nunca forjados.
 - **Requisitos relacionados:** FR-MKT-001 a 004, NFR-SEC-005, PRD Seção 1.2 e 4.2.
 - **Responsável:** Tech Lead / Jurídico.
-- **Revisão:** Análise de viabilidade no Prompt 01.
+- **Revisão:** Análise de viabilidade realizada no Prompt 01.
 
 ---
 
@@ -100,9 +100,9 @@ Conforme estipulado no PRD ([docs/product/PRD.md](file:///home/alexandre/Projeto
 - **Opções consideradas:**
   1. Exibir números absolutos sem contextualizar a origem.
   2. Armazenar e exibir metadados padronizados: `source`, `collectedAt`, `scope` e classificação (`OBSERVED`, `IMPORTED`, `ESTIMATED`, `AI_GENERATED`, `UNAVAILABLE`).
-- **Decisão:** Opção 2. Todo dado ou indicador carrega proveniência obrigatória.
+- **Decisão:** Opção 2. Todo dado ou indicador carrega proveniência obrigatória e explícita.
 - **Justificativa:** Transparência radical, proteção contra acusações de dados falsos e clareza analítica.
-- **Consequências:** Entidades de snapshot e DTOs de resposta devem incluir o bloco de proveniência.
+- **Consequências:** Entidades de snapshot e DTOs de resposta devem incluir o bloco de proveniência estruturado.
 - **Requisitos relacionados:** FR-MKT-004, FR-CMP-003, PRD Seção 6.1.
 - **Responsável:** Product Manager / Engenheiro de Dados.
 - **Revisão:** Contínua em todos os endpoints de mercado.
@@ -142,14 +142,19 @@ Conforme estipulado no PRD ([docs/product/PRD.md](file:///home/alexandre/Projeto
 
 ---
 
-## DEC-009 / ADR-009 — Baseline de Tecnologias de Engenharia e Operação
+## DEC-009 / ADR-009 — Baseline de Tecnologias de Engenharia e Operação (Validado na Fase 0)
 - **Data:** 2026-11-17
 - **Status:** `ACCEPTED`
-- **Contexto:** Padronização da infraestrutura de desenvolvimento e produção para garantir previsibilidade, suporte LTS e ecossistema maduro.
+- **Contexto:** Padronização da infraestrutura de desenvolvimento e produção para garantir previsibilidade, suporte LTS e ecossistema maduro. A Descoberta Técnica do Prompt 01 auditou o suporte oficial dos componentes.
 - **Opções consideradas:**
   1. Pilha poliglota heterogênea.
   2. Stack padronizada: Java 21 LTS + Spring Boot 3.5.x, Next.js App Router + TypeScript, PostgreSQL 18.x, Redis 7/8, RabbitMQ 4.x, Keycloak OIDC e Docker Compose.
-- **Decisão:** Opção 2. Fixar stack baseline indicada no PRD Seção 8.4 e nas regras de arquitetura.
+- **Decisão:** Opção 2. Fixar stack baseline indicada no PRD Seção 8.4 e auditada no Prompt 01:
+  - Backend: Java 21 LTS + Spring Boot 3.5.x (Spring Framework 6.2, Spring Modulith, ArchUnit).
+  - Persistência: PostgreSQL 18.x com `NUMERIC` para finanças e `uuidv7()` nativo.
+  - Mensageria: RabbitMQ 4.x com exchanges tópicos e Dead-Letter Queues.
+  - Frontend: Next.js (App Router) + React 19 + TypeScript + Tailwind CSS / shadcn/ui.
+  - Identidade: Keycloak 26.x (OIDC) local e IdP gerenciado em produção.
 - **Justificativa:** Alta produtividade, estabilidade comprovada para ecossistemas corporativos e robustez tipada tanto no backend quanto no frontend.
 - **Consequências:** Nenhuma dependência maior pode ser alterada sem criação de novo ADR e justificativa técnica.
 - **Requisitos relacionados:** NFR-MNT-001, PRD Seção 8.4.
@@ -158,29 +163,93 @@ Conforme estipulado no PRD ([docs/product/PRD.md](file:///home/alexandre/Projeto
 
 ---
 
-# Parte 2: Decisões Propostas e Pendentes de Validação (PROPOSED)
+## DEC-010 / ADR-010 — Arquitetura de Autenticação e Matriz de Capacidades de Marketplaces (ML e Shopee)
+- **Data:** 2026-11-17
+- **Status:** `ACCEPTED`
+- **Contexto:** O PRD demanda integração oficial com Mercado Livre e Shopee para sincronização de catálogo próprio, anúncios e pedidos, além de extração de taxas para cálculo de margem. A Descoberta Técnica auditou as documentações oficiais e constatou modelos de autenticação distintos.
+- **Opções consideradas:**
+  1. Utilizar bibliotecas terceiras não oficiais ou engenharia reversa de APIs privadas.
+  2. Implementar autenticação oficial OAuth 2.0 por canal:
+     - Mercado Livre: Authorization Code Grant global sem escopos de URL, tokens de 6h (refresh de 6 meses).
+     - Shopee: Authorization Code Grant com assinatura criptográfica HMAC-SHA256 (`sign`) com `partner_key` em toda requisição, tokens de 4h (refresh de 30 dias).
+- **Decisão:** Opção 2. Adotar estritamente os fluxos e endpoints oficiais documentados em [docs/architecture/marketplace-capability-matrix.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/architecture/marketplace-capability-matrix.md).
+- **Justificativa:** Conformidade integral com as políticas das plataformas parceiras, evitando cancelamento de credenciais de desenvolvedor e bloqueios legais.
+- **Consequências:** Cada adaptador de conector deve implementar seu próprio gerenciador de ciclo de vida de tokens e gerador de assinaturas (`ShopeeRequestSigner`).
+- **Requisitos relacionados:** FR-INT-001, FR-INT-002, FR-INT-003, FR-INT-004, FR-INT-006.
+- **Responsável:** Tech Lead de Integrações.
+- **Revisão:** A cada atualização semestral das APIs de Mercado Livre e Shopee.
 
-## DEC-P01 — Matriz de Capacidades e Escopos OAuth por Marketplace (Vinculada a OQ-001)
-- **Status:** `PROPOSED` / `PENDING_VALIDATION` (Escopo do Prompt 01)
-- **Contexto:** Definir com base em documentação oficial da API do Mercado Livre e Shopee quais escopos exatos serão requisitados (ex.: `read_orders`, `write_listings`).
-- **Pendência:** Aguardando conclusão da investigação técnica da Fase 0 (Prompt 01).
+---
 
-## DEC-P02 — Mecanismo e Viabilidade Legal de Coleta de Preços de Concorrentes (Vinculada a OQ-002)
-- **Status:** `PROPOSED` / `PENDING_VALIDATION` (Escopo do Prompt 01)
-- **Contexto:** Determinar quais fontes legítimas e licenciadas ou APIs públicas homologadas serão usadas para monitoramento de concorrentes sem violar termos de uso.
-- **Pendência:** Análise jurídica e técnica de viabilidade no Prompt 01.
+## DEC-011 / ADR-011 — Inteligência Competitiva Limitada a Dados Públicos Oficiais e Separação de Estimativas
+- **Data:** 2026-11-17
+- **Status:** `ACCEPTED`
+- **Contexto:** Análise de concorrência e descoberta de produtos exigem dados de anúncios de terceiros. Métricas como vendas reais de concorrentes, faturamento de concorrentes ou taxa de conversão não são disponibilizadas pelas APIs oficiais para lojas de terceiros.
+- **Opções consideradas:**
+  1. Simular ou estimar dados de concorrentes e apresentá-los como "fatos reais".
+  2. Implementar scrapers para capturar pedidos de concorrentes via contas falsas de comprador.
+  3. Utilizar apenas dados públicos observáveis (ML `/sites/MLB/search`, `/trends`), tratar métricas de vendas de concorrentes exclusivamente como estimativas explicáveis com selo `ESTIMATED`, e marcar dados privados ausentes como `UNAVAILABLE`.
+- **Decisão:** Opção 3. Dados de terceiros limitam-se a dados públicos oficiais ou estimativas com metodologia explícita; dados de vendas reais privadas de concorrentes são marcados como `UNAVAILABLE`.
+- **Justificativa:** Cumprimento rigoroso das regras anti-alucinação, proteção jurídica contra litígios de concorrência desleal e conformidade com as diretrizes do PRD.
+- **Consequências:** A interface do usuário deve educar o seller sobre a diferença entre dados próprios reais e sinais públicos de mercado.
+- **Requisitos relacionados:** FR-MKT-001 a 004, FR-CMP-001 a 008, PRD Seção 6.1.
+- **Responsável:** Product Manager / Jurídico.
+- **Revisão:** Validação de metodologia de scoring no Prompt 10.
 
-## DEC-P03 — Arquitetura de Comunicação da Extensão Chrome Manifest V3 (Vinculada a OQ-003)
-- **Status:** `PROPOSED` / `PENDING_VALIDATION` (Escopo do Prompt 01 e Prompt 11)
-- **Contexto:** Definir se a extensão funcionará exclusivamente enviando o identificador do anúncio atual para consulta no backend via sessão autenticada, sem ler cookies ou dados privados de navegação.
-- **Pendência:** Validação de segurança e políticas da Chrome Web Store no Prompt 01.
+---
+
+## DEC-012 / ADR-012 — Extensão Manifest V3 com Permissão activeTab e Sem Segredos
+- **Data:** 2026-11-17
+- **Status:** `ACCEPTED`
+- **Contexto:** A extensão de navegador oferece assistência contextual ao vendedor enquanto navega nos marketplaces. As políticas do Chrome Web Store Developer Program (Limited Use Policy) proíbem coleta desnecessária de dados.
+- **Opções consideradas:**
+  1. Extensão com permissões amplas (`<all_urls>`), armazenando tokens OAuth no LocalStorage e raspando páginas continuamente em background.
+  2. Extensão Manifest V3 com permissão restrita `activeTab` disparada apenas por ação explícita do usuário, comunicando-se com o backend da plataforma via sessão efêmera e sem armazenar segredos.
+- **Decisão:** Opção 2. Adotar arquitetura de extensão com permissões mínimas, `activeTab` e zero credenciais persistidas localmente.
+- **Justificativa:** Aprovação facilitada na Chrome Web Store, conformidade com a LGPD, segurança contra roubo de tokens e respeito às políticas dos marketplaces.
+- **Consequências:** A extensão não captura dados em segundo plano; a análise é disparada sob demanda pelo usuário.
+- **Requisitos relacionados:** FR-LST-011, PRD Seção 4.1 e 12.4.
+- **Responsável:** Engenheiro Frontend / Segurança.
+- **Revisão:** Prompt 11.
+
+---
+
+## DEC-013 / ADR-013 — Estratégia de Isolamento de Ambientes para Integrações Externas
+- **Data:** 2026-11-17
+- **Status:** `ACCEPTED`
+- **Contexto:** Regra anti-alucinação proíbe terminantemente simular integrações em produção e utilizar credenciais reais em testes automatizados.
+- **Opções consideradas:**
+  1. Conectar ambiente de teste às APIs de produção de contas reais de sellers.
+  2. Simular respostas em produção quando faltar credencial.
+  3. Segregação rigorosa: WireMock/Testcontainers efêmeros em `dev`/`test`; sandbox oficial (`test_user` do ML e Shopee Sandbox) em homologação; APIs reais com credenciais OAuth autorizadas pelo seller em produção. Se faltar credencial em produção, conector exibe `NOT_CONFIGURED`.
+- **Decisão:** Opção 3. Hermetismo total nos testes e exigência de credencial válida em produção sem dados fictícios.
+- **Justificativa:** Testes reproduzíveis sem flakiness de rede e garantia de que nenhum dado falso seja exibido ao usuário em produção.
+- **Consequências:** Obrigatoriedade de manter fixtures WireMock sincronizadas com a documentação oficial.
+- **Requisitos relacionados:** NFR-SEC-003, NFR-REL-001, PRD Seção 13.1.
+- **Responsável:** Time de QA / DevOps.
+- **Revisão:** Prompt 02 e Prompt 05.
+
+---
+
+# Parte 2: Decisões Propostas e Pendências Classificadas (PROPOSED)
 
 ## DEC-P04 — Parametrização dos Regimes Tributários Brasileiros no Motor Financeiro (Vinculada a OQ-004 e OQ-005)
-- **Status:** `PROPOSED` / `PENDING_VALIDATION` (Escopo do Prompt 01 e Prompt 08)
-- **Contexto:** Definir como Simples Nacional (com faixas de faturamento), Lucro Presumido e Lucro Real serão parametrizados nas regras de dedução de impostos sobre vendas.
-- **Pendência:** Alinhamento com especialista contábil/fiscal durante o Prompt 01.
+- **Status:** `PROPOSED` / `PENDING_REVIEW` (Classificação: **P0**)
+- **Contexto:** Definir a parametrização de alíquotas de Simples Nacional (com faixas de faturamento RBT12), Lucro Presumido e Lucro Real nas regras de dedução de impostos sobre vendas.
+- **Proposta Inicial da Engenharia:** Criar modelo de configuração fiscal por empresa/CNPJ onde o usuário informa sua alíquota efetiva ou seleciona seu anexo/faixa, gerando uma taxa percentual parametrizada aplicável à receita bruta de cada pedido.
+- **Pendência:** Homologação com especialista fiscal/contábil no Prompt 08 antes de codificar o motor.
 
 ## DEC-P05 — Política de Retenção de Dados e Expurgos Automáticos LGPD (Vinculada a OQ-007)
-- **Status:** `PROPOSED` / `PENDING_VALIDATION` (Escopo do Prompt 01)
-- **Contexto:** Estabelecer tempos de guarda para logs de auditoria (ex.: 5 anos), snapshots de mercado (ex.: 12 meses) e dados anonimizados de compradores.
-- **Pendência:** Definição com encarregado de privacidade (DPO) no Prompt 01.
+- **Status:** `PROPOSED` / `PENDING_REVIEW` (Classificação: **P0**)
+- **Contexto:** Estabelecer tempos de guarda para logs de auditoria, snapshots de mercado e dados anonimizados de compradores.
+- **Proposta Inicial da Engenharia:**
+  - Snapshots de mercado: Retenção de 12 meses (dados históricos de preço e tendências).
+  - Logs de auditoria: Retenção de 5 anos (atendimento a exigências fiscais/legais).
+  - Dados pessoais de compradores (nome, endereço de entrega): Anonimização / expurgo após 90 dias da entrega concluída do pedido, preservando apenas os valores financeiros.
+- **Pendência:** Validação com o Encarregado de Proteção de Dados (DPO) / Jurídico.
+
+## DEC-P06 — Metodologia Explicável do Score de Anúncio e Oportunidade (Vinculada a OQ-014)
+- **Status:** `PROPOSED` / `PENDING_REVIEW` (Classificação: **P0**)
+- **Contexto:** Definir os pesos e critérios que compõem o score de qualidade de anúncio (FR-LST-001) para que seja 100% auditável e explicável.
+- **Proposta Inicial da Engenharia:** Score de 0 a 100 ponderado por: Comprimento do título e palavras-chave (25%), Completude da ficha técnica e atributos (30%), Qualidade e quantidade de fotos (25%), Preço vs média de mercado (20%).
+- **Pendência:** Validação de produto no Prompt 10.
