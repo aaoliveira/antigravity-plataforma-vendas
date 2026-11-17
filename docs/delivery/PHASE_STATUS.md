@@ -2,18 +2,35 @@
 
 ## 1. Visão Geral do Gate Atual
 
-- **Fase Atual:** Fase 2 — Expansão de Inteligência & Monitoramento
-- **Prompt Concluído & Aprovado:** `Prompt 17 — DRE gerencial e conciliação de repasses`
+- **Fase Atual:** Fase 3 — Plataforma Ampliada
+- **Prompt Concluído:** `Prompt 18 — Assistente conversacional e servidor MCP read-only`
 - **Status do Gate:** `APPROVED`
-- **Data de Conclusão:** 2026-11-17T17:31:00-03:00
-- **Responsável:** Antigravity AI Assistant & Engenharia Financeira
-- **Último Prompt Aprovado:** `Prompt 17 — DRE gerencial e conciliação de repasses`
-- **Próximo Prompt Liberado:** `Prompt 18 — Conversational AI e servidor MCP`
-- **Nota de Escopo:** Prompt 16 (Ads) postergado devido ao bloqueio externo OQ-006 (whitelisting de parceiro comercial) sem impactar o fluxo de inteligência financeira.
+- **Data de Conclusão:** 2026-11-17T17:58:00-03:00
+- **Responsável:** Antigravity AI Assistant & Engenharia de IA/Plataforma
+- **Último Prompt Aprovado:** `Prompt 18 — Assistente conversacional e servidor MCP read-only`
+- **Próximo Prompt Disponível:** `Prompt 19 — Publicação assistida e automação governada`
+- **Nota de Escopo:** Prompt 16 (Ads) postergado devido ao bloqueio externo OQ-006 (whitelisting de parceiro comercial) sem impactar o assistente e servidor MCP.
 
 ---
 
-## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 17 — DRE Gerencial & Conciliação de Repasses)
+## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 18 — Assistente Conversacional & Servidor MCP Read-Only)
+
+| Critério de Aceite | Requisito Verificado | Evidência Comprovada | Avaliação |
+|---|---|---|---|
+| **AC-18-1: Catálogo Formal MCP Read-Only** | Registro formal de 5 ferramentas MCP de leitura (`search_market`, `query_tenant_products`, `query_sales_indicators`, `calculate_sku_margin`, `query_reconciliation_summary`) com JSON Schemas estritos e bloqueio de mutações. | `McpToolRegistry` com schemas tipados para parâmetros, bloqueando qualquer ferramenta mutável com `BLOCKED_MUTABLE_DENIED`; testado em `McpToolRegistryTest` e `McpControllerIntegrationTest`. | `APROVADO` |
+| **AC-18-2: Autenticação Segura & Chaves de API** | Gestão de chaves de API com prefixo `sip_mcp_`, hash SHA-256 no banco e suporte a revogação explícita. | `McpAuthService` gerando e validando chaves de API com hash SHA-256 e permissão estrita `READ_ONLY`; testado em `McpAuthServiceTest`. | `APROVADO` |
+| **AC-18-3: Isolamento Multi-Tenant & Anti-Cross-Tenant** | Execução de ferramentas isolada estritamente pelo `tenant_id` autenticado, bloqueando tentativas de IDOR com `BLOCKED_CROSS_TENANT`. | `McpToolExecutorService` comparando parâmetros com o tenant do contexto de segurança; testado em `McpControllerIntegrationTest.shouldBlockCrossTenantCall`. | `APROVADO` |
+| **AC-18-4: Defesa Anti-Prompt Injection (OWASP LLM01)** | Blindagem de mensagens e parâmetros contra injeção adversarial e cancelamento de instruções de sistema. | `UntrustedTextSanitizer` escaneando argumentos e prompts com regex contextual, rejeitando com `BLOCKED_INJECTION`; testado em `McpToolExecutorServiceTest`. | `APROVADO` |
+| **AC-18-5: Cálculos Determinísticos em BigDecimal (Sem SQL Arbitrário)** | Proibição de SQL arbitrário gerado por LLM e cálculo determinístico de margens via motor financeiro em `BigDecimal HALF_EVEN`. | `McpToolExecutorService.executeCalculateSkuMargin` consultando `SkuCostRepository` e aplicando fórmulas determinísticas sem inventar números; testado em `McpToolExecutorServiceTest`. | `APROVADO` |
+| **AC-18-6: Auditoria Imutável de Execuções MCP** | Registro completo de cada chamada MCP em `mcp_tool_execution_logs` com argumentos sanitizados, latência e status, sem expor segredos. | Tabela de auditoria gravada em cada invocação com mascaramento de senhas e tokens; testado em `McpToolExecutorServiceTest` e `McpControllerIntegrationTest`. | `APROVADO` |
+| **AC-18-7: Sessões de Chat & Proveniência Explicável** | Histórico persistente de conversas associando papéis, chamadas de ferramentas e metadados de proveniência (`OBSERVED`, `IMPORTED`, `CALCULATED`, `AI_GENERATED`, `UNAVAILABLE`). | `ConversationalAssistantService` coordenando sessões e persistindo mensagens estruturadas com badges de proveniência; testado em `ConversationalAssistantServiceTest`. | `APROVADO` |
+| **AC-18-8: Migração Flyway V13 & Testcontainers PostgreSQL 17** | Tabelas relacionais `mcp_api_keys`, `mcp_tool_execution_logs`, `conversational_sessions` e `conversational_messages` com FKs e índices. | Migration `V13__conversational_ai_and_mcp_audit.sql` aplicada com sucesso no PostgreSQL 17 real via Testcontainers em `PostgresMcpIntegrationTest`. | `APROVADO` |
+| **AC-18-9: Governança Arquitetural & ADR DEC-023** | Registro formal de decisões no ADR DEC-023 e resolução de dúvidas abertas em `OPEN_QUESTIONS.md` (OQ-012). | ADR DEC-023 aceito em `DECISION_LOG.md` e OQ-012 marcado como `RESOLVED`. | `APROVADO` |
+| **AC-18-10: Frontend Integrado & Suítes de Teste 100% Verdes** | Interface rica com 4 abas (Chat, Ferramentas, Chaves de API, Auditoria), 8 testes Vitest, build Next.js 15 e script de verificação. | `ConversationalAssistantView.tsx` integrado ao `DashboardView.tsx`, 64 testes Vitest passando (14 arquivos), build Next.js 15 sem erros, 218 testes backend passando e `scripts/verify_phase18.py` com 100% PASS. | `APROVADO` |
+
+---
+
+## 3. Verificação Objetiva dos Critérios de Aceite (Prompt 17 — DRE Gerencial & Conciliação de Repasses)
 
 | Critério de Aceite | Requisito Verificado | Evidência Comprovada | Avaliação |
 |---|---|---|---|

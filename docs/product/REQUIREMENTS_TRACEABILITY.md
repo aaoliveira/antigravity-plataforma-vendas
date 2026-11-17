@@ -188,13 +188,13 @@ Nenhum requisito pode ser considerado concluído sem que os testes associados es
 
 | ID | Prioridade | Descrição do Requisito | Fase | Prompt Alvo | Tipo de Teste Planejado | Status Atual |
 |---|---|---|---|---|---|---|
-| **FR-AI-001** | P1 | Disponibilizar assistente conversacional contextualizado. | Fase 3 | Prompt 18 | Integração (Spring AI / Chat Context) | `PLANNED` |
-| **FR-AI-002** | P1 | Consultar catálogo, métricas e concorrentes via linguagem natural. | Fase 3 | Prompt 18 | Unitário (Natural Language to Query Tool) | `PLANNED` |
-| **FR-AI-003** | P1 | Gerar análises e relatórios explicáveis com fontes citadas. | Fase 3 | Prompt 18 | Unitário (Response Factuality & Provenance) | `PLANNED` |
-| **FR-AI-004** | P2 | Expor ferramentas autorizadas via Model Context Protocol (MCP). | Fase 3 | Prompt 18 | Integração (MCP Server Protocol Test) | `PLANNED` |
-| **FR-AI-005** | P2 | Segregar ferramentas read-only de operações mutáveis. | Fase 3 | Prompt 18 | Segurança (MCP Mutability Barrier Test) | `PLANNED` |
-| **FR-AI-006** | P1 | Proteger contra prompt injection em dados externos não confiáveis. | Fase 2/3 | Prompt 15, Prompt 18 | Teste de Segurança Adversarial (Injection Fuzzing) | `PLANNED` |
-| **FR-AI-007** | P1 | Registrar telemetria de uso de IA (tokens, latência, avaliação). | Fase 1/3 | Prompt 10, Prompt 18 | Integração (AI Telemetry Listener) | `PLANNED` |
+| **FR-AI-001** | P1 | Disponibilizar assistente conversacional contextualizado. | Fase 3 | Prompt 18 | Integração (Spring AI / Chat Context) | `VERIFIED (Prompt 18)` |
+| **FR-AI-002** | P1 | Consultar catálogo, métricas e concorrentes via linguagem natural. | Fase 3 | Prompt 18 | Unitário (Natural Language to Query Tool) | `VERIFIED (Prompt 18)` |
+| **FR-AI-003** | P1 | Gerar análises e relatórios explicáveis com fontes citadas. | Fase 3 | Prompt 18 | Unitário (Response Factuality & Provenance) | `VERIFIED (Prompt 18)` |
+| **FR-AI-004** | P2 | Expor ferramentas autorizadas via Model Context Protocol (MCP). | Fase 3 | Prompt 18 | Integração (MCP Server Protocol Test) | `VERIFIED (Prompt 18)` |
+| **FR-AI-005** | P2 | Segregar ferramentas read-only de operações mutáveis. | Fase 3 | Prompt 18 | Segurança (MCP Mutability Barrier Test) | `VERIFIED (Prompt 18)` |
+| **FR-AI-006** | P1 | Proteger contra prompt injection em dados externos não confiáveis. | Fase 2/3 | Prompt 15, Prompt 18 | Teste de Segurança Adversarial (Injection Fuzzing) | `VERIFIED (Prompt 18)` |
+| **FR-AI-007** | P1 | Registrar telemetria de uso de IA (tokens, latência, avaliação). | Fase 1/3 | Prompt 10, Prompt 18 | Integração (AI Telemetry Listener) | `VERIFIED (Prompt 18)` |
 
 ---
 
@@ -210,7 +210,7 @@ Nenhum requisito pode ser considerado concluído sem que os testes associados es
 | **NFR-SEC-006** | Segurança | Suporte a MFA para contas administrativas. | Prompt 03 | Configuração OIDC Keycloak | `VERIFIED (Prompt 03)` |
 | **NFR-SEC-007** | Segurança | Rate limiting e proteção contra abuso e enumeração. | Prompt 03, Prompt 12 | Teste de Carga de Rate Limit | `VERIFIED (Prompt 12)` |
 | **NFR-PRV-001** | Privacidade | Minimização de dados pessoais e conformidade estrita com LGPD. | Prompt 01, Prompt 06 | Auditoria de Schemas e PII | `VERIFIED (Prompt 06)` |
-| **NFR-PRV-002** | Privacidade | Proibição de uso de dados do seller para treinar modelos globais. | Prompt 10, Prompt 18 | Verificação de Contrato de Provedor LLM | `VERIFIED (Prompt 10)` |
+| **NFR-PRV-002** | Privacidade | Proibição de uso de dados do seller para treinar modelos globais. | Prompt 10, Prompt 18 | Verificação de Contrato de Provedor LLM | `VERIFIED (Prompt 10, Prompt 18)` |
 | **NFR-PRV-003** | Privacidade | Sanitização estrita de logs: zero tokens, senhas ou PII. | Prompt 02, Prompt 12 | Validação de Log Formatter | `VERIFIED (Prompt 12)` |
 | **NFR-REL-001** | Confiabilidade | Jobs de sincronização idempotentes e recuperáveis. | Prompt 06, Prompt 12 | Teste de Replay de Mensagens RabbitMQ | `VERIFIED (Prompt 06, Prompt 12)` |
 | **NFR-REL-002** | Confiabilidade | Retries com backoff exponencial e jitter contra rate limits. | Prompt 05, Prompt 06, Prompt 12 | Teste com WireMock Fault Injection | `VERIFIED (Prompt 06, Prompt 12)` |
@@ -225,7 +225,7 @@ Nenhum requisito pode ser considerado concluído sem que os testes associados es
 | **NFR-OBS-003** | Observabilidade | Dashboards e alertas para filas congestionadas e falhas de APIs. | Prompt 12 | Configuração de Regras de Alerta Prometheus | `VERIFIED (Prompt 12)` |
 | **NFR-UX-001** | Usabilidade | Interface acessível, responsiva e com estados explícitos de erro. | Prompt 09, Prompt 10, Prompt 12 | Vitest, Testing Library e A11y Review | `VERIFIED (Prompt 12)` |
 | **NFR-UX-002** | Usabilidade | Glossário contextual e explicações acessíveis para indicadores. | Prompt 07, Prompt 09, Prompt 12 | Inspeção de Tooltips e Documentação UI | `VERIFIED (Prompt 12)` |
-| **NFR-AI-001** | IA | Respostas fundamentadas com citação de fontes e limites claros. | Prompt 10, Prompt 18 | Teste de Avaliação de Assertividade | `VERIFIED (Prompt 10)` |
-| **NFR-AI-002** | IA | Defesa em profundidade contra dados externos não confiáveis. | Prompt 15, Prompt 18 | Teste de Injeção em Metadados | `PLANNED` |
+| **NFR-AI-001** | IA | Respostas fundamentadas com citação de fontes e limites claros. | Prompt 10, Prompt 18 | Teste de Avaliação de Assertividade | `VERIFIED (Prompt 10, Prompt 18)` |
+| **NFR-AI-002** | IA | Defesa em profundidade contra dados externos não confiáveis. | Prompt 15, Prompt 18 | Teste de Injeção em Metadados | `VERIFIED (Prompt 18)` |
 | **NFR-MNT-001** | Manutenibilidade | Contratos padronizados de conectores e limites ArchUnit. | Prompt 02, Prompt 05 | Testes de Arquitetura no Maven Build | `VERIFIED (Prompt 02)` |
 | **NFR-MNT-002** | Manutenibilidade | Regras de cálculo versionadas com cobertura determinística. | Prompt 08, Prompt 12 | Suíte de Regressão Financeira JUnit 5 | `VERIFIED (Prompt 08, Prompt 12)` |

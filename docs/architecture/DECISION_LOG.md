@@ -420,6 +420,29 @@ Conforme estipulado no PRD ([docs/product/PRD.md](file:///home/alexandre/Projeto
 
 ---
 
+## DEC-023 / ADR-023 — Arquitetura de Servidor MCP Read-Only, Assistente Conversacional Contextual e Blindagem contra SQL Arbitrário e Injeção de Prompt
+- **Data:** 2026-11-17
+- **Status:** `ACCEPTED`
+- **Contexto:** Endereçamento dos requisitos FR-AI-001 a FR-AI-007, FR-MCP e resolução da questão em aberto OQ-012. O Model Context Protocol (MCP) conecta modelos de linguagem ao ecossistema de dados do seller. No entanto, LLMs podem sofrer jailbreak, produzir alucinações, tentar executar mutações indesejadas (pausar anúncios, mudar preços) ou gerar consultas SQL arbitrárias que violam o isolamento multi-tenant e causam vazamento de dados confidenciais (OWASP LLM01 e LLM02).
+- **Opções consideradas:**
+  1. Permitir geração e execução de SQL arbitrário pelo modelo com ferramentas mutáveis liberadas no MCP. (Inadmissível por segurança ofensiva, risco de corrupção de banco, destruição de isolamento multi-tenant e violação das invariantes do PRD).
+  2. Implementar servidor MCP estritamente READ-ONLY com catálogo de ferramentas especializadas e fortemente tipadas:
+     - **Catálogo Fechado de Ferramentas Read-Only:** Cada ferramenta possui JSON Schema estrito (`search_market`, `query_tenant_products`, `query_sales_indicators`, `calculate_sku_margin`, `query_reconciliation_summary`). Ferramentas mutáveis ou nomes desconhecidos são categoricamente rejeitados na camada de autorização com status `BLOCKED_MUTABLE_DENIED`.
+     - **Proibição Absoluta de SQL Arbitrário:** O LLM nunca recebe autorização para formular ou executar comandos SQL. As consultas são sempre mediadas por repositórios Spring Data JPA tipados e serviços com injeção automática e forçada de `tenant_id`.
+     - **Autenticação e Autorização MCP:** Autenticação via MCP API Key (`sip_mcp_...` com hash SHA-256 no PostgreSQL) ou token JWT da sessão, validando escopo de permissão `READ_ONLY` e associação ao `tenant_id`. Tentativas de acesso cross-tenant via parâmetros forjados são bloqueadas com `BLOCKED_CROSS_TENANT`.
+     - **Blindagem Anti-Prompt Injection (OWASP LLM01):** As entradas de chat e dados externos (anúncios, avaliações, PDFs) passam por sanitização ativa com `UntrustedTextSanitizer`. Padrões de jailbreak ("ignore instructions", comandos maliciosos) são neutralizados antes da submissão ao provedor de IA.
+     - **Respostas com Evidências e Limitações Explícitas:** Toda resposta conversacional anexa período consultado, escopo, fonte original dos dados e classificação de proveniência (`OBSERVED`, `IMPORTED`, `ESTIMATED`, `AI_GENERATED`). Dados ausentes ou inconclusivos são declarados categoricamente como `UNAVAILABLE` (sem alucinar e sem converter nulo em zero).
+     - **Cálculo Financeiro Confiável:** Métricas de rentabilidade e margens provêm exclusivamente do motor financeiro determinístico em `BigDecimal`, nunca de cálculos inventados pela IA.
+     - **Observabilidade e Trilha de Auditoria sem Segredos:** Tabela `mcp_tool_execution_logs` registrando ferramenta, argumentos sanitizados, modelo, versão do prompt, tempo de resposta (ms), custo técnico/tokens e status de execução. Tokens de API, chaves secretas e dados pessoais são estritamente filtrados.
+- **Decisão:** Opção 2.
+- **Justificativa:** Conformidade estrita com PRD Seções 5.14, 6.1 e 6.5, DEC-007, normas OWASP Top 10 for LLM e preservação absoluta do isolamento multi-tenant e integridade financeira.
+- **Consequências:** Todas as consultas via MCP e chat são 100% auditáveis e verificáveis; mutações exigem interface humana com confirmação explícita fora do protocolo MCP.
+- **Requisitos relacionados:** FR-AI-001 a FR-AI-007, FR-MCP, NFR-AI-001, NFR-AI-002, NFR-SEC-002, OQ-012, DEC-007.
+- **Responsável:** Engenheiro Backend / Arquiteto de Software.
+- **Revisão:** Fase 3 (Plataforma Ampliada).
+
+---
+
 # Parte 2: Decisões Propostas e Pendências Classificadas (PROPOSED)
 
 ## DEC-P05 — Política de Retenção de Dados e Expurgos Automáticos LGPD (Vinculada a OQ-007)

@@ -14,6 +14,7 @@ import { CompetitorMonitoringView } from './CompetitorMonitoringView';
 import { ActionCenterView } from './ActionCenterView';
 import { ProductDiscoveryView } from './ProductDiscoveryView';
 import { ReconciliationAndDreView } from './ReconciliationAndDreView';
+import { ConversationalAssistantView } from './ConversationalAssistantView';
 
 const initialDemoCompanies: CompanyItem[] = [
   {
@@ -42,7 +43,7 @@ const initialDemoStores: StoreItem[] = [
 ];
 
 export const DashboardView: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'COMPANIES' | 'STORES' | 'CAPABILITIES' | 'SYNC' | 'MARKET' | 'MONITORING' | 'ACTION_CENTER' | 'DISCOVERY' | 'FINANCIAL' | 'RECONCILIATION_DRE' | 'AI_STUDIO' | 'HEALTH'>('COMPANIES');
+  const [activeTab, setActiveTab] = useState<'COMPANIES' | 'STORES' | 'CAPABILITIES' | 'SYNC' | 'MARKET' | 'MONITORING' | 'ACTION_CENTER' | 'DISCOVERY' | 'FINANCIAL' | 'RECONCILIATION_DRE' | 'AI_STUDIO' | 'ASSISTANT' | 'HEALTH'>('COMPANIES');
   const [financialSubTab, setFinancialSubTab] = useState<'DASHBOARD' | 'ENGINE'>('DASHBOARD');
   const [companies, setCompanies] = useState<CompanyItem[]>(initialDemoCompanies);
   const [stores, setStores] = useState<StoreItem[]>(initialDemoStores);
@@ -184,6 +185,17 @@ export const DashboardView: React.FC = () => {
           AI Listing Studio
         </button>
         <button
+          onClick={() => setActiveTab('ASSISTANT')}
+          className={`pb-3 px-1 border-b-2 transition-colors flex items-center gap-1.5 ${
+            activeTab === 'ASSISTANT'
+              ? 'border-violet-500 text-violet-400 font-semibold'
+              : 'border-transparent text-slate-400 hover:text-slate-200'
+          }`}
+        >
+          <span>Assistente &amp; MCP</span>
+          <span className="text-[10px] px-1.5 py-0.2 rounded bg-violet-500/20 text-violet-300 border border-violet-500/30">Fase 3</span>
+        </button>
+        <button
           onClick={() => setActiveTab('HEALTH')}
           className={`pb-3 px-1 border-b-2 transition-colors ${
             activeTab === 'HEALTH'
@@ -250,6 +262,8 @@ export const DashboardView: React.FC = () => {
       {activeTab === 'RECONCILIATION_DRE' && <ReconciliationAndDreView />}
 
       {activeTab === 'AI_STUDIO' && <ListingStudioView />}
+
+      {activeTab === 'ASSISTANT' && <ConversationalAssistantView />}
 
       {activeTab === 'HEALTH' && <HealthChecker />}
     </div>

@@ -2,76 +2,76 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "project": "Seller Intelligence Platform",
   "gateSystemVersion": "1.0.0",
-  "currentPrompt": "17",
-  "promptTitle": "DRE gerencial e conciliação de repasses",
-  "phase": "Fase 2 — após MVP",
+  "currentPrompt": "18",
+  "promptTitle": "Assistente conversacional e servidor MCP read-only",
+  "phase": "Fase 3 — plataforma ampliada",
   "status": "APPROVED",
-  "updatedAt": "2026-11-17T17:31:00-03:00",
+  "updatedAt": "2026-11-17T17:57:00-03:00",
   "evaluatedBy": "Antigravity AI Assistant",
   "criteria": [
     {
-      "id": "AC-17-1",
-      "description": "Importação idempotente de extratos e repasses oficiais do marketplace com prevenção de duplicidade (external_settlement_id + hash)",
-      "status": "APPROVED",
-      "evidence": "SettlementIngestionService com hash SHA-256 e chave única natural uk_settlement_idempotency; testado em SettlementIngestionServiceTest e PostgresReconciliationIntegrationTest."
+      "id": "AC-18-1",
+      "description": "Catálogo formal de ferramentas MCP estritamente READ-ONLY (search_market, query_tenant_products, query_sales_indicators, calculate_sku_margin, query_reconciliation_summary) com JSON Schemas estritos e rejeição de ferramentas mutáveis",
+      "status": "PASSED",
+      "evidence": "McpToolRegistry com schemas JSON fortemente tipados e bloqueio de ferramentas mutáveis ou não registradas com BLOCKED_MUTABLE_DENIED (validado em McpToolRegistryTest e McpControllerIntegrationTest)."
     },
     {
-      "id": "AC-17-2",
-      "description": "Mecanismo de reconciliação de pedidos e repasses discriminando CONCILIADO, PENDENTE, DIVERGENTE e NÃO_IDENTIFICADO",
-      "status": "APPROVED",
-      "evidence": "ReconciliationMatchingEngine com enum ReconciliationItemStatus (CONCILED, PENDING_MATCH, DISCREPANT, UNIDENTIFIED); validado em ReconciliationMatchingEngineTest."
+      "id": "AC-18-2",
+      "description": "Autenticação e Autorização MCP por usuário, tenant e escopo de permissão (mcp_api_keys com hash SHA-256 e status ativo)",
+      "status": "PASSED",
+      "evidence": "McpAuthService validando API Key sip_mcp_... com hash SHA-256, escopo READ_ONLY e suporte a revogação (validado em McpAuthServiceTest)."
     },
     {
-      "id": "AC-17-3",
-      "description": "Quantificação exata e determinística de divergências financeiras em BigDecimal (valor esperado, recebido e diferença)",
-      "status": "APPROVED",
-      "evidence": "Cálculo determinístico em BigDecimal com tolerância de centavos (0.01) e registro em discrepancy_amount testado com casos exatos."
+      "id": "AC-18-3",
+      "description": "Conversão de linguagem natural em chamadas verificáveis de ferramentas do catálogo (Function Calling / Tool Calling) com proibição de SQL arbitrário gerado por LLM",
+      "status": "PASSED",
+      "evidence": "ConversationalAssistantService e FakeConversationalAiProvider orquestrando chamadas tipadas via Spring Data JPA sem execução de SQL dinâmico (validado em ConversationalAssistantServiceTest)."
     },
     {
-      "id": "AC-17-4",
-      "description": "Tratamento completo de eventos financeiros: comissões, tarifas, fretes debitados/reembolsados, cancelamentos e estornos",
-      "status": "APPROVED",
-      "evidence": "ReconciliationEntryType cobrindo ORDER_PAYOUT, COMMISSION_FEE, TRANSACTION_FEE, SHIPPING_DEBIT, REFUND_CHARGEBACK, ESCROW_RELEASE, ADJUSTMENT."
+      "id": "AC-18-4",
+      "description": "Isolamento estrito multi-tenant (tenant_id) garantido na execução de ferramentas; testes adversariais impedem acesso a dados de outros tenants",
+      "status": "PASSED",
+      "evidence": "McpToolExecutorService forçando tenant_id do contexto de autenticação em todas as consultas e rejeitando parâmetros cross-tenant com BLOCKED_CROSS_TENANT (validado em McpControllerIntegrationTest.shouldBlockCrossTenantCall)."
     },
     {
-      "id": "AC-17-5",
-      "description": "Trilha de auditoria imutável para ajustes e associações manuais de conciliação (autor, justificativa, estado anterior e novo)",
-      "status": "APPROVED",
-      "evidence": "ManualReconciliationService gravando entidade imutável ReconciliationAuditLog em banco; validado em ManualReconciliationServiceTest e teste de integração."
+      "id": "AC-18-5",
+      "description": "Proteção ativa contra Prompt Injection (OWASP LLM01) em mensagens do usuário e dados externos, neutralizando tentativas de jailbreak",
+      "status": "PASSED",
+      "evidence": "Sanitização de prompt com UntrustedTextSanitizer e rejeição de payloads adversariais com BLOCKED_INJECTION (validado em McpToolExecutorServiceTest.shouldBlockPromptInjectionInToolArguments)."
     },
     {
-      "id": "AC-17-6",
-      "description": "Registro de protocolo de contestação junto ao canal com disclaimer de que não há envio automático desautorizado",
-      "status": "APPROVED",
-      "evidence": "ReconciliationDispute com campos protocol_number, channel, disputed_amount e disclaimer fixo de controle interno sem envio automático."
+      "id": "AC-18-6",
+      "description": "Respostas contextualizadas com metadados de auditoria: período pesquisado, escopo, fonte (source), classificação de proveniência e timestamp",
+      "status": "PASSED",
+      "evidence": "DTO de resposta conversacional incluindo bloco completo de metadados, classificação de proveniência (OBSERVED/IMPORTED/CALCULATED/AI_GENERATED/UNAVAILABLE) e limitações operacionais."
     },
     {
-      "id": "AC-17-7",
-      "description": "Demonstrativo de Resultado Gerencial (DRE) com seleção explícita de regime (Competência vs Caixa) e fórmulas transparentes",
-      "status": "APPROVED",
-      "evidence": "DreCalculationService gerando estrutura padronizada em 10 níveis com fórmulas auditáveis para ACCRUAL e CASH; testado em DreCalculationServiceTest."
+      "id": "AC-18-7",
+      "description": "Declaração explícita de indisponibilidade (UNAVAILABLE) quando não houver evidências suficientes, sem alucinar ou converter nulo em zero",
+      "status": "PASSED",
+      "evidence": "Respostas declaram explicitamente UNAVAILABLE quando métricas não existem ou argumentos são bloqueados, sem falsear dados."
     },
     {
-      "id": "AC-17-8",
-      "description": "Aviso legal obrigatório: DRE gerencial não substitui contabilidade oficial nem gera guias ou obrigações fiscais",
-      "status": "APPROVED",
-      "evidence": "DRE_LEGAL_DISCLAIMER embutido no DTO, na exportação CSV com metadados e no banner do frontend."
+      "id": "AC-18-8",
+      "description": "Integração com motor financeiro determinístico (calculate_sku_margin) retornando cálculos monetários exatos em BigDecimal",
+      "status": "PASSED",
+      "evidence": "Ferramenta calculate_sku_margin consultando custo efetivo em SkuCostRepository e calculando margem, comissões e preço mínimo determinísticos em BigDecimal HALF_EVEN."
     },
     {
-      "id": "AC-17-9",
-      "description": "Isolamento estrito multi-tenant (tenant_id) e migração Flyway V12 para reconciliação e DRE",
-      "status": "APPROVED",
-      "evidence": "Migration V12__marketplace_reconciliation_and_managerial_dre.sql executada no PostgreSQL 17 real via Testcontainers com tenant_id e chaves estrangeiras."
+      "id": "AC-18-9",
+      "description": "Log estruturado de auditoria (mcp_tool_execution_logs) registrando ferramenta, argumentos sanitizados, modelo, latência e status, sem segredos",
+      "status": "PASSED",
+      "evidence": "Tabela de auditoria Flyway V13 gravando histórico imutável de execuções MCP com mascaramento de segredos e status de auditoria."
     },
     {
-      "id": "AC-17-10",
-      "description": "Frontend integrado com abas de Conciliação, Divergências, Contestações e DRE Gerencial, com testes Vitest e script de verificação",
-      "status": "APPROVED",
-      "evidence": "ReconciliationAndDreView.tsx integrado ao DashboardView; 7 testes Vitest passando e verify_phase17.py executado com 100% de sucesso."
+      "id": "AC-18-10",
+      "description": "Frontend integrado (ConversationalAssistantView.tsx no DashboardView.tsx) com interface de chat, badges de ferramentas e evidências, testes Vitest e script de verificação",
+      "status": "PASSED",
+      "evidence": "Componente React com 4 abas (Chat, Ferramentas MCP, Chaves de API, Auditoria) integrado ao DashboardView, 8 testes Vitest passando e script scripts/verify_phase18.py 100% verde."
     }
   ],
   "blockers": [],
-  "nextPrompt": "18",
-  "nextPromptTitle": "Conversational AI e servidor MCP",
+  "nextPrompt": "19",
+  "nextPromptTitle": "Publicação assistida e automação governada",
   "nextPromptPrerequisiteMet": true
 }
