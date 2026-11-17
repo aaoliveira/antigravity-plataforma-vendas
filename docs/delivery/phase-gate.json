@@ -2,52 +2,64 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "project": "Seller Intelligence Platform",
   "gateSystemVersion": "1.0.0",
-  "currentPrompt": "01",
-  "promptTitle": "Descoberta técnica, viabilidade e ADRs",
-  "phase": "Fase 0 — Descoberta Técnica & Viabilidade",
+  "currentPrompt": "02",
+  "promptTitle": "Bootstrap do monorepo e ambiente local",
+  "phase": "Fase 1 — MVP / Fundação Técnica",
   "status": "APPROVED",
-  "updatedAt": "2026-11-17T11:07:30-03:00",
+  "updatedAt": "2026-11-17T11:27:40-03:00",
   "evaluatedBy": "Antigravity AI Assistant",
   "criteria": [
     {
-      "id": "AC-01-1",
-      "description": "Todas as capacidades que entrarão no MVP têm fonte oficial registrada ou estão explicitamente marcadas como não confirmadas",
+      "id": "AC-02-1",
+      "description": "Estrutura de diretórios do repositório conforme a stack do PRD criada",
       "status": "APPROVED",
-      "evidence": "Matriz em docs/architecture/marketplace-capability-matrix.md auditou documentações oficiais de Mercado Livre e Shopee vigentes em 17/11/2026, mapeando endpoints confirmados e pendências de aprovação."
+      "evidence": "Estrutura criada: backend/ (Java 21 / Spring Boot 3.5), frontend/ (Next.js 15 / TypeScript), docker-compose.yml, .env.example, .github/workflows/ci.yml."
     },
     {
-      "id": "AC-01-2",
-      "description": "Cada endpoint e escopo mencionado está associado à documentação oficial consultada e à data de consulta",
+      "id": "AC-02-2",
+      "description": "Serviço Spring Boot com /actuator/health e /actuator/info, profiles e erro RFC 7807",
       "status": "APPROVED",
-      "evidence": "Registrados endpoints, métodos, URLs e regras OAuth com data de consulta 17/11/2026 para Mercado Livre Developers e Shopee Open Platform v2."
+      "evidence": "Endpoints /actuator/health e /actuator/info respondendo 200 OK com UP; CorrelationIdFilter propagando trace_id; GlobalExceptionHandler configurado com ProblemDetail."
     },
     {
-      "id": "AC-01-3",
-      "description": "Dados competitivos sem fonte autorizada estão excluídos do MVP ou classificados como pendência bloqueante",
+      "id": "AC-02-3",
+      "description": "Aplicação Next.js com layout base e chamada real ao health endpoint sem dados fictícios",
       "status": "APPROVED",
-      "evidence": "ADR DEC-011 aprovado limitando inteligência competitiva a dados públicos observáveis ou estimativas explicáveis com selo ESTIMATED; métricas privadas de terceiros marcadas como UNAVAILABLE."
+      "evidence": "Componente HealthChecker consome /actuator/health diretamente; linter e testes Vitest aprovados; build estático Next.js compilado com sucesso."
     },
     {
-      "id": "AC-01-4",
-      "description": "A matriz diferencia dados próprios, dados públicos observáveis, dados licenciados, estimativas e dados indisponíveis",
+      "id": "AC-02-4",
+      "description": "Docker Compose para PostgreSQL, Redis, RabbitMQ e Keycloak validado via docker compose config e saudável localmente",
       "status": "APPROVED",
-      "evidence": "Classificação rigorosa em 5 categorias (IMPORTED, OBSERVED, LICENSED, ESTIMATED, UNAVAILABLE) formalizada na Seção 4 da matriz de capacidades."
+      "evidence": "docker compose config validou sem erros; docker compose ps confirmou status 'Up (healthy)' para os 4 contêineres."
     },
     {
-      "id": "AC-01-5",
-      "description": "ADRs estão escritos, numerados, com contexto, decisão, alternativas, consequências e estado PROPOSED ou ACCEPTED",
+      "id": "AC-02-5",
+      "description": "Configuração .env.example sem segredos e validação de variáveis na inicialização",
       "status": "APPROVED",
-      "evidence": "DECISION_LOG.md atualizado com 13 ADRs aprovados (DEC-001 a DEC-013) e 3 propostas de implementação pendentes de validação contábil/jurídica (DEC-P04 a DEC-P06)."
+      "evidence": ".env ignorado em .gitignore; .env.example contém apenas placeholders de desenvolvimento."
     },
     {
-      "id": "AC-01-6",
-      "description": "Nenhuma OQ crítica foi encerrada por inferência do agente",
+      "id": "AC-02-6",
+      "description": "Maven Wrapper, pnpm lockfile, ESLint, TypeScript strict e testes básicos funcionando",
       "status": "APPROVED",
-      "evidence": "OPEN_QUESTIONS.md auditou OQ-001 a OQ-015 com classificação P0/P1/P2; nenhuma OQ foi unilateralmente encerrada como RESOLVED; recomendações técnicas e decisões necessárias foram registradas."
+      "evidence": "./mvnw verify aprovou 8 testes de unidade e arquitetura; pnpm run test e pnpm run lint aprovaram sem erros."
+    },
+    {
+      "id": "AC-02-7",
+      "description": "Pipeline CI no GitHub Actions para build/test/lint dos módulos",
+      "status": "APPROVED",
+      "evidence": "Workflow criado em .github/workflows/ci.yml com jobs para Docker Compose, Backend Maven e Frontend pnpm."
+    },
+    {
+      "id": "AC-02-8",
+      "description": "Migração Flyway inicial cria apenas infraestrutura mínima, sem entidades de negócio prematuras",
+      "status": "APPROVED",
+      "evidence": "V1__initial_infrastructure.sql executada com sucesso no PostgreSQL local; apenas uuid/pgcrypto e platform_infrastructure_metadata criados."
     }
   ],
   "blockers": [],
-  "nextPrompt": "02",
-  "nextPromptTitle": "Bootstrap do monorepo e ambiente local",
+  "nextPrompt": "03",
+  "nextPromptTitle": "Identidade, autenticação e isolamento multi-tenant",
   "nextPromptPrerequisiteMet": true
 }

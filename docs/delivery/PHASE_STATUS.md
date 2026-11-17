@@ -2,25 +2,27 @@
 
 ## 1. Visão Geral do Gate Atual
 
-- **Fase Atual:** Fase 0 — Descoberta Técnica & Viabilidade
-- **Prompt Ativo:** `Prompt 01 — Descoberta técnica, viabilidade e ADRs`
+- **Fase Atual:** Fase 1 — MVP / Fundação Técnica
+- **Prompt Ativo:** `Prompt 02 — Bootstrap do monorepo e ambiente local`
 - **Status do Gate:** `APPROVED`
-- **Data da Avaliação:** 2026-11-17T11:07:30-03:00
+- **Data da Avaliação:** 2026-11-17T11:27:40-03:00
 - **Responsável:** Antigravity AI Assistant & Engenharia
 
 ---
 
-## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 01)
+## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 02)
 
 | Critério de Aceite | Requisito Verificado | Evidência Comprovada | Avaliação |
 |---|---|---|---|
-| **1. Capacidades do MVP com fonte oficial** | Endpoints de ML e Shopee para catálogo, pedidos e pagamentos mapeados com base oficial. | [docs/architecture/marketplace-capability-matrix.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/architecture/marketplace-capability-matrix.md) detalha APIs oficiais de Mercado Livre Developers e Shopee Open Platform v2. | `APROVADO` |
-| **2. Endpoints e escopos com data e URLs** | URLs oficiais, métodos HTTP, modelos OAuth e data de consulta registrados. | Documentações auditadas em 17/11/2026; registrado modelo sem escopos na URL para ML e assinatura HMAC-SHA256 (`sign`) para Shopee. | `APROVADO` |
-| **3. Exclusão de dados competitivos ilegítimos** | Dados de concorrentes sem fonte autorizada excluídos ou tratados como pendência. | ADR [DEC-011](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/architecture/DECISION_LOG.md#dec-011--adr-011--inteligência-competitiva-limitada-a-dados-públicos-oficiais-e-separação-de-estimativas) veda scraping de pedidos/faturamento de terceiros e marca ausências como `UNAVAILABLE`. | `APROVADO` |
-| **4. Diferenciação em 5 categorias de dados** | Segregação estrutural entre dados próprios, observáveis, licenciados, estimativas e indisponíveis. | Formalizado na Seção 4 da matriz (`IMPORTED`, `OBSERVED`, `LICENSED`, `ESTIMATED`, `UNAVAILABLE`). | `APROVADO` |
-| **5. ADRs completos e numerados** | ADRs para stack, monólito, tenancy, conectores, proveniência, financeiro e extensão. | [docs/architecture/DECISION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/architecture/DECISION_LOG.md) contém DEC-001 a DEC-013 (`ACCEPTED`) e DEC-P04 a DEC-P06 (`PROPOSED`). | `APROVADO` |
-| **6. Nenhuma OQ crítica encerrada por inferência** | OQ-001 a OQ-015 auditadas com prioridade de bloqueio P0/P1/P2 sem falsas resoluções. | [docs/product/OPEN_QUESTIONS.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/product/OPEN_QUESTIONS.md) contém auditoria com propostas técnicas e próximos passos; nenhuma OQ foi marcada como `RESOLVED`. | `APROVADO` |
-| **7. Automação de Verificação** | Script de testes e validação automática executado com sucesso. | `python3 scripts/verify_phase01.py` executou 7 verificações com 100% de sucesso. | `APROVADO` |
+| **1. Estrutura de monorepo conforme o PRD** | Módulos `backend/` e `frontend/`, infra local e CI criados conforme baseline. | `backend/` (Java 21 / Spring Boot 3.5), `frontend/` (Next.js 15 / TypeScript strict), `docker-compose.yml` e `.github/workflows/ci.yml`. | `APROVADO` |
+| **2. Spring Boot com Health e Erro RFC 7807** | Endpoints de saúde e observabilidade funcionando sem dados fictícios. | `/actuator/health` respondeu `{"status":"UP"}` com banco e disco saudáveis; `GlobalExceptionHandler` configurado com `ProblemDetail`. | `APROVADO` |
+| **3. Next.js com chamada real ao health** | Interface técnica responsiva e cliente de API consumindo endpoint real. | `HealthChecker.tsx` consome backend; `pnpm run test` e `pnpm run build` aprovados com zero erros. | `APROVADO` |
+| **4. Docker Compose com serviços saudáveis** | PostgreSQL, Redis, RabbitMQ e Keycloak configurados e saudáveis. | `docker compose config` validado; `docker compose ps` confirmou 4 contêineres com status `Up (healthy)`. | `APROVADO` |
+| **5. Segurança e variáveis de ambiente** | `.env` protegido e `.env.example` sem segredos de produção. | `.env` adicionado ao `.gitignore`; `.env.example` contém apenas placeholders para desenvolvimento local. | `APROVADO` |
+| **6. Automação de qualidade e lockfiles** | Maven wrapper, pnpm lockfile, linter e testes passando. | `./mvnw clean verify` executou 8 testes (unitários e ArchUnit); `pnpm run lint` e `vitest` passaram 100%. | `APROVADO` |
+| **7. Pipeline CI no GitHub Actions** | Arquivo de workflow configurado para validação em múltiplos jobs. | `.github/workflows/ci.yml` criado com jobs de Docker, Backend Maven e Frontend pnpm. | `APROVADO` |
+| **8. Flyway com infraestrutura mínima** | Migração inicial limpa sem entidades prematuras de negócio. | `V1__initial_infrastructure.sql` aplicou extensões `uuid-ossp` e tabela de metadados; zero tabelas de negócio criadas. | `APROVADO` |
+| **9. Testes Automatizados de Validação** | Script de validação da fase executado com sucesso. | `python3 scripts/verify_phase02.py` executou 7 verificações com 100% de aprovação. | `APROVADO` |
 
 ---
 
@@ -30,8 +32,8 @@
 |---|---|---|---|---|---|
 | **00** | Constituição do projeto, contexto e proteção contra alucinações | Fase 0 | `APPROVED` | 2026-11-17 | Constituição das regras, PRD integral, rastreabilidade, OQs e ADRs baseline. |
 | **01** | Descoberta técnica, viabilidade e ADRs | Fase 0 | `APPROVED` | 2026-11-17 | Matriz de capacidades ML/Shopee, ADRs DEC-010 a DEC-013, auditoria OQ P0/P1/P2 e script de validação. |
-| **02** | Bootstrap do monorepo e ambiente local | Fase 1 | `NOT_STARTED` | — | Próximo prompt da sequência (Fase 1 - MVP). |
-| **03** | Identidade, autenticação e isolamento multi-tenant | Fase 1 | `NOT_STARTED` | — | Aguarda aprovação do Prompt 02. |
+| **02** | Bootstrap do monorepo e ambiente local | Fase 1 | `APPROVED` | 2026-11-17 | Monorepo criado, Spring Boot 3.5, Next.js 15, Docker Compose saudável, Flyway V1, CI workflow e testes passando. |
+| **03** | Identidade, autenticação e isolamento multi-tenant | Fase 1 | `NOT_STARTED` | — | Próximo prompt da sequência (Fase 1 - MVP). |
 | **04** | Organizações, CNPJs, lojas e gestão de acessos | Fase 1 | `NOT_STARTED` | — | Aguarda aprovação do Prompt 03. |
 | **05** | Framework de conectores e autorização OAuth | Fase 1 | `NOT_STARTED` | — | Aguarda aprovação do Prompt 04. |
 | **06** | Sincronização de catálogo, anúncios e pedidos | Fase 1 | `NOT_STARTED` | — | Aguarda aprovação do Prompt 05. |
@@ -52,4 +54,5 @@
 ---
 
 ## 4. Liberação para o Próximo Passo
-Com a conclusão da **Fase 0 (Prompts 00 e 01)**, as incertezas técnicas foram sanadas, as fontes oficiais auditadas e os ADRs estruturados. O projeto está oficialmente autorizado a iniciar a **Fase 1 (MVP)** com o **Prompt 02 — Bootstrap do monorepo e ambiente local**.
+Com a aprovação do **Prompt 02**, a infraestrutura básica e a automação de qualidade do monorepo estão operacionais. O projeto está apto para receber e executar o:
+👉 **Prompt 03 — Identidade, autenticação e isolamento multi-tenant**.

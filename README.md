@@ -1,42 +1,110 @@
-# Pacote de prompts — Antigravity | Seller Intelligence Platform
+# Seller Intelligence Platform — Monorepo
 
-**Versão:** 1.0  
-**Data:** 17/11/2026  
-**Objetivo:** transformar o PRD da Seller Intelligence Platform em uma sequência incremental de prompts para Google Antigravity, com stack definida, regras persistentes, critérios de aceite e bloqueio de avanço até validação.
+Plataforma SaaS multi-tenant para vendedores de e-commerce e marketplaces (Mercado Livre, Shopee e expansões).
+Construída com arquitetura de monólito modular orientada a evidências, isolamento multi-tenant estrito e motor financeiro determinístico em `BigDecimal`.
 
-## Arquivos
+---
 
-- `prompts/`: prompts numerados individualmente. Comece obrigatoriamente pelo `00`.
-- `rules/`: conteúdo inicial de regras persistentes para o workspace.
-- `skills/mvp-phase-gate/SKILL.md`: procedimento reutilizável de gate.
+## 1. Stack Tecnológica Baseline
 
-## Como preparar o workspace
-
-1. Crie/abra a pasta do projeto no Antigravity.
-2. Copie o PRD original para `docs/product/PRD.md`, preservando o conteúdo integral.
-3. Copie `rules/AGENTS.md` para a raiz do repositório como `AGENTS.md`.
-4. Copie os demais arquivos de `rules/` para `.agents/rules/`.
-5. Copie `skills/mvp-phase-gate/` para `.agents/skills/mvp-phase-gate/`.
-6. Envie o conteúdo completo de `prompts/00_...md` ao agente. Não comece pelo Prompt 01.
-7. Só envie o prompt seguinte depois de o Antigravity marcar o anterior como `APPROVED` e apresentar as evidências.
-
-## Como operar no Antigravity
-
-Use o modo de planejamento antes de cada etapa. Revise o plano e os artefatos gerados antes de permitir alterações importantes. Mantenha o modo de execução de comandos em **Request Review**, não em execução automática irrestrita. O Antigravity gera artefatos como plano, lista de tarefas, diffs e walkthrough; use-os para avaliar o resultado.
-
-As regras persistentes do Antigravity são adequadas para invariantes de arquitetura e comportamento; Agent Skills são adequadas para processos repetíveis. Este pacote usa `.agents/rules/` e `.agents/skills/`. Evite criar novas Workflows tradicionais: a documentação oficial informou migração de Workflows para Agent Skills em 2026.
-
-## Regra crítica de sequência
-
-`Prompt N+1` não pode ser executado enquanto `Prompt N` não estiver `APPROVED`. Se houver falha, o agente deve marcar `BLOCKED`, exibir as evidências e corrigir a etapa atual, sem avançar.
-
-## Fases
-
-| Fase | Prompts | Resultado |
+| Componente | Tecnologia | Papel / Versão |
 |---|---|---|
-| Fundação / Fase 0 | 00–01 | Contexto, regras, evidências de viabilidade e ADRs |
-| MVP | 02–12 | Plataforma mínima operacional, segura e validada |
-| Fase 2 | 13–17 | Monitoramento, automação, discovery, Ads e finanças avançadas |
-| Fase 3 | 18–19 | MCP, IA conversacional e expansão de marketplaces |
+| **Backend** | Java 21 LTS + Spring Boot 3.5.x | Monólito modular com Spring Modulith, ArchUnit, Flyway e Spring Security. |
+| **Frontend Web** | Next.js 15 (App Router) + React 19 + TypeScript | UI com Tailwind CSS, shadcn/ui e Vitest. |
+| **Persistência** | PostgreSQL 18.x | Fonte única da verdade transacional. `NUMERIC` para dinheiro e `uuidv7()` nativo. |
+| **Cache & Lock** | Redis 7.x / 8.x | Cache volátil e controle de concorrência. |
+| **Mensageria** | RabbitMQ 4.x / 3.13-management | Ingestão assíncrona, retries e Dead-Letter Queues (DLQ). |
+| **Identidade** | Keycloak 26.x (OIDC) | Provedor de identidade e autenticação OIDC/OAuth 2.0. |
+| **Infra Local** | Docker Compose | Orquestração dos serviços de apoio para desenvolvimento. |
 
-Consulte o arquivo completo `../Prompts_Antigravity_Seller_Intelligence.md` para stack, explicações e sequência completa. Comece pelo Prompt 00.
+---
+
+## 2. Estrutura do Monorepo
+
+```
+antigravity-avantepro-clone/
+├── .agents/
+│   ├── rules/                    # Regras persistentes (anti-hallucination, stack, testing, phase-gates)
+│   └── skills/                   # Skills operacionais de automação e phase gate
+├── .github/workflows/ci.yml      # Pipeline de Integração Contínua (CI)
+├── backend/                      # Monólito modular Spring Boot (Java 21)
+│   ├── pom.xml
+│   ├── mvnw                      # Maven Wrapper
+│   └── src/
+├── frontend/                     # Aplicação Next.js 15 (TypeScript / App Router)
+│   ├── package.json
+│   ├── pnpm-lock.yaml
+│   └── src/
+├── docs/                         # Documentação viva de produto, arquitetura e entrega
+│   ├── product/PRD.md            # Fonte única da verdade de produto
+│   ├── architecture/             # DECISION_LOG.md e marketplace-capability-matrix.md
+│   └── delivery/                 # PHASE_STATUS.md e phase-gate.json
+├── docker-compose.yml            # Serviços locais (Postgres, Redis, RabbitMQ, Keycloak)
+├── .env.example                  # Template seguro de variáveis de ambiente
+└── prompts/                      # Especificações de cada prompt do roadmap
+```
+
+---
+
+## 3. Instruções Rápidas de Execução Local
+
+### 3.1 Pré-requisitos
+- **Java 21 LTS** e **Maven 3.9+** (ou use `./mvnw`)
+- **Node.js 22+** e **pnpm 10+**
+- **Docker** e **Docker Compose**
+
+### 3.2 Subindo os Serviços de Apoio
+```bash
+# 1. Copie o template de variáveis de ambiente
+cp .env.example .env
+
+# 2. Inicie Postgres, Redis, RabbitMQ e Keycloak em background
+docker compose up -d
+
+# 3. Verifique a saúde dos serviços
+docker compose ps
+```
+
+### 3.3 Executando o Backend (Spring Boot)
+```bash
+cd backend
+
+# Executar testes unitários e de arquitetura (ArchUnit)
+./mvnw clean verify
+
+# Iniciar o servidor local (porta 8082)
+SPRING_PROFILES_ACTIVE=dev ./mvnw spring-boot:run
+```
+O backend disponibiliza:
+- Health check: [http://localhost:8082/actuator/health](http://localhost:8082/actuator/health)
+- Info do sistema: [http://localhost:8082/actuator/info](http://localhost:8082/actuator/info)
+
+### 3.4 Executando o Frontend (Next.js)
+```bash
+cd frontend
+
+# Instalar dependências
+pnpm install
+
+# Executar testes de componentes (Vitest)
+pnpm run test
+
+# Executar linter
+pnpm run lint
+
+# Iniciar em modo de desenvolvimento (porta 3000)
+pnpm run dev
+```
+Acesse a aplicação técnica em: [http://localhost:3000](http://localhost:3000)
+
+### 3.5 Parando o Ambiente
+```bash
+docker compose down
+```
+
+---
+
+## 4. Governança e Regras Invariantes
+- **Preflight Obrigatório:** Consulte [AGENTS.md](AGENTS.md) antes de cada etapa de desenvolvimento.
+- **Hierarquia de Evidências:** `PRD.md` > `DECISION_LOG.md` > Critérios de Aceite > Código/Testes > Docs Oficiais.
+- **Anti-Alucinação:** Dados de mercado recebem rótulos estritos (`OBSERVED`, `IMPORTED`, `ESTIMATED`, `UNAVAILABLE`). Proibido inventar dados de concorrentes ou converter indisponíveis em zero. Cálculos monetários exclusivamente com `BigDecimal`.

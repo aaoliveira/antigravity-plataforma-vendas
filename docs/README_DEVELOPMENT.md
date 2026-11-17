@@ -2,8 +2,8 @@
 
 ## 1. Visão Geral e Filosofia de Engenharia
 A **Seller Intelligence Platform** segue um processo de engenharia orientado a evidências, rigor arquitetural e gating sequencial. O desenvolvimento é dividido em 20 prompts numerados (`00` a `19`), organizados em 4 fases:
-- **Fase 0 — Fundação & Descoberta Técnica** (Prompts 00–01): Constituição, regras persistentes, viabilidade técnica, compliance e ADRs.
-- **Fase 1 — MVP** (Prompts 02–12): Bootstrap do monorepo, identidade/tenancy, conectores Mercado Livre/Shopee, catálogo, pedidos, pesquisa de mercado, motor financeiro, AI Listing Studio, extensão Chrome MV3 e homologação E2E.
+- **Fase 0 — Fundação & Descoberta Técnica** (Prompts 00–01): `CONCLUÍDA E APROVADA`. Constituição, regras persistentes, viabilidade técnica, compliance e ADRs.
+- **Fase 1 — MVP** (Prompts 02–12): `EM ANDAMENTO`. Bootstrap do monorepo, identidade/tenancy, conectores Mercado Livre/Shopee, catálogo, pedidos, pesquisa de mercado, motor financeiro, AI Listing Studio, extensão Chrome MV3 e homologação E2E.
 - **Fase 2 — Inteligência e Automação Avançadas** (Prompts 13–17): Monitoramento de produtos/concorrentes, alertas, action center, leitura de catálogos PDF/imagens, Ads Intelligence e conciliação/DRE.
 - **Fase 3 — Plataforma Inteligente Ampliada** (Prompts 18–19): Assistente conversacional, servidor MCP read-only e expansão de conectores (Amazon e outros).
 
@@ -21,45 +21,45 @@ Toda sessão de desenvolvimento deve seguir o ciclo definido na skill [.agents/s
 
 ## 3. Catálogo de Comandos do Projeto
 
-> [!NOTE]
-> Como o projeto encontra-se atualmente na **Fase 0 (Prompt 00 — Governança e Constituição)**, a estrutura de código de negócio e os arquivos executáveis serão criados no **Prompt 02 (Bootstrap do Monorepo)**.
-> Abaixo, cada comando está categorizado explicitamente entre **`[DISPONÍVEL AGORA]`** e **`[PLANEJADO - DISPONÍVEL NO PROMPT 02+]`**.
-
-### 3.1 Verificação de Governança e Integridade (Fase 0)
+### 3.1 Verificação de Governança e Integridade
 
 | Comando | Finalidade | Estado Atual |
 |---|---|---|
 | `git status` | Inspeciona estado do repositório local. | `[DISPONÍVEL AGORA]` |
 | `jq . docs/delivery/phase-gate.json` | Valida sintaxe e lê o status do gate atual da entrega. | `[DISPONÍVEL AGORA]` |
 | `diff -u prompts/PRD.md docs/product/PRD.md` | Verifica integridade e paridade absoluta do PRD. | `[DISPONÍVEL AGORA]` |
+| `python3 scripts/verify_phase01.py` | Executa testes automatizados de governança da Fase 0. | `[DISPONÍVEL AGORA]` |
+| `python3 scripts/verify_phase02.py` | Executa testes automatizados do bootstrap da Fase 1. | `[DISPONÍVEL AGORA]` |
 
 ### 3.2 Ambiente Local e Infraestrutura (Docker Compose)
 
 | Comando | Finalidade | Estado Atual |
 |---|---|---|
-| `docker compose up -d` | Sobe PostgreSQL 18, Redis, RabbitMQ 4, Keycloak e MinIO. | `[PLANEJADO - DISPONÍVEL NO PROMPT 02+]` |
-| `docker compose ps` | Inspeciona a saúde dos contêineres locais. | `[PLANEJADO - DISPONÍVEL NO PROMPT 02+]` |
-| `docker compose down -v` | Derruba serviços e remove volumes efêmeros. | `[PLANEJADO - DISPONÍVEL NO PROMPT 02+]` |
+| `docker compose up -d` | Sobe PostgreSQL 17/18, Redis 7, RabbitMQ 3.13/4 e Keycloak 26. | `[DISPONÍVEL AGORA]` |
+| `docker compose ps` | Inspeciona a saúde dos contêineres locais. | `[DISPONÍVEL AGORA]` |
+| `docker compose config` | Valida sintaxe e interpolação de variáveis do Compose. | `[DISPONÍVEL AGORA]` |
+| `docker compose down` | Derruba serviços preservando volumes. | `[DISPONÍVEL AGORA]` |
+| `docker compose down -v` | Derruba serviços e remove volumes efêmeros. | `[DISPONÍVEL AGORA]` |
 
 ### 3.3 Backend (Java 21 / Spring Boot 3.5.x / Maven)
 
 | Comando | Finalidade | Estado Atual |
 |---|---|---|
-| `./mvnw clean compile` | Compila o monólito backend e valida bytecode Java 21. | `[PLANEJADO - DISPONÍVEL NO PROMPT 02+]` |
-| `./mvnw test` | Executa testes unitários (JUnit 5, AssertJ, Mockito). | `[PLANEJADO - DISPONÍVEL NO PROMPT 02+]` |
-| `./mvnw verify` | Executa testes de integração (Testcontainers) e arquitetura (ArchUnit). | `[PLANEJADO - DISPONÍVEL NO PROMPT 02+]` |
-| `./mvnw flyway:migrate` | Executa migrações Flyway no banco PostgreSQL configurado. | `[PLANEJADO - DISPONÍVEL NO PROMPT 02+]` |
-| `./mvnw spring-boot:run` | Inicia o servidor backend localmente (porta 8080). | `[PLANEJADO - DISPONÍVEL NO PROMPT 02+]` |
+| `cd backend && ./mvnw clean compile` | Compila o monólito backend e valida bytecode Java 21. | `[DISPONÍVEL AGORA]` |
+| `cd backend && ./mvnw test` | Executa testes unitários (JUnit 5, AssertJ, Mockito). | `[DISPONÍVEL AGORA]` |
+| `cd backend && ./mvnw clean verify` | Executa testes de integração e arquitetura (ArchUnit). | `[DISPONÍVEL AGORA]` |
+| `cd backend && ./mvnw spring-boot:run` | Inicia o servidor backend localmente (porta 8082). | `[DISPONÍVEL AGORA]` |
+| `curl -s http://localhost:8082/actuator/health` | Verifica a saúde do backend em execução. | `[DISPONÍVEL AGORA]` |
 
-### 3.4 Frontend Web (Next.js / TypeScript / React)
+### 3.4 Frontend Web (Next.js 15 / React 19 / TypeScript / pnpm)
 
 | Comando | Finalidade | Estado Atual |
 |---|---|---|
-| `npm install` (na raiz do frontend) | Instala dependências do Next.js e design system shadcn/ui. | `[PLANEJADO - DISPONÍVEL NO PROMPT 02+]` |
-| `npm run dev` | Inicia o servidor de desenvolvimento do Next.js (porta 3000). | `[PLANEJADO - DISPONÍVEL NO PROMPT 02+]` |
-| `npm run lint` | Executa ESLint com regras estritas de TypeScript. | `[PLANEJADO - DISPONÍVEL NO PROMPT 02+]` |
-| `npm run test` | Executa testes de componentes via Vitest e Testing Library. | `[PLANEJADO - DISPONÍVEL NO PROMPT 02+]` |
-| `npm run build` | Compila a aplicação Next.js para produção. | `[PLANEJADO - DISPONÍVEL NO PROMPT 02+]` |
+| `cd frontend && pnpm install` | Instala dependências do Next.js e design system. | `[DISPONÍVEL AGORA]` |
+| `cd frontend && pnpm run dev` | Inicia o servidor de desenvolvimento do Next.js (porta 3000). | `[DISPONÍVEL AGORA]` |
+| `cd frontend && pnpm run lint` | Executa ESLint com regras estritas de TypeScript. | `[DISPONÍVEL AGORA]` |
+| `cd frontend && pnpm run test` | Executa testes de componentes via Vitest e Testing Library. | `[DISPONÍVEL AGORA]` |
+| `cd frontend && pnpm run build` | Compila a aplicação Next.js para produção. | `[DISPONÍVEL AGORA]` |
 
 ### 3.5 Extensão Chrome (Manifest V3 / Vite / TypeScript)
 
@@ -76,7 +76,7 @@ Toda sessão de desenvolvimento deve seguir o ciclo definido na skill [.agents/s
 
 ---
 
-## 4. Estrutura de Diretórios Planejada do Monorepo
+## 4. Estrutura de Diretórios Atualizada do Monorepo
 
 ```
 antigravity-avantepro-clone/
@@ -89,12 +89,51 @@ antigravity-avantepro-clone/
 │   └── skills/
 │       └── mvp-phase-gate/
 │           └── SKILL.md
+├── .github/
+│   └── workflows/
+│       └── ci.yml
 ├── AGENTS.md
 ├── README.md
+├── docker-compose.yml
+├── .env.example
+├── .gitignore
+├── backend/
+│   ├── pom.xml
+│   ├── mvnw
+│   ├── .mvn/wrapper/
+│   └── src/
+│       ├── main/java/br/com/sellerintelligence/
+│       │   ├── SellerIntelligenceApplication.java
+│       │   └── infrastructure/
+│       │       ├── config/ (CorsConfig.java)
+│       │       ├── error/ (GlobalExceptionHandler.java, BusinessException.java)
+│       │       └── logging/ (CorrelationIdFilter.java)
+│       ├── main/resources/
+│       │   ├── application.yml
+│       │   ├── application-dev.yml
+│       │   ├── application-test.yml
+│       │   └── db/migration/V1__initial_infrastructure.sql
+│       └── test/java/br/com/sellerintelligence/
+│           ├── SellerIntelligenceApplicationTests.java
+│           └── architecture/ArchitectureTests.java
+├── frontend/
+│   ├── package.json
+│   ├── pnpm-lock.yaml
+│   ├── tsconfig.json
+│   ├── next.config.mjs
+│   ├── tailwind.config.mjs
+│   ├── postcss.config.mjs
+│   ├── vitest.config.ts
+│   ├── .eslintrc.json
+│   └── src/
+│       ├── app/ (layout.tsx, page.tsx, globals.css)
+│       ├── components/ (HealthChecker.tsx, HealthChecker.test.tsx)
+│       └── lib/ (api.ts)
 ├── docs/
 │   ├── README_DEVELOPMENT.md
 │   ├── architecture/
-│   │   └── DECISION_LOG.md
+│   │   ├── DECISION_LOG.md
+│   │   └── marketplace-capability-matrix.md
 │   ├── delivery/
 │   │   ├── PHASE_STATUS.md
 │   │   └── phase-gate.json
@@ -102,25 +141,7 @@ antigravity-avantepro-clone/
 │       ├── OPEN_QUESTIONS.md
 │       ├── PRD.md
 │       └── REQUIREMENTS_TRACEABILITY.md
-├── backend/                       [A criar no Prompt 02]
-│   ├── pom.xml
-│   └── src/
-│       ├── main/java/...
-│       └── test/java/...
-├── frontend/                      [A criar no Prompt 02]
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── src/app/...
-├── extension/                     [A criar no Prompt 11]
-│   ├── manifest.json
-│   └── src/...
-├── docker-compose.yml             [A criar no Prompt 02]
-└── prompts/                       [Prompts de especificação do produto]
+└── scripts/
+    ├── verify_phase01.py
+    └── verify_phase02.py
 ```
-
----
-
-## 5. Boas Práticas e Higiene de Segurança
-- **Nunca comite arquivos `.env` com senhas reais.** Utilize exclusivamente `.env.example` para referências.
-- **Não commite tokens ou credenciais de marketplaces.** Testes com conectores devem utilizar mocks (`WireMock` ou servidores de teste efêmeros) ou segredos injetados por variáveis de ambiente.
-- **Validação de Código:** Todo commit deve respeitar o gating sequencial. O avanço de prompt requer atualização dos artefatos em `docs/delivery/`.

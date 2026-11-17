@@ -221,11 +221,11 @@ Nenhum requisito pode ser considerado concluído sem que os testes associados es
 | **NFR-PER-003** | Performance | Paginação compulsória e filtros limitadores em consultas. | Prompt 06, Prompt 07 | Teste de API com Limites Máximos | `PLANNED` |
 | **NFR-SCL-001** | Escalabilidade | Workers assíncronos desacoplados escaláveis independentemente. | Prompt 02, Prompt 06 | Arquitetura Modular em Threads/Containers | `PLANNED` |
 | **NFR-OBS-001** | Observabilidade | Logs estruturados JSON, métricas Prometheus e tracing OTel. | Prompt 02, Prompt 12 | Teste de Ingestão de Telemetria | `PLANNED` |
-| **NFR-OBS-002** | Observabilidade | Correlation ID (`trace_id`) propagado em HTTP, filas e jobs. | Prompt 02, Prompt 06 | Teste de Propagação de Cabeçalho | `PLANNED` |
+| **NFR-OBS-002** | Observabilidade | Correlation ID (`trace_id`) propagado em HTTP, filas e jobs. | Prompt 02, Prompt 06 | Teste de Propagação de Cabeçalho | `VERIFIED (Prompt 02)` |
 | **NFR-OBS-003** | Observabilidade | Dashboards e alertas para filas congestionadas e falhas de APIs. | Prompt 12 | Configuração de Regras de Alerta Prometheus | `PLANNED` |
 | **NFR-UX-001** | Usabilidade | Interface acessível, responsiva e com estados explícitos de erro. | Prompt 09, Prompt 10 | Vitest, Testing Library e A11y Review | `PLANNED` |
 | **NFR-UX-002** | Usabilidade | Glossário contextual e explicações acessíveis para indicadores. | Prompt 07, Prompt 09 | Inspeção de Tooltips e Documentação UI | `PLANNED` |
 | **NFR-AI-001** | IA | Respostas fundamentadas com citação de fontes e limites claros. | Prompt 10, Prompt 18 | Teste de Avaliação de Assertividade | `PLANNED` |
 | **NFR-AI-002** | IA | Defesa em profundidade contra dados externos não confiáveis. | Prompt 15, Prompt 18 | Teste de Injeção em Metadados | `PLANNED` |
-| **NFR-MNT-001** | Manutenibilidade | Contratos padronizados de conectores e limites ArchUnit. | Prompt 02, Prompt 05 | Testes de Arquitetura no Maven Build | `PLANNED` |
+| **NFR-MNT-001** | Manutenibilidade | Contratos padronizados de conectores e limites ArchUnit. | Prompt 02, Prompt 05 | Testes de Arquitetura no Maven Build | `VERIFIED (Prompt 02)` |
 | **NFR-MNT-002** | Manutenibilidade | Regras de cálculo versionadas com cobertura determinística. | Prompt 08 | Suíte de Regressão Financeira JUnit 5 | `PLANNED` |
