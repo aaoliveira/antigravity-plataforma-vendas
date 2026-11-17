@@ -398,6 +398,28 @@ Conforme estipulado no PRD ([docs/product/PRD.md](file:///home/alexandre/Projeto
 
 ---
 
+## DEC-022 / ADR-022 — DRE Gerencial Multi-Regime (Caixa e Competência) e Conciliação Idempotente de Repasses Financeiros com Trilha de Auditoria e Gestão de Divergências
+- **Data:** 2026-11-17
+- **Status:** `ACCEPTED`
+- **Contexto:** Endereçamento dos requisitos FR-FIN-008 e FR-REC-001 a FR-REC-005. O seller precisa enxergar o resultado econômico (Regime de Competência) e o fluxo financeiro real liberado pelos marketplaces (Regime de Caixa / Repasses / Escrow). Extratos de marketplaces contêm taxas operacionais, comissões, fretes, estornos e retenções que geram divergências frequentes em relação aos valores esperados dos pedidos.
+- **Opções consideradas:**
+  1. Gerar relatórios contábeis oficiais substituindo ERP/SPED ou presumir envio automático de contestações a adquirentes sem integração suportada. (Inviável, ilegal e viola explicitamente as regras de não-substituição de contabilidade e não-alucinação de ações externas).
+  2. Implementar motor gerencial determinístico de conciliação e DRE com:
+     - **Importação Idempotente de Extratos/Repasses:** Ingestão de arquivos e payloads de liquidação com hash SHA-256 e chave única (`tenant_id, marketplace, external_settlement_id`), impedindo duplicação de repasses em reenvios.
+     - **Motor de Reconciliação Multi-Critério:** Associação entre repasse e pedidos/eventos financeiros por ID exato de pedido (`ORDER_ID_EXACT`, confiança 1.0) ou por ID de transação e heurísticas determinísticas, categorizando linhas em `CONCILED`, `PENDING_MATCH`, `DISCREPANT` e `UNIDENTIFIED`.
+     - **Quantificação Exata de Divergências em `BigDecimal`:** Apresentação clara de Valor Esperado, Valor Repassado e Diferença (Divergência) ao centavo, discriminando tarifas retidas, estornos e descontos.
+     - **Trilha de Auditoria Imutável de Ajustes Manuais:** Qualquer conciliação manual, descarte de divergência ou alteração de status gera registro imutável em `reconciliation_audit_logs` com usuário, justificativa, estado anterior e novo estado.
+     - **Gestão de Contestações & Protocolos de Atendimento:** Registro interno de protocolos de contestação junto aos canais, com disclaimer obrigatório de que o sistema não executa envio automático direto à adquirente/marketplace se a API não suportar.
+     - **DRE Gerencial Configurável (Competência vs Caixa):** Visão unificada com estrutura padrão (Receita Bruta -> Deduções -> Receita Líquida -> CMV/COGS -> Margem de Contribuição -> Despesas Operacionais/Ajustes -> Resultado Operacional Líquido), com fórmulas transparentes, período selecionável e aviso mandatória: *"DRE gerencial para apoio à decisão. Não substitui demonstrações contábeis oficiais nem gera obrigações tributárias."*
+- **Decisão:** Opção 2.
+- **Justificativa:** Precisão determinística financeira, conformidade estrita com o PRD, governança de auditoria contra fraudes e esclarecimento transparente das responsabilidades fiscais.
+- **Consequências:** Relatórios DRE deixam explícita a base de apuração (Caixa vs Competência); divergências apontam evidências claras e importações são 100% idempotentes.
+- **Requisitos relacionados:** FR-FIN-008, FR-REC-001 a FR-REC-005, OQ-015, PRD Seções 5.8 e 5.13.
+- **Responsável:** Engenheiro Backend / Especialista Financeiro.
+- **Revisão:** Fase 2.
+
+---
+
 # Parte 2: Decisões Propostas e Pendências Classificadas (PROPOSED)
 
 ## DEC-P05 — Política de Retenção de Dados e Expurgos Automáticos LGPD (Vinculada a OQ-007)

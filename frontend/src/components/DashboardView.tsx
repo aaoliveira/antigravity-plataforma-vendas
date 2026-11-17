@@ -13,6 +13,7 @@ import { ListingStudioView } from './ListingStudioView';
 import { CompetitorMonitoringView } from './CompetitorMonitoringView';
 import { ActionCenterView } from './ActionCenterView';
 import { ProductDiscoveryView } from './ProductDiscoveryView';
+import { ReconciliationAndDreView } from './ReconciliationAndDreView';
 
 const initialDemoCompanies: CompanyItem[] = [
   {
@@ -41,7 +42,7 @@ const initialDemoStores: StoreItem[] = [
 ];
 
 export const DashboardView: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'COMPANIES' | 'STORES' | 'CAPABILITIES' | 'SYNC' | 'MARKET' | 'MONITORING' | 'ACTION_CENTER' | 'DISCOVERY' | 'FINANCIAL' | 'AI_STUDIO' | 'HEALTH'>('COMPANIES');
+  const [activeTab, setActiveTab] = useState<'COMPANIES' | 'STORES' | 'CAPABILITIES' | 'SYNC' | 'MARKET' | 'MONITORING' | 'ACTION_CENTER' | 'DISCOVERY' | 'FINANCIAL' | 'RECONCILIATION_DRE' | 'AI_STUDIO' | 'HEALTH'>('COMPANIES');
   const [financialSubTab, setFinancialSubTab] = useState<'DASHBOARD' | 'ENGINE'>('DASHBOARD');
   const [companies, setCompanies] = useState<CompanyItem[]>(initialDemoCompanies);
   const [stores, setStores] = useState<StoreItem[]>(initialDemoStores);
@@ -162,6 +163,17 @@ export const DashboardView: React.FC = () => {
           Motor Financeiro
         </button>
         <button
+          onClick={() => setActiveTab('RECONCILIATION_DRE')}
+          className={`pb-3 px-1 border-b-2 transition-colors flex items-center gap-1.5 ${
+            activeTab === 'RECONCILIATION_DRE'
+              ? 'border-teal-500 text-teal-400 font-semibold'
+              : 'border-transparent text-slate-400 hover:text-slate-200'
+          }`}
+        >
+          <span>DRE &amp; Conciliação</span>
+          <span className="text-[10px] px-1.5 py-0.2 rounded bg-teal-500/20 text-teal-300 border border-teal-500/30">Fase 2</span>
+        </button>
+        <button
           onClick={() => setActiveTab('AI_STUDIO')}
           className={`pb-3 px-1 border-b-2 transition-colors ${
             activeTab === 'AI_STUDIO'
@@ -234,6 +246,8 @@ export const DashboardView: React.FC = () => {
           {financialSubTab === 'DASHBOARD' ? <FinancialDashboardView /> : <FinancialEngineView />}
         </div>
       )}
+
+      {activeTab === 'RECONCILIATION_DRE' && <ReconciliationAndDreView />}
 
       {activeTab === 'AI_STUDIO' && <ListingStudioView />}
 

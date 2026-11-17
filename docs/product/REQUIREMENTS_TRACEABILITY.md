@@ -113,7 +113,7 @@ Nenhum requisito pode ser considerado concluído sem que os testes associados es
 | **FR-FIN-005** | P0 | Consolidar resultados por loja, marketplace e empresa. | Fase 1 (MVP) | Prompt 09 | Integração (Aggregation Queries) | `VERIFIED (Prompt 09)` |
 | **FR-FIN-006** | P0 | Tratar descontos, cancelamentos, devoluções e estornos. | Fase 1 (MVP) | Prompt 08 | Unitário, Integração (`FinancialOrderCalculationIntegrationTest`) | `VERIFIED (Prompt 08)` |
 | **FR-FIN-007** | P1 | Calcular margem após custo de Ads atribuído. | Fase 2 | Prompt 16 | Unitário (Attribution Allocation) | `PLANNED` |
-| **FR-FIN-008** | P1 | Apresentar DRE gerencial configurável. | Fase 2 | Prompt 17 | Integração (Financial Reporting Engine) | `PLANNED` |
+| **FR-FIN-008** | P1 | Apresentar DRE gerencial configurável. | Fase 2 | Prompt 17 | Integração (Financial Reporting Engine) | `VERIFIED (Prompt 17)` |
 | **FR-FIN-009** | P1 | Exibir Curva ABC e rentabilidade por SKU. | Fase 2 | Prompt 17 | Unitário (Pareto Analysis Engine) | `PLANNED` |
 | **FR-FIN-010** | P0 | Versionar regras de cálculo sem corromper fechados. | Fase 1 (MVP) | Prompt 08 | Unitário, Integração (`FinancialOrderCalculationIntegrationTest`) | `VERIFIED (Prompt 08)` |
 | **FR-FIN-011** | P0 | Informar dados incompletos e qualidade do cálculo. | Fase 1 (MVP) | Prompt 08 | Unitário (`CalculationQuality.PARTIAL` / `CalculationMemory`) | `VERIFIED (Prompt 08)` |
@@ -176,11 +176,11 @@ Nenhum requisito pode ser considerado concluído sem que os testes associados es
 
 | ID | Prioridade | Descrição do Requisito | Fase | Prompt Alvo | Tipo de Teste Planejado | Status Atual |
 |---|---|---|---|---|---|---|
-| **FR-REC-001** | P1 | Importar extratos e repasses oficiais do marketplace. | Fase 2 | Prompt 17 | Integração (Payout File Ingestor) | `PLANNED` |
-| **FR-REC-002** | P1 | Relacionar pedidos, taxas e repasses bancários/virtuais. | Fase 2 | Prompt 17 | Unitário (Matching Engine) | `PLANNED` |
-| **FR-REC-003** | P1 | Identificar e quantificar divergências financeiras. | Fase 2 | Prompt 17 | Unitário determinístico (`BigDecimal`) | `PLANNED` |
-| **FR-REC-004** | P1 | Registrar protocolo de contestação e acompanhamento. | Fase 2 | Prompt 17 | Integração (Dispute Service) | `PLANNED` |
-| **FR-REC-005** | P1 | Exibir relatório estruturado de conciliação financeira. | Fase 2 | Prompt 17 | Integração (Reporting Service) | `PLANNED` |
+| **FR-REC-001** | P1 | Importar extratos e repasses oficiais do marketplace. | Fase 2 | Prompt 17 | Integração (Payout File Ingestor) | `VERIFIED (Prompt 17)` |
+| **FR-REC-002** | P1 | Relacionar pedidos, taxas e repasses bancários/virtuais. | Fase 2 | Prompt 17 | Unitário (Matching Engine) | `VERIFIED (Prompt 17)` |
+| **FR-REC-003** | P1 | Identificar e quantificar divergências financeiras. | Fase 2 | Prompt 17 | Unitário determinístico (`BigDecimal`) | `VERIFIED (Prompt 17)` |
+| **FR-REC-004** | P1 | Registrar protocolo de contestação e acompanhamento. | Fase 2 | Prompt 17 | Integração (Dispute Service) | `VERIFIED (Prompt 17)` |
+| **FR-REC-005** | P1 | Exibir relatório estruturado de conciliação financeira. | Fase 2 | Prompt 17 | Integração (Reporting Service) | `VERIFIED (Prompt 17)` |
 
 ---
 
