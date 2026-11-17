@@ -2,64 +2,64 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "project": "Seller Intelligence Platform",
   "gateSystemVersion": "1.0.0",
-  "currentPrompt": "02",
-  "promptTitle": "Bootstrap do monorepo e ambiente local",
-  "phase": "Fase 1 — MVP / Fundação Técnica",
+  "currentPrompt": "03",
+  "promptTitle": "Identidade, autenticação e isolamento multi-tenant",
+  "phase": "Fase 1 — MVP / P0",
   "status": "APPROVED",
-  "updatedAt": "2026-11-17T11:27:40-03:00",
+  "updatedAt": "2026-11-17T11:52:30-03:00",
   "evaluatedBy": "Antigravity AI Assistant",
   "criteria": [
     {
-      "id": "AC-02-1",
-      "description": "Estrutura de diretórios do repositório conforme a stack do PRD criada",
+      "id": "AC-03-1",
+      "description": "Integração Spring Security com OIDC/Keycloak Resource Server (JWT Bearer)",
       "status": "APPROVED",
-      "evidence": "Estrutura criada: backend/ (Java 21 / Spring Boot 3.5), frontend/ (Next.js 15 / TypeScript), docker-compose.yml, .env.example, .github/workflows/ci.yml."
+      "evidence": "SecurityConfig configurado com oauth2ResourceServer JWT; chamadas não autenticadas retornam 401 ProblemDetail; actuator health permanece público."
     },
     {
-      "id": "AC-02-2",
-      "description": "Serviço Spring Boot com /actuator/health e /actuator/info, profiles e erro RFC 7807",
+      "id": "AC-03-2",
+      "description": "Identidade local de usuário vinculada ao sub OIDC sem armazenamento de senhas locais",
       "status": "APPROVED",
-      "evidence": "Endpoints /actuator/health e /actuator/info respondendo 200 OK com UP; CorrelationIdFilter propagando trace_id; GlobalExceptionHandler configurado com ProblemDetail."
+      "evidence": "Entidade User vinculada a keycloakSub único, email e nome; zero campos de senha; provisionamento JIT via UserService."
     },
     {
-      "id": "AC-02-3",
-      "description": "Aplicação Next.js com layout base e chamada real ao health endpoint sem dados fictícios",
+      "id": "AC-03-3",
+      "description": "Entidades Organization (Tenant) e Membership com papéis RBAC e status",
       "status": "APPROVED",
-      "evidence": "Componente HealthChecker consome /actuator/health diretamente; linter e testes Vitest aprovados; build estático Next.js compilado com sucesso."
+      "evidence": "Entidades Organization e Membership criadas com enum Role (OWNER, ADMIN, MANAGER, ANALYST, FINANCE, OPERATOR, VIEWER) e constraint de unicidade org-user."
     },
     {
-      "id": "AC-02-4",
-      "description": "Docker Compose para PostgreSQL, Redis, RabbitMQ e Keycloak validado via docker compose config e saudável localmente",
+      "id": "AC-03-4",
+      "description": "Contexto autenticado TenantContext e TenantContextFilter validando X-Tenant-Id e associação de usuário",
       "status": "APPROVED",
-      "evidence": "docker compose config validou sem erros; docker compose ps confirmou status 'Up (healthy)' para os 4 contêineres."
+      "evidence": "TenantContextFilter intercepta requests autenticadas, valida X-Tenant-Id e associação ativa, limpando contexto ThreadLocal em bloco finally."
     },
     {
-      "id": "AC-02-5",
-      "description": "Configuração .env.example sem segredos e validação de variáveis na inicialização",
+      "id": "AC-03-5",
+      "description": "Isolamento estrito multi-tenant (testes de leitura/gravação cruzada negados com 403/404 sem vazamento de existência)",
       "status": "APPROVED",
-      "evidence": ".env ignorado em .gitignore; .env.example contém apenas placeholders de desenvolvimento."
+      "evidence": "TenantIsolationIntegrationTest comprovou que usuário Alpha não acessa, não lista membros e não altera membros da organização Beta (403 Forbidden)."
     },
     {
-      "id": "AC-02-6",
-      "description": "Maven Wrapper, pnpm lockfile, ESLint, TypeScript strict e testes básicos funcionando",
+      "id": "AC-03-6",
+      "description": "Trilha de auditoria persistente para alterações de membros, papéis e tentativas de acesso negado sem vazamento de segredos",
       "status": "APPROVED",
-      "evidence": "./mvnw verify aprovou 8 testes de unidade e arquitetura; pnpm run test e pnpm run lint aprovaram sem erros."
+      "evidence": "AuditService e tabela audit_events registram ORGANIZATION_CREATED, MEMBER_INVITED, MEMBER_ROLE_CHANGED e ACCESS_DENIED com higienização de tokens sensíveis."
     },
     {
-      "id": "AC-02-7",
-      "description": "Pipeline CI no GitHub Actions para build/test/lint dos módulos",
+      "id": "AC-03-7",
+      "description": "Migração Flyway V2 estruturando users, organizations, memberships e audit_events com índices e constraints",
       "status": "APPROVED",
-      "evidence": "Workflow criado em .github/workflows/ci.yml com jobs para Docker Compose, Backend Maven e Frontend pnpm."
+      "evidence": "Flyway V2__identity_and_tenancy.sql criada e validada com chaves primárias UUID, índices e chaves estrangeiras."
     },
     {
-      "id": "AC-02-8",
-      "description": "Migração Flyway inicial cria apenas infraestrutura mínima, sem entidades de negócio prematuras",
+      "id": "AC-03-8",
+      "description": "Bateria de testes automatizados com Testcontainers / PostgreSQL cobrindo autenticação, isolamento e RBAC",
       "status": "APPROVED",
-      "evidence": "V1__initial_infrastructure.sql executada com sucesso no PostgreSQL local; apenas uuid/pgcrypto e platform_infrastructure_metadata criados."
+      "evidence": "20 testes executados via ./mvnw clean verify (PostgresTenancyIntegrationTest com PostgreSQL 17 Testcontainers, TenantIsolationIntegrationTest, RbacIntegrationTest) com 100% de sucesso."
     }
   ],
   "blockers": [],
-  "nextPrompt": "03",
-  "nextPromptTitle": "Identidade, autenticação e isolamento multi-tenant",
+  "nextPrompt": "04",
+  "nextPromptTitle": "Organizações, CNPJs, lojas e gestão de acessos",
   "nextPromptPrerequisiteMet": true
 }

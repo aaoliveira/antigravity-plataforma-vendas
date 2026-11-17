@@ -54,6 +54,32 @@ public class GlobalExceptionHandler {
         return problemDetail;
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ProblemDetail handleIllegalArgumentException(IllegalArgumentException ex) {
+        log.warn("Invalid argument: {}", ex.getMessage());
+
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+        problemDetail.setTitle("Bad Request");
+        problemDetail.setType(URI.create("https://sellerintelligence.com.br/errors/bad-request"));
+        problemDetail.setProperty("code", "BAD_REQUEST");
+        problemDetail.setProperty("timestamp", Instant.now());
+        problemDetail.setProperty("traceId", MDC.get(CorrelationIdFilter.MDC_CORRELATION_ID_KEY));
+        return problemDetail;
+    }
+
+    @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+    public ProblemDetail handleSecurityAccessDenied(org.springframework.security.access.AccessDeniedException ex) {
+        log.warn("Security access denied: {}", ex.getMessage());
+
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, "Access denied to the requested resource");
+        problemDetail.setTitle("Forbidden");
+        problemDetail.setType(URI.create("https://sellerintelligence.com.br/errors/access-denied"));
+        problemDetail.setProperty("code", "ACCESS_DENIED");
+        problemDetail.setProperty("timestamp", Instant.now());
+        problemDetail.setProperty("traceId", MDC.get(CorrelationIdFilter.MDC_CORRELATION_ID_KEY));
+        return problemDetail;
+    }
+
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleGenericException(Exception ex) {
         log.error("Unhandled server exception", ex);

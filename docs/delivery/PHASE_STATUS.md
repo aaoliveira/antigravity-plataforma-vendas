@@ -2,27 +2,27 @@
 
 ## 1. Visão Geral do Gate Atual
 
-- **Fase Atual:** Fase 1 — MVP / Fundação Técnica
-- **Prompt Ativo:** `Prompt 02 — Bootstrap do monorepo e ambiente local`
+- **Fase Atual:** Fase 1 — MVP / P0
+- **Prompt Ativo:** `Prompt 03 — Identidade, autenticação e isolamento multi-tenant`
 - **Status do Gate:** `APPROVED`
-- **Data da Avaliação:** 2026-11-17T11:27:40-03:00
+- **Data da Avaliação:** 2026-11-17T11:52:30-03:00
 - **Responsável:** Antigravity AI Assistant & Engenharia
 
 ---
 
-## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 02)
+## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 03)
 
 | Critério de Aceite | Requisito Verificado | Evidência Comprovada | Avaliação |
 |---|---|---|---|
-| **1. Estrutura de monorepo conforme o PRD** | Módulos `backend/` e `frontend/`, infra local e CI criados conforme baseline. | `backend/` (Java 21 / Spring Boot 3.5), `frontend/` (Next.js 15 / TypeScript strict), `docker-compose.yml` e `.github/workflows/ci.yml`. | `APROVADO` |
-| **2. Spring Boot com Health e Erro RFC 7807** | Endpoints de saúde e observabilidade funcionando sem dados fictícios. | `/actuator/health` respondeu `{"status":"UP"}` com banco e disco saudáveis; `GlobalExceptionHandler` configurado com `ProblemDetail`. | `APROVADO` |
-| **3. Next.js com chamada real ao health** | Interface técnica responsiva e cliente de API consumindo endpoint real. | `HealthChecker.tsx` consome backend; `pnpm run test` e `pnpm run build` aprovados com zero erros. | `APROVADO` |
-| **4. Docker Compose com serviços saudáveis** | PostgreSQL, Redis, RabbitMQ e Keycloak configurados e saudáveis. | `docker compose config` validado; `docker compose ps` confirmou 4 contêineres com status `Up (healthy)`. | `APROVADO` |
-| **5. Segurança e variáveis de ambiente** | `.env` protegido e `.env.example` sem segredos de produção. | `.env` adicionado ao `.gitignore`; `.env.example` contém apenas placeholders para desenvolvimento local. | `APROVADO` |
-| **6. Automação de qualidade e lockfiles** | Maven wrapper, pnpm lockfile, linter e testes passando. | `./mvnw clean verify` executou 8 testes (unitários e ArchUnit); `pnpm run lint` e `vitest` passaram 100%. | `APROVADO` |
-| **7. Pipeline CI no GitHub Actions** | Arquivo de workflow configurado para validação em múltiplos jobs. | `.github/workflows/ci.yml` criado com jobs de Docker, Backend Maven e Frontend pnpm. | `APROVADO` |
-| **8. Flyway com infraestrutura mínima** | Migração inicial limpa sem entidades prematuras de negócio. | `V1__initial_infrastructure.sql` aplicou extensões `uuid-ossp` e tabela de metadados; zero tabelas de negócio criadas. | `APROVADO` |
-| **9. Testes Automatizados de Validação** | Script de validação da fase executado com sucesso. | `python3 scripts/verify_phase02.py` executou 7 verificações com 100% de aprovação. | `APROVADO` |
+| **1. Integração Spring Security com OIDC/JWT** | Resource Server configurado com validação JWT; 401 padronizado RFC 7807 para endpoints protegidos e `/actuator/health` público. | `SecurityConfig` configurado; `unauthenticatedRequestReturns401` e `healthProbeIsAccessibleWithoutAuth` validados. | `APROVADO` |
+| **2. Identidade Local do Usuário vinculada a sub OIDC** | Usuário associado ao OIDC `sub` sem armazenar senhas locais; provisionamento JIT via `UserService`. | Entidade `User` com `keycloakSub` único, sem campos de senha. Testes de provisionamento aprovados. | `APROVADO` |
+| **3. Entidades Organization (Tenant) e Membership com RBAC** | Organização e vínculos de usuário com papéis `OWNER`, `ADMIN`, `MANAGER`, `ANALYST`, `FINANCE`, `OPERATOR`, `VIEWER`. | `Organization`, `Membership`, `Role` e `MembershipStatus` persistidos com integridade referencial. | `APROVADO` |
+| **4. Contexto Autenticado e TenantContextFilter** | Resolução do tenant ativo via header `X-Tenant-Id` ou URI path, com validação de filiação ativa e limpeza em `finally`. | `TenantContextFilter` e `TenantContext` integrados com MDC (`tenant_id`); limpeza de ThreadLocal garantida. | `APROVADO` |
+| **5. Isolamento Estrito Multi-Tenant** | Tentativas de acesso, leitura ou alteração cruzada entre tenants negadas com 403 Forbidden sem vazamento de existência. | `TenantIsolationIntegrationTest` aprovou testes adversariais: Usuário Alpha impedido de ler, listar membros ou alterar organização Beta. | `APROVADO` |
+| **6. Trilha de Auditoria Persistente** | Registro de `ORGANIZATION_CREATED`, `MEMBER_INVITED`, `MEMBER_ROLE_CHANGED` e `ACCESS_DENIED` sem segredos ou tokens. | `AuditService` higieniza tokens/segredos e persiste eventos em `audit_events`. Eventos consultados e validados em testes. | `APROVADO` |
+| **7. Migração Flyway V2** | Estruturação de `users`, `organizations`, `memberships` e `audit_events` com chaves primárias UUID e índices. | `V2__identity_and_tenancy.sql` aplicada e validada contra PostgreSQL e H2. | `APROVADO` |
+| **8. Bateria de Testes Automatizados com Testcontainers** | Testes de integração rodando com PostgreSQL 17 via Testcontainers e suíte completa de regressão. | `./mvnw clean verify` executou 20 testes com 0 falhas: `PostgresTenancyIntegrationTest`, `TenantIsolationIntegrationTest`, `RbacIntegrationTest`, `ArchitectureTests`. | `APROVADO` |
+| **9. Script de Validação Operacional** | Verificação determinística de integridade da Fase 03. | `python3 scripts/verify_phase03.py` aprovou 18/18 verificações estruturais e de segurança. | `APROVADO` |
 
 ---
 
@@ -33,8 +33,8 @@
 | **00** | Constituição do projeto, contexto e proteção contra alucinações | Fase 0 | `APPROVED` | 2026-11-17 | Constituição das regras, PRD integral, rastreabilidade, OQs e ADRs baseline. |
 | **01** | Descoberta técnica, viabilidade e ADRs | Fase 0 | `APPROVED` | 2026-11-17 | Matriz de capacidades ML/Shopee, ADRs DEC-010 a DEC-013, auditoria OQ P0/P1/P2 e script de validação. |
 | **02** | Bootstrap do monorepo e ambiente local | Fase 1 | `APPROVED` | 2026-11-17 | Monorepo criado, Spring Boot 3.5, Next.js 15, Docker Compose saudável, Flyway V1, CI workflow e testes passando. |
-| **03** | Identidade, autenticação e isolamento multi-tenant | Fase 1 | `NOT_STARTED` | — | Próximo prompt da sequência (Fase 1 - MVP). |
-| **04** | Organizações, CNPJs, lojas e gestão de acessos | Fase 1 | `NOT_STARTED` | — | Aguarda aprovação do Prompt 03. |
+| **03** | Identidade, autenticação e isolamento multi-tenant | Fase 1 | `APPROVED` | 2026-11-17 | Spring Security JWT, User sem senha, Organization, Membership RBAC, TenantContextFilter, auditoria e 20 testes passando com Testcontainers Postgres. |
+| **04** | Organizações, CNPJs, lojas e gestão de acessos | Fase 1 | `NOT_STARTED` | — | Próximo prompt da sequência (Fase 1 - MVP). |
 | **05** | Framework de conectores e autorização OAuth | Fase 1 | `NOT_STARTED` | — | Aguarda aprovação do Prompt 04. |
 | **06** | Sincronização de catálogo, anúncios e pedidos | Fase 1 | `NOT_STARTED` | — | Aguarda aprovação do Prompt 05. |
 | **07** | Market Intelligence: pesquisa e análise | Fase 1 | `NOT_STARTED` | — | Aguarda aprovação do Prompt 06. |
@@ -54,5 +54,5 @@
 ---
 
 ## 4. Liberação para o Próximo Passo
-Com a aprovação do **Prompt 02**, a infraestrutura básica e a automação de qualidade do monorepo estão operacionais. O projeto está apto para receber e executar o:
-👉 **Prompt 03 — Identidade, autenticação e isolamento multi-tenant**.
+Com a aprovação do **Prompt 03**, a infraestrutura de segurança, isolamento multi-tenant, RBAC e trilha de auditoria estão consolidadas e testadas com containers reais. O projeto está apto para receber e executar o:
+👉 **Prompt 04 — Organizações, CNPJs, lojas e gestão de acessos**.
