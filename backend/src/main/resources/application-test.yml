@@ -22,6 +22,10 @@ spring:
     exclude:
       - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
 
+security:
+  rate-limit:
+    enabled: false
+
 logging:
   level:
     br.com.sellerintelligence: INFO

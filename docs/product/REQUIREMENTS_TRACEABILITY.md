@@ -15,7 +15,7 @@ Nenhum requisito pode ser considerado concluído sem que os testes associados es
 | **FR-ID-001** | P0 | Cadastro, login, logout e recuperação de acesso. | Fase 1 (MVP) | Prompt 03 | Integração (Keycloak/Spring Security), E2E (Playwright) | `VERIFIED (Prompt 03)` |
 | **FR-ID-002** | P0 | Criar organização (tenant) e associar usuário Owner. | Fase 1 (MVP) | Prompt 03 | Unitário, Integração (JPA/Flyway), E2E | `VERIFIED (Prompt 03)` |
 | **FR-ID-003** | P0 | Convidar usuários e atribuir papéis (RBAC). | Fase 1 (MVP) | Prompt 04 | Unitário (Domain), Integração (API/Mail) | `VERIFIED (Prompt 04)` |
-| **FR-ID-004** | P0 | Isolar dados estruturalmente por tenant. | Fase 1 (MVP) | Prompt 03, Prompt 12 | Segurança (Adversarial cross-tenant), Testcontainers | `VERIFIED (Prompt 03)` |
+| **FR-ID-004** | P0 | Isolar dados estruturalmente por tenant. | Fase 1 (MVP) | Prompt 03, Prompt 12 | Segurança (Adversarial cross-tenant), Testcontainers | `VERIFIED (Prompt 03, Prompt 12)` |
 | **FR-ID-005** | P0 | Gerenciar empresas/CNPJs, lojas e contas. | Fase 1 (MVP) | Prompt 04 | Unitário, Integração (JPA/PostgreSQL) | `VERIFIED (Prompt 04)` |
 | **FR-ID-006** | P1 | Permissões granulares por empresa, loja e módulo. | Fase 1 (MVP) | Prompt 04 | Unitário, Integração (Security Interceptor) | `VERIFIED (Prompt 04)` |
 | **FR-ID-007** | P0 | Trilha de auditoria para ações sensíveis. | Fase 1 (MVP) | Prompt 03, Prompt 04 | Integração (Audit Listener), Unitário | `VERIFIED (Prompt 03, Prompt 04)` |
@@ -202,30 +202,30 @@ Nenhum requisito pode ser considerado concluído sem que os testes associados es
 
 | ID | Categoria | Descrição do Requisito | Prompt Alvo | Validação Planejada | Status Atual |
 |---|---|---|---|---|---|
-| **NFR-SEC-001** | Segurança | TLS em trânsito e criptografia AES-GCM em repouso para credenciais. | Prompt 02, Prompt 05 | Teste de Criptografia de Secrets | `PLANNED` |
-| **NFR-SEC-002** | Segurança | Isolamento multi-tenant garantido no backend e banco via RLS. | Prompt 03, Prompt 12 | Testes Adversariais Cross-Tenant | `PLANNED` |
-| **NFR-SEC-003** | Segurança | Segredos OAuth e tokens armazenados em cofre cifrado. | Prompt 05 | Code Review e Teste de Repositório | `PLANNED` |
-| **NFR-SEC-004** | Segurança | Controle de acesso baseado em papéis (RBAC) granular. | Prompt 04 | Teste de Autorização de Endpoints | `PLANNED` |
-| **NFR-SEC-005** | Segurança | Proteção OWASP Top 10 (CSRF, XSS, SSRF, SQL Injection). | Prompt 12 | Scanner de Vulnerabilidades e Testes E2E | `PLANNED` |
-| **NFR-SEC-006** | Segurança | Suporte a MFA para contas administrativas. | Prompt 03 | Configuração OIDC Keycloak | `PLANNED` |
-| **NFR-SEC-007** | Segurança | Rate limiting e proteção contra abuso e enumeração. | Prompt 03, Prompt 12 | Teste de Carga de Rate Limit | `PLANNED` |
-| **NFR-PRV-001** | Privacidade | Minimização de dados pessoais e conformidade estrita com LGPD. | Prompt 01, Prompt 06 | Auditoria de Schemas e PII | `PLANNED` |
-| **NFR-PRV-002** | Privacidade | Proibição de uso de dados do seller para treinar modelos globais. | Prompt 10, Prompt 18 | Verificação de Contrato de Provedor LLM | `PLANNED` |
-| **NFR-PRV-003** | Privacidade | Sanitização estrita de logs: zero tokens, senhas ou PII. | Prompt 02, Prompt 12 | Validação de Log Formatter | `PLANNED` |
-| **NFR-REL-001** | Confiabilidade | Jobs de sincronização idempotentes e recuperáveis. | Prompt 06 | Teste de Replay de Mensagens RabbitMQ | `PLANNED` |
-| **NFR-REL-002** | Confiabilidade | Retries com backoff exponencial e jitter contra rate limits. | Prompt 05, Prompt 06 | Teste com WireMock Fault Injection | `PLANNED` |
-| **NFR-REL-003** | Confiabilidade | Dead-letter queues (DLQ) para mensagens e eventos não processados. | Prompt 02, Prompt 06 | Teste de Roteamento de Erros no RabbitMQ | `PLANNED` |
-| **NFR-REL-004** | Confiabilidade | Backups automatizados do PostgreSQL e teste de restauração. | Prompt 12 | Script de Disaster Recovery | `PLANNED` |
-| **NFR-PER-001** | Performance | Latência p95 < 2,5 s para operações analíticas e de tela padrão. | Prompt 12 | Testes de Carga com k6 / Gatling | `PLANNED` |
-| **NFR-PER-002** | Performance | Processamento assíncrono para relatórios e exportações massivas. | Prompt 06, Prompt 09 | Teste de Job Polling / SSE | `PLANNED` |
-| **NFR-PER-003** | Performance | Paginação compulsória e filtros limitadores em consultas. | Prompt 06, Prompt 07 | Teste de API com Limites Máximos | `PLANNED` |
-| **NFR-SCL-001** | Escalabilidade | Workers assíncronos desacoplados escaláveis independentemente. | Prompt 02, Prompt 06 | Arquitetura Modular em Threads/Containers | `PLANNED` |
-| **NFR-OBS-001** | Observabilidade | Logs estruturados JSON, métricas Prometheus e tracing OTel. | Prompt 02, Prompt 12 | Teste de Ingestão de Telemetria | `PLANNED` |
-| **NFR-OBS-002** | Observabilidade | Correlation ID (`trace_id`) propagado em HTTP, filas e jobs. | Prompt 02, Prompt 06 | Teste de Propagação de Cabeçalho | `VERIFIED (Prompt 02)` |
-| **NFR-OBS-003** | Observabilidade | Dashboards e alertas para filas congestionadas e falhas de APIs. | Prompt 12 | Configuração de Regras de Alerta Prometheus | `PLANNED` |
-| **NFR-UX-001** | Usabilidade | Interface acessível, responsiva e com estados explícitos de erro. | Prompt 09, Prompt 10 | Vitest, Testing Library e A11y Review | `PLANNED` |
-| **NFR-UX-002** | Usabilidade | Glossário contextual e explicações acessíveis para indicadores. | Prompt 07, Prompt 09 | Inspeção de Tooltips e Documentação UI | `PLANNED` |
-| **NFR-AI-001** | IA | Respostas fundamentadas com citação de fontes e limites claros. | Prompt 10, Prompt 18 | Teste de Avaliação de Assertividade | `PLANNED` |
+| **NFR-SEC-001** | Segurança | TLS em trânsito e criptografia AES-GCM em repouso para credenciais. | Prompt 02, Prompt 05 | Teste de Criptografia de Secrets | `VERIFIED (Prompt 05)` |
+| **NFR-SEC-002** | Segurança | Isolamento multi-tenant garantido no backend e banco via RLS. | Prompt 03, Prompt 12 | Testes Adversariais Cross-Tenant | `VERIFIED (Prompt 12)` |
+| **NFR-SEC-003** | Segurança | Segredos OAuth e tokens armazenados em cofre cifrado. | Prompt 05 | Code Review e Teste de Repositório | `VERIFIED (Prompt 05)` |
+| **NFR-SEC-004** | Segurança | Controle de acesso baseado em papéis (RBAC) granular. | Prompt 04, Prompt 12 | Teste de Autorização de Endpoints | `VERIFIED (Prompt 04, Prompt 12)` |
+| **NFR-SEC-005** | Segurança | Proteção OWASP Top 10 (CSRF, XSS, SSRF, SQL Injection). | Prompt 12 | Scanner de Vulnerabilidades e Testes E2E | `VERIFIED (Prompt 12)` |
+| **NFR-SEC-006** | Segurança | Suporte a MFA para contas administrativas. | Prompt 03 | Configuração OIDC Keycloak | `VERIFIED (Prompt 03)` |
+| **NFR-SEC-007** | Segurança | Rate limiting e proteção contra abuso e enumeração. | Prompt 03, Prompt 12 | Teste de Carga de Rate Limit | `VERIFIED (Prompt 12)` |
+| **NFR-PRV-001** | Privacidade | Minimização de dados pessoais e conformidade estrita com LGPD. | Prompt 01, Prompt 06 | Auditoria de Schemas e PII | `VERIFIED (Prompt 06)` |
+| **NFR-PRV-002** | Privacidade | Proibição de uso de dados do seller para treinar modelos globais. | Prompt 10, Prompt 18 | Verificação de Contrato de Provedor LLM | `VERIFIED (Prompt 10)` |
+| **NFR-PRV-003** | Privacidade | Sanitização estrita de logs: zero tokens, senhas ou PII. | Prompt 02, Prompt 12 | Validação de Log Formatter | `VERIFIED (Prompt 12)` |
+| **NFR-REL-001** | Confiabilidade | Jobs de sincronização idempotentes e recuperáveis. | Prompt 06, Prompt 12 | Teste de Replay de Mensagens RabbitMQ | `VERIFIED (Prompt 06, Prompt 12)` |
+| **NFR-REL-002** | Confiabilidade | Retries com backoff exponencial e jitter contra rate limits. | Prompt 05, Prompt 06, Prompt 12 | Teste com WireMock Fault Injection | `VERIFIED (Prompt 06, Prompt 12)` |
+| **NFR-REL-003** | Confiabilidade | Dead-letter queues (DLQ) para mensagens e eventos não processados. | Prompt 02, Prompt 06, Prompt 12 | Teste de Roteamento de Erros no RabbitMQ | `VERIFIED (Prompt 06, Prompt 12)` |
+| **NFR-REL-004** | Confiabilidade | Backups automatizados do PostgreSQL e teste de restauração. | Prompt 12 | Script de Disaster Recovery | `VERIFIED (Prompt 12)` |
+| **NFR-PER-001** | Performance | Latência p95 < 2,5 s para operações analíticas e de tela padrão. | Prompt 12 | Testes de Carga com k6 / Gatling | `VERIFIED (Prompt 12)` |
+| **NFR-PER-002** | Performance | Processamento assíncrono para relatórios e exportações massivas. | Prompt 06, Prompt 09 | Teste de Job Polling / SSE | `VERIFIED (Prompt 06, Prompt 09)` |
+| **NFR-PER-003** | Performance | Paginação compulsória e filtros limitadores em consultas. | Prompt 06, Prompt 07 | Teste de API com Limites Máximos | `VERIFIED (Prompt 06, Prompt 07)` |
+| **NFR-SCL-001** | Escalabilidade | Workers assíncronos desacoplados escaláveis independentemente. | Prompt 02, Prompt 06 | Arquitetura Modular em Threads/Containers | `VERIFIED (Prompt 06)` |
+| **NFR-OBS-001** | Observabilidade | Logs estruturados JSON, métricas Prometheus e tracing OTel. | Prompt 02, Prompt 12 | Teste de Ingestão de Telemetria | `VERIFIED (Prompt 12)` |
+| **NFR-OBS-002** | Observabilidade | Correlation ID (`trace_id`) propagado em HTTP, filas e jobs. | Prompt 02, Prompt 06, Prompt 12 | Teste de Propagação de Cabeçalho | `VERIFIED (Prompt 02, Prompt 12)` |
+| **NFR-OBS-003** | Observabilidade | Dashboards e alertas para filas congestionadas e falhas de APIs. | Prompt 12 | Configuração de Regras de Alerta Prometheus | `VERIFIED (Prompt 12)` |
+| **NFR-UX-001** | Usabilidade | Interface acessível, responsiva e com estados explícitos de erro. | Prompt 09, Prompt 10, Prompt 12 | Vitest, Testing Library e A11y Review | `VERIFIED (Prompt 12)` |
+| **NFR-UX-002** | Usabilidade | Glossário contextual e explicações acessíveis para indicadores. | Prompt 07, Prompt 09, Prompt 12 | Inspeção de Tooltips e Documentação UI | `VERIFIED (Prompt 12)` |
+| **NFR-AI-001** | IA | Respostas fundamentadas com citação de fontes e limites claros. | Prompt 10, Prompt 18 | Teste de Avaliação de Assertividade | `VERIFIED (Prompt 10)` |
 | **NFR-AI-002** | IA | Defesa em profundidade contra dados externos não confiáveis. | Prompt 15, Prompt 18 | Teste de Injeção em Metadados | `PLANNED` |
 | **NFR-MNT-001** | Manutenibilidade | Contratos padronizados de conectores e limites ArchUnit. | Prompt 02, Prompt 05 | Testes de Arquitetura no Maven Build | `VERIFIED (Prompt 02)` |
-| **NFR-MNT-002** | Manutenibilidade | Regras de cálculo versionadas com cobertura determinística. | Prompt 08 | Suíte de Regressão Financeira JUnit 5 | `PLANNED` |
+| **NFR-MNT-002** | Manutenibilidade | Regras de cálculo versionadas com cobertura determinística. | Prompt 08, Prompt 12 | Suíte de Regressão Financeira JUnit 5 | `VERIFIED (Prompt 08, Prompt 12)` |

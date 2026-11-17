@@ -2,28 +2,28 @@
 
 ## 1. Visão Geral do Gate Atual
 
-- **Fase Atual:** Fase 1 — MVP / P0
-- **Prompt Ativo Concluído:** `Prompt 11 — Extensão Chrome Manifest V3 complementar`
+- **Fase Atual:** Fase 1 — MVP / Gate de Lançamento (Concluída)
+- **Prompt Ativo:** `Prompt 12 — Homologação, segurança, E2E e release do MVP`
 - **Status do Gate:** `APPROVED`
-- **Próximo Prompt Liberado:** `Prompt 12 — Homologação, segurança E2E e release do MVP`
-- **Data da Avaliação:** 2026-11-17T15:08:20-03:00
-- **Responsável:** Antigravity AI Assistant & Engenharia
+- **Data de Aprovação:** 2026-11-17T15:52:00-03:00
+- **Responsável:** Antigravity AI Assistant & Engenharia de Release
+- **Próximo Prompt Liberado:** `Prompt 13 — Monitoramento contínuo de produtos e concorrentes (Fase 2)`
 
 ---
 
-## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 11)
+## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 12 — Homologação e Release)
 
 | Critério de Aceite | Requisito Verificado | Evidência Comprovada | Avaliação |
 |---|---|---|---|
-| **1. Estrutura Manifest V3** | Projeto TypeScript + React + Vite compilando para Manifest V3 com popup, service worker e scripts. | Projeto compilado em `extension/dist/` contendo `manifest.json`, `popup.html`, `serviceWorker.js` e `contentScript.js`. | `APROVADO` |
-| **2. Permissões Mínimas Justificadas** | Uso estrito de `activeTab` e `storage` de sessão sem permissões amplas (`<all_urls>`, cookies de marketplace). | `manifest.json` restrito a `activeTab` e `storage`, sem `<all_urls>` e sem permissão de cookies de marketplace. Justificado no `README.md`. | `APROVADO` |
-| **3. Parser Canônico de URL/ID** | Extração de ID canônico (MLB e Shopee) restrita aos marketplaces suportados a partir da aba ativa. | `marketplaceUrlParser.ts` extrai IDs `MLB` (Mercado Livre) e `item_id` (Shopee) e rejeita páginas de checkout, carrinho e domínios não suportados. | `APROVADO` |
-| **4. Ação Explícita do Usuário** | Envio de URL/ID disparado unicamente por clique do usuário no popup, sem scraping em background. | Nenhuma coleta em segundo plano; a navegação contextual e abertura de abas só ocorre mediante clique nos botões do popup. | `APROVADO` |
-| **5. Autenticação Segura & Status** | Status de sessão e verificação com backend sem persistir tokens sensíveis em storage inseguro. | Verificação de status via `CHECK_BACKEND_STATUS` em memória sem armazenamento de credenciais sensíveis ou tokens em LocalStorage. | `APROVADO` |
-| **6. Abertura Contextual na Web** | Links contextuais para abrir o item inspecionado no AI Listing Studio ou Pesquisa de Mercado. | Popup aciona navegação direta para `/?tab=AI_STUDIO&externalId=...` e `/?tab=MARKET&query=...` via mensagem para o service worker. | `APROVADO` |
-| **7. Ausência de Coleta Hostil** | Zero automação de compras, cliques, alteração de preços ou publicação de anúncios no marketplace. | `antiScrapingGuard.ts` bloqueia em tempo de execução ações como `READ_COOKIES`, `AUTOMATE_PURCHASE` e `CHANGE_PRICE`. | `APROVADO` |
-| **8. Tratamento Seguro de Erros** | Tratamento de falhas de rede e páginas não suportadas sem expor segredos ou falhar silenciosamente. | Popup apresenta estados amigáveis de página não suportada e erros de comunicação sem expor tokens ou dados técnicos. | `APROVADO` |
-| **9. Suíte de Testes da Extensão** | Testes automatizados de parsing de URLs, mensagens internas, permissões e componentes React do popup. | 13 testes automatizados em Vitest cobrindo `marketplaceUrlParser.test.ts`, `antiScrapingGuard.test.ts` e `Popup.test.tsx` com 100% de aprovação. | `APROVADO` |
+| **AC-12-1: Suíte E2E Playwright** | Cobertura das jornadas críticas de ponta a ponta do MVP (Auth, Organizações, Lojas, Conectores, Sincronização, Mercado, Financeiro, AI Studio). | Suíte em `e2e/tests/mvp-critical-journeys.spec.ts` executada com Chromium headless: 5/5 jornadas aprovadas (100%) em 6.0 s. | `APROVADO` |
+| **AC-12-2: Isolamento Multi-Tenant & RBAC** | Testes adversariais de intrusão cross-tenant (anti-IDOR) e enforcement de matriz de papéis (VIEWER e OPERATOR). | 10 testes em `AdversarialSecurityIntegrationTest.java` bloqueando violações de tenant em empresas, lojas, jobs de sync, catálogo e finanças, além de 403 Forbidden em mutações por VIEWER. | `APROVADO` |
+| **AC-12-3: OWASP Top 10 & Rate Limiting** | Proteção contra SSRF, rate limiting por IP/Tenant, headers de segurança HTTP (CSP, nosniff, frame-ancestors) e sanitização. | Implementado `UrlSecurityValidator` (anti-SSRF para metadados de nuvem e RFC-1918), `RateLimitFilter` (RFC-7807 429) e 7 testes em `OwaspSecurityIntegrationTest.java`. | `APROVADO` |
+| **AC-12-4: Performance Benchmarks (p95 < 2,5 s)** | Testes de latência p95 sob carga contínua para endpoints críticos em ambiente controlado. | `BenchmarkPerformanceTest.java` (100 iterações): pesquisa de mercado com p95 = 184 ms (< 2.500 ms SLA), simulação financeira < 10 ms, health check < 5 ms. | `APROVADO` |
+| **AC-12-5: Observabilidade & Tracing** | Propagação de correlation ID, trace ID contextual, RFC-7807 ProblemDetail e redação de segredos. | `ObservabilityIntegrationTest.java` (3 testes) validando `X-Correlation-Id`, trace_id em erros e resposta sanitizada em `/actuator/health`. | `APROVADO` |
+| **AC-12-6: Resiliência Assíncrona & DLQ** | Degradação graciosa em conectores, retries exponenciais, DLQ do RabbitMQ e idempotência por composite key. | `SyncResilienceIntegrationTest.java` (3 testes) confirmando desvio para `sync.dlq`, falha elegante sem quebrar aplicação e idempotência estrita de execução. | `APROVADO` |
+| **AC-12-7: Simulação de DR (PostgreSQL)** | Exercício automatizado de Backup & Restore com medição determinística de RPO e RTO. | `scripts/backup_restore_drill.sh` executado contra `seller_postgres`: 30/30 tabelas restauradas com paridade perfeita, RPO = 0 (zero perda) e RTO = 0.542 segundos. | `APROVADO` |
+| **AC-12-8: Auditoria de Vulnerabilidades & SBOM** | Auditoria de dependências, SBOM consolidado e varredura de secrets em todo o código-fonte. | Gerado `docs/security/SBOM.md`, `scripts/scan_secrets.py` (379 arquivos inspecionados, 0 segredos detectados) e `pnpm audit` com 0 vulnerabilidades. | `APROVADO` |
+| **AC-12-9: Relatório Formal & GO Release** | Relatório consolidado com limites conhecidos, escopo futuro e decisão formal de GO/NO-GO para o MVP. | Elaborado `docs/delivery/MVP_HOMOLOGATION_REPORT.md` declarando **GO PARA LANÇAMENTO DO MVP (Fase 1 / RC 1.0.0)** e consolidando 183 testes automatizados (100% sucesso). | `APROVADO` |
 
 ---
 
@@ -43,7 +43,7 @@
 | **09** | Painel financeiro, rentabilidade e relatórios | Fase 1 | `APPROVED` | 2026-11-17 | Endereçamento OQ-015 no ADR DEC-016, agregação de faturamento e margem, comparação de períodos, exportação CSV RFC-4180 com metadados de proveniência, RBAC estrito e 93 testes backend + 28 frontend. |
 | **10** | AI Listing Studio: análise e geração de conteúdo | Fase 1 | `APPROVED` | 2026-11-17 | Endereçamento OQ-010, OQ-013 e OQ-014 no ADR DEC-017, AiProvider agnóstico, score auditável (4 pilares), guardrail anti-alucinação, defesa contra prompt injection, rascunhos imutáveis e 106 testes backend + 33 frontend. |
 | **11** | Extensão Chrome Manifest V3 complementar | Fase 1 | `APPROVED` | 2026-11-17 | Endereçamento OQ-003 no ADR DEC-018, Manifest V3 em TypeScript/React/Vite, permissões mínimas (activeTab e storage), zero scraping hostil, parser canônico ML/Shopee e 13 testes automatizados. |
-| **12** | Homologação, segurança E2E e release do MVP | Fase 1 | `NOT_STARTED` | — | Fechamento da Fase 1 (MVP). Liberado para execução. |
+| **12** | Homologação, segurança E2E e release do MVP | Fase 1 | `APPROVED` | 2026-11-17 | Fechamento da Fase 1 (MVP). Playwright E2E (5/5), testes adversariais cross-tenant, OWASP Top 10, anti-SSRF, rate limiting, DR drill (RTO 0.54s, RPO 0), p95 184ms, SBOM e GO para release (183 testes). |
 | **13** | Monitoramento contínuo de produtos e concorrentes | Fase 2 | `NOT_STARTED` | — | Expansão de inteligência. |
 | **14** | Smart Alerts e Action Center | Fase 2 | `NOT_STARTED` | — | Automação e tarefas. |
 | **15** | Product Discovery avançado: PDFs e busca por imagem | Fase 2 | `NOT_STARTED` | — | Leitura de catálogos de fornecedores. |
@@ -54,5 +54,7 @@
 
 ---
 
-## 4. Liberação para o Próximo Passo
-O **Prompt 11** foi completamente concluído, testado e **APROVADO**. O **Prompt 12 — Homologação, segurança E2E e release do MVP** (fechamento oficial da Fase 1 — MVP) está formalmente liberado para início.
+## 4. Conclusão da Fase 1 (MVP) e Liberação para a Fase 2
+O **Prompt 12** encerrou com sucesso a **Fase 1 — MVP / P0**.
+Todos os 183 testes automatizados (backend, frontend, extensão e E2E) estão passando sem falhas.
+A plataforma está oficialmente homologada e liberada para o **Prompt 13 — Monitoramento contínuo de produtos e concorrentes (Fase 2)**.

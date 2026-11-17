@@ -43,6 +43,7 @@ public class MarketplaceConnectionService {
     private final ScopeAuthorizationService scopeAuthorizationService;
     private final TokenCryptoService tokenCryptoService;
     private final AuditService auditService;
+    private final br.com.sellerintelligence.infrastructure.security.UrlSecurityValidator urlSecurityValidator;
 
     public MarketplaceConnectionService(
             MarketplaceConnectorRegistry connectorRegistry,
@@ -52,7 +53,8 @@ public class MarketplaceConnectionService {
             MembershipRepository membershipRepository,
             ScopeAuthorizationService scopeAuthorizationService,
             TokenCryptoService tokenCryptoService,
-            AuditService auditService) {
+            AuditService auditService,
+            br.com.sellerintelligence.infrastructure.security.UrlSecurityValidator urlSecurityValidator) {
         this.connectorRegistry = connectorRegistry;
         this.credentialRepository = credentialRepository;
         this.oauthStateRepository = oauthStateRepository;
@@ -61,10 +63,12 @@ public class MarketplaceConnectionService {
         this.scopeAuthorizationService = scopeAuthorizationService;
         this.tokenCryptoService = tokenCryptoService;
         this.auditService = auditService;
+        this.urlSecurityValidator = urlSecurityValidator;
     }
 
     @Transactional
     public OAuthAuthorizationUrl initiateOAuthFlow(UUID tenantId, UUID storeId, String redirectUri, User actor) {
+        urlSecurityValidator.validateRedirectUri(redirectUri, true);
         Membership membership = verifyManagementPermission(tenantId, actor.getId());
 
         Store store = storeRepository.findByIdAndTenantIdWithCompany(storeId, tenantId)
