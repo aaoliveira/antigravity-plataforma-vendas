@@ -50,7 +50,7 @@ const initialDemoCompanies: CompanyItem[] = [
     legalName: 'Empresa Matriz Principal E-commerce Ltda',
     taxRegime: 'SIMPLES_NACIONAL',
     status: 'ACTIVE',
-    createdAt: new Date().toISOString(),
+    createdAt: '2026-11-17T12:00:00.000Z',
   },
 ];
 
@@ -64,7 +64,7 @@ const initialDemoStores: StoreItem[] = [
     externalAccountId: 'MLB10293847',
     connectionStatus: 'DISCONNECTED',
     status: 'ACTIVE',
-    createdAt: new Date().toISOString(),
+    createdAt: '2026-11-17T12:00:00.000Z',
   },
 ];
 
