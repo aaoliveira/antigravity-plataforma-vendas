@@ -443,6 +443,33 @@ Conforme estipulado no PRD ([docs/product/PRD.md](file:///home/alexandre/Projeto
 
 ---
 
+## DEC-024 / ADR-024 — Conector Oficial Amazon SP-API e Expansão Segura de Novos Marketplaces
+- **Data:** 2026-11-17
+- **Status:** `ACCEPTED`
+- **Contexto:** Endereçamento dos requisitos de expansão de canais do PRD (Fase 3 / Prompt 19) para suportar a Amazon Brasil (`A2Q3Y263D00KWC`). Conforme as regras permanentes e o PRD, a adição de novos marketplaces não deve quebrar ou alterar os contratos de domínio existentes, nem assumir capacidades não verificadas (ex: scraping de busca ou tendências sem API).
+- **Opções consideradas:**
+  1. Adicionar múltiplos canais simultaneamente (Amazon, TikTok Shop, Magalu, SHEIN) de forma superficial ou simulada. (Rejeitado categoricamente pelo protocolo de gating do Prompt 19: "Não implementar vários marketplaces simultaneamente sem validação e autorização específicas").
+  2. Implementar o adaptador oficial Amazon SP-API (Selling Partner API) sob a interface `MarketplaceConnector`, aderindo aos padrões oficiais LWA (Login with Amazon) OAuth 2.0, com mapeamento estrito de capacidades suportadas vs não suportadas e testes de contrato dedicados.
+- **Decisão:** Opção 2.
+- **Detalhes Técnicos:**
+  - **Identificação:** Marketplace `Marketplace.AMAZON`, região Brasil `A2Q3Y263D00KWC`.
+  - **Matriz de Capacidades:**
+    - `CATALOG`: `SUPPORTED` via Listings Items API (`/listings/2021-08-01/items/{sellerId}/{sku}`).
+    - `LISTINGS`: `SUPPORTED` via Listings Items API.
+    - `ORDERS`: `SUPPORTED` via Orders API v0 (`/orders/v0/orders`).
+    - `ADS`: `UNSUPPORTED` (requer credenciais apartadas da Amazon Advertising API).
+    - `WEBHOOKS`: `SUPPORTED` via Notifications API / EventBridge.
+    - `PUBLIC_SEARCH` & `PUBLIC_TRENDS`: `UNSUPPORTED` (sem APIs abertas; proibição de scraping).
+  - **Autenticação:** LWA OAuth 2.0 com geração de URL de consentimento Seller Central BR e troca por tokens via `https://api.amazon.com/auth/o2/token`.
+  - **Resiliência:** Tratamento de HTTP 429 (`Too Many Requests`), monitoramento de limites `x-amzn-RateLimit-Limit` e retries com backoff.
+  - **Dados Restritos (RDT):** Sem dados fabricados. PII de comprador sem RDT é tratada como `UNAVAILABLE`/nulo.
+- **Consequências:** Zero impacto regressivo nos conectores do Mercado Livre e Shopee; arquitetura desacoplada e 100% aderente ao PRD.
+- **Requisitos relacionados:** PRD Seções 2.3, 3.1, 4.1, 5.1, NFR-SEC-001, NFR-SEC-002, NFR-REL-002.
+- **Responsável:** Engenheiro Backend / Arquiteto de Software.
+- **Revisão:** Fase 3 (Expansão).
+
+---
+
 # Parte 2: Decisões Propostas e Pendências Classificadas (PROPOSED)
 
 ## DEC-P05 — Política de Retenção de Dados e Expurgos Automáticos LGPD (Vinculada a OQ-007)

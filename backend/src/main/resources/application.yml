@@ -42,6 +42,24 @@ management:
 cors:
   allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
 
+connectors:
+  mercadolivre:
+    app-id: ${ML_APP_ID:}
+    client-secret: ${ML_CLIENT_SECRET:}
+    auth-base-url: ${ML_AUTH_BASE_URL:https://auth.mercadolivre.com.br}
+    api-base-url: ${ML_API_BASE_URL:https://api.mercadolibre.com}
+  shopee:
+    partner-id: ${SHOPEE_PARTNER_ID:}
+    partner-key: ${SHOPEE_PARTNER_KEY:}
+    api-base-url: ${SHOPEE_API_BASE_URL:https://partner.shopeemobile.com}
+  amazon:
+    app-id: ${AMAZON_APP_ID:}
+    client-secret: ${AMAZON_CLIENT_SECRET:}
+    lwa-auth-url: ${AMAZON_LWA_AUTH_URL:https://api.amazon.com/auth/o2/token}
+    seller-central-auth-url: ${AMAZON_SELLER_CENTRAL_AUTH_URL:https://sellercentral.amazon.com.br/apps/authorize/consent}
+    sp-api-base-url: ${AMAZON_SP_API_BASE_URL:https://sellingpartnerapi-na.amazon.com}
+    marketplace-id: ${AMAZON_MARKETPLACE_ID:A2Q3Y263D00KWC}
+
 logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{trace_id:-}] [%X{tenant_id:-}] %-5level %logger{36} - %msg%n"

@@ -1,5 +1,6 @@
 package br.com.sellerintelligence.connector.registry;
 
+import br.com.sellerintelligence.connector.adapters.amazon.AmazonSpApiConnector;
 import br.com.sellerintelligence.connector.adapters.mercadolivre.MercadoLivreConnector;
 import br.com.sellerintelligence.connector.adapters.shopee.ShopeeConnector;
 import br.com.sellerintelligence.connector.model.CapabilityStatus;
@@ -26,14 +27,16 @@ class MarketplaceConnectorRegistryTest {
         ObjectMapper mapper = new ObjectMapper();
         MarketplaceConnector ml = new MercadoLivreConnector("dummy-app", "dummy-sec", "https://auth.ml", "https://api.ml", mapper);
         MarketplaceConnector shopee = new ShopeeConnector("123456", "partner-key", "https://partner.shopee", mapper);
-        registry = new MarketplaceConnectorRegistry(List.of(ml, shopee));
+        MarketplaceConnector amazon = new AmazonSpApiConnector("dummy-amz-app", "dummy-amz-sec", "https://api.amazon.com/auth/o2/token", "https://sellercentral.amazon.com.br/apps/authorize/consent", "https://sellingpartnerapi-na.amazon.com", "A2Q3Y263D00KWC", mapper);
+        registry = new MarketplaceConnectorRegistry(List.of(ml, shopee, amazon));
     }
 
     @Test
-    @DisplayName("Registry provides connectors for Mercado Livre and Shopee")
+    @DisplayName("Registry provides connectors for Mercado Livre, Shopee and Amazon")
     void registryContainsKnownConnectors() {
         assertThat(registry.hasConnector(Marketplace.MERCADO_LIVRE)).isTrue();
         assertThat(registry.hasConnector(Marketplace.SHOPEE)).isTrue();
+        assertThat(registry.hasConnector(Marketplace.AMAZON)).isTrue();
 
         MarketplaceConnector ml = registry.getConnector(Marketplace.MERCADO_LIVRE);
         assertThat(ml.getMarketplace()).isEqualTo(Marketplace.MERCADO_LIVRE);
@@ -43,12 +46,19 @@ class MarketplaceConnectorRegistryTest {
         MarketplaceConnector shopee = registry.getConnector(Marketplace.SHOPEE);
         assertThat(shopee.getMarketplace()).isEqualTo(Marketplace.SHOPEE);
         assertThat(shopee.getCapabilityStatus(ConnectorCapabilityType.ADS)).isEqualTo(CapabilityStatus.UNSUPPORTED);
+
+        MarketplaceConnector amazon = registry.getConnector(Marketplace.AMAZON);
+        assertThat(amazon.getMarketplace()).isEqualTo(Marketplace.AMAZON);
+        assertThat(amazon.getCapabilityStatus(ConnectorCapabilityType.CATALOG)).isEqualTo(CapabilityStatus.SUPPORTED);
+        assertThat(amazon.getCapabilityStatus(ConnectorCapabilityType.ORDERS)).isEqualTo(CapabilityStatus.SUPPORTED);
+        assertThat(amazon.getCapabilityStatus(ConnectorCapabilityType.ADS)).isEqualTo(CapabilityStatus.UNSUPPORTED);
+        assertThat(amazon.getCapabilityStatus(ConnectorCapabilityType.PUBLIC_SEARCH)).isEqualTo(CapabilityStatus.UNSUPPORTED);
     }
 
     @Test
     @DisplayName("Unregistered marketplace throws BusinessException")
     void unsupportedMarketplaceThrowsException() {
-        assertThatThrownBy(() -> registry.getConnector(Marketplace.AMAZON))
+        assertThatThrownBy(() -> registry.getConnector(Marketplace.OUTRO))
                 .isInstanceOf(BusinessException.class);
     }
 
@@ -58,6 +68,9 @@ class MarketplaceConnectorRegistryTest {
         var capabilities = registry.getAllCapabilities();
         assertThat(capabilities).containsKey(Marketplace.MERCADO_LIVRE);
         assertThat(capabilities).containsKey(Marketplace.SHOPEE);
+        assertThat(capabilities).containsKey(Marketplace.AMAZON);
         assertThat(capabilities.get(Marketplace.MERCADO_LIVRE)).isNotEmpty();
+        assertThat(capabilities.get(Marketplace.AMAZON)).isNotEmpty();
     }
 }
+

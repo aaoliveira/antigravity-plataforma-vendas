@@ -11,7 +11,7 @@ export interface CapabilityItem {
 }
 
 export interface MarketplaceCapabilityMatrix {
-  marketplace: 'MERCADO_LIVRE' | 'SHOPEE';
+  marketplace: 'MERCADO_LIVRE' | 'SHOPEE' | 'AMAZON';
   name: string;
   authMethod: string;
   capabilities: CapabilityItem[];
@@ -118,6 +118,56 @@ export const OFFICIAL_MARKETPLACE_CAPABILITIES: MarketplaceCapabilityMatrix[] = 
       },
     ],
   },
+  {
+    marketplace: 'AMAZON',
+    name: 'Amazon SP-API (Brasil - A2Q3Y263D00KWC)',
+    authMethod: 'Login with Amazon (LWA) OAuth 2.0 (Token 1h / Refresh 1 ano)',
+    capabilities: [
+      {
+        type: 'CATALOG',
+        label: 'Catálogo & Ofertas Próprias',
+        status: 'SUPPORTED',
+        description: 'Leitura de ofertas e estoque via Listings Items API e Catalog Items API',
+      },
+      {
+        type: 'LISTINGS',
+        label: 'Publicação & Edição de Ofertas',
+        status: 'SUPPORTED',
+        description: 'Criação e edição de anúncios e ofertas via Listings Items API',
+      },
+      {
+        type: 'ORDERS',
+        label: 'Pedidos & Itens Faturados',
+        status: 'SUPPORTED',
+        description: 'Consulta de pedidos próprios via Orders API v0 (/orders/v0/orders)',
+      },
+      {
+        type: 'ADS',
+        label: 'Amazon Advertising',
+        status: 'UNSUPPORTED',
+        description: 'Amazon Ads API opera com credenciais segregadas fora do escopo base da SP-API',
+        notes: 'Fase 3 (Credenciais Segregadas)',
+      },
+      {
+        type: 'WEBHOOKS',
+        label: 'Webhooks & EventBridge',
+        status: 'SUPPORTED',
+        description: 'Notificações de pedidos e catálogo via Amazon EventBridge / Notifications API',
+      },
+      {
+        type: 'PUBLIC_SEARCH',
+        label: 'Pesquisa Pública de Mercado',
+        status: 'UNSUPPORTED',
+        description: 'A Amazon não disponibiliza API pública aberta de busca concorrencial. Scraping proibido.',
+      },
+      {
+        type: 'PUBLIC_TRENDS',
+        label: 'Tendências de Busca',
+        status: 'UNSUPPORTED',
+        description: 'Sem API pública aberta de tendências de busca na Amazon',
+      },
+    ],
+  },
 ];
 
 export const MarketplaceCapabilities: React.FC = () => {
@@ -134,7 +184,7 @@ export const MarketplaceCapabilities: React.FC = () => {
         <strong>Invariante Arquitetural:</strong> Conectores retornam explicitamente <code className="bg-slate-200 px-1 py-0.5 rounded">UNSUPPORTED</code> para dados não disponibilizados pelas APIs oficiais. Nenhum dado sintético, mock ou scraping não autorizado é apresentado como dado real.
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {OFFICIAL_MARKETPLACE_CAPABILITIES.map((mkt) => (
           <div key={mkt.marketplace} className="border border-slate-200 rounded-xl p-5 bg-white shadow-xs">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">

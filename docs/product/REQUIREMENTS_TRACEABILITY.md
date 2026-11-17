@@ -34,7 +34,8 @@ Nenhum requisito pode ser considerado concluído sem que os testes associados es
 | **FR-INT-006** | P0 | Exibir saúde, histórico e última sincronização. | Fase 1 (MVP) | Prompt 05, Prompt 06 | Unitário, Integração (REST API) | `VERIFIED (Prompt 05, Prompt 06)` |
 | **FR-INT-007** | P0 | Processar webhooks/eventos com proteção contra replay. | Fase 1 (MVP) | Prompt 06 | Integração (Signature Verification), Idempotência | `VERIFIED (Prompt 06)` |
 | **FR-INT-008** | P0 | Disponibilizar importação CSV como contingência. | Fase 1 (MVP) | Prompt 06 | Unitário (CSV Parser), Integração | `VERIFIED (Prompt 06)` |
-| **FR-INT-009** | P1 | Catálogo de capacidades por marketplace. | Fase 1 (MVP) | Prompt 05 | Unitário (Matrix Registry), Integração | `VERIFIED (Prompt 05)` |
+| **FR-INT-009** | P1 | Catálogo de capacidades por marketplace. | Fase 1 (MVP) | Prompt 05, Prompt 19 | Unitário (Matrix Registry), Integração | `VERIFIED (Prompt 05, Prompt 19)` |
+| **FR-INT-010** | P1 | Conectar e sincronizar com Amazon SP-API via LWA OAuth 2.0. | Fase 3 | Prompt 19 | Testes de Contrato (`AmazonSpApiConnectorContractTest`), Registry | `VERIFIED (Prompt 19)` |
 
 ---
 

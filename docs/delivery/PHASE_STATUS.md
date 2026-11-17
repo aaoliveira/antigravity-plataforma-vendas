@@ -2,18 +2,35 @@
 
 ## 1. Visão Geral do Gate Atual
 
-- **Fase Atual:** Fase 3 — Plataforma Ampliada
-- **Prompt Concluído:** `Prompt 18 — Assistente conversacional e servidor MCP read-only`
+- **Fase Atual:** Fase 3 — Expansão
+- **Prompt Concluído:** `Prompt 19 — Expansão de conectores para Amazon e outros marketplaces`
 - **Status do Gate:** `APPROVED`
-- **Data de Conclusão:** 2026-11-17T17:58:00-03:00
-- **Responsável:** Antigravity AI Assistant & Engenharia de IA/Plataforma
-- **Último Prompt Aprovado:** `Prompt 18 — Assistente conversacional e servidor MCP read-only`
-- **Próximo Prompt Disponível:** `Prompt 19 — Publicação assistida e automação governada`
-- **Nota de Escopo:** Prompt 16 (Ads) postergado devido ao bloqueio externo OQ-006 (whitelisting de parceiro comercial) sem impactar o assistente e servidor MCP.
+- **Data de Conclusão:** 2026-11-17T18:14:00-03:00
+- **Responsável:** Antigravity AI Assistant & Engenharia de Plataforma
+- **Último Prompt Aprovado:** `Prompt 19 — Expansão de conectores para Amazon e outros marketplaces`
+- **Próximo Prompt Disponível:** `Prompt 20 — Auditoria completa de segurança e conformidade da plataforma`
+- **Nota de Escopo:** Conector oficial da Amazon SP-API implementado sob a interface `MarketplaceConnector` sem alterar contratos existentes. Não implementação de múltiplos canais simultaneamente conforme diretriz vinculante.
 
 ---
 
-## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 18 — Assistente Conversacional & Servidor MCP Read-Only)
+## 2. Verificação Objetiva dos Critérios de Aceite (Prompt 19 — Expansão de Conectores: Amazon SP-API)
+
+| Critério de Aceite | Requisito Verificado | Evidência Comprovada | Avaliação |
+|---|---|---|---|
+| **AC-19-1: Documentação Prévia & Matriz de Capacidades** | Mapeamento técnico oficial da Amazon SP-API (Brasil `A2Q3Y263D00KWC`), endpoints LWA e proteção de PII antes de código. | `docs/connectors/AMAZON_SP_API.md` e ADR DEC-024 aceito em `docs/architecture/DECISION_LOG.md`; `OQ-016` resolvido em `OPEN_QUESTIONS.md`. | `APROVADO` |
+| **AC-19-2: Adaptador AmazonSpApiConnector & Contrato de Domínio** | Implementação estrita da interface `MarketplaceConnector` retornando `Marketplace.AMAZON` sem alterações em contratos existentes. | `AmazonSpApiConnector.java` implementando a porta de conectores; testado em `AmazonSpApiConnectorContractTest`. | `APROVADO` |
+| **AC-19-3: Fluxo OAuth LWA (Login with Amazon)** | Geração de URL de consentimento Seller Central BR e troca de código de autorização por tokens LWA. | Métodos `generateAuthorizationUrl` e `exchangeAuthorizationCode` seguindo o protocolo oficial LWA com validação de credenciais. | `APROVADO` |
+| **AC-19-4: Renovação de Token & Validação de Saúde** | Renovação automática via refresh token e verificação de saúde da conexão via endpoint `/sellers/v1/marketplaceParticipations`. | `refreshAccessToken` e `validateConnection` implementados e cobertos por testes de contrato com MockRestServiceServer. | `APROVADO` |
+| **AC-19-5: Sincronização Suportada de Catálogo e Pedidos** | Mapeamento padronizado de anúncios (`ConnectorListing`) e pedidos (`ConnectorOrder`) com suporte a cursores de paginação. | `fetchListings` e `fetchOrders` mapeando campos oficiais, valores monetários em `BigDecimal` e paginação via `NextToken`. | `APROVADO` |
+| **AC-19-6: Tratamento Resiliente de Rate Limits (HTTP 429)** | Intercepção de `429 Too Many Requests` com retries/backoff e conversão para `BusinessException` tipada (`AMAZON_RATE_LIMIT_EXCEEDED`). | Testado e verificado no método `shouldHandleRateLimitExceeded` de `AmazonSpApiConnectorContractTest`. | `APROVADO` |
+| **AC-19-7: Segregação Estrita de Dados Não Suportados / PII** | Proibição de scraping e invenção de dados: busca pública e tendências marcadas como `UNSUPPORTED`; PII de comprador sem RDT não é fabricada. | Capacidades de busca, tendências e Ads marcadas como `UNSUPPORTED`; dados restritos tratados como nulos/`UNAVAILABLE`. | `APROVADO` |
+| **AC-19-8: Criptografia e Isolamento Multi-Tenant** | Tokens e credenciais da Amazon encriptados em repouso (AES-256-GCM) e segregados por `store_id` e `tenant_id`. | `MarketplaceConnectionService` integrando `TokenCryptoService` e `MarketplaceCredentialRepository` com isolamento estrito. | `APROVADO` |
+| **AC-19-9: Regressão Zero nos Conectores Existentes** | Preservação integral do funcionamento e testes do Mercado Livre e Shopee. | `MarketplaceConnectorRegistryTest` passando para todos os 3 marketplaces; suíte completa do backend com 227 testes verdes (0 falhas) e ArchUnit aprovado. | `APROVADO` |
+| **AC-19-10: Frontend Integrado & Suítes de Teste 100% Verdes** | Matriz visual de capacidades atualizada no frontend, 64 testes Vitest passando e script de verificação executado com sucesso. | `MarketplaceCapabilities.tsx` exibindo Amazon SP-API, testes Vitest 100% verdes, build Next.js 15 sem erros e `scripts/verify_phase19.py` com 100% PASS. | `APROVADO` |
+
+---
+
+## 3. Verificação Objetiva dos Critérios de Aceite (Prompt 18 — Assistente Conversacional & Servidor MCP Read-Only)
 
 | Critério de Aceite | Requisito Verificado | Evidência Comprovada | Avaliação |
 |---|---|---|---|

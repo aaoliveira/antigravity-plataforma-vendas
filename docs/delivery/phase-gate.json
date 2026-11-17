@@ -2,76 +2,76 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "project": "Seller Intelligence Platform",
   "gateSystemVersion": "1.0.0",
-  "currentPrompt": "18",
-  "promptTitle": "Assistente conversacional e servidor MCP read-only",
-  "phase": "Fase 3 — plataforma ampliada",
+  "currentPrompt": "19",
+  "promptTitle": "Expansão de conectores para Amazon e outros marketplaces",
+  "phase": "Fase 3 — expansão",
   "status": "APPROVED",
-  "updatedAt": "2026-11-17T17:57:00-03:00",
+  "updatedAt": "2026-11-17T18:13:00-03:00",
   "evaluatedBy": "Antigravity AI Assistant",
   "criteria": [
     {
-      "id": "AC-18-1",
-      "description": "Catálogo formal de ferramentas MCP estritamente READ-ONLY (search_market, query_tenant_products, query_sales_indicators, calculate_sku_margin, query_reconciliation_summary) com JSON Schemas estritos e rejeição de ferramentas mutáveis",
+      "id": "AC-19-1",
+      "description": "Matriz formal de capacidades e documentação técnica da Amazon SP-API preenchida antes da implementação do código",
       "status": "PASSED",
-      "evidence": "McpToolRegistry com schemas JSON fortemente tipados e bloqueio de ferramentas mutáveis ou não registradas com BLOCKED_MUTABLE_DENIED (validado em McpToolRegistryTest e McpControllerIntegrationTest)."
+      "evidence": "docs/connectors/AMAZON_SP_API.md e ADR DEC-024 detalhando endpoints LWA, SP-API e marketplace ID Brasil (A2Q3Y263D00KWC)."
     },
     {
-      "id": "AC-18-2",
-      "description": "Autenticação e Autorização MCP por usuário, tenant e escopo de permissão (mcp_api_keys com hash SHA-256 e status ativo)",
+      "id": "AC-19-2",
+      "description": "Implementação do adaptador AmazonSpApiConnector em conformidade estrita com a interface MarketplaceConnector",
       "status": "PASSED",
-      "evidence": "McpAuthService validando API Key sip_mcp_... com hash SHA-256, escopo READ_ONLY e suporte a revogação (validado em McpAuthServiceTest)."
+      "evidence": "Classe AmazonSpApiConnector implementando a porta MarketplaceConnector sem alterar os contratos de domínio existentes, testada em AmazonSpApiConnectorContractTest."
     },
     {
-      "id": "AC-18-3",
-      "description": "Conversão de linguagem natural em chamadas verificáveis de ferramentas do catálogo (Function Calling / Tool Calling) com proibição de SQL arbitrário gerado por LLM",
+      "id": "AC-19-3",
+      "description": "Fluxo OAuth LWA (Login with Amazon) com geração de URL de consentimento Seller Central BR e troca de autorização por tokens",
       "status": "PASSED",
-      "evidence": "ConversationalAssistantService e FakeConversationalAiProvider orquestrando chamadas tipadas via Spring Data JPA sem execução de SQL dinâmico (validado em ConversationalAssistantServiceTest)."
+      "evidence": "Métodos generateAuthorizationUrl e exchangeAuthorizationCode no padrão oficial Amazon LWA com validação de credenciais."
     },
     {
-      "id": "AC-18-4",
-      "description": "Isolamento estrito multi-tenant (tenant_id) garantido na execução de ferramentas; testes adversariais impedem acesso a dados de outros tenants",
+      "id": "AC-19-4",
+      "description": "Renovação automática de access token (refresh token) e validação de saúde de conexão (marketplaceParticipations)",
       "status": "PASSED",
-      "evidence": "McpToolExecutorService forçando tenant_id do contexto de autenticação em todas as consultas e rejeitando parâmetros cross-tenant com BLOCKED_CROSS_TENANT (validado em McpControllerIntegrationTest.shouldBlockCrossTenantCall)."
+      "evidence": "Implementação de refreshAccessToken e validateConnection invocando o endpoint oficial /sellers/v1/marketplaceParticipations."
     },
     {
-      "id": "AC-18-5",
-      "description": "Proteção ativa contra Prompt Injection (OWASP LLM01) em mensagens do usuário e dados externos, neutralizando tentativas de jailbreak",
+      "id": "AC-19-5",
+      "description": "Sincronização suportada de catálogo (fetchListings) e pedidos (fetchOrders) respeitando paginação por cursor",
       "status": "PASSED",
-      "evidence": "Sanitização de prompt com UntrustedTextSanitizer e rejeição de payloads adversariais com BLOCKED_INJECTION (validado em McpToolExecutorServiceTest.shouldBlockPromptInjectionInToolArguments)."
+      "evidence": "Métodos de sincronização mapeando para ConnectorListing e ConnectorOrder com cursores de paginação (pageToken / NextToken)."
     },
     {
-      "id": "AC-18-6",
-      "description": "Respostas contextualizadas com metadados de auditoria: período pesquisado, escopo, fonte (source), classificação de proveniência e timestamp",
+      "id": "AC-19-6",
+      "description": "Tratamento de rate limits oficiais (HTTP 429), retries com backoff e cabeçalhos x-amzn-RateLimit-Limit",
       "status": "PASSED",
-      "evidence": "DTO de resposta conversacional incluindo bloco completo de metadados, classificação de proveniência (OBSERVED/IMPORTED/CALCULATED/AI_GENERATED/UNAVAILABLE) e limitações operacionais."
+      "evidence": "Intercepção de HttpClientErrorException.TooManyRequests com conversão para BusinessException AMAZON_RATE_LIMIT_EXCEEDED."
     },
     {
-      "id": "AC-18-7",
-      "description": "Declaração explícita de indisponibilidade (UNAVAILABLE) quando não houver evidências suficientes, sem alucinar ou converter nulo em zero",
+      "id": "AC-19-7",
+      "description": "Segregação e proteção estrita de campos não suportados ou restritos (RDT / PII de compradores não inventados nem falseados)",
       "status": "PASSED",
-      "evidence": "Respostas declaram explicitamente UNAVAILABLE quando métricas não existem ou argumentos são bloqueados, sem falsear dados."
+      "evidence": "Capacidades de busca pública, tendências e Ads marcadas explicitamente como UNSUPPORTED; PII restrita sem RDT tratada como nula sem inventar dados."
     },
     {
-      "id": "AC-18-8",
-      "description": "Integração com motor financeiro determinístico (calculate_sku_margin) retornando cálculos monetários exatos em BigDecimal",
+      "id": "AC-19-8",
+      "description": "Criptografia de credenciais (AES-256-GCM) e isolamento multi-tenant por store e tenant_id",
       "status": "PASSED",
-      "evidence": "Ferramenta calculate_sku_margin consultando custo efetivo em SkuCostRepository e calculando margem, comissões e preço mínimo determinísticos em BigDecimal HALF_EVEN."
+      "evidence": "Credenciais da Amazon persistidas em marketplace_credentials via TokenCryptoService com isolamento de tenant e loja."
     },
     {
-      "id": "AC-18-9",
-      "description": "Log estruturado de auditoria (mcp_tool_execution_logs) registrando ferramenta, argumentos sanitizados, modelo, latência e status, sem segredos",
+      "id": "AC-19-9",
+      "description": "Regressão zero: conectores existentes (Mercado Livre e Shopee) permanecem 100% operacionais com todos os testes passando",
       "status": "PASSED",
-      "evidence": "Tabela de auditoria Flyway V13 gravando histórico imutável de execuções MCP com mascaramento de segredos e status de auditoria."
+      "evidence": "Suíte completa de testes do backend executada com 227 testes passando sem falhas (BUILD SUCCESS) e regras ArchUnit aprovadas."
     },
     {
-      "id": "AC-18-10",
-      "description": "Frontend integrado (ConversationalAssistantView.tsx no DashboardView.tsx) com interface de chat, badges de ferramentas e evidências, testes Vitest e script de verificação",
+      "id": "AC-19-10",
+      "description": "Frontend atualizado com a matriz de capacidades da Amazon e suíte de testes Vitest passando",
       "status": "PASSED",
-      "evidence": "Componente React com 4 abas (Chat, Ferramentas MCP, Chaves de API, Auditoria) integrado ao DashboardView, 8 testes Vitest passando e script scripts/verify_phase18.py 100% verde."
+      "evidence": "MarketplaceCapabilities.tsx exibindo Amazon SP-API, 64 testes Vitest passando e script scripts/verify_phase19.py com 100% PASS."
     }
   ],
   "blockers": [],
-  "nextPrompt": "19",
-  "nextPromptTitle": "Publicação assistida e automação governada",
+  "nextPrompt": "20",
+  "nextPromptTitle": "Auditoria completa de segurança e conformidade da plataforma",
   "nextPromptPrerequisiteMet": true
 }
