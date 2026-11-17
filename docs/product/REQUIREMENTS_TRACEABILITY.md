@@ -14,11 +14,11 @@ Nenhum requisito pode ser considerado concluído sem que os testes associados es
 |---|---|---|---|---|---|---|
 | **FR-ID-001** | P0 | Cadastro, login, logout e recuperação de acesso. | Fase 1 (MVP) | Prompt 03 | Integração (Keycloak/Spring Security), E2E (Playwright) | `VERIFIED (Prompt 03)` |
 | **FR-ID-002** | P0 | Criar organização (tenant) e associar usuário Owner. | Fase 1 (MVP) | Prompt 03 | Unitário, Integração (JPA/Flyway), E2E | `VERIFIED (Prompt 03)` |
-| **FR-ID-003** | P0 | Convidar usuários e atribuir papéis (RBAC). | Fase 1 (MVP) | Prompt 04 | Unitário (Domain), Integração (API/Mail) | `IN_PROGRESS (Prompt 03/04)` |
+| **FR-ID-003** | P0 | Convidar usuários e atribuir papéis (RBAC). | Fase 1 (MVP) | Prompt 04 | Unitário (Domain), Integração (API/Mail) | `VERIFIED (Prompt 04)` |
 | **FR-ID-004** | P0 | Isolar dados estruturalmente por tenant. | Fase 1 (MVP) | Prompt 03, Prompt 12 | Segurança (Adversarial cross-tenant), Testcontainers | `VERIFIED (Prompt 03)` |
-| **FR-ID-005** | P0 | Gerenciar empresas/CNPJs, lojas e contas. | Fase 1 (MVP) | Prompt 04 | Unitário, Integração (JPA/PostgreSQL) | `PLANNED` |
-| **FR-ID-006** | P1 | Permissões granulares por empresa, loja e módulo. | Fase 1 (MVP) | Prompt 04 | Unitário, Integração (Security Interceptor) | `PLANNED` |
-| **FR-ID-007** | P0 | Trilha de auditoria para ações sensíveis. | Fase 1 (MVP) | Prompt 03, Prompt 04 | Integração (Audit Listener), Unitário | `VERIFIED (Prompt 03)` |
+| **FR-ID-005** | P0 | Gerenciar empresas/CNPJs, lojas e contas. | Fase 1 (MVP) | Prompt 04 | Unitário, Integração (JPA/PostgreSQL) | `VERIFIED (Prompt 04)` |
+| **FR-ID-006** | P1 | Permissões granulares por empresa, loja e módulo. | Fase 1 (MVP) | Prompt 04 | Unitário, Integração (Security Interceptor) | `VERIFIED (Prompt 04)` |
+| **FR-ID-007** | P0 | Trilha de auditoria para ações sensíveis. | Fase 1 (MVP) | Prompt 03, Prompt 04 | Integração (Audit Listener), Unitário | `VERIFIED (Prompt 03, Prompt 04)` |
 
 ---
 

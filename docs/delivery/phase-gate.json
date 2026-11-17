@@ -2,64 +2,70 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "project": "Seller Intelligence Platform",
   "gateSystemVersion": "1.0.0",
-  "currentPrompt": "03",
-  "promptTitle": "Identidade, autenticação e isolamento multi-tenant",
+  "currentPrompt": "04",
+  "promptTitle": "Organizações, CNPJs, lojas e gestão de acessos",
   "phase": "Fase 1 — MVP / P0",
   "status": "APPROVED",
-  "updatedAt": "2026-11-17T11:52:30-03:00",
+  "updatedAt": "2026-11-17T12:48:00-03:00",
   "evaluatedBy": "Antigravity AI Assistant",
   "criteria": [
     {
-      "id": "AC-03-1",
-      "description": "Integração Spring Security com OIDC/Keycloak Resource Server (JWT Bearer)",
+      "id": "AC-04-1",
+      "description": "CRUD de Empresa/CNPJ com validação de dígitos sem consultar RFB e regime tributário informativo",
       "status": "APPROVED",
-      "evidence": "SecurityConfig configurado com oauth2ResourceServer JWT; chamadas não autenticadas retornam 401 ProblemDetail; actuator health permanece público."
+      "evidence": "CompanyService e CnpjValidator implementados com validação de 14 dígitos e dígitos verificadores (CnpjValidatorTest aprovado com 16 testes); regime tributário informativo persistido."
     },
     {
-      "id": "AC-03-2",
-      "description": "Identidade local de usuário vinculada ao sub OIDC sem armazenamento de senhas locais",
+      "id": "AC-04-2",
+      "description": "CRUD de Store/MarketplaceAccount vinculada a uma Empresa do mesmo tenant e marketplace identificado",
       "status": "APPROVED",
-      "evidence": "Entidade User vinculada a keycloakSub único, email e nome; zero campos de senha; provisionamento JIT via UserService."
+      "evidence": "StoreService implementa criação, listagem, atualização e desativação de lojas vinculadas a empresas com marketplace MERCADO_LIVRE, SHOPEE, AMAZON, OUTRO."
     },
     {
-      "id": "AC-03-3",
-      "description": "Entidades Organization (Tenant) e Membership com papéis RBAC e status",
+      "id": "AC-04-3",
+      "description": "Impossibilidade estrita de associar loja a empresa de outro tenant (bloqueio multi-tenant)",
       "status": "APPROVED",
-      "evidence": "Entidades Organization e Membership criadas com enum Role (OWNER, ADMIN, MANAGER, ANALYST, FINANCE, OPERATOR, VIEWER) e constraint de unicidade org-user."
+      "evidence": "CompanyAndStoreIntegrationTest comprovou que tentativa de vincular loja a empresa de outro tenant retorna 403 Forbidden com TENANT_ACCESS_DENIED e registra auditoria."
     },
     {
-      "id": "AC-03-4",
-      "description": "Contexto autenticado TenantContext e TenantContextFilter validando X-Tenant-Id e associação de usuário",
+      "id": "AC-04-4",
+      "description": "Convite de usuário com validade, uso único, token seguro e atribuição de papel e escopo (empresa/loja)",
       "status": "APPROVED",
-      "evidence": "TenantContextFilter intercepta requests autenticadas, valida X-Tenant-Id e associação ativa, limpando contexto ThreadLocal em bloco finally."
+      "evidence": "InvitationService gera token seguro com expiração de 7 dias, uso único (status ACCEPTED), e persiste scopes granulares; reutilização e tokens expirados rejeitados com 400 Bad Request."
     },
     {
-      "id": "AC-03-5",
-      "description": "Isolamento estrito multi-tenant (testes de leitura/gravação cruzada negados com 403/404 sem vazamento de existência)",
+      "id": "AC-04-5",
+      "description": "Isolamento de escopo granular: usuário limitado à Loja A não consulta Loja B por API/UI",
       "status": "APPROVED",
-      "evidence": "TenantIsolationIntegrationTest comprovou que usuário Alpha não acessa, não lista membros e não altera membros da organização Beta (403 Forbidden)."
+      "evidence": "ScopeAndInvitationIntegrationTest comprovou que usuário com escopo restrito à Loja A consulta a Loja A com 200 OK e recebe 403 Forbidden ao tentar consultar Loja B (auditado como ACCESS_DENIED)."
     },
     {
-      "id": "AC-03-6",
-      "description": "Trilha de auditoria persistente para alterações de membros, papéis e tentativas de acesso negado sem vazamento de segredos",
+      "id": "AC-04-6",
+      "description": "Trilha de auditoria persistente para alterações de estrutura empresarial, lojas, convites e escopos",
       "status": "APPROVED",
-      "evidence": "AuditService e tabela audit_events registram ORGANIZATION_CREATED, MEMBER_INVITED, MEMBER_ROLE_CHANGED e ACCESS_DENIED com higienização de tokens sensíveis."
+      "evidence": "AuditService registra COMPANY_CREATED, COMPANY_UPDATED, COMPANY_STATUS_CHANGED, STORE_CREATED, STORE_UPDATED, INVITATION_CREATED, INVITATION_ACCEPTED e ACCESS_DENIED."
     },
     {
-      "id": "AC-03-7",
-      "description": "Migração Flyway V2 estruturando users, organizations, memberships e audit_events com índices e constraints",
+      "id": "AC-04-7",
+      "description": "Migração Flyway V3 estruturando companies, stores, user_invitations e membership_scopes",
       "status": "APPROVED",
-      "evidence": "Flyway V2__identity_and_tenancy.sql criada e validada com chaves primárias UUID, índices e chaves estrangeiras."
+      "evidence": "V3__companies_stores_invitations.sql aplicada e testada no PostgreSQL 17 Testcontainers via PostgresCompaniesStoresIntegrationTest."
     },
     {
-      "id": "AC-03-8",
-      "description": "Bateria de testes automatizados com Testcontainers / PostgreSQL cobrindo autenticação, isolamento e RBAC",
+      "id": "AC-04-8",
+      "description": "Interface web (Next.js) para listar, cadastrar, editar e desativar empresas e lojas com validação visual de CNPJ",
       "status": "APPROVED",
-      "evidence": "20 testes executados via ./mvnw clean verify (PostgresTenancyIntegrationTest com PostgreSQL 17 Testcontainers, TenantIsolationIntegrationTest, RbacIntegrationTest) com 100% de sucesso."
+      "evidence": "Componentes CompanyManager e StoreManager criados com validação dinâmica de CNPJ, aviso sobre validação algorítmica, e filtros por empresa. Vitest e build Next.js 100% aprovados."
+    },
+    {
+      "id": "AC-04-9",
+      "description": "Bateria de testes automatizados de integração, isolamento granular e frontend",
+      "status": "APPROVED",
+      "evidence": "45 testes de backend (JPA, MockMvc, Testcontainers PostgreSQL) e 10 testes de frontend (Vitest) aprovados com zero falhas."
     }
   ],
   "blockers": [],
-  "nextPrompt": "04",
-  "nextPromptTitle": "Organizações, CNPJs, lojas e gestão de acessos",
+  "nextPrompt": "05",
+  "nextPromptTitle": "Framework de conectores e autorização OAuth",
   "nextPromptPrerequisiteMet": true
 }

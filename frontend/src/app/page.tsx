@@ -1,4 +1,4 @@
-import { HealthChecker } from '@/components/HealthChecker';
+import { DashboardView } from '@/components/DashboardView';
 
 export default function HomePage() {
   return (
@@ -7,20 +7,19 @@ export default function HomePage() {
       <div className="rounded-2xl border border-slate-800 bg-gradient-to-br from-slate-900 via-slate-900/80 to-slate-950 p-8 shadow-2xl">
         <div className="max-w-3xl">
           <span className="inline-block rounded-md bg-blue-500/10 px-2.5 py-1 text-xs font-semibold text-blue-400 border border-blue-500/20">
-            Ambiente Local &middot; Monorepo Integrado
+            Fase 1 — MVP &middot; Gestão de Organizações, CNPJs e Lojas
           </span>
           <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-            Fundação Técnica e Governança do Monólito
+            Estrutura Organizacional e Gestão de Acessos
           </h1>
           <p className="mt-3 text-base text-slate-300 leading-relaxed">
-            Estrutura operacional básica executando monólito modular Spring Boot (Java 25 LTS),
-            frontend Next.js (App Router), banco relacional PostgreSQL 18 e mensageria RabbitMQ 4.x.
+            Controle multi-loja e multi-CNPJ com isolamento determinístico por tenant, parametrização informativa de regime tributário e governança granular de escopos.
           </p>
         </div>
       </div>
 
-      {/* Real Health Component */}
-      <HealthChecker />
+      {/* Main Interactive Dashboard */}
+      <DashboardView />
 
       {/* Infrastructure Matrix Overview */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
