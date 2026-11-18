@@ -1854,3 +1854,109 @@ DOCUMENTATION UPDATED:
 
 NEXT PROMPT: UNLOCKED (P011-BE liberado para READY).
 ```
+
+---
+
+```yaml
+PROMPT: P011-BE
+START_DATE: 2026-11-18 15:35 BRT
+END_DATE: 2026-11-18 15:53 BRT
+STATUS: PASSED
+GATE_TRANSITION: P011-BE -> APPROVED
+COMMIT_SHA: PENDING (a ser gerado)
+```
+
+### PROMPT EXECUTION RECORD: P011-BE
+
+```text
+PROMPT: P011-BE — Comparação de Listings Equivalentes, Variação Temporal e Histórico Não-Inventado
+
+INPUT:
+Implemente comparação de listings equivalentes usando atributos, marca, modelo, GTIN quando disponível e score de similaridade. Não comparar itens incompatíveis sem aviso. Calcule variação de preço apenas entre observações com janela temporal comparável. Não inferir preço final com frete não conhecido.
+
+Aceite: score e critérios explicáveis; itens incompatíveis são sinalizados; cálculo reproduzível; histórico sem retroatividade inventada.
+
+PRE-FLIGHT CHECKS:
+- Prompt P010-FE formalmente concluído e aprovado com 280 testes automatizados verdes.
+- Leitura de .agents/rules/anti-hallucination.md e verificação de proibições absolutas: zero histórico retroativo forjado, zero frete inventado se desconhecido, cálculos monetários estritamente em BigDecimal.
+- Mapeamento e criação das regras de incompatibilidade e comparabilidade temporal.
+
+FILES CREATED:
+- docs/specs/P011-BE-listing-comparison/spec.md
+- backend/src/main/resources/db/migration/V9__listing_equivalence_and_comparison.sql
+- backend/src/main/resources/db/migration-postgresql/V9_1__postgresql_rls_listing_comparison.sql
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/comparison/model/ItemCondition.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/comparison/model/CompatibilityStatus.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/comparison/model/TemporalComparabilityStatus.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/comparison/model/ShippingStatus.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/comparison/model/ComparableListingItem.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/comparison/model/EquivalenceScoreBreakdown.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/comparison/model/PriceComparisonResult.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/comparison/model/ListingComparisonResult.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/comparison/model/CompareListingsRequest.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/comparison/model/FindEquivalentsRequest.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/comparison/model/RecordPricePointRequest.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/comparison/model/ListingPricePointDto.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/comparison/model/ListingPriceHistoryResponse.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/comparison/model/SavedComparisonDto.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/comparison/entity/ListingPriceHistoryRecord.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/comparison/entity/ListingComparisonRecord.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/comparison/repository/ListingPriceHistoryRepository.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/comparison/repository/ListingComparisonRepository.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/comparison/service/ListingEquivalenceService.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/comparison/service/ListingPriceComparisonService.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/comparison/service/ListingPriceHistoryService.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/comparison/service/ListingComparisonService.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/comparison/ListingComparisonController.java
+- backend/src/test/java/com/sellerintelligence/modules/competitorresearch/comparison/ListingEquivalenceServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/competitorresearch/comparison/ListingPriceComparisonServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/competitorresearch/comparison/ListingPriceHistoryServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/competitorresearch/comparison/ListingComparisonControllerTest.java
+- backend/src/test/java/com/sellerintelligence/modules/competitorresearch/comparison/PostgresListingComparisonRlsIntegrationTest.java
+
+FILES MODIFIED:
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+
+COMMANDS EXECUTED:
+- cd backend && ./mvnw test-compile
+- cd backend && ./mvnw test -Dtest=ModularArchitectureTest
+- cd backend && ./mvnw test -Dtest="ListingEquivalenceServiceTest,ListingPriceComparisonServiceTest,ListingPriceHistoryServiceTest,ListingComparisonControllerTest"
+- cd backend && ./mvnw test -Dtest=PostgresListingComparisonRlsIntegrationTest
+- cd backend && ./mvnw clean test
+- pnpm --dir frontend test
+
+TEST RESULTS:
+- Backend: 203/203 testes aprovados (100% de sucesso).
+  * 24 novos testes adicionados no submódulo competitorresearch.comparison:
+    - 6 testes em ListingEquivalenceServiceTest (GTIN match, GTIN mismatch, marca mismatch, condição mismatch, voltagem mismatch, acessório vs aparelho)
+    - 4 testes em ListingPriceComparisonServiceTest (janela temporal comparável, rejeição de janela não comparável, frete desconhecido nunca inferido, cálculo com frete conhecido)
+    - 4 testes em ListingPriceHistoryServiceTest (ponto legítimo, anúncio com 1 ponto sem retroatividade inventada, tendência com múltiplos pontos, histórico vazio)
+    - 6 testes em ListingComparisonControllerTest (MockMvc para compare, find-equivalents, price-history, record, saved, 401 sem autorização)
+    - 4 testes em PostgresListingComparisonRlsIntegrationTest (RLS real Testcontainers: cross-tenant read bloqueado, cross-tenant spoofing insert bloqueado com SQLState 42501, sessão sem tenant com 0 rows)
+  * ModularArchitectureTest ArchUnit: 3/3 testes aprovados com 0 ciclos.
+- Frontend: 101/101 testes aprovados (100% de sucesso).
+- Total de Testes Automatizados do Projeto: 304 testes aprovados (203 backend + 101 frontend), 0 falhas, 0 skips.
+
+POLICY EVIDENCE:
+- Critério de Aceite 1: Score e critérios explicáveis: sub-scores ponderados para GTIN, marca, modelo, atributos e título calculados deterministicamente em BigDecimal e explicados em texto legível.
+- Critério de Aceite 2: Itens incompatíveis são sinalizados: divergências de GTIN, marca, condição, voltagem ou acessório/aparelho resultam em isCompatible = false, status INCOMPATIBLE, lista detalhada de motivos e aviso ostensivo. Itens incompatíveis NUNCA são classificados como equivalentes.
+- Critério de Aceite 3: Cálculo reproduzível e janela temporal comparável: variação monetária e percentual só é calculada se |T2 - T1| <= maxComparableDays. Intervalos maiores retornam status NON_COMPARABLE e omitem o cálculo com aviso explicativo.
+- Critério de Aceite 4: Frete desconhecido nunca inferido: quando o custo de frete for nulo/desconhecido, o sistema nunca presume frete ou infere preço final com frete, reportando shippingStatus = UNKNOWN e aviso legal formal.
+- Critério de Aceite 5: Histórico sem retroatividade inventada: listagem de preços retorna estritamente os pontos legítimos registrados; histórico de anúncio recente retorna apenas a observação cadastrada, sem sintetizar dados retroativos do passado.
+- Isolamento Multi-Tenant: PostgreSQL 17 RLS ativa e forçada (FORCE ROW LEVEL SECURITY) nas tabelas listing_price_history e listing_comparisons, comprovada por teste de integração com Testcontainers.
+
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+
+DOCUMENTATION UPDATED:
+- docs/specs/P011-BE-listing-comparison/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+
+NEXT PROMPT: UNLOCKED (P011-FE liberado para READY).
+```
