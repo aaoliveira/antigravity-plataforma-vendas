@@ -606,5 +606,104 @@ REMEDIATION:
 - Não aplicável.
 DOCUMENTATION UPDATED:
 - spec.md, phase-gate.json, PHASE_STATUS.md, IMPLEMENTATION_STATUS.md, PROMPT_EXECUTION_LOG.md.
-NEXT PROMPT: UNLOCKED (P004-BE - Ingestão Idempotente de Catálogo e Pedidos Próprios liberado para READY).
+NEXT PROMPT: UNLOCKED (P004-BE - Contrato MarketplaceAdapter, Registro de Capacidades, Evidências e Camada de Resiliência liberado para READY).
+```
+
+---
+
+## Execução: PROMPT 004-BE
+
+```text
+PROMPT ID: P004-BE
+FEATURE: Contrato MarketplaceAdapter, Registro de Capacidades, Evidências e Camada de Resiliência
+STATUS: PASSED
+PRE-FLIGHT:
+- Verificado pré-requisito P003-FE como APPROVED em docs/delivery/phase-gate.json.
+- Verificadas diretrizes de arquitetura, inviolabilidade de regras de marketplace e política Fail-Closed em docs/MARKETPLACE_POLICIES.md e docs/PRD.md.
+- Confirmada a proibição absoluta de scraping e endpoints presumidos.
+DOCUMENTS REVIEWED:
+- docs/PRD.md (RF-005, RF-006, RF-007, RF-008, RF-009, RNF-001, RNF-003, RNF-006, ADR-003, ADR-004)
+- docs/MARKETPLACE_POLICIES.md
+- docs/ARCHITECTURE.md
+- docs/SECURITY.md
+- docs/specs/P004-BE-marketplace-adapters-resilience/spec.md
+DEPENDENCIES:
+- P003-BE e P003-FE (Aprovados).
+FILES CHANGED:
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/model/CapabilityStatus.java (Criado enum com SUPPORTED, UNSUPPORTED, RESTRICTED, UNVERIFIED)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/model/MarketplaceCapability.java (Criado enum com capacidades padronizadas de marketplaces)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/model/CapabilityEvidence.java (Criado registro imutável de evidência documental com URL, data, escopos, cotas, restrições, versão e responsável)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/model/CapabilityRegistry.java (Criado registro Fail-Closed rebaixando SUPPORTED sem evidência para UNVERIFIED)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/model/ExecutionContext.java (Criado contexto de execução autenticado com tenantId e correlationId)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/model/MarketplaceOperation.java (Criada interface tipada de operação com chave de idempotência)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/exception/MarketplaceAdapterException.java (Criada hierarquia de exceções especializadas)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/exception/UnverifiedCapabilityException.java (Criada)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/exception/UnsupportedCapabilityException.java (Criada)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/exception/KillSwitchActivatedException.java (Criada)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/exception/RateLimitExceededException.java (Criada com tempo Retry-After)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/exception/CircuitBreakerOpenException.java (Criada)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/exception/BulkheadFullException.java (Criada)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/exception/RetryExhaustedException.java (Criada)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/exception/MarketplaceTimeoutException.java (Criada)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/resilience/KillSwitch.java (Criado componente de desligamento instantâneo global e por canal)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/resilience/RateLimiter.java (Criado limitador de taxa Token Bucket determinístico)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/resilience/Bulkhead.java (Criado semáforo de isolamento de concorrência)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/resilience/CircuitBreaker.java (Criada máquina de estados atômica CLOSED, OPEN, HALF_OPEN)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/resilience/RetryPolicy.java (Criada política de retentativa com Full Jitter e respeito a Retry-After)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/resilience/TimeoutExecutor.java (Criado executor com cancelamento por timeout)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/resilience/IdempotencyManager.java (Criado gerenciador de idempotência em memória com TTL)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/resilience/AdapterLogSanitizer.java (Criado mascarador de tokens, senhas e chaves com [REDACTED])
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/resilience/ResiliencePipeline.java (Criada esteira orquestrada de resiliência multicamadas)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/api/MarketplaceAdapter.java (Criada interface contratual de adaptadores)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/api/AbstractMarketplaceAdapter.java (Criada classe base de adaptadores)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/fake/FakeMarketplaceAdapter.java (Criado conector fake configurável para testes)
+- backend/src/test/java/com/sellerintelligence/modules/marketplaceadapters/CapabilityRegistryTest.java (Criados 5 testes unitários de registro e evidências)
+- backend/src/test/java/com/sellerintelligence/modules/marketplaceadapters/MarketplaceAdapterResilienceTest.java (Criados 10 testes cobrindo todos os cenários de resiliência)
+- docs/specs/P004-BE-marketplace-adapters-resilience/spec.md (Criada especificação técnica do prompt)
+- docs/delivery/phase-gate.json (Atualizado)
+- docs/delivery/PHASE_STATUS.md (Atualizado)
+- docs/IMPLEMENTATION_STATUS.md (Atualizado)
+- docs/PROMPT_EXECUTION_LOG.md (Atualizado)
+API/DB CONTRACTS:
+- Contrato MarketplaceAdapter: expõe execute(operation, input, context), getMarketplaceId(), getCapabilityRegistry(), isHealthy().
+- Esteira de Resiliência: KillSwitch -> CapabilityValidation -> Idempotency -> CircuitBreaker -> RateLimiter -> Bulkhead -> Retry (Full Jitter) -> Timeout.
+SECURITY CHECKS:
+- Bloqueio Fail-Closed: capacidades em estado UNVERIFIED ou sem evidência documental oficial válida são impedidas de executar em tempo de compilação/execução.
+- Proteção de Contas Anti-Scraping: capacidades UNSUPPORTED (ex: volume de vendas de concorrentes) são categoricamente bloqueadas com UnsupportedCapabilityException.
+- Kill Switch: interrupção imediata sem redeploy para estancar incidentes ou restrições de canais parceiros.
+- Logs sem segredos: AdapterLogSanitizer mascara tokens OAuth, refresh tokens e chaves com [REDACTED].
+TESTS EXECUTED:
+- cd backend && ./mvnw test:
+  * CapabilityRegistryTest: 5 testes aprovados (capacidade sem evidência rebaixada para UNVERIFIED, SUPPORTED com evidência executável, validação de campos obrigatórios).
+  * MarketplaceAdapterResilienceTest: 10 testes aprovados:
+    1. Operação UNVERIFIED bloqueada sem chamada ao canal.
+    2. Operação UNSUPPORTED bloqueada categoricamente (anti-scraping).
+    3. Kill Switch bloqueia chamadas imediatamente e recupera ao ser desativado.
+    4. Rate Limiter bloqueia quando quota de requisições por segundo é excedida.
+    5. Retry Policy respeita o limite máximo de tentativas (3 tentativas).
+    6. Retry Policy respeita o tempo exigido pelo cabeçalho Retry-After com jitter.
+    7. Circuit Breaker abre após 3 falhas consecutivas, bloqueia chamadas em OPEN e recupera em HALF_OPEN após resetTimeout.
+    8. Bulkhead isola e rejeita chamadas excedentes além do limite de concorrência com BulkheadFullException.
+    9. Idempotência impede reprocessamento duplicado retornando resultado em cache.
+    10. Logs do adaptador mascaram rigorosamente dados sensíveis e credenciais.
+  * ModularArchitectureTest (ArchUnit): 3 testes aprovados (zero ciclos, boundaries preservados).
+  * PostgresMultiTenantRlsIntegrationTest (PostgreSQL 17 real Testcontainers): 8 testes aprovados.
+  * TenantInfrastructureIsolationTest, AuditSanitizerTest, AuthenticationAndTenancyIntegrationTest: todos aprovados.
+  * Total Backend: 64 testes executados, 64 aprovados, 0 falhas, 0 erros, 0 skips.
+- pnpm --dir frontend test:
+  * Vitest 3.2.7: 37 testes executados, 37 aprovados (100% de sucesso mantido).
+TEST RESULTS:
+- Backend: 64/64 testes PASSED (100% de sucesso).
+- Frontend: 37/37 testes PASSED (100% de sucesso mantido).
+POLICY EVIDENCE:
+- Adaptador Fake utilizado em testes. Nenhuma requisição a servidores de produção ou endpoints presumidos foi realizada.
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+FAILURES / ROOT CAUSE:
+- Nenhuma falha identificada durante a implementação.
+REMEDIATION:
+- Não aplicável.
+DOCUMENTATION UPDATED:
+- spec.md, phase-gate.json, PHASE_STATUS.md, IMPLEMENTATION_STATUS.md, PROMPT_EXECUTION_LOG.md.
+NEXT PROMPT: UNLOCKED (P004-FE - Visão Operacional de Catálogo e Sincronização liberado para READY).
 ```

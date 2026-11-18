@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P003-FE = `APPROVED` &middot; PROMPT P004-BE = `READY`  
+> **Status Vigente:** PROMPT P004-BE = `APPROVED` &middot; PROMPT P004-FE = `READY`  
 > **Data:** 18/11/2026
 
 ---
@@ -17,7 +17,7 @@
 | **P002-FE** | Interface de Autenticação e Troca de Contexto | **`APPROVED`** | 18/11/2026 | [docs/PROMPT_EXECUTION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/PROMPT_EXECUTION_LOG.md) | **SIM (P003-BE liberado)** |
 | **P003-BE** | Isolamento Multi-Tenant em Profundidade (RLS, Transacional e Testcontainers) | **`APPROVED`** | 18/11/2026 | [PostgresMultiTenantRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/tenancy/PostgresMultiTenantRlsIntegrationTest.java) | **SIM (P003-FE liberado)** |
 | **P003-FE** | Tratamento Padronizado de Erros (401/403/404) e Segurança de Tenant na UI | **`APPROVED`** | 18/11/2026 | [ErrorHandlingUniformity.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/ErrorHandlingUniformity.test.tsx) | **SIM (P004-BE liberado)** |
-| **P004-BE** | Ingestão Idempotente de Catálogo e Pedidos | `NOT_STARTED` | --- | Pré-requisito: P003 | Não |
+| **P004-BE** | Contrato MarketplaceAdapter, Registro de Capacidades, Evidências e Camada de Resiliência | **`APPROVED`** | 18/11/2026 | [MarketplaceAdapterResilienceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/marketplaceadapters/MarketplaceAdapterResilienceTest.java) | **SIM (P004-FE liberado)** |
 | **P005-BE** | Inteligência de Mercado e Pesquisa Normalizada | `NOT_STARTED` | --- | Pré-requisito: P004 | Não |
 | **P006-BE** | Monitoramento de Produtos e Snapshots Históricos | `NOT_STARTED` | --- | Pré-requisito: P005 | Não |
 | **P007-BE** | Motor Financeiro Determinístico em BigDecimal | `NOT_STARTED` | --- | Pré-requisito: P004 | Não |
@@ -48,6 +48,26 @@
 ---
 
 ## 2. Histórico de Transições e Auditoria dos Gates
+
+### Transição: PROMPT P004-BE $\rightarrow$ `APPROVED`
+- **Data/Hora:** 18/11/2026 10:04 BRT
+- **Avaliador:** Tech Lead / Staff Software Engineer
+- **Critérios Validados:**
+  1. Contrato `MarketplaceAdapter` e classe base `AbstractMarketplaceAdapter` implementados com tipagem forte e desacoplamento total de canais específicos.
+  2. Matriz de capacidades com estados `SUPPORTED`, `UNSUPPORTED`, `RESTRICTED` e `UNVERIFIED` governada pelo `CapabilityRegistry` sob política Fail-Closed: capacidades sem evidência documental comprovada são rebaixadas para `UNVERIFIED` e impedidas de executar.
+  3. Cadastro rigoroso de evidências (`CapabilityEvidence`) contendo URL oficial, data de verificação, escopos OAuth necessários, quotas de rate limit, restrições contratuais, versão da documentação e engenheiro responsável.
+  4. Esteira de resiliência integrada (`ResiliencePipeline`):
+     - **Kill Switch** global e por canal com interrupção instantânea (`KillSwitchActivatedException`);
+     - **Rate Limiting** determinístico via Token Bucket com suporte a quotas estritas;
+     - **Retry Policy com Full Jitter** e respeito mandatória ao cabeçalho `Retry-After`, sem exceder a política máxima configurada;
+     - **Circuit Breaker** com máquina de estados atômica (`CLOSED`, `OPEN`, `HALF_OPEN`) abrindo após 3 falhas consecutivas e recuperando com sucesso em `HALF_OPEN`;
+     - **Bulkhead** baseado em semáforos para isolamento de concorrência com Fail-Fast (`BulkheadFullException`);
+     - **Timeout** delimitado por duração configurada (`MarketplaceTimeoutException`);
+     - **Idempotência** em memória com deduplicação de chamadas idênticas via chave única.
+  5. Conector de testes `FakeMarketplaceAdapter` implementado para validação unitária e de integração sem tocar na rede externa ou presumi endpoints inexistentes.
+  6. Mascaramento automático de dados sensíveis e credenciais nos logs (`AdapterLogSanitizer`) substituindo tokens e senhas por `[REDACTED]`.
+  7. Suíte de testes do backend com 64/64 testes aprovados (100% de sucesso) e 37/37 testes de frontend mantidos com 100% de sucesso.
+- **Resultado:** **`PROMPT P004-BE = APPROVED`**. O prompt subsequente (`P004-FE`) está formalmente liberado e transita para `READY`.
 
 ### Transição: PROMPT P003-FE $\rightarrow$ `APPROVED`
 - **Data/Hora:** 18/11/2026 09:45 BRT

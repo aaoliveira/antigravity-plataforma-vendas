@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P003-FE",
+  "currentPrompt": "P004-BE",
   "status": "APPROVED",
-  "nextPrompt": "P004-BE",
+  "nextPrompt": "P004-FE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-18T09:45:00-03:00",
+  "lastUpdated": "2026-11-18T10:04:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -11,7 +11,8 @@
     "P002-BE",
     "P002-FE",
     "P003-BE",
-    "P003-FE"
+    "P003-FE",
+    "P004-BE"
   ],
   "gates": {
     "P000": {
@@ -118,6 +119,28 @@
       "blockingIssues": 0,
       "prerequisites": [
         "P003-BE"
+      ]
+    },
+    "P004-BE": {
+      "name": "Contrato MarketplaceAdapter, Registro de Capacidades, Evidências e Camada de Resiliência",
+      "status": "APPROVED",
+      "approvedAt": "2026-11-18T10:04:00-03:00",
+      "evidence": "backend/src/test/java/com/sellerintelligence/modules/marketplaceadapters/MarketplaceAdapterResilienceTest.java",
+      "testsExecuted": 64,
+      "testsPassed": 64,
+      "fakeAdapterTested": true,
+      "unverifiedCapabilityBlocked": true,
+      "killSwitchEnforced": true,
+      "retryWithFullJitterEnforced": true,
+      "rateLimitingAndRetryAfterEnforced": true,
+      "circuitBreakerEnforced": true,
+      "bulkheadEnforced": true,
+      "idempotencyEnforced": true,
+      "sensitiveLogsMasked": true,
+      "blockingIssues": 0,
+      "prerequisites": [
+        "P003-BE",
+        "P003-FE"
       ]
     }
   },
