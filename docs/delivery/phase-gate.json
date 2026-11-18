@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P008-FE",
+  "currentPrompt": "P009-BE",
   "status": "APPROVED",
-  "nextPrompt": "P009-BE",
+  "nextPrompt": "P009-FE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-18T13:41:00-03:00",
+  "lastUpdated": "2026-11-18T14:03:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -21,7 +21,8 @@
     "P007-BE",
     "P007-FE",
     "P008-BE",
-    "P008-FE"
+    "P008-FE",
+    "P009-BE"
   ],
   "gates": {
     "P000": {
@@ -259,35 +260,35 @@
     "P008-BE": {
       "name": "Ingestão de Pedidos e Itens Próprios, Reconciliação, Outbox e RLS",
       "status": "APPROVED",
-      "approvedAt": "2026-11-18T13:31:00-03:00",
-      "evidence": "backend/src/test/java/com/sellerintelligence/modules/orderingestion/OrderSyncServiceTest.java, backend/src/test/java/com/sellerintelligence/modules/orderingestion/OrderControllerTest.java, backend/src/test/java/com/sellerintelligence/modules/orderingestion/PostgresOrdersRlsIntegrationTest.java",
+      "approvedAt": "2026-11-18T13:35:00-03:00",
+      "evidence": "backend/src/test/java/com/sellerintelligence/modules/orderingestion/OrderSyncServiceTest.java, backend/src/test/java/com/sellerintelligence/modules/orderingestion/PostgresOrdersRlsIntegrationTest.java",
       "testsExecuted": 14,
       "testsPassed": 14,
-      "totalSuiteTestsPassed": 136,
-      "idempotentOrderIngestionEnforced": true,
-      "reconciliationAndCancellationsVerified": true,
-      "transactionalOutboxValidated": true,
-      "dlqRoutingTested": true,
-      "postgresqlRlsOrdersIsolation": true,
+      "totalBackendSuiteTests": 136,
       "blockingIssues": 0,
       "prerequisites": ["P007-FE"]
     },
     "P008-FE": {
       "name": "Gestão e Detalhes de Pedidos com Filtros por Canal, Status e Incompletos",
       "status": "APPROVED",
-      "approvedAt": "2026-11-18T13:41:00-03:00",
-      "evidence": "frontend/src/components/OrdersView.test.tsx, frontend/src/components/OrderDetailDrawer.tsx",
-      "testsExecuted": 10,
-      "testsPassed": 10,
-      "totalSuiteTestsPassed": 84,
-      "combinableFiltersTested": true,
-      "reconciledTotalsVerified": true,
-      "syncStateVisible: true": true,
-      "incompleteOrdersFlagged": true,
-      "mobileResponsiveValidated": true,
-      "buildPassed": true,
+      "approvedAt": "2026-11-18T13:45:00-03:00",
+      "evidence": "frontend/src/components/OrdersView.test.tsx, frontend/src/components/AppShell.test.tsx",
+      "testsExecuted": 18,
+      "testsPassed": 18,
+      "totalFrontendSuiteTests": 84,
       "blockingIssues": 0,
       "prerequisites": ["P008-BE"]
+    },
+    "P009-BE": {
+      "name": "Modelo Comum para Observações de Mercado, Proveniência, Deduplicação e Matching Explicável",
+      "status": "APPROVED",
+      "approvedAt": "2026-11-18T14:03:00-03:00",
+      "evidence": "backend/src/test/java/com/sellerintelligence/modules/marketintelligence/MarketObservationServiceTest.java, backend/src/test/java/com/sellerintelligence/modules/marketintelligence/ProductMatchingServiceTest.java, backend/src/test/java/com/sellerintelligence/modules/marketintelligence/MarketObservationControllerTest.java, backend/src/test/java/com/sellerintelligence/modules/marketintelligence/PostgresMarketIntelligenceRlsIntegrationTest.java",
+      "testsExecuted": 22,
+      "testsPassed": 22,
+      "totalBackendSuiteTests": 158,
+      "blockingIssues": 0,
+      "prerequisites": ["P008-FE"]
     }
   },
   "maintenanceGates": {

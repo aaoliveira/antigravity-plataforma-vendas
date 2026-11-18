@@ -1523,3 +1523,97 @@ DOCUMENTATION UPDATED:
 
 NEXT PROMPT: UNLOCKED (P009-BE - Consolidação Financeira, DRE e Reconciliação liberado para READY).
 ```
+
+---
+
+```yaml
+PROMPT: P009-BE
+START_DATE: 2026-11-18 13:47 BRT
+END_DATE: 2026-11-18 14:03 BRT
+STATUS: PASSED
+GATE_TRANSITION: P009-BE -> APPROVED
+COMMIT_SHA: PENDING (a ser gerado)
+```
+
+### PROMPT EXECUTION RECORD: P009-BE
+
+```text
+PROMPT: P009-BE — Modelo Comum para Observações de Mercado, Proveniência, Deduplicação e Matching Explicável
+
+INPUT:
+Implemente modelo comum para observações de mercado: produto/listing observado, preço, condição, vendedor quando legalmente disponível, marketplace, source_type, source URL/ID permitido, collected_at, observed_at, validade, método, confiança e payload mínimo. Diferencie OFFICIAL, OBSERVED, ESTIMATED, USER_INPUT. Não criar valores de vendas, visitas, CTR ou faturamento sem fonte e metodologia. Implemente deduplicação e matching com score explicável.
+
+Aceite: todo dado tem origem e timestamp; estimativas exigem metodologia/versionamento; matching não une automaticamente itens abaixo do limiar; payload sensível é minimizado.
+
+PRE-FLIGHT CHECKS:
+- Prompt P008-FE formalmente concluído e aprovado com 220 testes automatizados verdes.
+- Leitura dos princípios do PRD (Seções 6 e 7) e regras anti-alucinação (.agents/rules/anti-hallucination.md).
+- Confirmação de não violação de escopo: sem scraping hostil, sem dados fictícios de vendas/faturamento, regras estritas de PostgreSQL RLS.
+
+FILES CREATED:
+- docs/specs/P009-BE-market-observations/spec.md
+- backend/src/main/resources/db/migration/V7__market_observations_and_matching.sql
+- backend/src/main/resources/db/migration-postgresql/V7_1__postgresql_rls_market_intelligence.sql
+- backend/src/main/java/com/sellerintelligence/modules/marketintelligence/model/MarketObservationSourceType.java
+- backend/src/main/java/com/sellerintelligence/modules/marketintelligence/model/ItemCondition.java
+- backend/src/main/java/com/sellerintelligence/modules/marketintelligence/model/MatchStatus.java
+- backend/src/main/java/com/sellerintelligence/modules/marketintelligence/model/CreateObservationRequest.java
+- backend/src/main/java/com/sellerintelligence/modules/marketintelligence/model/ObservationResponse.java
+- backend/src/main/java/com/sellerintelligence/modules/marketintelligence/model/MatchScoreBreakdown.java
+- backend/src/main/java/com/sellerintelligence/modules/marketintelligence/model/ProductMatchCandidateResponse.java
+- backend/src/main/java/com/sellerintelligence/modules/marketintelligence/model/ExecuteMatchRequest.java
+- backend/src/main/java/com/sellerintelligence/modules/marketintelligence/model/PageResponse.java
+- backend/src/main/java/com/sellerintelligence/modules/marketintelligence/MarketObservation.java
+- backend/src/main/java/com/sellerintelligence/modules/marketintelligence/ProductMatch.java
+- backend/src/main/java/com/sellerintelligence/modules/marketintelligence/MarketObservationRepository.java
+- backend/src/main/java/com/sellerintelligence/modules/marketintelligence/ProductMatchRepository.java
+- backend/src/main/java/com/sellerintelligence/modules/marketintelligence/service/MarketObservationSanitizer.java
+- backend/src/main/java/com/sellerintelligence/modules/marketintelligence/service/MarketObservationValidator.java
+- backend/src/main/java/com/sellerintelligence/modules/marketintelligence/service/ObservationDeduplicationService.java
+- backend/src/main/java/com/sellerintelligence/modules/marketintelligence/service/ProductMatchingService.java
+- backend/src/main/java/com/sellerintelligence/modules/marketintelligence/service/MarketObservationService.java
+- backend/src/main/java/com/sellerintelligence/modules/marketintelligence/MarketObservationController.java
+- backend/src/test/java/com/sellerintelligence/modules/marketintelligence/MarketObservationServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/marketintelligence/ProductMatchingServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/marketintelligence/MarketObservationControllerTest.java
+- backend/src/test/java/com/sellerintelligence/modules/marketintelligence/PostgresMarketIntelligenceRlsIntegrationTest.java
+
+FILES MODIFIED:
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+
+COMMANDS EXECUTED:
+- cd backend && ./mvnw test-compile
+- cd backend && ./mvnw test -Dtest=MarketObservationControllerTest
+- cd backend && ./mvnw test
+- pnpm --dir frontend test
+
+TEST RESULTS:
+- Backend: 158/158 testes aprovados (100% de sucesso).
+- Frontend: 84/84 testes aprovados (100% de sucesso).
+- Total de Testes Automatizados do Projeto: 242 testes aprovados.
+
+POLICY EVIDENCE:
+- Metadados de proveniência completos e mandatórios em todos os registros (source_type, source_url, collected_at, observed_at, valid_until, method, confidence).
+- Regra anti-alucinação rígida: vendas estimadas, visitas, CTR ou faturamento sem metodologia e fonte documentadas rejeitadas categoricamente com BusinessRuleException (HTTP 422).
+- Observações ESTIMATED exigem metodologia, versão de modelo, janela temporal e confiança.
+- Defesa SSRF ativa para bloqueio de IPs de metadados em nuvem e redes privadas.
+- Minimização de payload sensível (remoção de senhas, cartões, CPF, tokens).
+- Deduplicação inteligente preservando histórico sem duplicações vazias.
+- Algoritmo de matching multi-fator explicável com pontuação ponderada.
+- Regra do limiar estritamente respeitada: itens abaixo do limiar (threshold 0.75) NUNCA são vinculados automaticamente.
+- Isolamento multi-tenant PostgreSQL RLS ativado e testado via Testcontainers PostgreSQL 17.
+
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+
+DOCUMENTATION UPDATED:
+- docs/specs/P009-BE-market-observations/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+
+NEXT PROMPT: UNLOCKED (P009-FE liberado para READY).
+```
