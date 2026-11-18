@@ -1778,3 +1778,79 @@ DOCUMENTATION UPDATED:
 
 NEXT PROMPT: UNLOCKED (P010-FE liberado para READY).
 ```
+
+---
+
+```yaml
+PROMPT: P010-FE
+START_DATE: 2026-11-18 14:46 BRT
+END_DATE: 2026-11-18 14:58 BRT
+STATUS: PASSED
+GATE_TRANSITION: P010-FE -> APPROVED
+COMMIT_SHA: PENDING (a ser gerado)
+```
+
+### PROMPT EXECUTION RECORD: P010-FE
+
+```text
+PROMPT: P010-FE — Interface de Pesquisa Autorizada, Políticas de Fontes, Comparação e Fallback Seguro
+
+INPUT:
+Após backend aprovado, crie busca por termo/categoria e resultados com filtros, ordenação, comparação e badges de proveniência. Diferencie anúncio próprio e concorrente quando a fonte permitir.
+
+Aceite: filtros e paginação funcionam; fonte/data sempre visíveis; mobile permite navegar tabela em cards ou scroll acessível.
+
+PRE-FLIGHT CHECKS:
+- Prompt P010-BE formalmente concluído e aprovado com 179 testes de backend e 93 testes de frontend verdes.
+- Leitura de MARKETPLACE_POLICIES.md e especificação técnica P010-BE.
+- Validação das regras de UI: badges de proveniência mandatários, links externos higienizados com noopener noreferrer, diferenciação de propriedade (próprio vs concorrente), tabela com scroll acessível e cards para mobile.
+
+FILES CREATED:
+- docs/specs/P010-FE-market-search-view/spec.md
+- frontend/src/app/api/market-search/route.ts
+- frontend/src/app/api/market-search/sources/route.ts
+- frontend/src/app/api/market-search/history/route.ts
+- frontend/src/components/ProductCompareModal.tsx
+- frontend/src/components/MarketSearchView.tsx
+- frontend/src/components/MarketSearchView.test.tsx
+
+FILES MODIFIED:
+- frontend/src/components/MarketIntelligenceView.tsx
+- frontend/src/components/AppShell.tsx
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+
+COMMANDS EXECUTED:
+- pnpm --dir frontend test
+- pnpm --dir frontend exec tsc --noEmit
+- pnpm --dir frontend build
+
+TEST RESULTS:
+- Frontend: 101/101 testes aprovados (16 arquivos de teste, 100% de sucesso).
+  * 8 novos testes unitários e de integração adicionados em MarketSearchView.test.tsx cobrindo renderização, formulário de busca, paginação, filtros por marketplace/propriedade, ordenação, modal de comparação, badges de proveniência e fallback de canais restritos/não verificados.
+- Backend: 179/179 testes aprovados (100% de sucesso).
+- Next.js Production Build: 24 rotas estáticas e dinâmicas geradas com sucesso (zero erros de tipagem ou lint).
+- Total de Testes Automatizados do Projeto: 280 testes aprovados (179 backend + 101 frontend), 0 falhas, 0 skips.
+
+POLICY EVIDENCE:
+- Critério de Aceite 1: Filtros e paginação funcionam: busca textual por termo/categoria, filtros de marketplace, ownership (ALL, OWN, COMPETITOR), faixa de preço e ordenação dinâmica, além de paginação acessível.
+- Critério de Aceite 2: Fonte e data sempre visíveis: badges de proveniência (OFFICIAL, OBSERVED, LICENSED), sourcePolicyId registrado, canal de origem, vendedor e data/hora de coleta e sincronização formatada em pt-BR visíveis em todas as visualizações (tabela e cards).
+- Critério de Aceite 3: Mobile permite navegar tabela em cards ou scroll acessível: implementação de chaveador de visualização Tabela (com container horizontal rolável acessível role="region", tabIndex={0}, aria-label) e Cards touch-friendly para telas menores ou escolha do usuário, garantindo conformidade WCAG 2.2 AA e touch targets >= 44px.
+- Diferenciação de propriedade: badges visuais 🟢 Próprio e 🟠 Concorrente claramente destacados quando informados pelo canal oficial.
+- Comparação lado a lado: ProductCompareModal acessível com role="dialog", aria-modal="true", fechamento por botão ou tecla ESC, contrastando atributos e proveniência sem forjar métricas.
+- Resiliência de canal: tratamento e feedback na interface para canais UNVERIFIED (Amazon - Fail-Closed), RESTRICTED (Shopee - anti-scraping fallback para catálogo próprio) e HTTP 429 Too Many Requests com tempo de espera Retry-After.
+
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+
+DOCUMENTATION UPDATED:
+- docs/specs/P010-FE-market-search-view/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+
+NEXT PROMPT: UNLOCKED (P011-BE liberado para READY).
+```

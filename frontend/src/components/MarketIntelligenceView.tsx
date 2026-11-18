@@ -6,6 +6,7 @@ import {
   MarketObservationItem,
   MarketObservationSourceType,
 } from './ObservationDetailDrawer';
+import { MarketSearchView } from './MarketSearchView';
 
 export function MarketIntelligenceView() {
   const [observations, setObservations] = useState<MarketObservationItem[]>([]);
@@ -14,6 +15,7 @@ export function MarketIntelligenceView() {
   const [error, setError] = useState<string | null>(null);
 
   // Filtros
+  const [activeTab, setActiveTab] = useState<'observations' | 'search'>('observations');
   const [sourceTypeFilter, setSourceTypeFilter] = useState<string>('ALL');
   const [marketplaceFilter, setMarketplaceFilter] = useState<string>('ALL');
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -143,7 +145,37 @@ export function MarketIntelligenceView() {
         </div>
       </div>
 
-      {/* KPI Cards de Proveniência */}
+      {/* Abas de Navegação */}
+      <div className="flex border-b border-slate-200 dark:border-slate-800 gap-2">
+        <button
+          type="button"
+          onClick={() => setActiveTab('observations')}
+          className={`px-4 py-2.5 text-sm font-semibold border-b-2 transition-colors min-h-[44px] ${
+            activeTab === 'observations'
+              ? 'border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400'
+              : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+          }`}
+        >
+          📊 Observações & Matching
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('search')}
+          className={`px-4 py-2.5 text-sm font-semibold border-b-2 transition-colors min-h-[44px] ${
+            activeTab === 'search'
+              ? 'border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400'
+              : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+          }`}
+        >
+          🔍 Pesquisa de Mercado & Concorrência
+        </button>
+      </div>
+
+      {activeTab === 'search' ? (
+        <MarketSearchView />
+      ) : (
+        <>
+          {/* KPI Cards de Proveniência */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
           <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Observações</span>
@@ -438,6 +470,8 @@ export function MarketIntelligenceView() {
         observation={selectedObservation}
         onClose={() => setSelectedObservation(null)}
       />
+        </>
+      )}
     </div>
   );
 }

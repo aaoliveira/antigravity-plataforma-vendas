@@ -1,6 +1,6 @@
 # Status de Implementação e Quality Gates do Roadmap
 
-> **Status Atual Geral:** PROMPT P009-FE = `PASSED` | P010-BE = `READY`  
+> **Status Atual Geral:** PROMPT P010-FE = `PASSED` | P011-BE = `READY`  
 > **Data da Última Atualização:** 18/11/2026  
 > **Regra de Transição:** O próximo prompt só é liberado para `IN_PROGRESS` quando o anterior atingir formalmente `PASSED`.
 
@@ -30,8 +30,8 @@
 | **P009-BE** | Modelo Comum para Observações de Mercado, Proveniência, Deduplicação e Matching          | E06   | Backend    | **`PASSED`**   | P008-FE (`PASSED`)     | 18/11/2026     |
 | **P009-FE** | Exibição de Origem, Evidências, Confiança e Explicação de Dados na UI                    | E06   | Frontend   | **`PASSED`**   | P009-BE (`PASSED`)     | 18/11/2026     |
 | **P010-BE** | Pesquisa de Mercado e Concorrência Autorizada, Registro de Fontes e Cache                | E06   | Backend    | **`PASSED`**   | P009-FE (`PASSED`)     | 18/11/2026     |
-| **P010-FE** | Interface de Pesquisa Autorizada, Políticas de Fontes e Fallback Seguro                  | E06   | Frontend   | `READY`        | P010-BE (`PASSED`)     | ---            |
-| **P007-BE** | Motor Financeiro Determinístico em BigDecimal                                            | E07   | Backend    | `NOT_STARTED`  | P004 (`PASSED`)        | ---            |
+| **P010-FE** | Interface de Pesquisa Autorizada, Políticas de Fontes e Fallback Seguro                  | E06   | Frontend   | **`PASSED`**   | P010-BE (`PASSED`)     | 18/11/2026     |
+| **P011-BE** | IA Assistiva com Tool Calling Somente Leitura                                            | E10   | Backend    | `READY`        | P010-FE (`PASSED`)     | ---            |
 | **P007-FE** | Simulador de Preço e Painel de Rentabilidade                                             | E07   | Frontend   | `NOT_STARTED`  | P007-BE (`PASSED`)     | ---            |
 | **P008-BE** | Analytics de Anúncios Próprios e Métricas Oficiais                                       | E08   | Backend    | `NOT_STARTED`  | P004 (`PASSED`)        | ---            |
 | **P008-FE** | Dashboard de Desempenho e Saúde de Anúncios                                              | E08   | Frontend   | `NOT_STARTED`  | P008-BE (`PASSED`)     | ---            |

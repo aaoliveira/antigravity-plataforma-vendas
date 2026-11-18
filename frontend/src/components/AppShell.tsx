@@ -13,6 +13,7 @@ import { MarketplaceIntegrationsView } from './MarketplaceIntegrationsView';
 import { CatalogAndListingsView } from './CatalogAndListingsView';
 import { OrdersView } from './OrdersView';
 import { MarketIntelligenceView } from './MarketIntelligenceView';
+import { MarketSearchView } from './MarketSearchView';
 
 export interface NavModule {
   id: string;
@@ -43,9 +44,9 @@ export const navModules: NavModule[] = [
     shortLabel: 'Concorrentes',
     pillarKey: 'BI',
     pillarName: 'Business Intelligence & Ações',
-    description: 'Acompanhamento temporal de anúncios rivais com snapshots históricos a partir da inclusão.',
-    status: 'PLANNED',
-    provenience: 'OBSERVED',
+    description: 'Pesquisa autorizada e monitoramento de concorrência com proveniência e comparação lado a lado.',
+    status: 'READY',
+    provenience: 'OBSERVED / OFFICIAL',
   },
 
   // 2. Market Intelligence
@@ -421,6 +422,8 @@ export const AppShell: React.FC = () => {
             <OrdersView />
           ) : activeModule.id === 'MARKET' ? (
             <MarketIntelligenceView />
+          ) : activeModule.id === 'MONITORING' ? (
+            <MarketSearchView />
           ) : (
             <ModulePlaceholder
               moduleId={activeModule.id}
