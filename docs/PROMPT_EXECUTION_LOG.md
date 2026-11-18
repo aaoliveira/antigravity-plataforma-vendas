@@ -1162,3 +1162,114 @@ DOCUMENTATION UPDATED:
 - docs/PROMPT_EXECUTION_LOG.md
 NEXT PROMPT: UNLOCKED (P007-BE - Motor Financeiro Determinístico em BigDecimal liberado para READY).
 ```
+
+---
+
+## Execução: PROMPT 007-BE
+
+```text
+PROMPT ID: P007-BE
+FEATURE: Catálogo Canônico, Anúncios, Mapeamentos Externos e Sincronização Resiliente
+STATUS: PASSED
+PRE-FLIGHT:
+- Repositório verificado; branch atual e integridade estrutural validadas.
+- P006-FE formalmente aprovado no Phase Gate; pré-requisito satisfeito.
+- Documentação oficial de catálogo e anúncios revisada.
+DOCUMENTS REVIEWED:
+- docs/PRD.md
+- docs/ARCHITECTURE.md
+- docs/TECH_STACK.md
+- docs/SECURITY.md
+- docs/MARKETPLACE_POLICIES.md
+- docs/BACKLOG.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/specs/P007-BE-catalog-and-listings-sync/spec.md
+DEPENDENCIES:
+- P006-FE (Fluxo Oficial de Conexão com Shopee UI) aprovado e auditado.
+FILES CHANGED:
+- backend/src/main/resources/db/migration/V5__catalog_products_and_listings.sql (Criado)
+- backend/src/main/resources/db/migration-postgresql/V5_1__postgresql_rls_catalog.sql (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/SellerAccount.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/Product.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/ProductVariant.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/MarketplaceListing.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/ExternalIdentifierMapping.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/ListingSyncCheckpoint.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/SellerAccountRepository.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/ProductRepository.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/ProductVariantRepository.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/MarketplaceListingRepository.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/ExternalIdentifierMappingRepository.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/ListingSyncCheckpointRepository.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/model/RawListingItem.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/model/ListingPageRequest.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/model/ListingPageResponse.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/model/ListingSyncResult.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/operations/ReadOwnCatalogOperation.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/exception/CatalogSyncException.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/service/CatalogListingSyncService.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/service/CatalogService.java (Criado)
+- backend/src/test/java/com/sellerintelligence/modules/catalog/CatalogListingSyncServiceTest.java (Criado)
+- backend/src/test/java/com/sellerintelligence/modules/catalog/PostgresCatalogRlsIntegrationTest.java (Criado)
+- docs/specs/P007-BE-catalog-and-listings-sync/spec.md (Criado)
+- docs/delivery/phase-gate.json (Atualizado)
+- docs/delivery/PHASE_STATUS.md (Atualizado)
+- docs/IMPLEMENTATION_STATUS.md (Atualizado)
+- docs/PROMPT_EXECUTION_LOG.md (Atualizado)
+API/DB CONTRACTS:
+- Tabelas criadas: seller_accounts, products, product_variants, marketplace_listings, external_identifier_mappings, listing_sync_checkpoints.
+- Unique constraints:
+  * seller_accounts: (tenant_id, marketplace, external_account_id)
+  * marketplace_listings: (tenant_id, marketplace, external_listing_id)
+  * external_identifier_mappings: (tenant_id, marketplace, external_id_type, external_id_value)
+  * listing_sync_checkpoints: (tenant_id, seller_account_id, marketplace)
+- Isolamento RLS forçado: ENABLE ROW LEVEL SECURITY e FORCE ROW LEVEL SECURITY para todas as 6 tabelas com política app.current_tenant e permissões concedidas exclusivamente à role seller_app.
+SECURITY CHECKS:
+- Multi-tenancy em profundidade: Todas as entidades possuem tenant_id NOT NULL com integridade referencial em organizations(id) ON DELETE CASCADE.
+- RLS PostgreSQL 17 testado com Testcontainers em 6 cenários: cross-tenant read (0 linhas), cross-tenant insert (rejeitado com SQLState 42501), sessão anônima/nula (0 linhas), cross-tenant update (0 linhas afetadas), cross-tenant delete (0 linhas afetadas), e isolamento estrito de checkpoints e mapeamentos.
+- Payloads brutos higienizados: Armazenamento em JSON de campos estritamente autorizados com schema_version = 'v1' e identificação do canal de origem. Zero dados de concorrentes consultados ou persistidos.
+TESTS EXECUTED:
+- CatalogListingSyncServiceTest: 6 testes aprovados:
+  1. shouldSyncOwnListingsWithPaginationAndPayloadPreservation (paginação e payload com schema versionado)
+  2. shouldBeIdempotentWhenReprocessingSamePage (idempotência e reconciliação sem duplicação de linhas)
+  3. shouldAllowOneCanonicalProductWithMultipleListingsAndNeverDeduplicateByTitleAlone (1:N e proibição de deduplicar só por título)
+  4. shouldPersistCheckpointAndBeResumableAfterPartialFailure (checkpoint persistido e retomada após falha)
+  5. shouldIsolateListingsAndProductsBetweenTenants (isolamento total entre tenant 1 e tenant 2)
+  6. shouldLinkListingUsingExplicitExternalIdentifierMapping (mapeamento explícito de ITEM_ID)
+- PostgresCatalogRlsIntegrationTest: 6 testes de integração com Testcontainers PostgreSQL 17 aprovados:
+  1. testCrossTenantReadBlockedByRls
+  2. testCrossTenantCreateBlockedByRls (violates row-level security policy with check)
+  3. testUnsetTenantSessionReturnsNoData
+  4. testCrossTenantUpdateBlockedByRls
+  5. testCrossTenantDeleteBlockedByRls
+  6. testCheckpointsAndMappingsIsolatedByRls
+- ModularArchitectureTest: 3/3 testes ArchUnit de modularidade aprovados.
+- Suíte Backend Completa: 117/117 testes executados com 100% de aprovação (zero falhas, zero erros).
+- Suíte Frontend: 62/62 testes vitest executados com 100% de aprovação (zero regressões).
+TEST RESULTS:
+- Backend: 117/117 testes PASSED (100% de sucesso).
+- Frontend: 62/62 testes PASSED (100% de sucesso).
+- Total de Testes Automatizados do Projeto: 179 testes aprovados.
+POLICY EVIDENCE:
+- Operações de catálogo utilizam exclusivamente READ_OWN_CATALOG para canais oficiais homologados (Mercado Livre e Shopee).
+- Proibição de deduplicação cega por título: vinculação canônica requer SKU, GTIN ou mapeamento explícito ITEM_ID.
+- Zero consultas a concorrentes.
+OPEN QUESTIONS:
+- Nenhuma dúvida técnica em aberto.
+FAILURES / ROOT CAUSE:
+- Falha inicial em CatalogListingSyncServiceTest por FK de organizações não cadastradas para UUIDs aleatórios. Corrigido com uso dos tenants pré-semeados e isolados.
+- Falha na reexecução de página no teste de resiliência por getIdempotencyKey estático na operação de leitura do adapter. Ajustado para retornar null em leituras paginadas, delegando a idempotência de banco para o CatalogListingSyncService.
+- Incompatibilidade de construtor em ListingSyncCheckpoint no PostgresCatalogRlsIntegrationTest e nome de coluna external_id_value. Corrigido e alinhado com Flyway V5.
+REMEDIATION:
+- Todas as correções foram integradas e verificadas com sucesso na suíte de testes automatizados.
+DOCUMENTATION UPDATED:
+- docs/specs/P007-BE-catalog-and-listings-sync/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+NEXT PROMPT: UNLOCKED (P007-FE - Visualização de Catálogo, Anúncios Vinculados e Status de Sincronização liberado para READY).
+```
+

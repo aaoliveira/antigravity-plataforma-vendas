@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P006-FE",
+  "currentPrompt": "P007-BE",
   "status": "APPROVED",
-  "nextPrompt": "P007-BE",
+  "nextPrompt": "P007-FE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-18T11:34:00-03:00",
+  "lastUpdated": "2026-11-18T12:10:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -17,7 +17,8 @@
     "P005-BE",
     "P005-FE",
     "P006-BE",
-    "P006-FE"
+    "P006-FE",
+    "P007-BE"
   ],
   "gates": {
     "P000": {
@@ -215,6 +216,24 @@
       "mobileResponsiveValidated": true,
       "blockingIssues": 0,
       "prerequisites": ["P006-BE"]
+    },
+    "P007-BE": {
+      "name": "Catálogo Canônico, Anúncios, Mapeamentos Externos e Sincronização Resiliente",
+      "status": "APPROVED",
+      "approvedAt": "2026-11-18T12:10:00-03:00",
+      "evidence": "backend/src/test/java/com/sellerintelligence/modules/catalog/CatalogListingSyncServiceTest.java, backend/src/test/java/com/sellerintelligence/modules/catalog/PostgresCatalogRlsIntegrationTest.java",
+      "testsExecuted": 12,
+      "testsPassed": 12,
+      "totalSuiteTestsPassed": 117,
+      "canonicalProductToMultipleListingsEnforced": true,
+      "noDeduplicationByTitleAloneEnforced": true,
+      "payloadPreservationWithSchemaVersionAndOrigin": true,
+      "paginatedSyncWithCheckpointAndResume": true,
+      "idempotentSyncAndReconciliation": true,
+      "postgresqlRlsCatalogIsolation": true,
+      "zeroCompetitorLookupsEnforced": true,
+      "blockingIssues": 0,
+      "prerequisites": ["P006-FE"]
     }
   },
   "maintenanceGates": {

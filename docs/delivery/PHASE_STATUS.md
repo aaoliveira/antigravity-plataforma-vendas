@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P006-FE = `APPROVED`, P007-BE = `READY`  
+> **Status Vigente:** PROMPT P007-BE = `APPROVED` | P007-FE = `READY`  
 > **Data:** 18/11/2026
 
 ---
@@ -23,7 +23,7 @@
 | **P005-FE** | Fluxo Oficial de Conexão com Mercado Livre (OAuth 2.0 PKCE UI)                           | **`APPROVED`** | 18/11/2026        | [MeliConnectFlow.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/MeliConnectFlow.test.tsx)                                                                                           | **SIM (P006-BE liberado)** |
 | **P006-BE** | Integração Shopee Open Platform v2, Assinatura HMAC, Webhooks e Políticas | **`APPROVED`** | 18/11/2026 | [ShopeeOpenPlatformIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/marketplaceconnection/shopee/ShopeeOpenPlatformIntegrationTest.java) | **SIM (P006-FE liberado)** |
 | **P006-FE** | Fluxo Oficial de Conexão com Shopee (Open Platform v2 UI)                                | **`APPROVED`** | 18/11/2026        | [ShopeeConnectFlow.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/ShopeeConnectFlow.test.tsx)                                                                                         | **SIM (P007-BE liberado)** |
-| **P007-BE** | Motor Financeiro Determinístico em BigDecimal                                            | `NOT_STARTED`  | ---               | Pré-requisito: P004                                                                                                                                                                                                                | Não                        |
+| **P007-BE** | Catálogo Canônico, Anúncios, Mapeamentos Externos e Sincronização Resiliente              | **`APPROVED`** | 18/11/2026        | [CatalogListingSyncServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/catalog/CatalogListingSyncServiceTest.java), [PostgresCatalogRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/catalog/PostgresCatalogRlsIntegrationTest.java) | **SIM (P007-FE liberado)** |
 | **P008-BE** | Analytics de Anúncios Próprios e Métricas Oficiais                                       | `NOT_STARTED`  | ---               | Pré-requisito: P004                                                                                                                                                                                                                | Não                        |
 | **P009-BE** | Consolidação Financeira, DRE e Reconciliação                                             | `NOT_STARTED`  | ---               | Pré-requisito: P007                                                                                                                                                                                                                | Não                        |
 | **P010-BE** | IA Assistiva com Tool Calling Somente Leitura                                            | `NOT_STARTED`  | ---               | Pré-requisitos: P007, P008                                                                                                                                                                                                         | Não                        |
@@ -52,6 +52,21 @@
 ---
 
 ## 2. Histórico de Transições e Auditoria dos Gates
+
+### Transição: PROMPT P007-BE $\rightarrow$ `APPROVED`
+
+- **Data/Hora:** 18/11/2026 12:10 BRT
+- **Avaliador:** Tech Lead / Staff Software Engineer
+- **Critérios Validados:**
+  1. **Separação Canônica vs Anúncios de Canal (1:N):** Modelagem estrita de `Product`, `ProductVariant`, `MarketplaceListing` e `SellerAccount`. Um produto canônico centraliza N anúncios de múltiplos canais (Mercado Livre, Shopee).
+  2. **Regra de Ouro — Não Deduplicar Apenas por Título:** O motor de conciliação NUNCA assume que anúncios com mesmo título ou título similar pertencem ao mesmo produto. A vinculação requer correspondência estrita por `SKU`, `GTIN` ou mapeamento explícito (`ExternalIdentifierMapping` de tipo `ITEM_ID`). Na ausência de identificadores compatíveis, novos produtos canônicos isolados são criados preventivamente.
+  3. **Preservação de Payload Minimizado e Versionado:** O payload original bruto autorizado retornado pela API oficial do canal é preservado de forma higienizada no campo `raw_payload_json`, acompanhado de schema versionado (`schema_version = 'v1'`), canal de origem (`origin = 'MERCADO_LIVRE_ITEMS_API' | 'SHOPEE_OPENAPI_V2'`) e timestamps auditáveis (`synced_at`, `created_at`, `updated_at`).
+  4. **Sincronização Paginada com Checkpoint e Retomada:** A entidade `ListingSyncCheckpoint` registra `last_offset`, `total_items_synced`, `sync_status` (`IN_PROGRESS`, `COMPLETED`, `FAILED`) e `error_message`. Em caso de falha de rede/timeout no canal, o processo é retomável a partir do último checkpoint com integridade referencial.
+  5. **Idempotência e Reconciliação:** O reprocessamento da mesma página ou anúncio não gera duplicatas (`CONSTRAINT uq_marketplace_listings_external UNIQUE (tenant_id, marketplace, external_listing_id)`). Registros existentes são reconciliados (preço, estoque, status e timestamps atualizados).
+  6. **Isolamento Multi-Tenant em Profundidade com PostgreSQL 17 RLS:** Políticas de Row-Level Security (`ENABLE` e `FORCE ROW LEVEL SECURITY`) aplicadas nas 6 tabelas (`seller_accounts`, `products`, `product_variants`, `marketplace_listings`, `external_identifier_mappings`, `listing_sync_checkpoints`) com `SET LOCAL app.current_tenant`. Testes de integração via Testcontainers com usuário `seller_app` (NOBYPASSRLS) comprovaram que leituras, inserções (WITH CHECK violando RLS), updates (0 rows) e deletes (0 rows) entre tenants são categoricamente negados.
+  7. **Risco Zero e Ausência de Consultas a Concorrentes:** Operação restrita a anúncios próprios do lojista autorizado via `READ_OWN_CATALOG`. Nenhuma chamada a concorrentes implementada.
+  8. **Testes & Cobertura:** 12/12 testes específicos de catálogo (6 testes de serviço/reconciliação/idempotência em `CatalogListingSyncServiceTest` + 6 testes de isolamento RLS real em `PostgresCatalogRlsIntegrationTest`), 117/117 testes backend passando, 3/3 regras modulares ArchUnit verificadas e 62/62 testes frontend em conformidade.
+- **Resultado:** **`PROMPT P007-BE = APPROVED`**. O prompt subsequente (`P007-FE`) está formalmente liberado e transita para `READY`.
 
 ### Transição: PROMPT P006-FE $\rightarrow$ `APPROVED`
 
