@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P012-FE",
+  "currentPrompt": "P013",
   "status": "READY",
-  "nextPrompt": "P013",
+  "nextPrompt": "MVP_RELEASE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-18T17:10:00-03:00",
+  "lastUpdated": "2026-11-18T17:28:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -28,7 +28,8 @@
     "P010-FE",
     "P011-BE",
     "P011-FE",
-    "P012-BE"
+    "P012-BE",
+    "P012-FE"
   ],
   "gates": {
     "P000": {
@@ -380,6 +381,20 @@
       "retentionPolicyEnforced": true,
       "blockingIssues": 0,
       "prerequisites": ["P011-FE"]
+    },
+    "P012-FE": {
+      "name": "Interface de Grupos de Monitoramento, Detalhe, Adição via Pesquisa, Confirmação e Timeline",
+      "status": "APPROVED",
+      "startedAt": "2026-11-18T17:16:00-03:00",
+      "approvedAt": "2026-11-18T17:28:00-03:00",
+      "evidence": "docs/specs/P012-FE-product-monitoring-view/spec.md",
+      "testsExecuted": 17,
+      "testsPassed": 17,
+      "totalFrontendSuiteTests": 136,
+      "totalBackendSuiteTests": 233,
+      "buildPassed": true,
+      "blockingIssues": 0,
+      "prerequisites": ["P012-BE"]
     }
   },
   "maintenanceGates": {

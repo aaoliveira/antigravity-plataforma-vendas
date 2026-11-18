@@ -19,7 +19,11 @@ export interface MarketSearchApiResponse {
   rateLimitRemaining: number;
 }
 
-export function MarketSearchView() {
+export interface MarketSearchViewProps {
+  onAddToMonitoring?: (item: NormalizedSearchResultItem) => void;
+}
+
+export function MarketSearchView({ onAddToMonitoring }: MarketSearchViewProps = {}) {
   // Search parameters
   const [query, setQuery] = useState('');
   const [marketplace, setMarketplace] = useState('ALL');
@@ -699,20 +703,32 @@ export function MarketSearchView() {
                             {formatDate(item.collectedAt)}
                           </td>
 
-                          {/* Ação: Link Oficial Sanitizado */}
+                          {/* Ações: Monitorar & Link Oficial Sanitizado */}
                           <td className="py-3 px-3 text-right">
-                            {item.listingUrl ? (
-                              <a
-                                href={item.listingUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center px-3 py-1.5 min-h-[44px] text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 hover:underline"
-                              >
-                                Canal ↗
-                              </a>
-                            ) : (
-                              <span className="text-slate-400 text-xs">---</span>
-                            )}
+                            <div className="flex items-center justify-end gap-1">
+                              {onAddToMonitoring && (
+                                <button
+                                  type="button"
+                                  onClick={() => onAddToMonitoring(item)}
+                                  className="inline-flex items-center px-2 py-1 min-h-[44px] text-xs font-semibold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/40 rounded-lg transition-colors whitespace-nowrap"
+                                  title="Adicionar anúncio ao monitoramento"
+                                >
+                                  🎯 Monitorar
+                                </button>
+                              )}
+                              {item.listingUrl ? (
+                                <a
+                                  href={item.listingUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center px-3 py-1.5 min-h-[44px] text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 hover:underline"
+                                >
+                                  Canal ↗
+                                </a>
+                              ) : (
+                                <span className="text-slate-400 text-xs">---</span>
+                              )}
+                            </div>
                           </td>
                         </tr>
                       );
@@ -801,17 +817,28 @@ export function MarketSearchView() {
                       </div>
                     </div>
 
-                    {/* Ação Mobile */}
-                    {item.listingUrl && (
-                      <a
-                        href={item.listingUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center w-full px-4 py-2 min-h-[44px] rounded-lg text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 dark:hover:bg-blue-900/60 transition-colors"
-                      >
-                        Acessar no Canal Oficial ↗
-                      </a>
-                    )}
+                    {/* Ações Mobile */}
+                    <div className="flex flex-col gap-2 pt-1">
+                      {onAddToMonitoring && (
+                        <button
+                          type="button"
+                          onClick={() => onAddToMonitoring(item)}
+                          className="inline-flex items-center justify-center w-full px-4 py-2 min-h-[44px] rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                        >
+                          🎯 Monitorar Anúncio
+                        </button>
+                      )}
+                      {item.listingUrl && (
+                        <a
+                          href={item.listingUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center w-full px-4 py-2 min-h-[44px] rounded-lg text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 dark:hover:bg-blue-900/60 transition-colors"
+                        >
+                          Acessar no Canal Oficial ↗
+                        </a>
+                      )}
+                    </div>
                   </div>
                 );
               })}

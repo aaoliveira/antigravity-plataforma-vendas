@@ -145,4 +145,15 @@ describe('AppShell Component (Shell Responsivo & Navegação)', () => {
       screen.getByRole('heading', { name: /Pedidos de Venda & Reconciliação/i })
     ).toBeInTheDocument();
   });
+
+  it('deve renderizar a tela ProductMonitoringView ao selecionar o módulo MONITORING (Monitoramento & Concorrentes)', () => {
+    render(<AppShell />);
+
+    const monitoringBtns = screen.getAllByRole('button', { name: /Monitoramento & Concorrentes/i });
+    fireEvent.click(monitoringBtns[0]);
+
+    expect(
+      screen.getByRole('heading', { name: /Monitoramento de Produtos & Concorrentes/i })
+    ).toBeInTheDocument();
+  });
 });

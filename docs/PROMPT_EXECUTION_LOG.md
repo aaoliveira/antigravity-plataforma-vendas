@@ -2154,3 +2154,84 @@ DOCUMENTATION UPDATED:
 
 NEXT PROMPT: UNLOCKED (P012-FE liberado para READY).
 ```
+
+---
+
+## Execução: PROMPT P012-FE
+
+```text
+PROMPT ID: P012-FE
+FEATURE: Interface de Grupos de Monitoramento, Detalhe, Adição via Pesquisa, Confirmação e Timeline
+STATUS: PASSED
+DATE: 2026-11-18T17:28:00-03:00
+
+INPUT:
+Após backend aprovado, implemente tela de grupos, detalhe, adicionar item a partir da pesquisa, remoção com confirmação e timeline.
+
+Aceite: estados vazios; filtros; confirmação; timeline mostra gaps e última coleta; responsivo.
+
+PRE-FLIGHT CHECKS:
+- Prompt P012-BE aprovado formalmente com 233 testes verdes de backend e PostgreSQL 17 RLS validado.
+- Leitura de diretrizes anti-alucinação: proibido fabricar dados ou interpolações artificiais em gaps de coletas.
+- Verificação de acessibilidade WCAG 2.2 AA (touch targets >= 44px, modais com dialog/aria-modal/ESC).
+
+FILES CREATED:
+- docs/specs/P012-FE-product-monitoring-view/spec.md
+- frontend/src/app/api/monitoring/groups/route.ts
+- frontend/src/app/api/monitoring/groups/[id]/route.ts
+- frontend/src/app/api/monitoring/groups/[id]/items/route.ts
+- frontend/src/app/api/monitoring/groups/[id]/items/[itemId]/route.ts
+- frontend/src/app/api/monitoring/items/[itemId]/snapshots/route.ts
+- frontend/src/app/api/monitoring/items/[itemId]/trigger/route.ts
+- frontend/src/components/ConfirmDeleteModal.tsx
+- frontend/src/components/CreateGroupModal.tsx
+- frontend/src/components/AddItemToGroupModal.tsx
+- frontend/src/components/MonitoringTimelineDrawer.tsx
+- frontend/src/components/MonitoringTimelineDrawer.test.tsx
+- frontend/src/components/ProductMonitoringView.tsx
+- frontend/src/components/ProductMonitoringView.test.tsx
+
+FILES MODIFIED:
+- frontend/src/components/AppShell.tsx
+- frontend/src/components/AppShell.test.tsx
+- frontend/src/components/MarketSearchView.tsx
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+
+COMMANDS EXECUTED:
+- pnpm --dir frontend test src/components/MonitoringTimelineDrawer.test.tsx src/components/ProductMonitoringView.test.tsx src/components/AppShell.test.tsx
+- pnpm --dir frontend exec tsc --noEmit
+- pnpm --dir frontend test
+- pnpm --dir frontend build
+- cd backend && ./mvnw test
+
+TEST RESULTS:
+- Frontend: 136/136 testes aprovados (100% de sucesso em 20 arquivos de teste).
+  * 9 testes em ProductMonitoringView.test.tsx (listagem de grupos, KPIs, estados vazios, filtros de status, visão detalhada de itens, alternância tabela vs cards, modal de confirmação de exclusão com retenção legal, abertura de timeline drawer, modal de adição de anúncios).
+  * 7 testes em MonitoringTimelineDrawer.test.tsx (renderização fechada/aberta, metadados do anúncio, estado vazio sem snapshots "Aguardando 1ª coleta", snapshots com preço e variação calculada, detecção e alerta ostensivo de gaps temporais sem interpolação artificial, disparo manual com feedback de agendamento, fechamento por ESC e botão).
+  * 1 teste adicional em AppShell.test.tsx cobrindo navegação para o módulo MONITORING.
+- Backend: 233/233 testes aprovados (zero regressões).
+- Total de Testes Automatizados do Projeto: 369 testes aprovados (233 backend + 136 frontend), 0 falhas, 0 erros, 0 skips.
+- Build Next.js 15.1.7: 34 rotas estáticas/dinâmicas compiladas com sucesso sem erros TypeScript.
+
+POLICY EVIDENCE:
+- Critério de Aceite 1: Estados vazios: implementados com EmptyState acessível para ausência de grupos, grupos sem itens monitorados e anúncios sem snapshots com orientação clara para o lojista.
+- Critério de Aceite 2: Filtros: suporte a filtros combináveis por canal (MERCADO_LIVRE, SHOPEE), status (ACTIVE, PAUSED) e busca em tempo real por título, ID externo ou vendedor.
+- Critério de Aceite 3: Confirmação: modais de confirmação acessíveis (ConfirmDeleteModal) para exclusão de grupos e itens, com explicação ostensiva dos efeitos (interrupção imediata de coletas) e preservação de snapshots para retenção legal auditável (90 dias padrão).
+- Critério de Aceite 4: Timeline mostra gaps e última coleta: MonitoringTimelineDrawer destaca a última coleta com horário, tempo relativo decorrido, preço e disparo sob demanda. Detecta e sinaliza expressamente lacunas temporais (gaps > 2x o intervalo), alertando que a plataforma não fabrica pontos retroativos ou intermediários fictícios.
+- Critério de Aceite 5: Responsivo: layout adaptativo para Desktop (tabelas e timeline rica), Tablet e Mobile (cards compactos, gavetas e modais touch-friendly com alvos >= 44px).
+
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+
+DOCUMENTATION UPDATED:
+- docs/specs/P012-FE-product-monitoring-view/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+
+NEXT PROMPT: UNLOCKED (P013 liberado para READY).
+```

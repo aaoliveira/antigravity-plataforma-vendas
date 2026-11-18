@@ -1,6 +1,6 @@
 # Status de Implementação e Quality Gates do Roadmap
 
-> **Status Atual Geral:** PROMPT P012-BE = `PASSED` | P012-FE = `READY`  
+> **Status Atual Geral:** PROMPT P012-FE = `PASSED` | P013 = `READY`  
 > **Data da Última Atualização:** 18/11/2026  
 > **Regra de Transição:** O próximo prompt só é liberado para `IN_PROGRESS` quando o anterior atingir formalmente `PASSED`.
 
@@ -34,7 +34,7 @@
 | **P011-BE** | Comparação de Listings Equivalentes, Variação Temporal e Histórico Não-Inventado         | E06   | Backend    | **`PASSED`**   | P010-FE (`PASSED`)     | 18/11/2026     |
 | **P011-FE** | Interface de Comparação de Listings, Histórico Real e Alertas de Incompatibilidade       | E06   | Frontend   | **`PASSED`**   | P011-BE (`PASSED`)     | 18/11/2026     |
 | **P012-BE** | Grupos por Tenant, Itens Monitorados e Snapshots Históricos Seguros                      | E05   | Backend    | **`PASSED`**   | P011-FE (`PASSED`)     | 18/11/2026     |
-| **P012-FE** | Interface de Grupos de Monitoramento, Snapshots e Alertas                                | E05   | Frontend   | `READY`        | P012-BE (`PASSED`)     | ---            |
+| **P012-FE** | Interface de Grupos de Monitoramento, Snapshots e Alertas                                | E05   | Frontend   | **`PASSED`**   | P012-BE (`PASSED`)     | 18/11/2026     |
 | **P007-FE** | Simulador de Preço e Painel de Rentabilidade                                             | E07   | Frontend   | `NOT_STARTED`  | P007-BE (`PASSED`)     | ---            |
 | **P008-BE** | Analytics de Anúncios Próprios e Métricas Oficiais                                       | E08   | Backend    | `NOT_STARTED`  | P004 (`PASSED`)        | ---            |
 | **P008-FE** | Dashboard de Desempenho e Saúde de Anúncios                                              | E08   | Frontend   | `NOT_STARTED`  | P008-BE (`PASSED`)     | ---            |
@@ -44,7 +44,7 @@
 | **P011-FE** | Chat Assistente e Geração Assistida de Anúncios                                          | E10   | Frontend   | `NOT_STARTED`  | P011-BE (`PASSED`)     | ---            |
 | **P012-BE** | Exportação Segura de Relatórios e Auditoria                                              | E11   | Backend    | `NOT_STARTED`  | P009 (`PASSED`)        | ---            |
 | **P012-FE** | Central de Relatórios e Downloads Auditados                                              | E11   | Frontend   | `NOT_STARTED`  | P012-BE (`PASSED`)     | ---            |
-| **P013**    | Hardening de Segurança, Testes E2E e Release MVP                                         | E12   | Fullstack  | `NOT_STARTED`  | P001 a P012 (`PASSED`) | ---            |
+| **P013**    | Hardening de Segurança, Testes E2E e Release MVP                                         | E12   | Fullstack  | `READY`        | P001 a P012 (`PASSED`) | ---            |
 
 ---
 
