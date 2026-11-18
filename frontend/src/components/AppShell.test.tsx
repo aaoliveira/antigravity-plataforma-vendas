@@ -23,13 +23,24 @@ describe('AppShell Component (Shell Responsivo & Navegação)', () => {
     // Por padrão o módulo inicial é Finanças
     expect(screen.getAllByText(/Motor Financeiro Determinístico/i).length).toBeGreaterThan(0);
 
-    // Clica no módulo de Mercado na sidebar
+    // Clica no módulo de Product Discovery na sidebar
+    const discoveryBtns = screen.getAllByRole('button', { name: /Product Discovery/i });
+    fireEvent.click(discoveryBtns[0]);
+
+    // O placeholder deve atualizar para o módulo de discovery
+    expect(screen.getByText('Market Intelligence')).toBeDefined();
+    expect(screen.getAllByText('Product Discovery').length).toBeGreaterThan(0);
+  });
+
+  it('deve renderizar a tela MarketIntelligenceView ao selecionar o módulo MARKET (Pesquisa de Mercado)', () => {
+    render(<AppShell />);
+
     const marketBtns = screen.getAllByRole('button', { name: /Pesquisa de Mercado/i });
     fireEvent.click(marketBtns[0]);
 
-    // O placeholder deve atualizar para o módulo de mercado
-    expect(screen.getByText('Market Intelligence')).toBeDefined();
-    expect(screen.getAllByText('Pesquisa de Mercado').length).toBeGreaterThan(0);
+    expect(
+      screen.getByRole('heading', { name: /Inteligência de Mercado & Proveniência/i })
+    ).toBeInTheDocument();
   });
 
   it('deve filtrar módulos pelo campo de busca rápida', () => {

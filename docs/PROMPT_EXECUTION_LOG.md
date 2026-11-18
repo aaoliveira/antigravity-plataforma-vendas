@@ -1617,3 +1617,77 @@ DOCUMENTATION UPDATED:
 
 NEXT PROMPT: UNLOCKED (P009-FE liberado para READY).
 ```
+
+---
+
+```yaml
+PROMPT: P009-FE
+START_DATE: 2026-11-18 14:05 BRT
+END_DATE: 2026-11-18 14:14 BRT
+STATUS: PASSED
+GATE_TRANSITION: P009-FE -> APPROVED
+COMMIT_SHA: PENDING (a ser gerado)
+```
+
+### PROMPT EXECUTION RECORD: P009-FE
+
+```text
+PROMPT: P009-FE — Exibição de Origem, Evidências, Confiança e Explicação de Dados na UI
+
+INPUT:
+Após backend aprovado, exiba origem, tipo de evidência, data e confiança em cards/tabelas. Permita abrir explicação do dado.
+
+Aceite: dado estimado nunca aparece como oficial; fonte e atualização são visíveis; UI acessível.
+
+PRE-FLIGHT CHECKS:
+- Prompt P009-BE formalmente concluído e aprovado com 158 testes de backend verdes.
+- Leitura dos princípios do PRD e regras de acessibilidade WCAG 2.2 AA.
+- Confirmação de regras de UI: badges estritamente distintos para ESTIMATED (nunca verde ou oficial), link oficial externo seguro, navegação por teclado (ESC).
+
+FILES CREATED:
+- docs/specs/P009-FE-market-observations-view/spec.md
+- frontend/src/app/api/market-intelligence/observations/route.ts
+- frontend/src/app/api/market-intelligence/observations/[id]/route.ts
+- frontend/src/app/api/market-intelligence/observations/[id]/match/route.ts
+- frontend/src/components/ObservationDetailDrawer.tsx
+- frontend/src/components/MarketIntelligenceView.tsx
+- frontend/src/components/MarketIntelligenceView.test.tsx
+
+FILES MODIFIED:
+- frontend/src/components/AppShell.tsx
+- frontend/src/components/AppShell.test.tsx
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+
+COMMANDS EXECUTED:
+- pnpm --dir frontend test
+- pnpm --dir frontend exec tsc --noEmit
+- pnpm --dir frontend run build
+
+TEST RESULTS:
+- Frontend: 93/93 testes aprovados (100% de sucesso).
+- TypeScript: 0 erros (`tsc --noEmit` limpo).
+- Next.js Production Build: 21 rotas estáticas e dinâmicas geradas com sucesso.
+- Total de Testes Automatizados do Projeto: 251 testes aprovados (158 backend + 93 frontend).
+
+POLICY EVIDENCE:
+- Critério de Aceite: Dado estimado NUNCA aparece como oficial. Badges estritamente distintos implementados e testados.
+- Transparência total de estimativas: exibe aviso anti-alucinação, versão do modelo, metodologia descritiva e janela temporal.
+- Fonte visível: canal, identificador de anúncio, link oficial externo seguro (rel="noopener noreferrer" target="_blank"), método e datas formatadas (observedAt, collectedAt, validUntil).
+- Gaveta acessível com role="dialog", aria-modal="true" e fechamento por teclado (ESC).
+- Matching explicável com cálculo sob demanda e exibição de justificativa legível por humanos.
+- Acessibilidade WCAG 2.2 AA: touch targets >= 44px, contraste adequado, skeletons com role="status" e empty state com role="region".
+
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+
+DOCUMENTATION UPDATED:
+- docs/specs/P009-FE-market-observations-view/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+
+NEXT PROMPT: UNLOCKED (P010-BE liberado para READY).
+```

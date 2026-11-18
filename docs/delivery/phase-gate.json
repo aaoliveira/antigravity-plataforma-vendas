@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P009-BE",
+  "currentPrompt": "P009-FE",
   "status": "APPROVED",
-  "nextPrompt": "P009-FE",
+  "nextPrompt": "P010-BE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-18T14:03:00-03:00",
+  "lastUpdated": "2026-11-18T14:13:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -22,7 +22,8 @@
     "P007-FE",
     "P008-BE",
     "P008-FE",
-    "P009-BE"
+    "P009-BE",
+    "P009-FE"
   ],
   "gates": {
     "P000": {
@@ -289,6 +290,18 @@
       "totalBackendSuiteTests": 158,
       "blockingIssues": 0,
       "prerequisites": ["P008-FE"]
+    },
+    "P009-FE": {
+      "name": "Exibição de Origem, Evidências, Confiança e Explicação de Dados na UI",
+      "status": "APPROVED",
+      "approvedAt": "2026-11-18T14:13:00-03:00",
+      "evidence": "frontend/src/components/MarketIntelligenceView.test.tsx, frontend/src/components/AppShell.test.tsx",
+      "testsExecuted": 9,
+      "testsPassed": 9,
+      "totalFrontendSuiteTests": 93,
+      "buildPassed": true,
+      "blockingIssues": 0,
+      "prerequisites": ["P009-BE"]
     }
   },
   "maintenanceGates": {

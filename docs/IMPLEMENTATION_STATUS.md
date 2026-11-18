@@ -1,6 +1,6 @@
 # Status de Implementação e Quality Gates do Roadmap
 
-> **Status Atual Geral:** PROMPT P009-BE = `PASSED` | P009-FE = `READY`  
+> **Status Atual Geral:** PROMPT P009-FE = `PASSED` | P010-BE = `READY`  
 > **Data da Última Atualização:** 18/11/2026  
 > **Regra de Transição:** O próximo prompt só é liberado para `IN_PROGRESS` quando o anterior atingir formalmente `PASSED`.
 
@@ -28,7 +28,7 @@
 | **P008-BE** | Ingestão de Pedidos e Itens Próprios, Reconciliação, Outbox e RLS                        | E04   | Backend    | **`PASSED`**   | P007-FE (`PASSED`)     | 18/11/2026     |
 | **P008-FE** | Gestão e Detalhes de Pedidos com Filtros por Canal, Status e Incompletos                 | E04   | Frontend   | **`PASSED`**   | P008-BE (`PASSED`)     | 18/11/2026     |
 | **P009-BE** | Modelo Comum para Observações de Mercado, Proveniência, Deduplicação e Matching          | E06   | Backend    | **`PASSED`**   | P008-FE (`PASSED`)     | 18/11/2026     |
-| **P009-FE** | Exibição de Origem, Evidências, Confiança e Explicação de Dados na UI                     | E06   | Frontend   | `NOT_STARTED`  | P009-BE (`PASSED`)     | ---            |
+| **P009-FE** | Exibição de Origem, Evidências, Confiança e Explicação de Dados na UI                     | E06   | Frontend   | **`PASSED`**   | P009-BE (`PASSED`)     | 18/11/2026     |
 | **P007-BE** | Motor Financeiro Determinístico em BigDecimal                                            | E07   | Backend    | `NOT_STARTED`  | P004 (`PASSED`)        | ---            |
 | **P007-FE** | Simulador de Preço e Painel de Rentabilidade                                             | E07   | Frontend   | `NOT_STARTED`  | P007-BE (`PASSED`)     | ---            |
 | **P008-BE** | Analytics de Anúncios Próprios e Métricas Oficiais                                       | E08   | Backend    | `NOT_STARTED`  | P004 (`PASSED`)        | ---            |

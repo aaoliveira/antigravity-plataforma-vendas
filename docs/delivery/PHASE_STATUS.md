@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P009-BE = `APPROVED` | P009-FE = `READY`  
+> **Status Vigente:** PROMPT P009-FE = `APPROVED` | P010-BE = `READY`  
 > **Data:** 18/11/2026
 
 ---
@@ -28,6 +28,7 @@
 | **P008-BE** | Ingestão de Pedidos e Itens Próprios, Reconciliação, Outbox e RLS                        | **`APPROVED`** | 18/11/2026        | [OrderSyncServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/orderingestion/OrderSyncServiceTest.java), [PostgresOrdersRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/orderingestion/PostgresOrdersRlsIntegrationTest.java) | **SIM (P008-FE liberado)** |
 | **P008-FE** | Gestão e Detalhes de Pedidos com Filtros por Canal, Status e Incompletos                 | **`APPROVED`** | 18/11/2026        | [OrdersView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/OrdersView.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx)                                                                                                                                                 | **SIM (P009-BE liberado)** |
 | **P009-BE** | Modelo Comum para Observações de Mercado, Proveniência, Deduplicação e Matching          | **`APPROVED`** | 18/11/2026        | [MarketObservationServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/marketintelligence/MarketObservationServiceTest.java), [ProductMatchingServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/marketintelligence/ProductMatchingServiceTest.java), [PostgresMarketIntelligenceRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/marketintelligence/PostgresMarketIntelligenceRlsIntegrationTest.java) | **SIM (P009-FE liberado)** |
+| **P009-FE** | Exibição de Origem, Evidências, Confiança e Explicação de Dados na UI                     | **`APPROVED`** | 18/11/2026        | [MarketIntelligenceView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/MarketIntelligenceView.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx)                                                                                                                             | **SIM (P010-BE liberado)** |
 | **P010-BE** | IA Assistiva com Tool Calling Somente Leitura                                            | `NOT_STARTED`  | ---               | Pré-requisitos: P007, P008                                                                                                                                                                                                                                                                                                                                                                                   | Não                        |
 | **P011-BE** | Exportação Segura de Relatórios e Auditoria                                              | `NOT_STARTED`  | ---               | Pré-requisito: P009                                                                                                                                                                                                                                                                                                                                                                                          | Não                        |
 | **P012**    | Hardening de Segurança, Testes E2E e Release MVP                                         | `NOT_STARTED`  | ---               | Pré-requisitos: P001 a P011                                                                                                                                                                                                                                                                                                                                                                                  | Não                        |
@@ -313,3 +314,19 @@
   9. Isolamento multi-tenant PostgreSQL RLS implementado e validado via Testcontainers PostgreSQL 17 (`V7_1__postgresql_rls_market_intelligence.sql`).
   10. 158/158 testes do backend aprovados com zero falhas, zero skips e zero regressões.
 - **Resultado:** **`PROMPT P009-BE = APPROVED`**. O prompt subsequente (`P009-FE`) está formalmente liberado e transita para `READY`.
+
+
+### Transição: PROMPT P009-FE $\rightarrow$ `APPROVED`
+
+- **Data/Hora:** 18/11/2026 14:13 BRT
+- **Avaliador:** Tech Lead / Staff Software Engineer
+- **Critérios Validados:**
+  1. Componente de visualização de inteligência de mercado (`MarketIntelligenceView`) e gaveta de detalhes (`ObservationDetailDrawer`) implementados e integrados com sucesso na aplicação web.
+  2. Cumprimento estrito do critério de aceite: **dado estimado nunca aparece como oficial** (badges estritos e distintos para `OFFICIAL`, `OBSERVED`, `ESTIMATED` e `USER_INPUT`, com alertas de modelo e aviso anti-alucinação explícitos para estimativas).
+  3. Fonte e data visíveis: canais de marketplace, identificadores externos, links externos seguros (`rel="noopener noreferrer" target="_blank"`), datas formatadas em padrão pt-BR de observação (`observedAt`) e coleta (`collectedAt`), validade e método de coleta.
+  4. Gaveta de explicação e matching com catálogo canônico acessível com um clique, apresentando pontuação explicável, breakdown de GTIN, similaridade de título, marca e justificativa textual transparente.
+  5. Rotas BFF Next.js 15 (`/api/market-intelligence/observations`, `[id]`, `[id]/match`) com repasse de tenant e proteção de sessão implementadas.
+  6. Acessibilidade WCAG 2.2 AA atendida: `role="dialog"`, `aria-modal="true"`, fechamento via tecla `ESC`, touch targets $\ge 44\text{px}$, skeletons com `role="status"` e empty state com `role="region"`.
+  7. 93/93 testes do frontend aprovados (100% de sucesso).
+  8. Build de produção do Next.js aprovado gerando 21 rotas estáticas e dinâmicas com zero erros.
+- **Resultado:** **`PROMPT P009-FE = APPROVED`**. O prompt subsequente (`P010-BE`) está formalmente liberado e transita para `READY`.

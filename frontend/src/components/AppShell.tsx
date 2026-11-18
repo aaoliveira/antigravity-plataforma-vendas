@@ -12,6 +12,7 @@ import { AccessDeniedFeedback } from './AccessDeniedFeedback';
 import { MarketplaceIntegrationsView } from './MarketplaceIntegrationsView';
 import { CatalogAndListingsView } from './CatalogAndListingsView';
 import { OrdersView } from './OrdersView';
+import { MarketIntelligenceView } from './MarketIntelligenceView';
 
 export interface NavModule {
   id: string;
@@ -55,7 +56,7 @@ export const navModules: NavModule[] = [
     pillarKey: 'MARKET',
     pillarName: 'Market Intelligence',
     description: 'Descoberta de produtos e categorias em fontes públicas autorizadas com proveniência explícita.',
-    status: 'PLANNED',
+    status: 'READY',
     provenience: 'OBSERVED / OFFICIAL',
   },
   {
@@ -418,6 +419,8 @@ export const AppShell: React.FC = () => {
             <CatalogAndListingsView />
           ) : activeModule.id === 'ORDERS' ? (
             <OrdersView />
+          ) : activeModule.id === 'MARKET' ? (
+            <MarketIntelligenceView />
           ) : (
             <ModulePlaceholder
               moduleId={activeModule.id}
