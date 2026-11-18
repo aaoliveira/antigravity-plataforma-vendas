@@ -16,7 +16,13 @@ public interface MarketplaceConnectionRepository extends JpaRepository<Marketpla
 
     List<MarketplaceConnection> findAllByTenantId(UUID tenantId);
 
+    List<MarketplaceConnection> findByTenantIdAndMarketplace(UUID tenantId, String marketplace);
+
     Optional<MarketplaceConnection> findByTenantIdAndId(UUID tenantId, UUID id);
+
+    default Optional<MarketplaceConnection> findByIdAndTenantId(UUID id, UUID tenantId) {
+        return findByTenantIdAndId(tenantId, id);
+    }
 
     Optional<MarketplaceConnection> findByTenantIdAndMarketplaceAndSellerAccountId(
             UUID tenantId,

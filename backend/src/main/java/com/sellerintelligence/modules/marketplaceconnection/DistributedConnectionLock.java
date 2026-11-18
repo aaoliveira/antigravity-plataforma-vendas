@@ -1,4 +1,4 @@
-package com.sellerintelligence.modules.marketplaceconnection.mercadolivre;
+package com.sellerintelligence.modules.marketplaceconnection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 /**
  * Gerenciador de locks distribuídos/concorrentes por conexão de marketplace.
  * Impede que requisições paralelas disparem múltiplos refreshes do mesmo token simultaneamente,
- * evitando a quebra da cadeia de rotação do Mercado Livre (invalid_grant).
+ * evitando a quebra da cadeia de rotação de tokens (Mercado Livre e Shopee v2 single-use rotation).
  */
 @Component
 public class DistributedConnectionLock {
@@ -49,10 +49,6 @@ public class DistributedConnectionLock {
         } finally {
             if (acquired) {
                 lock.unlock();
-                // Limpeza suave de locks não utilizados
-                if (!lock.hasQueuedThreads()) {
-                    locks.remove(connectionId, lock);
-                }
             }
         }
     }

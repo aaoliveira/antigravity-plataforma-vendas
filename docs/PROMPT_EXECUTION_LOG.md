@@ -970,3 +970,109 @@ DOCUMENTATION UPDATED:
 - spec.md, phase-gate.json, PHASE_STATUS.md, IMPLEMENTATION_STATUS.md, PROMPT_EXECUTION_LOG.md.
 NEXT PROMPT: UNLOCKED (P006-BE - Monitoramento de Produtos e Snapshots Históricos liberado para READY).
 ```
+
+---
+
+## Execução: PROMPT 006-BE
+
+```text
+PROMPT ID: P006-BE
+FEATURE: Integração Shopee Open Platform v2, Assinatura HMAC, Webhooks e Políticas
+STATUS: PASSED
+PRE-FLIGHT:
+- Verificado pré-requisito P005-FE como APPROVED em docs/delivery/phase-gate.json.
+- Verificada documentação oficial da Shopee Open Platform v2 (open.shopee.com).
+- Confirmados requisitos arquiteturais:
+  1. Assinatura HMAC-SHA256 por chamada com partner_id, partner_key, timestamp, path e (quando aplicável) access_token e shop_id.
+  2. Rotação atômica de refresh token de uso único (single-use token rotation, validade 30 dias; access_token 4 horas) sob lock distribuído.
+  3. Verificação de autenticidade de Webhook Push via header Authorization com HMAC-SHA256 de (callback_url + "|" + raw_body).
+  4. Tratamento do Push Code 2 (Shop Authorization Canceled Push) com invalidação atômica e imediata das credenciais locais.
+  5. Cifragem simétrica KMS/AES-256-GCM para todos os tokens persistidos; zero tokens em texto puro.
+  6. Política Fail-Closed: sem credenciais ativas homologadas de parceiro (partner_id=0 ou desabilitado), ShopeeMarketplaceAdapter opera em UNVERIFIED e bloqueia chamadas reais com UnverifiedCapabilityException.
+  7. Escopos e operações: COMPETITOR_SALES_VOLUME mantido como UNSUPPORTED; zero web scraping.
+DOCUMENTS REVIEWED:
+- docs/PRD.md (RF-005, RF-006, RF-007, RNF-001, RNF-002, RNF-003, RNF-006, ADR-002, ADR-004)
+- docs/MARKETPLACE_POLICIES.md (Seção 3.2 Shopee Open Platform)
+- docs/ARCHITECTURE.md
+- docs/SECURITY.md
+- docs/OPEN_QUESTIONS.md (OQ-002 e OQ-003)
+- docs/specs/P006-BE-shopee-open-platform/spec.md
+DEPENDENCIES:
+- P005-FE (Aprovado).
+FILES CHANGED:
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/DistributedConnectionLock.java (Movido de mercadolivre para marketplaceconnection como componente compartilhado de lock)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/mercadolivre/MercadoLivreOAuthService.java (Ajustado import para novo pacote de DistributedConnectionLock)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/dto/InitiateAuthResponse.java (Criado DTO reutilizável para início de autorização)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/dto/ConnectionSummaryResponse.java (Criado DTO para resposta de resumo de conexões)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/shopee/dto/ShopeeCallbackRequest.java (Criado DTO com validação Bean Validation para callback de autorização de shop)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/shopee/dto/ShopeeWebhookPayload.java (Criado record para parsing de eventos de push da Shopee)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/shopee/ShopeeSignatureUtil.java (Criado utilitário para cálculo HMAC-SHA256 de chamadas públicas, de loja e de webhook)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/shopee/ShopeeOAuthProperties.java (Criado ConfigurationProperties para shopee.open-platform)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/shopee/ShopeeTokenResponse.java (Criado record para desserialização de tokens v2)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/shopee/ShopeeOpenPlatformClient.java (Criada interface de comunicação HTTP com Shopee v2)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/shopee/DefaultShopeeOpenPlatformClient.java (Criada implementação Spring RestClient com timeouts e tratamento de erro)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/shopee/FakeShopeeOpenPlatformClient.java (Criada implementação simulada com suporte a rotação, expiração e rate limiting)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/shopee/ShopeeWebhookVerifier.java (Criado verificador em tempo constante para webhook push)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/shopee/ShopeeOpenPlatformService.java (Criado serviço orquestrador de autorização, callback, cifragem KMS, rotação segura e webhook push code 2)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/shopee/ShopeeConnectionController.java (Criado controller REST com endpoints tenant-scoped e webhook público com verificação de assinatura)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/exception/ShopeeOAuthException.java (Criada exceção RFC 7807 para falhas de OAuth Shopee)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/exception/ShopeeWebhookSignatureException.java (Criada exceção RFC 7807 para assinatura inválida de webhook)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/exception/ShopeeRateLimitException.java (Criada exceção RFC 7807 para HTTP 429)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/exception/MarketplaceConnectionExceptionHandler.java (Atualizado com handlers específicos da Shopee)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceadapters/shopee/ShopeeMarketplaceAdapter.java (Criado MarketplaceAdapter com registro de capacidades e política Fail-Closed UNVERIFIED)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/MarketplaceConnectionRepository.java (Adicionados métodos de busca por tenantId e marketplace)
+- backend/src/main/java/com/sellerintelligence/core/config/SecurityConfig.java (Liberada rota pública /api/v1/integrations/shopee/webhook para verificação por assinatura HMAC)
+- backend/src/main/resources/application.yml (Adicionadas propriedades shopee.open-platform.*)
+- backend/src/test/java/com/sellerintelligence/modules/marketplaceconnection/shopee/ShopeeSignatureUtilTest.java (Criados 6 testes unitários para assinaturas HMAC)
+- backend/src/test/java/com/sellerintelligence/modules/marketplaceconnection/shopee/ShopeeWebhookVerifierTest.java (Criados 4 testes unitários para webhook HMAC)
+- backend/src/test/java/com/sellerintelligence/modules/marketplaceconnection/shopee/ShopeeOpenPlatformServiceTest.java (Criados 10 testes unitários para fluxo de auth, refresh concorrente, cancelamento e rate limit)
+- backend/src/test/java/com/sellerintelligence/modules/marketplaceadapters/shopee/ShopeeMarketplaceAdapterTest.java (Criados 4 testes para Fail-Closed UNVERIFIED, kill switch, resiliência e bloqueio de scraping)
+- backend/src/test/java/com/sellerintelligence/modules/marketplaceconnection/shopee/ShopeeOpenPlatformIntegrationTest.java (Criado teste E2E MockMvc para webhook com assinatura HMAC real)
+- docs/specs/P006-BE-shopee-open-platform/spec.md (Criada especificação técnica detalhada do prompt)
+- docs/OPEN_QUESTIONS.md (Atualizado resolvendo OQ-002 e OQ-003)
+- docs/delivery/phase-gate.json (Atualizado para APPROVED)
+- docs/delivery/PHASE_STATUS.md (Atualizado para APPROVED)
+- docs/IMPLEMENTATION_STATUS.md (Atualizado para PASSED)
+- docs/PROMPT_EXECUTION_LOG.md (Atualizado)
+API/DB CONTRACTS:
+- POST /api/v1/integrations/shopee/authorize (Inicia autorização oficial Shopee Open Platform gerando URL assinada)
+- POST /api/v1/integrations/shopee/callback (Troca code de autorização por access/refresh tokens cifrados via KMS)
+- GET /api/v1/integrations/shopee/connections (Lista status da conexão da Shopee para o tenant ativo)
+- POST /api/v1/integrations/shopee/refresh (Renova tokens atomicamente com lock distribuído)
+- POST /api/v1/integrations/shopee/revoke (Revoga conexão e expurga credenciais locais)
+- POST /api/v1/integrations/shopee/webhook (Endpoint público para Push Mechanism da Shopee autenticado via HMAC-SHA256)
+SECURITY CHECKS:
+- Assinatura HMAC-SHA256: Toda requisição gerada ou recebida tem assinatura HMAC estritamente validada.
+- Zero senhas do seller: Nenhuma credencial primária de lojista é manipulada ou requisitada.
+- Tokens Cifrados: AES-256-GCM com chave de 256 bits via KMS; zero plaintext em banco ou logs.
+- Lock Concorrente: DistributedConnectionLock impede colisão em rotação de uso único do refresh token da Shopee.
+- Webhook Seguro: Validação em tempo constante MessageDigest.isEqual impede timing attacks; push code 2 revoga conexão imediatamente.
+- Fail-Closed: partner_id=0 ou desabilitado mantém adapter em UNVERIFIED e bloqueia chamadas reais com UnverifiedCapabilityException.
+- Risco Zero: Scraping e volume financeiro de concorrentes mantidos categoricamente como UNSUPPORTED.
+TESTS EXECUTED:
+- backend/src/test/java/com/sellerintelligence/modules/marketplaceconnection/shopee/* (21 testes aprovados)
+- backend/src/test/java/com/sellerintelligence/modules/marketplaceadapters/shopee/* (4 testes aprovados)
+- cd backend && ./mvnw test -Dtest=ModularArchitectureTest (3 testes ArchUnit aprovados)
+- cd backend && ./mvnw test (105 testes de backend aprovados, zero falhas, zero erros)
+- pnpm --dir frontend test (54 testes de frontend aprovados, zero regressões)
+TEST RESULTS:
+- Backend: 105/105 testes PASSED (100% de sucesso).
+- Frontend: 54/54 testes PASSED (100% de sucesso).
+- Total de Testes Automatizados do Projeto: 159 testes aprovados.
+POLICY EVIDENCE:
+- Todas as operações em estrita conformidade com as Políticas Oficiais da Shopee Open Platform v2. Zero scraping.
+OPEN QUESTIONS:
+- OQ-002 e OQ-003 formalmente respondidas e documentadas em docs/OPEN_QUESTIONS.md.
+FAILURES / ROOT CAUSE:
+- Nenhuma falha pendente. Erros de compilação iniciais (ajuste de assinatura auditPublisher e setters de timestamp) resolvidos no pre-flight.
+REMEDIATION:
+- Não aplicável.
+DOCUMENTATION UPDATED:
+- docs/specs/P006-BE-shopee-open-platform/spec.md
+- docs/OPEN_QUESTIONS.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+NEXT PROMPT: UNLOCKED (P006-FE - Fluxo Oficial de Conexão com Shopee liberado para READY).
+```

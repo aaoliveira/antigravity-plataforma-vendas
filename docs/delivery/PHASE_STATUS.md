@@ -1,43 +1,44 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P005-FE = `APPROVED` &middot; PROMPT P006-BE = `READY`  
+> **Status Vigente:** PROMPT P006-BE = `APPROVED`, P006-FE = `READY`  
 > **Data:** 18/11/2026
 
 ---
 
 ## 1. Tabela Oficial de Phase Gates
 
-| Prompt ID | Título da Etapa | Status do Gate | Data da Avaliação | Evidência Formal | Próximo Prompt Liberado? |
-|---|---|---|---|---|---|
-| **P000** | Master Project Governance & Engineering Rules | **`APPROVED`** | 17/11/2026 | [docs/PROMPT_EXECUTION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/PROMPT_EXECUTION_LOG.md) | **SIM (P001 liberado)** |
-| **P001-BE** | Estrutura Base do Repositório e Backend Modular | **`APPROVED`** | 17/11/2026 | [docs/PROMPT_EXECUTION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/PROMPT_EXECUTION_LOG.md) | **SIM (P001-FE liberado)** |
-| **P001-FE** | Shell da Aplicação Web Responsiva | **`APPROVED`** | 17/11/2026 | [docs/PROMPT_EXECUTION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/PROMPT_EXECUTION_LOG.md) | **SIM (P002-BE liberado)** |
-| **P002-BE** | Identidade Mínima e Contexto do Tenant | **`APPROVED`** | 18/11/2026 | [docs/PROMPT_EXECUTION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/PROMPT_EXECUTION_LOG.md) | **SIM (P002-FE liberado)** |
-| **P002-FE** | Interface de Autenticação e Troca de Contexto | **`APPROVED`** | 18/11/2026 | [docs/PROMPT_EXECUTION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/PROMPT_EXECUTION_LOG.md) | **SIM (P003-BE liberado)** |
-| **P003-BE** | Isolamento Multi-Tenant em Profundidade (RLS, Transacional e Testcontainers) | **`APPROVED`** | 18/11/2026 | [PostgresMultiTenantRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/tenancy/PostgresMultiTenantRlsIntegrationTest.java) | **SIM (P003-FE liberado)** |
-| **P003-FE** | Tratamento Padronizado de Erros (401/403/404) e Segurança de Tenant na UI | **`APPROVED`** | 18/11/2026 | [ErrorHandlingUniformity.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/ErrorHandlingUniformity.test.tsx) | **SIM (P004-BE liberado)** |
-| **P004-BE** | Contrato MarketplaceAdapter, Registro de Capacidades, Evidências e Camada de Resiliência | **`APPROVED`** | 18/11/2026 | [MarketplaceAdapterResilienceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/marketplaceadapters/MarketplaceAdapterResilienceTest.java) | **SIM (P004-FE liberado)** |
-| **P004-FE** | Interface de Gestão de Conexões Oficiais, Capacidades e Evidências | **`APPROVED`** | 18/11/2026 | [MarketplaceIntegrationsView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/MarketplaceIntegrationsView.test.tsx) | **SIM (P005-BE liberado)** |
-| **P005-BE** | Integração Oficial OAuth 2.0 Mercado Livre, PKCE, Cifragem KMS e Rotação Segura | **`APPROVED`** | 18/11/2026 | [MercadoLivreOAuthIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/marketplaceconnection/mercadolivre/MercadoLivreOAuthIntegrationTest.java) | **SIM (P005-FE liberado)** |
-| **P005-FE** | Fluxo Oficial de Conexão com Mercado Livre (OAuth 2.0 PKCE UI) | **`APPROVED`** | 18/11/2026 | [MeliConnectFlow.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/MeliConnectFlow.test.tsx) | **SIM (P006-BE liberado)** |
-| **P006-BE** | Monitoramento de Produtos e Snapshots Históricos | `READY` | --- | Pré-requisito: P005 atendido | Não |
-| **P007-BE** | Motor Financeiro Determinístico em BigDecimal | `NOT_STARTED` | --- | Pré-requisito: P004 | Não |
-| **P008-BE** | Analytics de Anúncios Próprios e Métricas Oficiais | `NOT_STARTED` | --- | Pré-requisito: P004 | Não |
-| **P009-BE** | Consolidação Financeira, DRE e Reconciliação | `NOT_STARTED` | --- | Pré-requisito: P007 | Não |
-| **P010-BE** | IA Assistiva com Tool Calling Somente Leitura | `NOT_STARTED` | --- | Pré-requisitos: P007, P008 | Não |
-| **P011-BE** | Exportação Segura de Relatórios e Auditoria | `NOT_STARTED` | --- | Pré-requisito: P009 | Não |
-| **P012** | Hardening de Segurança, Testes E2E e Release MVP | `NOT_STARTED` | --- | Pré-requisitos: P001 a P011 | Não |
+| Prompt ID   | Título da Etapa                                                                          | Status do Gate | Data da Avaliação | Evidência Formal                                                                                                                                                                                                                   | Próximo Prompt Liberado?   |
+| ----------- | ---------------------------------------------------------------------------------------- | -------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| **P000**    | Master Project Governance & Engineering Rules                                            | **`APPROVED`** | 17/11/2026        | [docs/PROMPT_EXECUTION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/PROMPT_EXECUTION_LOG.md)                                                                                                           | **SIM (P001 liberado)**    |
+| **P001-BE** | Estrutura Base do Repositório e Backend Modular                                          | **`APPROVED`** | 17/11/2026        | [docs/PROMPT_EXECUTION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/PROMPT_EXECUTION_LOG.md)                                                                                                           | **SIM (P001-FE liberado)** |
+| **P001-FE** | Shell da Aplicação Web Responsiva                                                        | **`APPROVED`** | 17/11/2026        | [docs/PROMPT_EXECUTION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/PROMPT_EXECUTION_LOG.md)                                                                                                           | **SIM (P002-BE liberado)** |
+| **P002-BE** | Identidade Mínima e Contexto do Tenant                                                   | **`APPROVED`** | 18/11/2026        | [docs/PROMPT_EXECUTION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/PROMPT_EXECUTION_LOG.md)                                                                                                           | **SIM (P002-FE liberado)** |
+| **P002-FE** | Interface de Autenticação e Troca de Contexto                                            | **`APPROVED`** | 18/11/2026        | [docs/PROMPT_EXECUTION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/PROMPT_EXECUTION_LOG.md)                                                                                                           | **SIM (P003-BE liberado)** |
+| **P003-BE** | Isolamento Multi-Tenant em Profundidade (RLS, Transacional e Testcontainers)             | **`APPROVED`** | 18/11/2026        | [PostgresMultiTenantRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/tenancy/PostgresMultiTenantRlsIntegrationTest.java)                  | **SIM (P003-FE liberado)** |
+| **P003-FE** | Tratamento Padronizado de Erros (401/403/404) e Segurança de Tenant na UI                | **`APPROVED`** | 18/11/2026        | [ErrorHandlingUniformity.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/ErrorHandlingUniformity.test.tsx)                                                                           | **SIM (P004-BE liberado)** |
+| **P004-BE** | Contrato MarketplaceAdapter, Registro de Capacidades, Evidências e Camada de Resiliência | **`APPROVED`** | 18/11/2026        | [MarketplaceAdapterResilienceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/marketplaceadapters/MarketplaceAdapterResilienceTest.java)                | **SIM (P004-FE liberado)** |
+| **P004-FE** | Interface de Gestão de Conexões Oficiais, Capacidades e Evidências                       | **`APPROVED`** | 18/11/2026        | [MarketplaceIntegrationsView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/MarketplaceIntegrationsView.test.tsx)                                                                   | **SIM (P005-BE liberado)** |
+| **P005-BE** | Integração Oficial OAuth 2.0 Mercado Livre, PKCE, Cifragem KMS e Rotação Segura          | **`APPROVED`** | 18/11/2026        | [MercadoLivreOAuthIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/marketplaceconnection/mercadolivre/MercadoLivreOAuthIntegrationTest.java) | **SIM (P005-FE liberado)** |
+| **P005-FE** | Fluxo Oficial de Conexão com Mercado Livre (OAuth 2.0 PKCE UI)                           | **`APPROVED`** | 18/11/2026        | [MeliConnectFlow.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/MeliConnectFlow.test.tsx)                                                                                           | **SIM (P006-BE liberado)** |
+| **P006-BE** | Integração Shopee Open Platform v2, Assinatura HMAC, Webhooks e Políticas | **`APPROVED`** | 18/11/2026 | [ShopeeOpenPlatformIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/marketplaceconnection/shopee/ShopeeOpenPlatformIntegrationTest.java) | **SIM (P006-FE liberado)** |
+| **P007-BE** | Motor Financeiro Determinístico em BigDecimal                                            | `NOT_STARTED`  | ---               | Pré-requisito: P004                                                                                                                                                                                                                | Não                        |
+| **P008-BE** | Analytics de Anúncios Próprios e Métricas Oficiais                                       | `NOT_STARTED`  | ---               | Pré-requisito: P004                                                                                                                                                                                                                | Não                        |
+| **P009-BE** | Consolidação Financeira, DRE e Reconciliação                                             | `NOT_STARTED`  | ---               | Pré-requisito: P007                                                                                                                                                                                                                | Não                        |
+| **P010-BE** | IA Assistiva com Tool Calling Somente Leitura                                            | `NOT_STARTED`  | ---               | Pré-requisitos: P007, P008                                                                                                                                                                                                         | Não                        |
+| **P011-BE** | Exportação Segura de Relatórios e Auditoria                                              | `NOT_STARTED`  | ---               | Pré-requisito: P009                                                                                                                                                                                                                | Não                        |
+| **P012**    | Hardening de Segurança, Testes E2E e Release MVP                                         | `NOT_STARTED`  | ---               | Pré-requisitos: P001 a P011                                                                                                                                                                                                        | Não                        |
 
 ---
 
 ## 1.1 Gate de Manutenção
 
-| ID | Etapa | Status | Data da Avaliação | Evidência | Resultado |
-|---|---|---|---|---|---|
-| **JAVA-25** | Upgrade do runtime Java para LTS 25 | **`APPROVED`** | 18/11/2026 | `backend/pom.xml`; `./mvnw clean verify -q` | Java 25.0.5; Spring Boot 3.5.16; 11/11 testes aprovados |
+| ID          | Etapa                               | Status         | Data da Avaliação | Evidência                                   | Resultado                                               |
+| ----------- | ----------------------------------- | -------------- | ----------------- | ------------------------------------------- | ------------------------------------------------------- |
+| **JAVA-25** | Upgrade do runtime Java para LTS 25 | **`APPROVED`** | 18/11/2026        | `backend/pom.xml`; `./mvnw clean verify -q` | Java 25.0.5; Spring Boot 3.5.16; 11/11 testes aprovados |
 
 ### Transição: Manutenção JAVA-25 → `APPROVED`
+
 - **Data/Hora:** 18/11/2026 08:49 BRT
 - **Critérios Validados:**
   1. Maven configura Java 25 (`java.version=25`) e o build executa no runtime Java 25.0.5.
@@ -51,7 +52,25 @@
 
 ## 2. Histórico de Transições e Auditoria dos Gates
 
+### Transição: PROMPT P006-BE $\rightarrow$ `APPROVED`
+
+- **Data/Hora:** 18/11/2026 11:21 BRT
+- **Avaliador:** Tech Lead / Staff Software Engineer
+- **Critérios Validados:**
+  1. **Documentação Oficial Shopee Open Platform OpenAPI v2:** Especificação oficial validada para Partner Authorization, HMAC-SHA256 request signing, atomic single-use refresh token rotation e Webhook Push Mechanism.
+  2. **Assinatura HMAC-SHA256 por Requisição:** `ShopeeSignatureUtil` calcula e valida a assinatura criptográfica para endpoints públicos/auth (`partner_id + path + timestamp`) e de shop (`partner_id + path + timestamp + access_token + shop_id`) com chave simétrica `partner_key`.
+  3. **Validação Estrita de Webhook Push:** `ShopeeWebhookVerifier` realiza comparação em tempo constante (`MessageDigest.isEqual`) da assinatura no header `Authorization` usando `callback_url + "|" + raw_body`. Requisições inválidas são imediatamente rejeitadas com HTTP 401 (`ShopeeWebhookSignatureException`).
+  4. **Tratamento de Push Code 2 (Shop Authorization Canceled):** Notificação oficial de cancelamento da autorização invalida imediatamente a conexão local, expurga os tokens cifrados e transita o status para `REVOKED`.
+  5. **Cifragem de Tokens via KMS (AES-256-GCM):** Tokens de acesso e refresh da Shopee são cifrados antes da persistência no PostgreSQL com IV aleatório de 12 bytes e tag de 128 bits. Zero tokens em texto puro em logs ou banco.
+  6. **Rotação Segura com Lock Distribuído:** Atualização de access/refresh token sob `DistributedConnectionLock` impedindo concorrência e quebra da cadeia de refresh de uso único (single-use token rotation).
+  7. **Política Fail-Closed & Bloqueio de Não Autorizados:** Quando o parceiro não possui credenciais ativas homologadas (`partner_id=0` ou desabilitado), o `ShopeeMarketplaceAdapter` opera em `UNVERIFIED` e rejeita qualquer chamada real com `UnverifiedCapabilityException`.
+  8. **Tratamento de Quotas e Rate Limiting:** Tratamento padronizado de HTTP 429 (`ShopeeRateLimitException`) com respeito a retry e backoff.
+  9. **Zero Scraping & Zero Competitor Revenue:** `COMPETITOR_SALES_VOLUME` mantido como `UNSUPPORTED`.
+  10. **Testes & Arquitetura:** 105/105 testes de backend aprovados (25 testes dedicados da Shopee com cobertura de HMAC, webhook, lock concorrente, controller e adapter), testes modulares ArchUnit com 100% de sucesso, e regressão frontend de 54/54 testes passando.
+- **Resultado:** **`PROMPT P006-BE = APPROVED`**. O prompt subsequente (`P006-FE`) está formalmente liberado e transita para `READY`.
+
 ### Transição: PROMPT P005-FE $\rightarrow$ `APPROVED`
+
 - **Data/Hora:** 18/11/2026 10:58 BRT
 - **Avaliador:** Tech Lead / Staff Software Engineer
 - **Critérios Validados:**
@@ -67,6 +86,7 @@
 - **Resultado:** **`PROMPT P005-FE = APPROVED`**. O prompt subsequente (`P006-BE`) está formalmente liberado e transita para `READY`.
 
 ### Transição: PROMPT P005-BE $\rightarrow$ `APPROVED`
+
 - **Data/Hora:** 18/11/2026 10:42 BRT
 - **Avaliador:** Tech Lead / Staff Software Engineer
 - **Critérios Validados:**
@@ -82,6 +102,7 @@
 - **Resultado:** **`PROMPT P005-BE = APPROVED`**. O prompt subsequente (`P005-FE`) está formalmente liberado e transita para `READY`.
 
 ### Transição: PROMPT P004-FE $\rightarrow$ `APPROVED`
+
 - **Data/Hora:** 18/11/2026 10:25 BRT
 - **Avaliador:** Tech Lead / Staff Software Engineer
 - **Critérios Validados:**
@@ -103,6 +124,7 @@
 - **Resultado:** **`PROMPT P004-FE = APPROVED`**. O prompt subsequente (`P005-BE`) está formalmente liberado e transita para `READY`.
 
 ### Transição: PROMPT P004-BE $\rightarrow$ `APPROVED`
+
 - **Data/Hora:** 18/11/2026 10:04 BRT
 - **Avaliador:** Tech Lead / Staff Software Engineer
 - **Critérios Validados:**
@@ -123,6 +145,7 @@
 - **Resultado:** **`PROMPT P004-BE = APPROVED`**. O prompt subsequente (`P004-FE`) está formalmente liberado e transita para `READY`.
 
 ### Transição: PROMPT P003-FE $\rightarrow$ `APPROVED`
+
 - **Data/Hora:** 18/11/2026 09:45 BRT
 - **Avaliador:** Tech Lead / Staff Software Engineer
 - **Critérios Validados:**
@@ -135,6 +158,7 @@
 - **Resultado:** **`PROMPT P003-FE = APPROVED`**. O prompt subsequente (`P004-BE`) está formalmente liberado e transita para `READY`.
 
 ### Transição: PROMPT P003-BE $\rightarrow$ `APPROVED`
+
 - **Data/Hora:** 18/11/2026 09:35 BRT
 - **Avaliador:** Tech Lead / Staff Software Engineer
 - **Critérios Validados:**
@@ -162,6 +186,7 @@
 - **Resultado:** **`PROMPT P003-BE = APPROVED`**. O prompt subsequente (`P003-FE`) está formalmente liberado e transita para `READY`.
 
 ### Transição: PROMPT P002-FE $\rightarrow$ `APPROVED`
+
 - **Data/Hora:** 18/11/2026 09:19 BRT
 - **Avaliador:** Tech Lead / Staff Software Engineer
 - **Critérios Validados:**
@@ -174,6 +199,7 @@
 - **Resultado:** **`PROMPT P002-FE = APPROVED`**. O prompt subsequente (`P003-BE`) está formalmente liberado e transita para `READY`.
 
 ### Transição: PROMPT P002-BE $\rightarrow$ `APPROVED`
+
 - **Data/Hora:** 18/11/2026 09:07 BRT
 - **Avaliador:** Tech Lead / Staff Software Engineer
 - **Critérios Validados:**
@@ -189,6 +215,7 @@
 - **Resultado:** **`PROMPT P002-BE = APPROVED`**. O prompt subsequente (`P002-FE`) está formalmente liberado e transita para `READY`.
 
 ### Transição: PROMPT P001-FE $\rightarrow$ `APPROVED`
+
 - **Data/Hora:** 17/11/2026 21:32 BRT
 - **Avaliador:** Tech Lead / Staff Software Engineer
 - **Critérios Validados:**
@@ -204,6 +231,7 @@
 - **Resultado:** **`PROMPT P001-FE = APPROVED`**. O prompt subsequente (`P002-BE`) está formalmente liberado e transita para `READY`.
 
 ### Transição: PROMPT P001-BE $\rightarrow$ `APPROVED`
+
 - **Data/Hora:** 17/11/2026 21:22 BRT
 - **Avaliador:** Tech Lead / Staff Software Engineer
 - **Critérios Validados:**

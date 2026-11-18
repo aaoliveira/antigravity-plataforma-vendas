@@ -67,6 +67,8 @@ public class SecurityConfig {
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         // Autenticação Pública (Login)
                         .requestMatchers("/api/v1/auth/login").permitAll()
+                        // Webhooks públicos de Marketplaces (autenticados via HMAC-SHA256 no controller)
+                        .requestMatchers("/api/v1/integrations/shopee/webhook").permitAll()
                         // Endpoints públicos de conveniência/teste
                         .requestMatchers("/api/public/**").permitAll()
                         // Qualquer outro endpoint exige autenticação por padrão (Fail-Closed)

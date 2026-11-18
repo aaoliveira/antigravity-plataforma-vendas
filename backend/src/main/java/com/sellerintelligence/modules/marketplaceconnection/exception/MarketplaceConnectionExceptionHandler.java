@@ -56,6 +56,42 @@ public class MarketplaceConnectionExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(ShopeeRateLimitException.class)
+    public ProblemDetail handleShopeeRateLimitException(ShopeeRateLimitException ex, HttpServletRequest request) {
+        log.warn("Limite de taxa excedido na Shopee Open Platform: [{}] {}", ex.getErrorCode(), ex.getMessage());
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.TOO_MANY_REQUESTS, ex.getMessage());
+        problem.setTitle("Limite de Taxa Excedido (Shopee)");
+        problem.setType(URI.create("https://sellerintelligence.com.br/errors/shopee-rate-limit"));
+        problem.setProperty("shopee_error_code", ex.getErrorCode());
+        problem.setProperty("retry_after_seconds", ex.getRetryAfterSeconds());
+        enrichProblemDetail(problem, request);
+        return problem;
+    }
+
+    @ExceptionHandler(ShopeeWebhookSignatureException.class)
+    public ProblemDetail handleShopeeWebhookSignatureException(ShopeeWebhookSignatureException ex, HttpServletRequest request) {
+        log.warn("Assinatura HMAC de webhook da Shopee rejeitada: {}", ex.getMessage());
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());
+        problem.setTitle("Assinatura de Webhook Inválida");
+        problem.setType(URI.create("https://sellerintelligence.com.br/errors/shopee-invalid-webhook-sign"));
+        enrichProblemDetail(problem, request);
+        return problem;
+    }
+
+    @ExceptionHandler(ShopeeOAuthException.class)
+    public ProblemDetail handleShopeeOAuthException(ShopeeOAuthException ex, HttpServletRequest request) {
+        log.error("Erro na integração com Shopee Open Platform: [{}] {}", ex.getErrorCode(), ex.getMessage());
+        HttpStatus status = "error_auth".equalsIgnoreCase(ex.getErrorCode()) || "invalid_param".equalsIgnoreCase(ex.getErrorCode())
+                ? HttpStatus.BAD_REQUEST
+                : HttpStatus.BAD_GATEWAY;
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(status, "Erro na integração com a Shopee: " + ex.getMessage());
+        problem.setTitle("Falha de Comunicação Shopee Open Platform");
+        problem.setType(URI.create("https://sellerintelligence.com.br/errors/shopee-oauth-error"));
+        problem.setProperty("shopee_error_code", ex.getErrorCode());
+        enrichProblemDetail(problem, request);
+        return problem;
+    }
+
     private void enrichProblemDetail(ProblemDetail problem, HttpServletRequest request) {
         String correlationId = MDC.get(CorrelationIdFilter.MDC_CORRELATION_ID_KEY);
         if (correlationId != null) {

@@ -72,3 +72,15 @@ mercadolivre:
       - read
       - offline_access
 
+# Integração Oficial com a Shopee (Open Platform v2 HMAC-SHA256)
+shopee:
+  open-platform:
+    partner-id: ${SHOPEE_PARTNER_ID:0}
+    partner-key: ${SHOPEE_PARTNER_KEY:test-shopee-partner-key-secret}
+    redirect-url: ${SHOPEE_REDIRECT_URL:http://localhost:3000/api/v1/integrations/shopee/callback}
+    auth-base-url: ${SHOPEE_AUTH_BASE_URL:https://partner.shopeemobile.com}
+    api-base-url: ${SHOPEE_API_BASE_URL:https://partner.shopeemobile.com}
+    webhook-url: ${SHOPEE_WEBHOOK_URL:http://localhost:8082/api/v1/integrations/shopee/webhook}
+    sandbox: ${SHOPEE_SANDBOX:false}
+    enabled: ${SHOPEE_ENABLED:true}
+

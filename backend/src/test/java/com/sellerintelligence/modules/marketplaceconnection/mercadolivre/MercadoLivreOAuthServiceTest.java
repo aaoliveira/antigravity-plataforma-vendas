@@ -1,6 +1,7 @@
 package com.sellerintelligence.modules.marketplaceconnection.mercadolivre;
 
 import com.sellerintelligence.core.audit.AuditPublisher;
+import com.sellerintelligence.modules.marketplaceconnection.DistributedConnectionLock;
 import com.sellerintelligence.modules.marketplaceconnection.MarketplaceConnection;
 import com.sellerintelligence.modules.marketplaceconnection.MarketplaceConnectionRepository;
 import com.sellerintelligence.modules.marketplaceconnection.exception.InvalidStateCsrfException;
