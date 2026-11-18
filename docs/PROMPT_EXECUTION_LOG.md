@@ -705,5 +705,85 @@ REMEDIATION:
 - Não aplicável.
 DOCUMENTATION UPDATED:
 - spec.md, phase-gate.json, PHASE_STATUS.md, IMPLEMENTATION_STATUS.md, PROMPT_EXECUTION_LOG.md.
-NEXT PROMPT: UNLOCKED (P004-FE - Visão Operacional de Catálogo e Sincronização liberado para READY).
+NEXT PROMPT: UNLOCKED (P004-FE - Interface de Gestão de Conexões Oficiais, Capacidades e Evidências liberado para READY).
+```
+
+---
+
+## Execução: PROMPT 004-FE
+
+```text
+PROMPT ID: P004-FE
+FEATURE: Interface de Gestão de Conexões Oficiais, Capacidades e Evidências
+STATUS: PASSED
+PRE-FLIGHT:
+- Verificado pré-requisito P004-BE como APPROVED em docs/delivery/phase-gate.json.
+- Verificadas diretrizes de não exibição de segredos, estados visuais distinguíveis e ações restritas do prompt.
+- Confirmado que capacidades UNVERIFIED nunca devem ser apresentadas como disponíveis para uso.
+DOCUMENTS REVIEWED:
+- docs/PRD.md (RF-005, RF-006, RF-007, RF-008, RF-009, RNF-001, RNF-003, RNF-006, ADR-003, ADR-004)
+- docs/MARKETPLACE_POLICIES.md
+- docs/ARCHITECTURE.md
+- docs/SECURITY.md
+- docs/specs/P004-FE-integrations-capabilities-ui/spec.md
+DEPENDENCIES:
+- P004-BE (Aprovado com 64/64 testes).
+FILES CHANGED:
+- frontend/src/components/MarketplaceIntegrationsView.tsx (Criado componente de gestão de integrações, capacidades e evidências)
+- frontend/src/components/MarketplaceIntegrationsView.test.tsx (Criada suíte de testes com 9 cenários de validação rigorosa)
+- frontend/src/components/AppShell.tsx (Atualizado para renderizar MarketplaceIntegrationsView no módulo STORES)
+- frontend/src/components/AppShell.test.tsx (Atualizado com teste de navegação para o módulo STORES)
+- frontend/src/test/UrlTenantProtection.test.ts (Ajustado cabeçalho Cookie em NextRequest para conformidade estrita de tipos com Next.js 15)
+- .gitignore (Adicionado *.tsbuildinfo para higiene do repositório)
+- docs/specs/P004-FE-integrations-capabilities-ui/spec.md (Criada especificação técnica do componente)
+- docs/delivery/phase-gate.json (Atualizado para APPROVED)
+- docs/delivery/PHASE_STATUS.md (Atualizado para APPROVED)
+- docs/IMPLEMENTATION_STATUS.md (Atualizado para PASSED)
+- docs/PROMPT_EXECUTION_LOG.md (Atualizado)
+API/DB CONTRACTS:
+- Interface MarketplaceIntegrationsView vinculada às capacidades do contrato MarketplaceAdapter (RF-005 a RF-009).
+- Estados visuais explícitos: SUPPORTED (verde/homologado), RESTRICTED (âmbar/restrito), UNSUPPORTED (carmim/indisponível oficial), UNVERIFIED (cinza/bloqueado).
+SECURITY CHECKS:
+- Ausência absoluta de segredos no DOM: zero tokens OAuth, senhas ou refresh tokens são renderizados no HTML ou em atributos de elementos.
+- Capacidades UNVERIFIED permanecem bloqueadas e nunca são apresentadas como disponíveis (Fail-Closed).
+- Capacidades UNSUPPORTED (vendas de concorrentes) contêm justificativa expressa de indisponibilidade oficial e vedação de scraping.
+- Ações operacionais autorizadas ao usuário são estritamente Conectar, Atualizar Status e Revogar; nenhuma ação de escrita em catálogo ou scraping existe.
+- Sanitização de erros ativa via sanitizeErrorMessage(), mascarando UUIDs técnicos de tenant e suprimindo stacktraces.
+TESTS EXECUTED:
+- pnpm --dir frontend test (Vitest 3.2.7):
+  * MarketplaceIntegrationsView.test.tsx: 9 testes aprovados:
+    1. Renderização com status e data da última verificação documental.
+    2. Distinção visual explícita dos 4 estados de capacidades (SUPPORTED, RESTRICTED, UNSUPPORTED, UNVERIFIED).
+    3. Explicação clara para recursos UNSUPPORTED e proibição de scraping.
+    4. Capacidades UNVERIFIED não são apresentadas como disponíveis para uso.
+    5. Ausência absoluta de tokens, JWTs, client secrets ou senhas no DOM.
+    6. Permissão estrita e exclusiva das ações: Conectar, Atualizar Status e Revogar.
+    7. Sanitização comprovada de mensagens de erro sem vazamento de UUIDs ou traces.
+    8. Suporte à filtragem por status de capacidade.
+    9. Conformidade mobile e touch targets >= 44px.
+  * AppShell.test.tsx: 6 testes aprovados (incluindo navegação e montagem de MarketplaceIntegrationsView).
+  * Demais 8 arquivos de teste mantidos com 100% de aprovação.
+  * Total Frontend: 10 arquivos, 47 testes executados, 47 aprovados (100% de sucesso).
+- pnpm --dir frontend run build:
+  * Next.js 15.1.7 build de produção gerado com sucesso (exit code 0).
+  * 9/9 páginas estáticas e rotas dinâmicas compiladas.
+- pnpm --dir frontend exec tsc --noEmit:
+  * TypeScript typecheck estrito concluído com exit code 0 e zero erros.
+- cd backend && ./mvnw test:
+  * 64/64 testes de backend executados e aprovados (100% de sucesso mantido).
+TEST RESULTS:
+- Frontend: 47/47 testes PASSED (100% de sucesso).
+- Backend: 64/64 testes PASSED (100% de sucesso mantido).
+- Build Next.js 15: PASSED (exit code 0).
+POLICY EVIDENCE:
+- Nenhuma chamada de escrita ou conexão simulada a endpoints reais; ações operam via interface controlada com respeito às políticas de marketplaces.
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+FAILURES / ROOT CAUSE:
+- Nenhuma falha durante a execução.
+REMEDIATION:
+- Não aplicável.
+DOCUMENTATION UPDATED:
+- spec.md, phase-gate.json, PHASE_STATUS.md, IMPLEMENTATION_STATUS.md, PROMPT_EXECUTION_LOG.md.
+NEXT PROMPT: UNLOCKED (P005-BE - Inteligência de Mercado e Pesquisa Normalizada liberado para READY).
 ```

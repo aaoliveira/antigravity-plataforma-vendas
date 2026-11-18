@@ -9,6 +9,7 @@ import { useAuth } from '@/context/AuthContext';
 import { TenantSwitcher } from './TenantSwitcher';
 import { SessionBanner } from './SessionBanner';
 import { AccessDeniedFeedback } from './AccessDeniedFeedback';
+import { MarketplaceIntegrationsView } from './MarketplaceIntegrationsView';
 
 export interface NavModule {
   id: string;
@@ -127,8 +128,8 @@ export const navModules: NavModule[] = [
     shortLabel: 'Lojas',
     pillarKey: 'MANAGEMENT',
     pillarName: 'Gestão & Integrações',
-    description: 'Gestão de conexões oficiais OAuth com Mercado Livre e Shopee.',
-    status: 'PLANNED',
+    description: 'Gestão de conexões oficiais OAuth, capacidades e conformidade com Mercado Livre e Shopee.',
+    status: 'READY',
     provenience: 'OFFICIAL_OAUTH',
   },
   {
@@ -399,6 +400,8 @@ export const AppShell: React.FC = () => {
             />
           ) : demoState === 'DENIED' ? (
             <AccessDeniedFeedback onBackClick={() => setDemoState('NORMAL')} />
+          ) : activeModule.id === 'STORES' ? (
+            <MarketplaceIntegrationsView />
           ) : (
             <ModulePlaceholder
               moduleId={activeModule.id}

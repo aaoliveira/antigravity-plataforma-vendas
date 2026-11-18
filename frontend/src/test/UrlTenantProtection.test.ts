@@ -6,7 +6,7 @@ describe('Proteção contra Manipulação de Tenant via URL (Anti-Tampering)', (
   it('deve interceptar e descartar parâmetro tenantId injetado na URL, redirecionando para URL limpa', () => {
     const maliciousUrl = 'https://app.sellerintelligence.com/?tenantId=22222222-2222-2222-2222-222222222222';
     const req = new NextRequest(maliciousUrl, {
-      cookies: { seller_access_token: 'valid-token' },
+      headers: { Cookie: 'seller_access_token=valid-token' },
     });
 
     const response = middleware(req);
@@ -27,7 +27,7 @@ describe('Proteção contra Manipulação de Tenant via URL (Anti-Tampering)', (
   it('deve interceptar múltiplos parâmetros proibidos de tenant (orgId, tenant_id, organizationId)', () => {
     const maliciousUrl = 'https://app.sellerintelligence.com/dashboard?orgId=evil-corp&tenant_id=fake-id&organizationId=spoofed';
     const req = new NextRequest(maliciousUrl, {
-      cookies: { seller_access_token: 'valid-token' },
+      headers: { Cookie: 'seller_access_token=valid-token' },
     });
 
     const response = middleware(req);

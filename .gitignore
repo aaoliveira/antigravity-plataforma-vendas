@@ -34,6 +34,7 @@ frontend/.next/
 frontend/out/
 frontend/dist/
 frontend/.pnpm-store/
+*.tsbuildinfo
 extension/node_modules/
 npm-debug.log*
 yarn-debug.log*

@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P004-BE",
+  "currentPrompt": "P004-FE",
   "status": "APPROVED",
-  "nextPrompt": "P004-FE",
+  "nextPrompt": "P005-BE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-18T10:04:00-03:00",
+  "lastUpdated": "2026-11-18T10:25:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -12,7 +12,8 @@
     "P002-FE",
     "P003-BE",
     "P003-FE",
-    "P004-BE"
+    "P004-BE",
+    "P004-FE"
   ],
   "gates": {
     "P000": {
@@ -141,6 +142,26 @@
       "prerequisites": [
         "P003-BE",
         "P003-FE"
+      ]
+    },
+    "P004-FE": {
+      "name": "Interface de Gestão de Conexões Oficiais, Capacidades e Evidências",
+      "status": "APPROVED",
+      "approvedAt": "2026-11-18T10:25:00-03:00",
+      "evidence": "frontend/src/components/MarketplaceIntegrationsView.test.tsx",
+      "testsExecuted": 47,
+      "testsPassed": 47,
+      "buildPassed": true,
+      "typecheckPassed": true,
+      "distinctCapabilityStatesEnforced": true,
+      "zeroTokensExposedInDom": true,
+      "permittedActionsOnlyEnforced": true,
+      "unverifiedCapabilitiesBlocked": true,
+      "sanitizedErrorsEnforced": true,
+      "mobileResponsiveValidated": true,
+      "blockingIssues": 0,
+      "prerequisites": [
+        "P004-BE"
       ]
     }
   },

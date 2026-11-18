@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P004-BE = `APPROVED` &middot; PROMPT P004-FE = `READY`  
+> **Status Vigente:** PROMPT P004-FE = `APPROVED` &middot; PROMPT P005-BE = `READY`  
 > **Data:** 18/11/2026
 
 ---
@@ -18,7 +18,8 @@
 | **P003-BE** | Isolamento Multi-Tenant em Profundidade (RLS, Transacional e Testcontainers) | **`APPROVED`** | 18/11/2026 | [PostgresMultiTenantRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/tenancy/PostgresMultiTenantRlsIntegrationTest.java) | **SIM (P003-FE liberado)** |
 | **P003-FE** | Tratamento Padronizado de Erros (401/403/404) e Segurança de Tenant na UI | **`APPROVED`** | 18/11/2026 | [ErrorHandlingUniformity.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/ErrorHandlingUniformity.test.tsx) | **SIM (P004-BE liberado)** |
 | **P004-BE** | Contrato MarketplaceAdapter, Registro de Capacidades, Evidências e Camada de Resiliência | **`APPROVED`** | 18/11/2026 | [MarketplaceAdapterResilienceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/marketplaceadapters/MarketplaceAdapterResilienceTest.java) | **SIM (P004-FE liberado)** |
-| **P005-BE** | Inteligência de Mercado e Pesquisa Normalizada | `NOT_STARTED` | --- | Pré-requisito: P004 | Não |
+| **P004-FE** | Interface de Gestão de Conexões Oficiais, Capacidades e Evidências | **`APPROVED`** | 18/11/2026 | [MarketplaceIntegrationsView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/MarketplaceIntegrationsView.test.tsx) | **SIM (P005-BE liberado)** |
+| **P005-BE** | Inteligência de Mercado e Pesquisa Normalizada | `READY` | --- | Pré-requisito: P004 (`APPROVED`) | Sim |
 | **P006-BE** | Monitoramento de Produtos e Snapshots Históricos | `NOT_STARTED` | --- | Pré-requisito: P005 | Não |
 | **P007-BE** | Motor Financeiro Determinístico em BigDecimal | `NOT_STARTED` | --- | Pré-requisito: P004 | Não |
 | **P008-BE** | Analytics de Anúncios Próprios e Métricas Oficiais | `NOT_STARTED` | --- | Pré-requisito: P004 | Não |
@@ -48,6 +49,27 @@
 ---
 
 ## 2. Histórico de Transições e Auditoria dos Gates
+
+### Transição: PROMPT P004-FE $\rightarrow$ `APPROVED`
+- **Data/Hora:** 18/11/2026 10:25 BRT
+- **Avaliador:** Tech Lead / Staff Software Engineer
+- **Critérios Validados:**
+  1. Tela de integrações e capacidades oficiais (`MarketplaceIntegrationsView.tsx`) implementada e integrada ao shell da aplicação no módulo `STORES` ("Lojas & Marketplaces").
+  2. Estados visuais padronizados e inconfundíveis para as capacidades:
+     - `SUPPORTED`: Verde/Checkmark (Oficialmente Homologado pela API do marketplace).
+     - `RESTRICTED`: Âmbar/Alerta (Restrições de cota ou deliberadamente desabilitada no MVP para garantia de risco zero, ex: operações de escrita).
+     - `UNSUPPORTED`: Carmim/Bloqueio (Não disponibilizado pelo canal, ex: faturamento e vendas de terceiros; scraping expressamente proibido).
+     - `UNVERIFIED`: Cinza/Cadeado (Em validação técnica documental; sob a regra Fail-Closed, jamais é apresentado como disponível para uso).
+  3. Transparência operacional completa: exibição de data da última verificação documental, escopos OAuth homologados (`read`, `offline_access`), quotas de requisição (Token Bucket com jitter) e URLs oficiais de documentação.
+  4. Princípio de Menor Privilégio e Ações Permitidas Exclusivas:
+     - As únicas ações operacionais autorizadas ao usuário são estritamente `Conectar`, `Atualizar Status` e `Revogar`.
+     - Zero botões de escrita destrutiva, manipulação arbitrária de preços ou raspagem de dados de concorrentes.
+     - Canais `UNVERIFIED` (Amazon SP-API, TikTok Shop) não expõem botões ativos de conexão ou execução.
+  5. Higiene absoluta de segredos: nenhum token OAuth (`access_token`, `refresh_token`), hash HMAC ou chave de API é renderizado no DOM ou em atributos HTML.
+  6. Sanitização de erros ativa: alertas e feedbacks processados por `sanitizeErrorMessage()`, expurgando UUIDs técnicos de tenants e stacktraces internos.
+  7. Usabilidade Mobile e Acessibilidade: touch targets com altura mínima de 44px (`min-h-[44px]`), semântica ARIA (`role="region"`, `role="list"`, `role="alert"`, `aria-selected`), sem overflow horizontal.
+  8. Suíte de testes do frontend com 47/47 testes aprovados (100% de sucesso), typecheck `tsc --noEmit` limpo e build de produção Next.js 15 compilado com sucesso.
+- **Resultado:** **`PROMPT P004-FE = APPROVED`**. O prompt subsequente (`P005-BE`) está formalmente liberado e transita para `READY`.
 
 ### Transição: PROMPT P004-BE $\rightarrow$ `APPROVED`
 - **Data/Hora:** 18/11/2026 10:04 BRT

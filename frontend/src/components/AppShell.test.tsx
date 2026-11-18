@@ -92,4 +92,20 @@ describe('AppShell Component (Shell Responsivo & Navegação)', () => {
     fireEvent.click(closeBtn);
     expect(screen.queryByRole('dialog')).toBeNull();
   });
+
+  it('deve renderizar a tela MarketplaceIntegrationsView ao selecionar o módulo STORES (Lojas & Marketplaces)', () => {
+    render(<AppShell />);
+
+    // Clica no botão do módulo Lojas na barra lateral
+    const storesBtns = screen.getAllByRole('button', { name: /Lojas & Marketplaces/i });
+    fireEvent.click(storesBtns[0]);
+
+    // Deve renderizar a visualização de integrações oficiais
+    expect(
+      screen.getByRole('heading', { name: /Lojas & Integrações Oficiais/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('region', { name: /Gestão de Integrações e Capacidades de Marketplaces/i })
+    ).toBeInTheDocument();
+  });
 });
