@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P002-BE = `APPROVED` &middot; PROMPT P002-FE = `READY`  
+> **Status Vigente:** PROMPT P002-FE = `APPROVED` &middot; PROMPT P003-BE = `READY`  
 > **Data:** 18/11/2026
 
 ---
@@ -14,8 +14,8 @@
 | **P001-BE** | Estrutura Base do Repositório e Backend Modular | **`APPROVED`** | 17/11/2026 | [docs/PROMPT_EXECUTION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/PROMPT_EXECUTION_LOG.md) | **SIM (P001-FE liberado)** |
 | **P001-FE** | Shell da Aplicação Web Responsiva | **`APPROVED`** | 17/11/2026 | [docs/PROMPT_EXECUTION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/PROMPT_EXECUTION_LOG.md) | **SIM (P002-BE liberado)** |
 | **P002-BE** | Identidade Mínima e Contexto do Tenant | **`APPROVED`** | 18/11/2026 | [docs/PROMPT_EXECUTION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/PROMPT_EXECUTION_LOG.md) | **SIM (P002-FE liberado)** |
-| **P002-FE** | Interface de Autenticação e Troca de Contexto | `READY` | --- | Pré-requisito: P002-BE Aprovado | Sim |
-| **P003-BE** | Conexões Oficiais com Marketplaces | `NOT_STARTED` | --- | Pré-requisito: P002 | Não |
+| **P002-FE** | Interface de Autenticação e Troca de Contexto | **`APPROVED`** | 18/11/2026 | [docs/PROMPT_EXECUTION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/PROMPT_EXECUTION_LOG.md) | **SIM (P003-BE liberado)** |
+| **P003-BE** | Conexões Oficiais com Marketplaces | `READY` | --- | Pré-requisito: P002-BE/P002-FE Aprovados | Sim |
 | **P004-BE** | Ingestão Idempotente de Catálogo e Pedidos | `NOT_STARTED` | --- | Pré-requisito: P003 | Não |
 | **P005-BE** | Inteligência de Mercado e Pesquisa Normalizada | `NOT_STARTED` | --- | Pré-requisito: P004 | Não |
 | **P006-BE** | Monitoramento de Produtos e Snapshots Históricos | `NOT_STARTED` | --- | Pré-requisito: P005 | Não |
@@ -47,6 +47,18 @@
 ---
 
 ## 2. Histórico de Transições e Auditoria dos Gates
+
+### Transição: PROMPT P002-FE $\rightarrow$ `APPROVED`
+- **Data/Hora:** 18/11/2026 09:19 BRT
+- **Avaliador:** Tech Lead / Staff Software Engineer
+- **Critérios Validados:**
+  1. Tela de login (`/login`) acessível (WCAG 2.2 AA) implementada com formulários semânticos, atributos ARIA e alertas dinâmicos (401 credenciais inválidas, 429 brute force lockout).
+  2. Política de Cookies HttpOnly estrita: tokens sensíveis gravados exclusivamente em cookies `HttpOnly`, `SameSite=Lax`, `Path=/` via Route Handlers BFF Next.js (`/api/auth/*`), com zero tokens em `localStorage`.
+  3. Proteção de rotas em middleware (`middleware.ts`): requisições anônimas ao dashboard `/` são redirecionadas com status 307 para `/login`. Usuários autenticados acessando `/login` são redirecionados para `/`.
+  4. Detecção e tratamento de sessão expirada: expiração de token direciona suavemente para reautenticação com aviso informativo acessível.
+  5. Isolamento visual absoluto de tenants: `TenantSwitcher` exibe e permite alternar exclusivamente entre as memberships legítimas do usuário autenticado, sem qualquer exposição de terceiros.
+  6. Suíte de testes do frontend com 28/28 testes aprovados (100% de sucesso) e build de produção Next.js 15 gerado sem erros.
+- **Resultado:** **`PROMPT P002-FE = APPROVED`**. O prompt subsequente (`P003-BE`) está formalmente liberado e transita para `READY`.
 
 ### Transição: PROMPT P002-BE $\rightarrow$ `APPROVED`
 - **Data/Hora:** 18/11/2026 09:07 BRT

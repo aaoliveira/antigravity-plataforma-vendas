@@ -5,6 +5,8 @@ import { ThemeToggle } from './ThemeToggle';
 import { ModulePlaceholder } from './ModulePlaceholder';
 import { EmptyState } from './EmptyState';
 import { LoadingSkeleton } from './LoadingSkeleton';
+import { useAuth } from '@/context/AuthContext';
+import { TenantSwitcher } from './TenantSwitcher';
 
 export interface NavModule {
   id: string;
@@ -162,6 +164,7 @@ export const navModules: NavModule[] = [
 ];
 
 export const AppShell: React.FC = () => {
+  const { user, currentTenant, logout, isAuthenticated } = useAuth();
   const [activeModuleId, setActiveModuleId] = useState<string>('FINANCIAL');
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [searchFilter, setSearchFilter] = useState<string>('');
@@ -227,18 +230,36 @@ export const AppShell: React.FC = () => {
           </div>
         </div>
 
-        {/* Direita: Tenant + Status + ThemeToggle */}
+        {/* Direita: Tenant + Status + ThemeToggle + Logout */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          <div className="hidden md:flex items-center gap-1.5 text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full px-3 py-1 text-slate-700 dark:text-slate-300">
-            <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
-            <span className="font-medium truncate max-w-[120px]">Matriz Principal</span>
-          </div>
+          {currentTenant ? (
+            <TenantSwitcher />
+          ) : (
+            <div className="hidden md:flex items-center gap-1.5 text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full px-3 py-1 text-slate-700 dark:text-slate-300">
+              <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+              <span className="font-medium truncate max-w-[120px]">Matriz Principal</span>
+            </div>
+          )}
 
           <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-1 text-[11px] font-medium text-emerald-700 dark:text-emerald-400">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
             <span className="hidden sm:inline">Fail-Closed Protegido</span>
             <span className="sm:hidden">Protegido</span>
           </span>
+
+          {isAuthenticated && (
+            <button
+              onClick={logout}
+              type="button"
+              aria-label="Encerrar sessão"
+              className="p-2 rounded-lg text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              title="Sair"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+            </button>
+          )}
 
           <ThemeToggle />
         </div>
@@ -432,6 +453,21 @@ export const AppShell: React.FC = () => {
                 ))}
               </nav>
             </div>
+
+            {isAuthenticated && (
+              <div className="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-2">
+                <div className="text-xs text-slate-600 dark:text-slate-400 truncate">
+                  Conectado como <span className="font-semibold text-slate-900 dark:text-white">{user?.email}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={logout}
+                  className="w-full py-2.5 px-3 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 font-medium text-xs hover:bg-rose-100 dark:hover:bg-rose-900/50 transition-colors flex items-center justify-center gap-2 min-h-[44px]"
+                >
+                  Encerrar Sessão
+                </button>
+              </div>
+            )}
 
             <div className="pt-3 border-t border-slate-200 dark:border-slate-800 text-[10px] text-slate-400 text-center">
               Seller Intelligence Platform &copy; 2026

@@ -373,3 +373,79 @@ DOCUMENTATION UPDATED:
 - spec.md, phase-gate.json, PHASE_STATUS.md, IMPLEMENTATION_STATUS.md e PROMPT_EXECUTION_LOG.md.
 NEXT PROMPT: UNLOCKED (P002-FE - Interface de Autenticação e Troca de Contexto liberado para READY).
 ```
+
+---
+
+## Execução: PROMPT P002-FE
+
+```text
+PROMPT ID: P002-FE
+FEATURE: Interface de Autenticação e Troca de Contexto
+STATUS: PASSED
+PRE-FLIGHT:
+- Verificado pré-requisito P002-BE como APPROVED em docs/delivery/phase-gate.json.
+- Diretório frontend/ verificado com Next.js 15.1.7, React 19, TypeScript strict e Tailwind CSS 3.4.17.
+- Requisitos de segurança confirmados: zero tokens em localStorage, adoção de cookies HttpOnly, proteção de rotas e isolamento estrito de tenant.
+DOCUMENTS REVIEWED:
+- docs/PRD.md (RF-001, RF-002, RF-050, RF-051, RNF-001, RNF-009, RNF-010)
+- docs/ARCHITECTURE.md
+- docs/SECURITY.md
+- docs/specs/P002-FE-authentication-tenant-ui/spec.md
+DEPENDENCIES:
+- P002-BE (Aprovado).
+FILES CHANGED:
+- frontend/src/app/api/auth/login/route.ts (Criado BFF Route Handler com Set-Cookie HttpOnly)
+- frontend/src/app/api/auth/logout/route.ts (Criado BFF Route Handler)
+- frontend/src/app/api/auth/session/route.ts (Criado BFF Route Handler)
+- frontend/src/app/api/auth/switch-tenant/route.ts (Criado BFF Route Handler)
+- frontend/src/middleware.ts (Criado Route Protection Middleware)
+- frontend/src/context/AuthContext.tsx (Criado React Context para Sessão e Tenant)
+- frontend/src/components/TenantSwitcher.tsx (Criado Dropdown com memberships exclusivas do usuário)
+- frontend/src/app/login/page.tsx (Criado Página de Login acessível WCAG 2.2 AA)
+- frontend/src/app/layout.tsx (Atualizado com AuthProvider)
+- frontend/src/components/AppShell.tsx (Atualizado com TenantSwitcher e Logout)
+- frontend/src/app/login/LoginPage.test.tsx (Criado)
+- frontend/src/components/TenantSwitcher.test.tsx (Criado)
+- frontend/src/test/RouteProtection.test.ts (Criado)
+- docs/specs/P002-FE-authentication-tenant-ui/spec.md (Criado)
+- docs/delivery/phase-gate.json (Atualizado)
+- docs/delivery/PHASE_STATUS.md (Atualizado)
+- docs/IMPLEMENTATION_STATUS.md (Atualizado)
+- docs/PROMPT_EXECUTION_LOG.md (Atualizado)
+API/DB CONTRACTS:
+- POST /api/auth/login: Recebe credenciais, injeta cookie HttpOnly seller_access_token (maxAge: 900s).
+- POST /api/auth/logout: Remove o cookie seller_access_token.
+- GET /api/auth/session: Recupera estado da sessão autenticada e detecta expiração.
+- POST /api/auth/switch-tenant: Valida e atualiza cookie para novo tenant ativo.
+SECURITY CHECKS:
+- Tokens de acesso persistidos exclusivamente em cookies HttpOnly (SameSite=Lax, Path=/), imunizando contra ataques XSS de roubo de sessão.
+- Nenhum token sensível é persistido em localStorage ou sessionStorage.
+- Rotas protegidas via middleware: requisições não autenticadas a rotas privadas são redirecionadas com status 307 para /login.
+- Sessão expirada no backend (HTTP 401) limpa a sessão local e redireciona para reautenticação.
+- O seletor de tenant apresenta estritamente as organizações associadas às memberships do usuário autenticado (zero vazamento de dados entre clientes).
+TESTS EXECUTED:
+- pnpm --dir frontend run build (Next.js 15.1.7 build de produção gerado com sucesso; 0 erros de tipagem ou linting).
+- pnpm --dir frontend test (Vitest 3.2.7): 28 testes aprovados no total:
+  * LoginPage.test.tsx: 4 testes aprovados (renderização acessível, login com sucesso, alerta de erro role="alert", preenchimento rápido).
+  * TenantSwitcher.test.tsx: 4 testes aprovados (exibição de tenant ativo, exibição exclusiva de memberships do usuário, troca de tenant, fechamento com Escape).
+  * RouteProtection.test.ts: 4 testes aprovados (redirecionamento anônimo para /login, permissão de rota pública, redirecionamento de autenticado de /login para /, acesso ao dashboard com cookie).
+  * ResponsiveLayout.test.tsx: 5 testes aprovados (breakpoints 360, 768, 1024, 1440 px, touch targets >= 48px).
+  * AppShell.test.tsx: 5 testes aprovados.
+  * ThemeToggle.test.tsx: 4 testes aprovados.
+  * EmptyStateAndLoading.test.tsx: 2 testes aprovados.
+- cd backend && ./mvnw test -q (31 testes de backend aprovados, zero regressão).
+TEST RESULTS:
+- Frontend: 28/28 testes PASSED (100% de sucesso em 1.61s).
+- Backend: 31/31 testes PASSED (100% de sucesso).
+POLICY EVIDENCE:
+- Nenhuma chamada a marketplace realizada nesta etapa de frontend/auth.
+OPEN QUESTIONS:
+- Nenhuma nova dúvida técnica impeditiva.
+FAILURES / ROOT CAUSE:
+- Nenhuma falha identificada durante a implementação.
+REMEDIATION:
+- Não aplicável.
+DOCUMENTATION UPDATED:
+- spec.md, phase-gate.json, PHASE_STATUS.md, IMPLEMENTATION_STATUS.md e PROMPT_EXECUTION_LOG.md.
+NEXT PROMPT: UNLOCKED (P003-BE - Conexões Oficiais com Mercado Livre e Shopee liberado para READY).
+```

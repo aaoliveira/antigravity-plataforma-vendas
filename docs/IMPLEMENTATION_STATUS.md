@@ -1,6 +1,6 @@
 # Status de Implementação e Quality Gates do Roadmap
 
-> **Status Atual Geral:** PROMPT P002-BE = `PASSED` &middot; PROMPT P002-FE = `READY`  
+> **Status Atual Geral:** PROMPT P002-FE = `PASSED` &middot; PROMPT P003-BE = `READY`  
 > **Data da Última Atualização:** 18/11/2026  
 > **Regra de Transição:** O próximo prompt só é liberado para `IN_PROGRESS` quando o anterior atingir formalmente `PASSED`.  
 
@@ -14,7 +14,8 @@
 | **P001-BE** | Estrutura Base do Repositório e Backend Modular | E01 | Backend | **`PASSED`** | P000 (`PASSED`) | 17/11/2026 |
 | **P001-FE** | Shell da Aplicação Web Responsiva | E01 | Frontend | **`PASSED`** | P001-BE (`PASSED`) | 17/11/2026 |
 | **P002-BE** | Identidade Mínima, Autenticação e Contexto do Tenant | E02 | Backend | **`PASSED`** | P001 (`PASSED`) | 18/11/2026 |
-| **P002-FE** | Interface de Autenticação e Troca de Contexto | E02 | Frontend | `READY` | P002-BE (`PASSED`) | --- |
+| **P002-FE** | Interface de Autenticação e Troca de Contexto | E02 | Frontend | **`PASSED`** | P002-BE (`PASSED`) | 18/11/2026 |
+| **P003-BE** | Conexões Oficiais com Mercado Livre e Shopee | E03 | Backend | `READY` | P002 (`PASSED`) | --- |
 | **P003-BE** | Conexões Oficiais com Mercado Livre e Shopee | E03 | Backend | `NOT_STARTED` | P002 (`PASSED`) | --- |
 | **P003-FE** | Gestão de Lojas, Conexões e Health Status | E03 | Frontend | `NOT_STARTED` | P003-BE (`PASSED`) | --- |
 | **P004-BE** | Ingestão Idempotente de Catálogo e Pedidos Próprios | E04 | Backend | `NOT_STARTED` | P003 (`PASSED`) | --- |
