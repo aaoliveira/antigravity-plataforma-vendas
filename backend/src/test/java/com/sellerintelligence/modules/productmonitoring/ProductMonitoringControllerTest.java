@@ -226,4 +226,155 @@ class ProductMonitoringControllerTest {
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.title", is("Violação de Regra de Negócio")));
     }
+
+    @Test
+    @DisplayName("P013-BE: Snapshots Idempotentes e Detecção de Alterações via API REST")
+    void shouldHandleIdempotentSnapshotAndChangeDetectionViaRest() throws Exception {
+        // 1. Criar Grupo
+        CreateMonitoringGroupRequest groupReq = new CreateMonitoringGroupRequest(
+                "Grupo Idempotência", "Desc", "#3B82F6", 15, 90
+        );
+        MvcResult groupRes = mockMvc.perform(post("/api/v1/monitoring/groups")
+                        .header("Authorization", "Bearer " + tokenAlpha)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(groupReq)))
+                .andExpect(status().isCreated())
+                .andReturn();
+        String groupId = (String) objectMapper.readValue(groupRes.getResponse().getContentAsString(), Map.class).get("id");
+
+        // 2. Criar Item
+        AddMonitoredItemRequest itemReq = new AddMonitoredItemRequest(
+                "MERCADO_LIVRE", "POLICY_MELI_OFFICIAL", "MLB-IDEM-01",
+                "Item Idempotente", new BigDecimal("100.00"), "BRL",
+                "https://mercadolivre.com.br/item/IDEM-01", "Seller", "NEW", 15
+        );
+        MvcResult itemRes = mockMvc.perform(post("/api/v1/monitoring/groups/" + groupId + "/items")
+                        .header("Authorization", "Bearer " + tokenAlpha)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(itemReq)))
+                .andExpect(status().isCreated())
+                .andReturn();
+        String itemId = (String) objectMapper.readValue(itemRes.getResponse().getContentAsString(), Map.class).get("id");
+
+        // 3. Disparar Primeiro Snapshot com chave 'key-001'
+        TriggerSnapshotRequest snap1Req = new TriggerSnapshotRequest(
+                new BigDecimal("100.00"), BigDecimal.ZERO, 10, "ACTIVE",
+                "Snapshot 1", "key-001", "https://mercadolivre.com.br/item/IDEM-01",
+                "OFFICIAL_API", null, false
+        );
+        MvcResult snap1Res = mockMvc.perform(post("/api/v1/monitoring/items/" + itemId + "/trigger-snapshot")
+                        .header("Authorization", "Bearer " + tokenAlpha)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(snap1Req)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status", is("SUCCESS")))
+                .andExpect(jsonPath("$.snapshot.changeType", is("INITIAL")))
+                .andExpect(jsonPath("$.snapshot.hasPriceChange", is(false)))
+                .andExpect(jsonPath("$.snapshot.idempotencyKey", is("key-001")))
+                .andReturn();
+        Map<?, ?> snap1Map = (Map<?, ?>) objectMapper.readValue(snap1Res.getResponse().getContentAsString(), Map.class).get("snapshot");
+        String snap1Id = (String) snap1Map.get("id");
+
+        // 4. Re-enviar o mesmo snapshot com 'key-001' (deve ser idempotente e retornar o mesmo ID)
+        mockMvc.perform(post("/api/v1/monitoring/items/" + itemId + "/trigger-snapshot")
+                        .header("Authorization", "Bearer " + tokenAlpha)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(snap1Req)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status", is("SUCCESS")))
+                .andExpect(jsonPath("$.snapshot.id", is(snap1Id)))
+                .andExpect(jsonPath("$.snapshot.idempotencyKey", is("key-001")));
+
+        // 5. Gravar Segundo Snapshot com preço 125.00 e chave 'key-002' (Aumento de preço detectado)
+        TriggerSnapshotRequest snap2Req = new TriggerSnapshotRequest(
+                new BigDecimal("125.00"), BigDecimal.ZERO, 8, "ACTIVE",
+                "Snapshot 2 com aumento", "key-002", "https://mercadolivre.com.br/item/IDEM-01",
+                "OFFICIAL_API", null, false
+        );
+        mockMvc.perform(post("/api/v1/monitoring/items/" + itemId + "/snapshots")
+                        .header("Authorization", "Bearer " + tokenAlpha)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(snap2Req)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.changeType", is("PRICE_INCREASE")))
+                .andExpect(jsonPath("$.hasPriceChange", is(true)))
+                .andExpect(jsonPath("$.priceChangeAmount", is(25.0000)))
+                .andExpect(jsonPath("$.priceChangePercent", is(25.0000)))
+                .andExpect(jsonPath("$.hasAvailabilityChange", is(true)))
+                .andExpect(jsonPath("$.previousSnapshotId", is(snap1Id)));
+
+        // 6. Consultar lista de snapshots históricos do item
+        mockMvc.perform(get("/api/v1/monitoring/items/" + itemId + "/snapshots")
+                        .header("Authorization", "Bearer " + tokenAlpha))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].price", is(125.00)))
+                .andExpect(jsonPath("$[0].changeType", is("PRICE_INCREASE")))
+                .andExpect(jsonPath("$[1].price", is(100.00)))
+                .andExpect(jsonPath("$[1].changeType", is("INITIAL")));
+    }
+
+    @Test
+    @DisplayName("P013-BE: Fail-Closed e Auditoria quando Fonte Externa estiver Indisponível")
+    void shouldFailClosedAndRecordExecutionWhenSourceIsUnavailable() throws Exception {
+        // 1. Criar Grupo e Item
+        CreateMonitoringGroupRequest groupReq = new CreateMonitoringGroupRequest(
+                "Grupo Resiliência", "Desc", "#10B981", 15, 90
+        );
+        MvcResult groupRes = mockMvc.perform(post("/api/v1/monitoring/groups")
+                        .header("Authorization", "Bearer " + tokenAlpha)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(groupReq)))
+                .andExpect(status().isCreated())
+                .andReturn();
+        String groupId = (String) objectMapper.readValue(groupRes.getResponse().getContentAsString(), Map.class).get("id");
+
+        AddMonitoredItemRequest itemReq = new AddMonitoredItemRequest(
+                "MERCADO_LIVRE", "POLICY_MELI_OFFICIAL", "MLB-RESIL-01",
+                "Item Resiliente", new BigDecimal("200.00"), "BRL",
+                "https://mercadolivre.com.br/item/RESIL-01", "Seller", "NEW", 15
+        );
+        MvcResult itemRes = mockMvc.perform(post("/api/v1/monitoring/groups/" + groupId + "/items")
+                        .header("Authorization", "Bearer " + tokenAlpha)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(itemReq)))
+                .andExpect(status().isCreated())
+                .andReturn();
+        String itemId = (String) objectMapper.readValue(itemRes.getResponse().getContentAsString(), Map.class).get("id");
+
+        // 2. Disparar Snapshot simulando fonte indisponível
+        TriggerSnapshotRequest failReq = new TriggerSnapshotRequest(
+                new BigDecimal("210.00"), BigDecimal.ZERO, 5, "ACTIVE",
+                "Tentativa com fonte indisponível", "fail-key-01", null, null, null, true
+        );
+
+        mockMvc.perform(post("/api/v1/monitoring/items/" + itemId + "/trigger-snapshot")
+                        .header("Authorization", "Bearer " + tokenAlpha)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(failReq)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status", is("FAILED_SOURCE_UNAVAILABLE")))
+                .andExpect(jsonPath("$.skipReason", containsString("FAILED_SOURCE_UNAVAILABLE")))
+                .andExpect(jsonPath("$.snapshot", nullValue()));
+
+        // 3. Nenhum snapshot deve ter sido inserido no histórico
+        mockMvc.perform(get("/api/v1/monitoring/items/" + itemId + "/snapshots")
+                        .header("Authorization", "Bearer " + tokenAlpha))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
+
+        // 4. Execução com falha deve constar no log de execuções
+        mockMvc.perform(get("/api/v1/monitoring/executions")
+                        .header("Authorization", "Bearer " + tokenAlpha))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].executionStatus", is("FAILED_SOURCE_UNAVAILABLE")));
+
+        // 5. Chamada direta ao endpoint de gravação de snapshots deve responder HTTP 503
+        mockMvc.perform(post("/api/v1/monitoring/items/" + itemId + "/snapshots")
+                        .header("Authorization", "Bearer " + tokenAlpha)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(failReq)))
+                .andExpect(status().isServiceUnavailable())
+                .andExpect(jsonPath("$.title", is("Fonte de Dados Indisponível")));
+    }
 }

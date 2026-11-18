@@ -293,4 +293,90 @@ class PostgresProductMonitoringRlsIntegrationTest {
             return null;
         });
     }
+
+    @Test
+    @DisplayName("P013-BE RLS: Unicidade de Idempotency Key é isolada por Tenant no PostgreSQL 17")
+    void rlsValidatesTenantScopedIdempotencyKeyConstraint() {
+        UUID groupAlphaId = UUID.randomUUID();
+        UUID itemAlphaId = UUID.randomUUID();
+        UUID groupBetaId = UUID.randomUUID();
+        UUID itemBetaId = UUID.randomUUID();
+        String sharedKey = "idem-key-postgres-17";
+
+        // 1. Cria grupo e item no Tenant Alpha
+        transactionTemplate.execute(status -> {
+            tenantDatabaseSession.setTenantSession(tenantAlphaId);
+            MonitoringGroupRecord g = new MonitoringGroupRecord(
+                    groupAlphaId, tenantAlphaId, "Grupo Alpha Idem", null, "#3B82F6",
+                    60, 90, MonitoringGroupStatus.ACTIVE, null, Instant.now(), Instant.now()
+            );
+            groupRepository.saveAndFlush(g);
+
+            MonitoredItemRecord i = new MonitoredItemRecord(
+                    itemAlphaId, tenantAlphaId, groupAlphaId, "MERCADO_LIVRE", "POL-1", "MLB-A1",
+                    "Item Alpha", new BigDecimal("100.00"), new BigDecimal("100.00"), "BRL",
+                    null, null, "NEW", MonitoredItemStatus.ACTIVE, 60, null, Instant.now(),
+                    null, null, Instant.now(), Instant.now()
+            );
+            itemRepository.saveAndFlush(i);
+
+            MonitoredItemSnapshotRecord s = new MonitoredItemSnapshotRecord(
+                    UUID.randomUUID(), tenantAlphaId, itemAlphaId, groupAlphaId, "MERCADO_LIVRE", "MLB-A1",
+                    new BigDecimal("100.00"), "BRL", BigDecimal.ZERO, "FREE", 10, "ACTIVE",
+                    "OBSERVED", Instant.now(), Instant.now(), Instant.now().plusSeconds(3600), true,
+                    sharedKey, null, "OFFICIAL_API", "SUCCESS", null, false,
+                    BigDecimal.ZERO, BigDecimal.ZERO, false, false, "INITIAL", Instant.now()
+            );
+            snapshotRepository.saveAndFlush(s);
+            return null;
+        });
+
+        // 2. Tenant Alpha tenta inserir snapshot DUPLICADO com a mesma chave -> DEVE FALHAR (Unique Constraint)
+        assertThatThrownBy(() -> {
+            transactionTemplate.execute(status -> {
+                tenantDatabaseSession.setTenantSession(tenantAlphaId);
+                MonitoredItemSnapshotRecord duplicate = new MonitoredItemSnapshotRecord(
+                        UUID.randomUUID(), tenantAlphaId, itemAlphaId, groupAlphaId, "MERCADO_LIVRE", "MLB-A1",
+                        new BigDecimal("100.00"), "BRL", BigDecimal.ZERO, "FREE", 10, "ACTIVE",
+                        "OBSERVED", Instant.now(), Instant.now(), Instant.now().plusSeconds(3600), true,
+                        sharedKey, null, "OFFICIAL_API", "SUCCESS", null, false,
+                        BigDecimal.ZERO, BigDecimal.ZERO, false, false, "INITIAL", Instant.now()
+                );
+                snapshotRepository.saveAndFlush(duplicate);
+                return null;
+            });
+        }).isInstanceOf(DataAccessException.class);
+
+        // 3. Tenant Beta usa a MESMA chave "sharedKey" no seu próprio tenant -> DEVE TER SUCESSO (Chave isolada por tenant)
+        transactionTemplate.execute(status -> {
+            tenantDatabaseSession.setTenantSession(tenantBetaId);
+            MonitoringGroupRecord gBeta = new MonitoringGroupRecord(
+                    groupBetaId, tenantBetaId, "Grupo Beta Idem", null, "#10B981",
+                    60, 90, MonitoringGroupStatus.ACTIVE, null, Instant.now(), Instant.now()
+            );
+            groupRepository.saveAndFlush(gBeta);
+
+            MonitoredItemRecord iBeta = new MonitoredItemRecord(
+                    itemBetaId, tenantBetaId, groupBetaId, "MERCADO_LIVRE", "POL-1", "MLB-B1",
+                    "Item Beta", new BigDecimal("200.00"), new BigDecimal("200.00"), "BRL",
+                    null, null, "NEW", MonitoredItemStatus.ACTIVE, 60, null, Instant.now(),
+                    null, null, Instant.now(), Instant.now()
+            );
+            itemRepository.saveAndFlush(iBeta);
+
+            MonitoredItemSnapshotRecord sBeta = new MonitoredItemSnapshotRecord(
+                    UUID.randomUUID(), tenantBetaId, itemBetaId, groupBetaId, "MERCADO_LIVRE", "MLB-B1",
+                    new BigDecimal("200.00"), "BRL", BigDecimal.ZERO, "FREE", 5, "ACTIVE",
+                    "OBSERVED", Instant.now(), Instant.now(), Instant.now().plusSeconds(3600), true,
+                    sharedKey, null, "OFFICIAL_API", "SUCCESS", null, false,
+                    BigDecimal.ZERO, BigDecimal.ZERO, false, false, "INITIAL", Instant.now()
+            );
+            snapshotRepository.saveAndFlush(sBeta);
+
+            Optional<MonitoredItemSnapshotRecord> found = snapshotRepository.findByTenantIdAndIdempotencyKey(tenantBetaId, sharedKey);
+            assertThat(found).isPresent();
+            assertThat(found.get().getItemId()).isEqualTo(itemBetaId);
+            return null;
+        });
+    }
 }

@@ -1,6 +1,6 @@
 # Status de Implementação e Quality Gates do Roadmap
 
-> **Status Atual Geral:** PROMPT P012-FE = `PASSED` | P013 = `READY`  
+> **Status Atual Geral:** PROMPT P013-BE = `PASSED` | P013-FE = `READY`  
 > **Data da Última Atualização:** 18/11/2026  
 > **Regra de Transição:** O próximo prompt só é liberado para `IN_PROGRESS` quando o anterior atingir formalmente `PASSED`.
 
@@ -44,7 +44,8 @@
 | **P011-FE** | Chat Assistente e Geração Assistida de Anúncios                                          | E10   | Frontend   | `NOT_STARTED`  | P011-BE (`PASSED`)     | ---            |
 | **P012-BE** | Exportação Segura de Relatórios e Auditoria                                              | E11   | Backend    | `NOT_STARTED`  | P009 (`PASSED`)        | ---            |
 | **P012-FE** | Central de Relatórios e Downloads Auditados                                              | E11   | Frontend   | `NOT_STARTED`  | P012-BE (`PASSED`)     | ---            |
-| **P013**    | Hardening de Segurança, Testes E2E e Release MVP                                         | E12   | Fullstack  | `READY`        | P001 a P012 (`PASSED`) | ---            |
+| **P013-BE** | Snapshots Idempotentes, Detecção de Alterações e Resiliência de Coleta                    | E05   | Backend    | `PASSED`       | P012-FE (`PASSED`)     | 18/11/2026     |
+| **P013-FE** | Gráfico Histórico, Tooltips de Fonte e Lacunas Visíveis                                  | E05   | Frontend   | `READY`        | P013-BE (`PASSED`)     | ---            |
 
 ---
 

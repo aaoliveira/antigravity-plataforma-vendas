@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P013",
-  "status": "READY",
-  "nextPrompt": "MVP_RELEASE",
+  "currentPrompt": "P013-BE",
+  "status": "APPROVED",
+  "nextPrompt": "P013-FE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-18T17:28:00-03:00",
+  "lastUpdated": "2026-11-18T18:05:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -29,7 +29,8 @@
     "P011-BE",
     "P011-FE",
     "P012-BE",
-    "P012-FE"
+    "P012-FE",
+    "P013-BE"
   ],
   "gates": {
     "P000": {
@@ -395,6 +396,20 @@
       "buildPassed": true,
       "blockingIssues": 0,
       "prerequisites": ["P012-BE"]
+    },
+    "P013-BE": {
+      "name": "Snapshots Idempotentes, Detecção de Alterações e Resiliência de Coleta",
+      "status": "APPROVED",
+      "startedAt": "2026-11-18T17:45:00-03:00",
+      "completedAt": "2026-11-18T18:05:00-03:00",
+      "evidence": "docs/specs/P013-BE-idempotent-snapshots/spec.md",
+      "testsExecuted": 21,
+      "testsPassed": 21,
+      "totalBackendSuiteTests": 243,
+      "totalFrontendSuiteTests": 136,
+      "buildPassed": true,
+      "blockingIssues": 0,
+      "prerequisites": ["P012-FE"]
     }
   },
   "maintenanceGates": {

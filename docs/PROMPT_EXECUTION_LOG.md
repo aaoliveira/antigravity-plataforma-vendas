@@ -2235,3 +2235,72 @@ DOCUMENTATION UPDATED:
 
 NEXT PROMPT: UNLOCKED (P013 liberado para READY).
 ```
+
+
+## Execução: PROMPT 013-BE
+
+```text
+PROMPT ID: P013-BE
+FEATURE: Snapshots Idempotentes, Detecção de Alterações e Resiliência de Coleta
+STATUS: PASSED
+PRE-FLIGHT:
+- Verificação do Gate Anterior: P012-FE aprovado com 369/369 testes globais aprovados.
+- Regras anti-alucinação verificadas: zero interpolação sintética, histórico demonstra apenas dados coletados, falhas registradas, fail-closed ativado quando fonte indisponível.
+DOCUMENTS REVIEWED:
+- docs/product/PRD.md
+- docs/specs/P012-BE-product-monitoring/spec.md
+- docs/specs/P013-BE-idempotent-snapshots/spec.md
+- .agents/rules/anti-hallucination.md
+- .agents/rules/testing-and-quality.md
+- .agents/rules/phase-gates.md
+DEPENDENCIES:
+- P012-FE (Aprovado).
+FILES CREATED:
+- docs/specs/P013-BE-idempotent-snapshots/spec.md
+- backend/src/main/resources/db/migration/V11__idempotent_snapshots_and_change_detection.sql
+- backend/src/main/java/com/sellerintelligence/core/exception/SourceUnavailableException.java
+FILES MODIFIED:
+- backend/src/main/java/com/sellerintelligence/core/exception/GlobalExceptionHandler.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/entity/MonitoredItemSnapshotRecord.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/model/MonitoredItemSnapshotDto.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/model/JobExecutionStatus.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/model/TriggerSnapshotRequest.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/repository/MonitoredItemSnapshotRepository.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/service/MonitoredItemSnapshotService.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/service/MonitoringJobExecutionService.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/ProductMonitoringController.java
+- backend/src/test/java/com/sellerintelligence/modules/productmonitoring/MonitoredItemSnapshotServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/productmonitoring/ProductMonitoringControllerTest.java
+- backend/src/test/java/com/sellerintelligence/modules/productmonitoring/PostgresProductMonitoringRlsIntegrationTest.java
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+COMMANDS EXECUTED:
+- cd backend && ./mvnw test -Dtest=MonitoredItemSnapshotServiceTest
+- cd backend && ./mvnw test -Dtest=ProductMonitoringControllerTest
+- cd backend && ./mvnw test -Dtest=PostgresProductMonitoringRlsIntegrationTest
+- cd backend && ./mvnw test (Suíte completa de 243 testes)
+- pnpm --dir frontend test -- --run (Suíte completa de 136 testes)
+TEST RESULTS:
+- Backend: 243/243 testes aprovados (100% de sucesso).
+  * 10 testes em MonitoredItemSnapshotServiceTest (idempotência determinística SHA-256 e customizada, detecção de INITIAL, PRICE_INCREASE, PRICE_DECREASE, AVAILABILITY_CHANGE, NO_CHANGE, fail-closed por fonte indisponível, metadados de validade e rejeição de snapshots retroativos).
+  * 5 testes em ProductMonitoringControllerTest (CRUD completo, rejeição de fontes proibidas, disparo e consulta de snapshots idempotentes com detecção de alterações via REST, resiliência fail-closed com status FAILED_SOURCE_UNAVAILABLE e endpoint direto retornando HTTP 503).
+  * 6 testes em PostgresProductMonitoringRlsIntegrationTest (validação real com PostgreSQL 17 alpine e Testcontainers, comprovando isolamento RLS e constraint física de unicidade de idempotência uq_snapshots_tenant_idempotency por tenant).
+- Frontend: 136/136 testes aprovados (zero regressões em 20 arquivos).
+- Total Geral do Projeto: 379 testes automatizados aprovados (243 backend + 136 frontend), 0 falhas, 0 erros, 0 skips.
+POLICY EVIDENCE:
+- Critério de Aceite 1: Duplicatas evitadas: garantia determinística de idempotência via SHA-256(tenant_id:item_id:epoch_minute:price:quantity) e chave fornecida, com constraint UNIQUE (tenant_id, idempotency_key) física no PostgreSQL 17. Re-execuções retornam registro existente sem criar duplicatas.
+- Critério de Aceite 2: Falhas registradas: quando a fonte externa falha ou está indisponível, a tentativa é registrada em monitoring_job_executions com status FAILED_SOURCE_UNAVAILABLE, duração e motivo detalhado.
+- Critério de Aceite 3: Timestamp correto: registro auditável de collected_at (UTC agora), observed_at (timestamp do marketplace), valid_until (validade calculada ou explícita) e status de coleta SUCCESS/PARTIAL.
+- Critério de Aceite 4: Histórico demonstra apenas dados coletados: nenhum snapshot sintético ou aproximado é persistido quando a fonte está indisponível. Histórico histórico inicia exclusivamente a partir do primeiro snapshot efetivo pós-inclusão (firstSnapshotAt >= createdAt).
+- Critério de Aceite 5: Política de retenção e particionamento: retenção gerenciada por MonitoringRetentionService com expurgo após retention_days; análise técnica fundamentada descartando particionamento físico no MVP por sobrecarga desnecessária em RLS e foreign keys para o volume atual.
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+DOCUMENTATION UPDATED:
+- docs/specs/P013-BE-idempotent-snapshots/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+NEXT PROMPT: UNLOCKED (P013-FE liberado para READY).
+```

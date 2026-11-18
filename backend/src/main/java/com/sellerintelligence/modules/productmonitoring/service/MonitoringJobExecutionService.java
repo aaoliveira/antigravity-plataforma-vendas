@@ -1,6 +1,7 @@
 package com.sellerintelligence.modules.productmonitoring.service;
 
 import com.sellerintelligence.core.exception.ResourceNotFoundException;
+import com.sellerintelligence.core.exception.SourceUnavailableException;
 import com.sellerintelligence.modules.productmonitoring.entity.MonitoredItemRecord;
 import com.sellerintelligence.modules.productmonitoring.entity.MonitoringGroupRecord;
 import com.sellerintelligence.modules.productmonitoring.entity.MonitoringJobExecutionRecord;
@@ -11,6 +12,7 @@ import com.sellerintelligence.modules.productmonitoring.model.MonitoringGroupSta
 import com.sellerintelligence.modules.productmonitoring.model.MonitoringJobExecutionDto;
 import com.sellerintelligence.modules.productmonitoring.model.TriggerSnapshotRequest;
 import com.sellerintelligence.modules.productmonitoring.repository.MonitoredItemRepository;
+import com.sellerintelligence.modules.productmonitoring.repository.MonitoredItemSnapshotRepository;
 import com.sellerintelligence.modules.productmonitoring.repository.MonitoringGroupRepository;
 import com.sellerintelligence.modules.productmonitoring.repository.MonitoringJobExecutionRepository;
 import org.slf4j.Logger;
@@ -30,7 +32,7 @@ import java.util.UUID;
  * Garante o cumprimento estrito de:
  * 1. "Agendamento respeita quotas, janela mínima, kill switch e capacidade validada."
  * 2. "Não buscar dado em fonte proibida."
- * 3. Auditoria de cancelamentos e execuções.
+ * 3. "Não criar snapshots se a fonte estiver indisponível" e registrar auditoria de falhas.
  */
 @Service
 public class MonitoringJobExecutionService {
@@ -39,6 +41,7 @@ public class MonitoringJobExecutionService {
 
     private final MonitoredItemRepository itemRepository;
     private final MonitoringGroupRepository groupRepository;
+    private final MonitoredItemSnapshotRepository snapshotRepository;
     private final MonitoredItemSnapshotService snapshotService;
     private final MonitoringSchedulerPolicyValidator policyValidator;
     private final MonitoringJobExecutionRepository executionRepository;
@@ -53,12 +56,14 @@ public class MonitoringJobExecutionService {
     public MonitoringJobExecutionService(
             MonitoredItemRepository itemRepository,
             MonitoringGroupRepository groupRepository,
+            MonitoredItemSnapshotRepository snapshotRepository,
             MonitoredItemSnapshotService snapshotService,
             MonitoringSchedulerPolicyValidator policyValidator,
             MonitoringJobExecutionRepository executionRepository
     ) {
         this.itemRepository = itemRepository;
         this.groupRepository = groupRepository;
+        this.snapshotRepository = snapshotRepository;
         this.snapshotService = snapshotService;
         this.policyValidator = policyValidator;
         this.executionRepository = executionRepository;
@@ -79,7 +84,17 @@ public class MonitoringJobExecutionService {
                 .filter(g -> g.getStatus() != MonitoringGroupStatus.DELETED)
                 .orElseThrow(() -> new ResourceNotFoundException("Grupo de monitoramento associado não encontrado: " + item.getGroupId()));
 
-        // 1. Validação de Políticas, Kill Switch, Quota e Janela Mínima
+        // 1. Verificação Prévia de Idempotência (se idempotencyKey fornecida já foi persistida)
+        if (request != null && request.idempotencyKey() != null && !request.idempotencyKey().isBlank()) {
+            var existingOpt = snapshotRepository.findByTenantIdAndIdempotencyKey(tenantId, request.idempotencyKey().trim());
+            if (existingOpt.isPresent()) {
+                log.info("Execução idempotente detectada para item={}, key={}. Retornando snapshot já persistido.",
+                        itemId, request.idempotencyKey().trim());
+                return new ExecutionResult(JobExecutionStatus.SUCCESS, null, snapshotService.toDto(existingOpt.get()));
+            }
+        }
+
+        // 2. Validação de Políticas, Kill Switch, Quota e Janela Mínima
         var validation = policyValidator.validatePreExecution(tenantId, item, group, Instant.now());
         if (!validation.isAllowed()) {
             long durationMs = System.currentTimeMillis() - startMs;
@@ -104,7 +119,7 @@ public class MonitoringJobExecutionService {
             return new ExecutionResult(validation.status(), validation.reason(), null);
         }
 
-        // 2. Execução Efetiva do Snapshot
+        // 2. Execução Efetiva do Snapshot com Resiliência Fail-Closed
         BigDecimal price = (request != null && request.price() != null)
                 ? request.price()
                 : (item.getCurrentPrice() != null ? item.getCurrentPrice() : item.getInitialPrice());
@@ -112,35 +127,66 @@ public class MonitoringJobExecutionService {
         BigDecimal shippingCost = request != null ? request.shippingCost() : null;
         Integer availableQty = request != null ? request.availableQuantity() : null;
         String status = (request != null && request.status() != null) ? request.status() : "ACTIVE";
+        String idempotencyKey = request != null ? request.idempotencyKey() : null;
+        String sourceUrl = request != null ? request.sourceUrl() : null;
+        String sourceType = request != null ? request.sourceType() : null;
+        Instant validUntil = request != null ? request.validUntil() : null;
+        Boolean simulateUnavailable = request != null && Boolean.TRUE.equals(request.simulateSourceUnavailable());
 
-        MonitoredItemSnapshotDto snapshot = snapshotService.recordSnapshot(
-                tenantId,
-                item.getId(),
-                price,
-                shippingCost,
-                availableQty,
-                status,
-                Instant.now()
-        );
+        try {
+            MonitoredItemSnapshotDto snapshot = snapshotService.recordSnapshot(
+                    tenantId,
+                    item.getId(),
+                    price,
+                    shippingCost,
+                    availableQty,
+                    status,
+                    Instant.now(),
+                    idempotencyKey,
+                    sourceUrl,
+                    sourceType,
+                    validUntil,
+                    simulateUnavailable
+            );
 
-        long durationMs = System.currentTimeMillis() - startMs;
-        MonitoringJobExecutionRecord executionRecord = new MonitoringJobExecutionRecord(
-                UUID.randomUUID(),
-                tenantId,
-                item.getId(),
-                group.getId(),
-                "ITEM_SNAPSHOT",
-                item.getMarketplace(),
-                item.getSourcePolicyId(),
-                JobExecutionStatus.SUCCESS,
-                null,
-                Instant.now(),
-                durationMs
-        );
-        executionRepository.save(executionRecord);
+            long durationMs = System.currentTimeMillis() - startMs;
+            MonitoringJobExecutionRecord executionRecord = new MonitoringJobExecutionRecord(
+                    UUID.randomUUID(),
+                    tenantId,
+                    item.getId(),
+                    group.getId(),
+                    "ITEM_SNAPSHOT",
+                    item.getMarketplace(),
+                    item.getSourcePolicyId(),
+                    JobExecutionStatus.SUCCESS,
+                    null,
+                    Instant.now(),
+                    durationMs
+            );
+            executionRepository.save(executionRecord);
 
-        log.info("Job de snapshot executado com sucesso: item={}, duration={}ms", itemId, durationMs);
-        return new ExecutionResult(JobExecutionStatus.SUCCESS, null, snapshot);
+            log.info("Job de snapshot executado com sucesso: item={}, duration={}ms", itemId, durationMs);
+            return new ExecutionResult(JobExecutionStatus.SUCCESS, null, snapshot);
+        } catch (SourceUnavailableException ex) {
+            long durationMs = System.currentTimeMillis() - startMs;
+            MonitoringJobExecutionRecord executionRecord = new MonitoringJobExecutionRecord(
+                    UUID.randomUUID(),
+                    tenantId,
+                    item.getId(),
+                    group.getId(),
+                    "ITEM_SNAPSHOT",
+                    item.getMarketplace(),
+                    item.getSourcePolicyId(),
+                    JobExecutionStatus.FAILED_SOURCE_UNAVAILABLE,
+                    "FAILED_SOURCE_UNAVAILABLE: " + ex.getMessage(),
+                    Instant.now(),
+                    durationMs
+            );
+            executionRepository.save(executionRecord);
+
+            log.error("Job de snapshot falhou por indisponibilidade da fonte: item={}, motivo={}", itemId, ex.getMessage());
+            return new ExecutionResult(JobExecutionStatus.FAILED_SOURCE_UNAVAILABLE, "FAILED_SOURCE_UNAVAILABLE: " + ex.getMessage(), null);
+        }
     }
 
     @Transactional(readOnly = true)

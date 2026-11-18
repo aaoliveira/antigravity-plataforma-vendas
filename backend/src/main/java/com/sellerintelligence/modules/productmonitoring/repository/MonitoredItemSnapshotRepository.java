@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -25,6 +26,16 @@ public interface MonitoredItemSnapshotRepository extends JpaRepository<Monitored
             @Param("tenantId") UUID tenantId,
             @Param("itemId") UUID itemId,
             @Param("afterInstant") Instant afterInstant
+    );
+
+    Optional<MonitoredItemSnapshotRecord> findByTenantIdAndIdempotencyKey(UUID tenantId, String idempotencyKey);
+
+    Optional<MonitoredItemSnapshotRecord> findTopByTenantIdAndItemIdOrderByObservedAtDesc(UUID tenantId, UUID itemId);
+
+    Optional<MonitoredItemSnapshotRecord> findTopByTenantIdAndItemIdAndObservedAtLessThanEqualOrderByObservedAtDesc(
+            UUID tenantId,
+            UUID itemId,
+            Instant observedAt
     );
 
     int countByTenantIdAndItemId(UUID tenantId, UUID itemId);

@@ -105,6 +105,19 @@ public class GlobalExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(SourceUnavailableException.class)
+    public ProblemDetail handleSourceUnavailableException(SourceUnavailableException ex, HttpServletRequest request) {
+        log.warn("Fonte de dados indisponível (fail-closed): source={}, message={}", ex.getSourceIdentifier(), ex.getMessage());
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage());
+        problem.setTitle("Fonte de Dados Indisponível");
+        problem.setType(URI.create("https://sellerintelligence.com.br/errors/source-unavailable"));
+        if (ex.getSourceIdentifier() != null) {
+            problem.setProperty("source_identifier", ex.getSourceIdentifier());
+        }
+        enrichProblemDetail(problem, request);
+        return problem;
+    }
+
     @ExceptionHandler(DuplicateResourceException.class)
     public ProblemDetail handleDuplicateResourceException(DuplicateResourceException ex, HttpServletRequest request) {
         log.warn("Recurso duplicado ou conflito de unicidade: {}", ex.getMessage());

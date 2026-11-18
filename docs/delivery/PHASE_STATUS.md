@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P012-FE = `APPROVED` | PROMPT P013 = `READY`  
+> **Status Vigente:** PROMPT P013-BE = `APPROVED` | PROMPT P013-FE = `READY`  
 > **Data:** 18/11/2026
 
 ---
@@ -35,7 +35,8 @@
 | **P011-FE** | Interface de Comparação de Listings, Histórico Real e Alertas de Incompatibilidade       | **`APPROVED`** | 18/11/2026        | [docs/specs/P011-FE-listing-comparison-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P011-FE-listing-comparison-view/spec.md), [ListingComparisonView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/ListingComparisonView.test.tsx), [ListingPriceHistoryDrawer.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/ListingPriceHistoryDrawer.test.tsx)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | **SIM (P012-BE liberado)** |
 | **P012-BE** | Grupos por Tenant, Itens Monitorados e Snapshots Históricos Seguros                      | **`APPROVED`** | 18/11/2026        | [docs/specs/P012-BE-product-monitoring/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P012-BE-product-monitoring/spec.md), [MonitoringGroupServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/productmonitoring/service/MonitoringGroupServiceTest.java), [MonitoredItemServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/productmonitoring/service/MonitoredItemServiceTest.java), [MonitoredItemSnapshotServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/productmonitoring/service/MonitoredItemSnapshotServiceTest.java), [MonitoringSchedulerPolicyValidatorTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/productmonitoring/service/MonitoringSchedulerPolicyValidatorTest.java), [MonitoringRetentionServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/productmonitoring/service/MonitoringRetentionServiceTest.java), [ProductMonitoringControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/productmonitoring/ProductMonitoringControllerTest.java), [PostgresProductMonitoringRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/productmonitoring/PostgresProductMonitoringRlsIntegrationTest.java) | **SIM (P012-FE liberado)** |
 | **P012-FE** | Interface de Grupos de Monitoramento, Snapshots e Alertas                                | **`APPROVED`** | 18/11/2026        | [docs/specs/P012-FE-product-monitoring-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P012-FE-product-monitoring-view/spec.md), [ProductMonitoringView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/ProductMonitoringView.test.tsx), [MonitoringTimelineDrawer.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/MonitoringTimelineDrawer.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (P013 liberado)**    |
-| **P013**    | Hardening de Segurança, Testes E2E e Release MVP                                         | `READY`        | ---               | Pré-requisitos: P001 a P012 (`APPROVED`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Não                        |
+| **P013-BE** | Snapshots Idempotentes, Detecção de Alterações e Resiliência de Coleta                    | **`APPROVED`** | 18/11/2026        | [docs/specs/P013-BE-idempotent-snapshots/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P013-BE-idempotent-snapshots/spec.md), [MonitoredItemSnapshotServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/productmonitoring/service/MonitoredItemSnapshotServiceTest.java), [ProductMonitoringControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/productmonitoring/ProductMonitoringControllerTest.java), [PostgresProductMonitoringRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/productmonitoring/PostgresProductMonitoringRlsIntegrationTest.java) | **SIM (P013-FE liberado)** |
+| **P013-FE** | Gráfico Histórico, Tooltips de Fonte e Lacunas Visíveis                                  | `READY`        | ---               | Pré-requisito: P013-BE (`APPROVED`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Não                        |
 
 ---
 
@@ -511,4 +512,38 @@
      - 233/233 testes de backend mantidos com 100% de sucesso.
      - Total do projeto: 369 testes automatizados aprovados (0 falhas, 0 erros, 0 skips).
      - `pnpm exec tsc --noEmit` limpo e `next build` 15.1.7 gerando 34 rotas com sucesso.
-- **Resultado:** **`PROMPT P012-FE = APPROVED`**. O prompt subsequente (`P013`) está formalmente liberado e transita para `READY`.
+- **Resultado:** **`PROMPT P012-FE = APPROVED`**. O prompt subsequente (`P013-BE`) está formalmente liberado e transita para `READY`.
+
+---
+
+### Transição: PROMPT P013-BE $\rightarrow$ `APPROVED`
+
+- **Data/Hora:** 18/11/2026 18:05 BRT
+- **Avaliador:** Tech Lead / Staff Software Engineer
+- **Critérios Validados:**
+  1. **Snapshots Idempotentes com Chave Determinística (`MonitoredItemSnapshotService.java`):**
+     - Deduplicação física no banco via constraint `uq_snapshots_tenant_idempotency UNIQUE (tenant_id, idempotency_key)`.
+     - Geração automática de hash SHA-256 determinístico (`tenant_id:item_id:epoch_minute:price:quantity`) caso o cliente não forneça chave customizada.
+     - Re-execuções com a mesma chave retornam o registro existente imediatamente sem gerar novas linhas nem erros.
+  2. **Proveniência, Validade e Timestamps Precisos:**
+     - Registro explícito de `collected_at` (audit timestamp UTC), `observed_at` (timestamp no marketplace), `valid_until` (TTL de validade da observação), `source_url`, `source_type` (`OFFICIAL_API`, `LICENSED_CATALOG`, `PUBLIC_ENDPOINT`) e `collection_status` (`SUCCESS`, `PARTIAL`, `FAILED_SOURCE_UNAVAILABLE`).
+  3. **Detecção Automática de Alterações (Change Detection):**
+     - Comparação em tempo de persistência com o snapshot imediatamente anterior (`previous_snapshot_id`).
+     - Cálculo exato em `BigDecimal` com 4 casas decimais e arredondamento `HALF_UP` para `price_change_amount` e `price_change_percent`.
+     - Detecção de alteração de estoque (`has_availability_change`) e atributos/status (`has_attribute_change`).
+     - Classificação automática de `change_type`: `INITIAL`, `NO_CHANGE`, `PRICE_INCREASE`, `PRICE_DECREASE`, `AVAILABILITY_CHANGE`, `STATUS_CHANGE`.
+  4. **Resiliência Fail-Closed quando Fonte Indisponível:**
+     - Em caso de indisponibilidade da fonte (5xx, timeout, circuit breaker, kill switch), **nenhum snapshot é criado** na tabela `monitored_item_snapshots`.
+     - A falha é registrada em `monitoring_job_executions` com `execution_status = 'FAILED_SOURCE_UNAVAILABLE'`, motivo detalhado e duração da tentativa.
+     - Exceção `SourceUnavailableException` mapeada no `GlobalExceptionHandler` para HTTP 503 (Service Unavailable) em chamadas diretas.
+  5. **Governança de Retenção e Particionamento:**
+     - Decisão formal documentada: volume do MVP (< 1M linhas) não justifica particionamento físico no PostgreSQL 17 devido a restrições de FK e RLS.
+     - Retenção aplicada via `MonitoringRetentionService` com expurgo auditado após `retention_days`.
+  6. **Isolamento PostgreSQL 17 RLS e Integridade:**
+     - Migration Flyway `V11__idempotent_snapshots_and_change_detection.sql` executada com sucesso em PostgreSQL 17 e H2.
+     - Testes com Testcontainers (`PostgresProductMonitoringRlsIntegrationTest`) comprovaram unicidade de idempotência por tenant e bloqueio de violações cross-tenant.
+  7. **Testes Automatizados:**
+     - 243/243 testes de backend aprovados (10 unitários em `MonitoredItemSnapshotServiceTest`, 5 de controller em `ProductMonitoringControllerTest`, 6 de integração RLS em `PostgresProductMonitoringRlsIntegrationTest`).
+     - 136/136 testes de frontend aprovados (regressão mantida).
+     - Total geral do projeto: 379 testes automatizados aprovados (0 falhas, 0 erros, 0 skips).
+- **Resultado:** **`PROMPT P013-BE = APPROVED`**. O prompt subsequente (`P013-FE`) está formalmente liberado e transita para `READY`.

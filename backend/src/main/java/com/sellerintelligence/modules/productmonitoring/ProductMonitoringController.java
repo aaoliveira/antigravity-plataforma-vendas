@@ -173,6 +173,29 @@ public class ProductMonitoringController {
         return ResponseEntity.ok(snapshots);
     }
 
+    @PostMapping("/items/{itemId}/snapshots")
+    public ResponseEntity<MonitoredItemSnapshotDto> recordSnapshotDirect(
+            @PathVariable("itemId") UUID itemId,
+            @RequestBody(required = false) TriggerSnapshotRequest request
+    ) {
+        UUID tenantId = TenantContextHolder.getRequiredTenantId();
+        MonitoredItemSnapshotDto snapshot = snapshotService.recordSnapshot(
+                tenantId,
+                itemId,
+                request != null ? request.price() : null,
+                request != null ? request.shippingCost() : null,
+                request != null ? request.availableQuantity() : null,
+                request != null ? request.status() : null,
+                java.time.Instant.now(),
+                request != null ? request.idempotencyKey() : null,
+                request != null ? request.sourceUrl() : null,
+                request != null ? request.sourceType() : null,
+                request != null ? request.validUntil() : null,
+                request != null ? request.simulateSourceUnavailable() : false
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(snapshot);
+    }
+
     @PostMapping("/items/{itemId}/trigger-snapshot")
     public ResponseEntity<MonitoringJobExecutionService.ExecutionResult> triggerSnapshot(
             @PathVariable("itemId") UUID itemId,

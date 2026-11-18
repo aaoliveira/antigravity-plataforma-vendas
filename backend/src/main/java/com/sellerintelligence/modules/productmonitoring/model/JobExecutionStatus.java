@@ -3,7 +3,7 @@ package com.sellerintelligence.modules.productmonitoring.model;
 /**
  * Resultado auditável de execução ou tentativa de job de monitoramento.
  * Rastreia formalmente execuções com sucesso, cancelamentos por Kill Switch,
- * rejeições por Rate Limit, janelas mínimas e bloqueios de fontes não autorizadas.
+ * rejeições por Rate Limit, janelas mínimas, fontes indisponíveis e bloqueios de fontes não autorizadas.
  */
 public enum JobExecutionStatus {
     SUCCESS,
@@ -11,5 +11,7 @@ public enum JobExecutionStatus {
     SKIPPED_RATE_LIMIT,
     SKIPPED_WINDOW_MINIMA,
     FAILED_UNAUTHORIZED_SOURCE,
-    FAILED_ERROR
+    FAILED_SOURCE_UNAVAILABLE,
+    FAILED_ERROR,
+    FAILED
 }
