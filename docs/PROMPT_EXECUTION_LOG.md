@@ -268,3 +268,108 @@ TESTES EXECUTADOS:
 CI:
 - Já configurada para JDK 25; nenhuma alteração necessária.
 ```
+
+---
+
+## Execução: PROMPT P002-BE
+
+```text
+PROMPT ID: P002-BE
+FEATURE: Identidade Mínima, Autenticação e Contexto do Tenant
+STATUS: PASSED
+PRE-FLIGHT:
+- Verificado pré-requisito P001-BE e P001-FE como APPROVED em docs/delivery/phase-gate.json.
+- Módulos identityaccess, tenancy e audit preparados para receber entidades de persistência e contratos de segurança.
+- Baseline de segurança OWASP ASVS Nível 2 e ADR-002 (Multi-Tenant Defense-in-Depth) revisadas.
+DOCUMENTS REVIEWED:
+- docs/PRD.md (RF-001, RF-002, RF-003, RF-004, RNF-001, RNF-002)
+- docs/ARCHITECTURE.md
+- docs/SECURITY.md
+- docs/DECISION_LOG.md
+- docs/ENGINEERING_RULES.md
+- docs/specs/P002-BE-identity-tenant-security/spec.md
+DEPENDENCIES:
+- P001-BE e P001-FE (Aprovados).
+FILES CHANGED:
+- backend/src/main/resources/db/migration/V2__identity_and_tenancy.sql (Criado)
+- backend/src/main/resources/application.yml (Atualizado com propriedades jwt e brute-force)
+- backend/src/main/java/com/sellerintelligence/core/tenant/TenantContext.java (Criado)
+- backend/src/main/java/com/sellerintelligence/core/tenant/TenantContextHolder.java (Criado)
+- backend/src/main/java/com/sellerintelligence/core/tenant/TenantContextMissingException.java (Criado)
+- backend/src/main/java/com/sellerintelligence/core/tenant/TenantAccessDeniedException.java (Criado)
+- backend/src/main/java/com/sellerintelligence/core/tenant/TenantMembershipValidator.java (Criado)
+- backend/src/main/java/com/sellerintelligence/core/audit/AuditPublisher.java (Criado)
+- backend/src/main/java/com/sellerintelligence/core/security/AuthenticatedUser.java (Criado)
+- backend/src/main/java/com/sellerintelligence/core/security/InvalidTokenException.java (Criado)
+- backend/src/main/java/com/sellerintelligence/core/security/TokenExpiredException.java (Criado)
+- backend/src/main/java/com/sellerintelligence/core/security/BruteForceBlockedException.java (Criado)
+- backend/src/main/java/com/sellerintelligence/core/security/BruteForceProtectionService.java (Criado)
+- backend/src/main/java/com/sellerintelligence/core/security/JwtTokenProvider.java (Criado)
+- backend/src/main/java/com/sellerintelligence/core/security/CustomAuthenticationEntryPoint.java (Criado)
+- backend/src/main/java/com/sellerintelligence/core/security/CustomAccessDeniedHandler.java (Criado)
+- backend/src/main/java/com/sellerintelligence/core/security/JwtAuthenticationFilter.java (Criado)
+- backend/src/main/java/com/sellerintelligence/core/security/TenantContextFilter.java (Criado)
+- backend/src/main/java/com/sellerintelligence/core/config/SecurityConfig.java (Atualizado com filtros, BCrypt e Fail-Closed)
+- backend/src/main/java/com/sellerintelligence/core/exception/GlobalExceptionHandler.java (Atualizado com handlers 401, 403, 429)
+- backend/src/main/java/com/sellerintelligence/modules/audit/AuditEvent.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/audit/AuditEventRepository.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/audit/AuditService.java (Criado com Propagation.REQUIRES_NEW)
+- backend/src/main/java/com/sellerintelligence/modules/tenancy/Organization.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/tenancy/Membership.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/tenancy/OrganizationRepository.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/tenancy/MembershipRepository.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/tenancy/TenancyMembershipValidatorImpl.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/tenancy/TenancyController.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/identityaccess/AppUser.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/identityaccess/AppUserRepository.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/identityaccess/dto/LoginRequest.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/identityaccess/dto/AuthResponse.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/identityaccess/dto/SwitchTenantRequest.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/identityaccess/dto/UserMembershipDto.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/identityaccess/dto/UserProfileResponse.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/identityaccess/AuthService.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/identityaccess/AuthController.java (Criado)
+- backend/src/test/java/com/sellerintelligence/core/security/JwtTokenProviderTest.java (Criado)
+- backend/src/test/java/com/sellerintelligence/core/security/BruteForceProtectionServiceTest.java (Criado)
+- backend/src/test/java/com/sellerintelligence/modules/identityaccess/AuthenticationAndTenancyIntegrationTest.java (Criado)
+- docs/specs/P002-BE-identity-tenant-security/spec.md (Criado)
+- docs/delivery/phase-gate.json (Atualizado)
+- docs/delivery/PHASE_STATUS.md (Atualizado)
+- docs/IMPLEMENTATION_STATUS.md (Atualizado)
+- docs/PROMPT_EXECUTION_LOG.md (Atualizado)
+API/DB CONTRACTS:
+- POST /api/v1/auth/login: Retorna JWT e activeTenantId derivado de membership ativa.
+- GET /api/v1/auth/me: Retorna perfil autenticado e lista de memberships.
+- POST /api/v1/auth/switch-tenant: Valida membership no tenant destino e emite novo token escopado.
+- GET /api/v1/tenancy/current: Endpoint tenant-scoped exigindo contexto de tenant resolvido.
+- Migração V2 Flyway com tabelas app_users, memberships, audit_events e seeds iniciais de teste.
+SECURITY CHECKS:
+- Acesso negado por padrão (Fail-Closed) em todas as rotas não explicitamente públicas.
+- O identificador de tenant não pode ser manipulado ou alterado pelo cliente via query parameters ou headers arbitrários.
+- Tentativas de spoofing cross-tenant via header X-Tenant-Id são rejeitadas com HTTP 403 Forbidden e registradas na auditoria.
+- Proteção contra força bruta com bloqueio em HTTP 429 Too Many Requests após 5 falhas consecutivas.
+- Expiração de sessão e tokens configurada para 15 minutos (900s) com validação criptográfica HMAC-SHA256.
+- Zero segredos ou credenciais expostas no repositório.
+TESTS EXECUTED:
+- cd backend && ./mvnw test (31 testes automatizados executados no total):
+  * JwtTokenProviderTest: 4 testes aprovados (geração, validação de claims, adulteração de assinatura, expiração).
+  * BruteForceProtectionServiceTest: 3 testes aprovados (abaixo do limiar, bloqueio no limiar, reset após sucesso).
+  * AuthenticationAndTenancyIntegrationTest: 13 testes de integração aprovados (login com sucesso, senha errada, usuário inexistente, lockout brute-force 429, acesso anônimo 401, token expirado 401, token válido 200, usuário sem membership 403, spoofing via X-Tenant-Id 403, header malformado 400, query param ignorado, switch-tenant sem membership 403, /api/v1/auth/me).
+  * ModularArchitectureTest (ArchUnit): 3 testes de arquitetura aprovados (zero ciclos, independência do core).
+  * ApplicationContextTest, ActuatorAndOpenApiTest, CorrelationIdFilterTest, GlobalExceptionHandlerTest: 8 testes aprovados.
+- pnpm --dir frontend test (16 testes de componentes frontend aprovados, zero regressão).
+TEST RESULTS:
+- Backend: 31/31 testes PASSED (100% de sucesso em 13.634s).
+- Frontend: 16/16 testes PASSED (100% de sucesso em 1.67s).
+POLICY EVIDENCE:
+- Nenhuma chamada a marketplace realizada nesta etapa de identidade/tenant.
+OPEN QUESTIONS:
+- Nenhuma nova dúvida técnica impeditiva.
+FAILURES / ROOT CAUSE:
+- Falha inicial na persistência do evento de auditoria em falhas de login decorrente do rollback da transação em runtime exceptions.
+REMEDIATION:
+- Configurada anotação @Transactional(propagation = Propagation.REQUIRES_NEW) no AuditService, garantindo gravação imutável e autônoma de eventos de segurança.
+DOCUMENTATION UPDATED:
+- spec.md, phase-gate.json, PHASE_STATUS.md, IMPLEMENTATION_STATUS.md e PROMPT_EXECUTION_LOG.md.
+NEXT PROMPT: UNLOCKED (P002-FE - Interface de Autenticação e Troca de Contexto liberado para READY).
+```

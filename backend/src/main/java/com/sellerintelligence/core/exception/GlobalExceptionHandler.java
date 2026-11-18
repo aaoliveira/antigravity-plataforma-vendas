@@ -35,6 +35,66 @@ public class GlobalExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(org.springframework.security.authentication.BadCredentialsException.class)
+    public ProblemDetail handleBadCredentialsException(org.springframework.security.authentication.BadCredentialsException ex, HttpServletRequest request) {
+        log.warn("Falha de autenticação (credenciais inválidas): {}", ex.getMessage());
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());
+        problem.setTitle("Credenciais Inválidas");
+        problem.setType(URI.create("https://sellerintelligence.com.br/errors/bad-credentials"));
+        enrichProblemDetail(problem, request);
+        return problem;
+    }
+
+    @ExceptionHandler(com.sellerintelligence.core.tenant.TenantContextMissingException.class)
+    public ProblemDetail handleTenantContextMissingException(com.sellerintelligence.core.tenant.TenantContextMissingException ex, HttpServletRequest request) {
+        log.warn("Tentativa de acesso a recurso tenant-scoped sem tenant resolvido: {}", ex.getMessage());
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ex.getMessage());
+        problem.setTitle("Contexto de Tenant Ausente");
+        problem.setType(URI.create("https://sellerintelligence.com.br/errors/tenant-context-missing"));
+        enrichProblemDetail(problem, request);
+        return problem;
+    }
+
+    @ExceptionHandler(com.sellerintelligence.core.tenant.TenantAccessDeniedException.class)
+    public ProblemDetail handleTenantAccessDeniedException(com.sellerintelligence.core.tenant.TenantAccessDeniedException ex, HttpServletRequest request) {
+        log.warn("Tentativa de acesso não autorizada a tenant: {}", ex.getMessage());
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ex.getMessage());
+        problem.setTitle("Acesso Negado ao Tenant");
+        problem.setType(URI.create("https://sellerintelligence.com.br/errors/tenant-access-denied"));
+        enrichProblemDetail(problem, request);
+        return problem;
+    }
+
+    @ExceptionHandler(com.sellerintelligence.core.security.BruteForceBlockedException.class)
+    public ProblemDetail handleBruteForceBlockedException(com.sellerintelligence.core.security.BruteForceBlockedException ex, HttpServletRequest request) {
+        log.warn("Tentativa de autenticação bloqueada por brute force: {}", ex.getMessage());
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.TOO_MANY_REQUESTS, ex.getMessage());
+        problem.setTitle("Limite de Tentativas Excedido");
+        problem.setType(URI.create("https://sellerintelligence.com.br/errors/brute-force-lockout"));
+        enrichProblemDetail(problem, request);
+        return problem;
+    }
+
+    @ExceptionHandler(com.sellerintelligence.core.security.TokenExpiredException.class)
+    public ProblemDetail handleTokenExpiredException(com.sellerintelligence.core.security.TokenExpiredException ex, HttpServletRequest request) {
+        log.warn("Token JWT expirado: {}", ex.getMessage());
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());
+        problem.setTitle("Token Expirado");
+        problem.setType(URI.create("https://sellerintelligence.com.br/errors/token-expired"));
+        enrichProblemDetail(problem, request);
+        return problem;
+    }
+
+    @ExceptionHandler(com.sellerintelligence.core.security.InvalidTokenException.class)
+    public ProblemDetail handleInvalidTokenException(com.sellerintelligence.core.security.InvalidTokenException ex, HttpServletRequest request) {
+        log.warn("Token JWT inválido: {}", ex.getMessage());
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());
+        problem.setTitle("Token Inválido");
+        problem.setType(URI.create("https://sellerintelligence.com.br/errors/invalid-token"));
+        enrichProblemDetail(problem, request);
+        return problem;
+    }
+
     @ExceptionHandler(BusinessRuleException.class)
     public ProblemDetail handleBusinessRuleException(BusinessRuleException ex, HttpServletRequest request) {
         log.warn("Violação de regra de negócio: {}", ex.getMessage());

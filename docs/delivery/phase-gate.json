@@ -1,13 +1,14 @@
 {
-  "currentPrompt": "P001-FE",
+  "currentPrompt": "P002-BE",
   "status": "APPROVED",
-  "nextPrompt": "P002-BE",
+  "nextPrompt": "P002-FE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-18T08:49:45-03:00",
+  "lastUpdated": "2026-11-18T09:07:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
-    "P001-FE"
+    "P001-FE",
+    "P002-BE"
   ],
   "gates": {
     "P000": {
@@ -51,10 +52,24 @@
     },
     "P002-BE": {
       "name": "Identidade Mínima, Autenticação e Contexto do Tenant",
-      "status": "READY",
+      "status": "APPROVED",
+      "approvedAt": "2026-11-18T09:07:00-03:00",
+      "evidence": "docs/PROMPT_EXECUTION_LOG.md",
+      "testsExecuted": 31,
+      "testsPassed": 31,
+      "antiSpoofingEnforced": true,
+      "failClosedDefault": true,
+      "blockingIssues": 0,
       "prerequisites": [
         "P001-BE",
         "P001-FE"
+      ]
+    },
+    "P002-FE": {
+      "name": "Interface de Autenticação e Troca de Contexto",
+      "status": "READY",
+      "prerequisites": [
+        "P002-BE"
       ]
     }
   },

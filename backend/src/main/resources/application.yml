@@ -48,3 +48,13 @@ springdoc:
     enabled: true
     operationsSorter: method
     tagsSorter: alpha
+
+# Segurança e Autenticação Mínima
+security:
+  jwt:
+    secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+    expiration-seconds: ${JWT_EXPIRATION_SECONDS:900}
+  brute-force:
+    max-attempts: 5
+    lockout-duration-seconds: 900
+

@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P001-FE = `APPROVED` &middot; PROMPT P002-BE = `READY`  
+> **Status Vigente:** PROMPT P002-BE = `APPROVED` &middot; PROMPT P002-FE = `READY`  
 > **Data:** 18/11/2026
 
 ---
@@ -13,7 +13,8 @@
 | **P000** | Master Project Governance & Engineering Rules | **`APPROVED`** | 17/11/2026 | [docs/PROMPT_EXECUTION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/PROMPT_EXECUTION_LOG.md) | **SIM (P001 liberado)** |
 | **P001-BE** | Estrutura Base do Repositório e Backend Modular | **`APPROVED`** | 17/11/2026 | [docs/PROMPT_EXECUTION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/PROMPT_EXECUTION_LOG.md) | **SIM (P001-FE liberado)** |
 | **P001-FE** | Shell da Aplicação Web Responsiva | **`APPROVED`** | 17/11/2026 | [docs/PROMPT_EXECUTION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/PROMPT_EXECUTION_LOG.md) | **SIM (P002-BE liberado)** |
-| **P002-BE** | Identidade Mínima e Contexto do Tenant | `READY` | --- | Pré-requisito: P001-BE/P001-FE Aprovados | Sim |
+| **P002-BE** | Identidade Mínima e Contexto do Tenant | **`APPROVED`** | 18/11/2026 | [docs/PROMPT_EXECUTION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/PROMPT_EXECUTION_LOG.md) | **SIM (P002-FE liberado)** |
+| **P002-FE** | Interface de Autenticação e Troca de Contexto | `READY` | --- | Pré-requisito: P002-BE Aprovado | Sim |
 | **P003-BE** | Conexões Oficiais com Marketplaces | `NOT_STARTED` | --- | Pré-requisito: P002 | Não |
 | **P004-BE** | Ingestão Idempotente de Catálogo e Pedidos | `NOT_STARTED` | --- | Pré-requisito: P003 | Não |
 | **P005-BE** | Inteligência de Mercado e Pesquisa Normalizada | `NOT_STARTED` | --- | Pré-requisito: P004 | Não |
@@ -46,6 +47,21 @@
 ---
 
 ## 2. Histórico de Transições e Auditoria dos Gates
+
+### Transição: PROMPT P002-BE $\rightarrow$ `APPROVED`
+- **Data/Hora:** 18/11/2026 09:07 BRT
+- **Avaliador:** Tech Lead / Staff Software Engineer
+- **Critérios Validados:**
+  1. Identidade mínima, autenticação segura e tokens JWT (RFC 7519 HMAC-SHA256) implementados com expiração configurada (900s).
+  2. Derivação mandatória de tenant exclusivamente a partir de credenciais e memberships validadas, nunca de parâmetros ou headers arbitrários.
+  3. Contenção rigorosa de spoofing: header `X-Tenant-Id` para tenant não associado resulta em HTTP 403 Forbidden e auditoria imediata (`TENANT_SPOOFING_ATTEMPT`).
+  4. Query parameters arbitrários (`?tenantId=...`) são categoricamente ignorados para resolução de contexto tenant-scoped.
+  5. Proteção contra força bruta (Brute Force Protection) com bloqueio temporário em HTTP 429 Too Many Requests após 5 falhas consecutivas e auditoria (`BRUTE_FORCE_BLOCKED`).
+  6. Trilha de auditoria persistente e estruturada via `AuditService` em transação autônoma (`REQUIRES_NEW`), garantindo que auditorias de falha/spoofing nunca sejam descartadas por rollback.
+  7. Endpoints tenant-scoped e rota de contexto (`/api/v1/tenancy/current`) operando sob política Fail-Closed (acesso negado por padrão a requisições anônimas ou tokens sem tenant).
+  8. Suíte completa de testes automatizados com 31/31 testes aprovados (100% de sucesso), incluindo testes de tokens, brute force, anti-spoofing e integridade de arquitetura ArchUnit.
+  9. Zero credenciais expostas no repositório.
+- **Resultado:** **`PROMPT P002-BE = APPROVED`**. O prompt subsequente (`P002-FE`) está formalmente liberado e transita para `READY`.
 
 ### Transição: PROMPT P001-FE $\rightarrow$ `APPROVED`
 - **Data/Hora:** 17/11/2026 21:32 BRT
