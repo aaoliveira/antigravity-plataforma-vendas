@@ -1,6 +1,6 @@
 # Status de Implementação e Quality Gates do Roadmap
 
-> **Status Atual Geral:** PROMPT 000 = `PASSED` &middot; PROMPT P001 = `READY`  
+> **Status Atual Geral:** PROMPT P001-BE = `PASSED` &middot; PROMPT P001-FE = `READY`  
 > **Data da Última Atualização:** 17/11/2026  
 > **Regra de Transição:** O próximo prompt só é liberado para `IN_PROGRESS` quando o anterior atingir formalmente `PASSED`.  
 
@@ -11,8 +11,8 @@
 | Prompt ID | Título da Entrega | Épico | Camada | Estado do Gate | Pré-requisito | Data Conclusão |
 |---|---|---|---|---|---|---|
 | **P000** | Master Project Governance & Engineering Rules | E00 | Governança | **`PASSED`** | --- | 17/11/2026 |
-| **P001-BE** | Estrutura Base do Repositório e Backend Modular | E01 | Backend | `READY` | P000 (`PASSED`) | --- |
-| **P001-FE** | Shell da Aplicação Web Responsiva | E01 | Frontend | `NOT_STARTED` | P001-BE (`PASSED`) | --- |
+| **P001-BE** | Estrutura Base do Repositório e Backend Modular | E01 | Backend | **`PASSED`** | P000 (`PASSED`) | 17/11/2026 |
+| **P001-FE** | Shell da Aplicação Web Responsiva | E01 | Frontend | `READY` | P001-BE (`PASSED`) | --- |
 | **P002-BE** | Identidade Mínima, Autenticação e Contexto do Tenant | E02 | Backend | `NOT_STARTED` | P001 (`PASSED`) | --- |
 | **P002-FE** | Interface de Autenticação e Troca de Contexto | E02 | Frontend | `NOT_STARTED` | P002-BE (`PASSED`) | --- |
 | **P003-BE** | Conexões Oficiais com Mercado Livre e Shopee | E03 | Backend | `NOT_STARTED` | P002 (`PASSED`) | --- |
@@ -51,10 +51,3 @@ Cada funcionalidade ou prompt transita estritamente pelos seguintes estados:
          ▼                                                                   ▼
    [ FIXING ] ──(Reexecutar Suíte Completa com Sucesso)──────────────>  [ PASSED ]
 ```
-
-- **`NOT_STARTED`:** Prompt aguardando a conclusão do pré-requisito anterior.
-- **`READY`:** Pré-requisito `PASSED` e Definition of Ready (DoR) cumprida; pronto para execução.
-- **`IN_PROGRESS`:** Trabalho ativo na etapa de especificação, implementação ou testes.
-- **`BLOCKED`:** Interrupção compulsória por falha de teste, quebra de contrato, ambiguidade fiscal ou falta de evidência oficial.
-- **`FIXING`:** Diagnóstico de causa raiz e aplicação de correção no escopo estrito.
-- **`PASSED`:** Todos os testes unitários, integração, arquitetura e segurança executados com 100% de sucesso e documentação sincronizada.

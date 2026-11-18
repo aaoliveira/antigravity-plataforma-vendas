@@ -1,11 +1,12 @@
 {
-  "currentPrompt": "P000",
+  "currentPrompt": "P001-BE",
   "status": "APPROVED",
-  "nextPrompt": "P001",
+  "nextPrompt": "P001-FE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-17T21:09:00-03:00",
+  "lastUpdated": "2026-11-17T21:22:00-03:00",
   "approvedPrompts": [
-    "P000"
+    "P000",
+    "P001-BE"
   ],
   "gates": {
     "P000": {
@@ -16,11 +17,21 @@
       "mandatoryDocumentsCreated": 13,
       "blockingIssues": 0
     },
-    "P001": {
+    "P001-BE": {
       "name": "Estrutura Base do Repositório e Backend Modular",
+      "status": "APPROVED",
+      "approvedAt": "2026-11-17T21:22:00-03:00",
+      "evidence": "docs/PROMPT_EXECUTION_LOG.md",
+      "testsExecuted": 11,
+      "testsPassed": 11,
+      "architectureRulesPassed": 3,
+      "blockingIssues": 0
+    },
+    "P001-FE": {
+      "name": "Shell da Aplicação Web Responsiva",
       "status": "READY",
       "prerequisites": [
-        "P000"
+        "P001-BE"
       ]
     }
   }
