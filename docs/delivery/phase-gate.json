@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P012-BE",
+  "currentPrompt": "P012-FE",
   "status": "READY",
-  "nextPrompt": "P012-FE",
+  "nextPrompt": "P013",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-18T16:40:00-03:00",
+  "lastUpdated": "2026-11-18T17:10:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -27,7 +27,8 @@
     "P010-BE",
     "P010-FE",
     "P011-BE",
-    "P011-FE"
+    "P011-FE",
+    "P012-BE"
   ],
   "gates": {
     "P000": {
@@ -361,6 +362,24 @@
       "buildPassed": true,
       "blockingIssues": 0,
       "prerequisites": ["P011-BE"]
+    },
+    "P012-BE": {
+      "name": "Grupos de Monitoramento por Tenant, Itens Monitorados e Snapshots Históricos Seguros",
+      "status": "APPROVED",
+      "startedAt": "2026-11-18T16:48:00-03:00",
+      "approvedAt": "2026-11-18T17:10:00-03:00",
+      "evidence": "docs/specs/P012-BE-product-monitoring/spec.md",
+      "testsExecuted": 30,
+      "testsPassed": 30,
+      "totalBackendSuiteTests": 233,
+      "totalFrontendSuiteTests": 119,
+      "postgresRlsEnforced": true,
+      "antiRetroactivityEnforced": true,
+      "antiDuplicationEnforced": true,
+      "rateLimitAndKillSwitchEnforced": true,
+      "retentionPolicyEnforced": true,
+      "blockingIssues": 0,
+      "prerequisites": ["P011-FE"]
     }
   },
   "maintenanceGates": {

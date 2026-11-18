@@ -2042,3 +2042,115 @@ DOCUMENTATION UPDATED:
 
 NEXT PROMPT: UNLOCKED (P012-BE liberado para READY).
 ```
+
+---
+
+## Execução: PROMPT P012-BE
+
+```text
+PROMPT ID: P012-BE
+FEATURE: Grupos por Tenant, Itens Monitorados e Snapshots Históricos Seguros
+STATUS: PASSED
+DATE: 2026-11-18T17:10:00-03:00
+
+INPUT:
+Implemente grupos por tenant e itens monitorados vinculados a fonte/marketplace. Criar, editar, remover e listar grupos; adicionar/remover itens. Histórico começa no primeiro snapshot efetivo após inclusão. Agendamento respeita quotas, janela mínima, kill switch e capacidade validada. Não buscar dado em fonte proibida.
+
+Aceite: CRUD isolado; duplicidade controlada; histórico não retroativo; jobs respeitam política e rate limit; exclusão segue retenção definida.
+
+PRE-FLIGHT CHECKS:
+- Prompt P011-FE concluído formalmente com aprovação e 322 testes totais verdes.
+- Verificação de regras de negócio estritas:
+  1. Isolamento Multi-Tenant forçado via RLS do PostgreSQL 17 (FORCE ROW LEVEL SECURITY, NOBYPASSRLS).
+  2. Duplicidade estritamente prevenida: unicidade por tenant e nome do grupo, unicidade por grupo e listing externo. Erros duplicados retornam HTTP 409 (DuplicateResourceException).
+  3. Integridade Histórica e Anti-Retroatividade: snapshots começam no primeiro snapshot coletado após inclusão do item. Proibição absoluta de forjar dados históricos retroativos anteriores a item.createdAt.
+  4. Governança de Agendamento: validação de quotas/rate limits por minuto, respeito a janela mínima de intervalo (min_interval_minutes), kill switch por marketplace/fonte e proibição de fontes não homologadas (ex.: scraping não autorizado / UNLICENSED_SCRAPER retorna HTTP 422).
+  5. Retenção e Soft-Delete: exclusão desativa monitoramento e retém histórico auditável durante período de retenção (padrão 90 dias, mínimo 7 dias) antes da purga.
+
+FILES CREATED:
+- docs/specs/P012-BE-product-monitoring/spec.md
+- backend/src/main/resources/db/migration/V10__product_monitoring_groups_and_snapshots.sql
+- backend/src/main/resources/db/migration-postgresql/V10_1__postgresql_rls_product_monitoring.sql
+- backend/src/main/java/com/sellerintelligence/core/exception/DuplicateResourceException.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/ProductMonitoringController.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/entity/MonitoringGroupRecord.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/entity/MonitoredItemRecord.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/entity/MonitoredItemSnapshotRecord.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/entity/MonitoringJobExecutionRecord.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/model/MonitoringGroupStatus.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/model/MonitoredItemStatus.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/model/JobExecutionStatus.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/model/CreateMonitoringGroupRequest.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/model/UpdateMonitoringGroupRequest.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/model/MonitoringGroupDto.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/model/AddMonitoredItemRequest.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/model/MonitoredItemDto.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/model/MonitoredItemSnapshotDto.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/model/TriggerSnapshotRequest.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/model/MonitoringJobExecutionDto.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/model/PageResponse.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/repository/MonitoringGroupRepository.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/repository/MonitoredItemRepository.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/repository/MonitoredItemSnapshotRepository.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/repository/MonitoringJobExecutionRepository.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/service/MonitoringGroupService.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/service/MonitoredItemService.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/service/MonitoredItemSnapshotService.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/service/MonitoringSchedulerPolicyValidator.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/service/MonitoringJobExecutionService.java
+- backend/src/main/java/com/sellerintelligence/modules/productmonitoring/service/MonitoringRetentionService.java
+- backend/src/test/java/com/sellerintelligence/modules/productmonitoring/service/MonitoringGroupServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/productmonitoring/service/MonitoredItemServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/productmonitoring/service/MonitoredItemSnapshotServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/productmonitoring/service/MonitoringSchedulerPolicyValidatorTest.java
+- backend/src/test/java/com/sellerintelligence/modules/productmonitoring/service/MonitoringRetentionServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/productmonitoring/ProductMonitoringControllerTest.java
+- backend/src/test/java/com/sellerintelligence/modules/productmonitoring/PostgresProductMonitoringRlsIntegrationTest.java
+
+FILES MODIFIED:
+- backend/src/main/java/com/sellerintelligence/core/exception/GlobalExceptionHandler.java
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+
+COMMANDS EXECUTED:
+- cd backend && ./mvnw test -Dtest=MonitoringGroupServiceTest,MonitoredItemServiceTest,MonitoredItemSnapshotServiceTest,MonitoringSchedulerPolicyValidatorTest,MonitoringRetentionServiceTest,ProductMonitoringControllerTest
+- cd backend && ./mvnw test -Dtest=ModularArchitectureTest
+- cd backend && ./mvnw test -Dtest=PostgresProductMonitoringRlsIntegrationTest
+- cd backend && ./mvnw test
+- pnpm --dir frontend test
+
+TEST RESULTS:
+- Backend: 233/233 testes aprovados (100% de sucesso).
+  * 30 testes dedicados ao módulo de monitoramento de produtos (com.sellerintelligence.modules.productmonitoring).
+  * 7 testes em MonitoringGroupServiceTest (CRUD isolado, unicidade de nome, validação de intervalos, soft delete).
+  * 5 testes em MonitoredItemServiceTest (adicionar item, duplicata de item no grupo, remoção/soft-delete, bloqueio de fonte não homologada UNLICENSED_SCRAPER).
+  * 3 testes em MonitoredItemSnapshotServiceTest (gravação de snapshot, rejeição estrita de snapshot retroativo com violação histórica, recuperação ordenada desde a inclusão).
+  * 5 testes em MonitoringSchedulerPolicyValidatorTest (kill switch ativo, janela mínima min_interval_minutes, quota/rate limit excedido, fonte proibida, aprovação de execução válida).
+  * 2 testes em MonitoringRetentionServiceTest (purga de snapshots fora da janela de retenção, bloqueio de retenção inferior a 7 dias).
+  * 3 testes em ProductMonitoringControllerTest (endpoints REST protegidos /api/v1/monitoring/* com validação e mapeamento de DTOs).
+  * 5 testes em PostgresProductMonitoringRlsIntegrationTest (RLS real PostgreSQL 17 com Testcontainers e NOBYPASSRLS: isolamento cross-tenant em grupos e itens/snapshots, prevenção de spoofing no INSERT WITH CHECK, proteção contra mutações indevidas, contexto nulo).
+  * 3 testes em ModularArchitectureTest (ArchUnit validando zero ciclos e respeito estrito a slices).
+- Frontend: 119/119 testes mantidos e aprovados (zero regressões).
+- Total do Projeto: 352 testes automatizados aprovados (233 backend + 119 frontend), 0 falhas, 0 erros, 0 skips.
+
+POLICY EVIDENCE:
+- Critério de Aceite 1: CRUD isolado: multi-tenancy rigorosamente forçado em nível de banco de dados (PostgreSQL 17 RLS) com políticas FORCE ROW LEVEL SECURITY para todas as 4 tabelas (monitoring_groups, monitored_items, monitored_item_snapshots, monitoring_job_executions). Tentativas cross-tenant retornam 404 e mutações afetam 0 linhas.
+- Critério de Aceite 2: Duplicidade controlada: restrições de unicidade no banco (uq_monitoring_groups_tenant_name e uq_monitored_item_group_listing) e validações preventivas no serviço rejeitam colisões com HTTP 409 (DuplicateResourceException).
+- Critério de Aceite 3: Histórico não retroativo: regra de negócio imutável onde o histórico inicia no primeiro snapshot efetivo coletado após a inclusão (item.firstSnapshotAt = observedAt). Tentativas de injetar snapshots com timestamp anterior a item.createdAt lançam BusinessRuleException, garantindo zero fabricação de dados do passado.
+- Critério de Aceite 4: Agendamento respeita políticas: validador MonitoringSchedulerPolicyValidator avalia kill switch por canal, janela mínima (min_interval_minutes), quotas por minuto e validação de capacidades autorizadas. Chamadas para fontes proibidas ou scrapers não homologados são barradas imediatamente (HTTP 422).
+- Critério de Aceite 5: Exclusão segue retenção definida: exclusão lógica (soft-delete) de grupos e itens para encerramento de agendamentos, mantendo histórico de snapshots preservado por 90 dias (ou retenção configurada, mínimo 7 dias) para fins de auditoria, sendo expurgado apenas pelo job de retenção MonitoringRetentionService.
+
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+
+DOCUMENTATION UPDATED:
+- docs/specs/P012-BE-product-monitoring/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+
+NEXT PROMPT: UNLOCKED (P012-FE liberado para READY).
+```

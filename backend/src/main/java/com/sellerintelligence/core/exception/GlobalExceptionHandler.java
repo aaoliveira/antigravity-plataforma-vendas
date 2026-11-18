@@ -105,6 +105,16 @@ public class GlobalExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ProblemDetail handleDuplicateResourceException(DuplicateResourceException ex, HttpServletRequest request) {
+        log.warn("Recurso duplicado ou conflito de unicidade: {}", ex.getMessage());
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problem.setTitle("Recurso Duplicado");
+        problem.setType(URI.create("https://sellerintelligence.com.br/errors/duplicate-resource"));
+        enrichProblemDetail(problem, request);
+        return problem;
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail handleValidationExceptions(MethodArgumentNotValidException ex, HttpServletRequest request) {
         log.warn("Erro de validação de argumentos de entrada: {}", ex.getMessage());
