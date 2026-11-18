@@ -1380,3 +1380,65 @@ NEXT PROMPT: UNLOCKED (P008-BE - Analytics de Anúncios Próprios e Métricas Of
 ```
 
 
+
+
+```
+================================================================================
+PROMPT ID: P008-BE
+TITLE: Ingestão de Pedidos e Itens Próprios, Reconciliação, Outbox e RLS
+LAYER: Backend
+DATE: 2026-11-18
+STATUS: APPROVED
+BRANCH: main
+HEAD COMMIT: working tree
+================================================================================
+INPUT PROMPT:
+Implemente ingestão de pedidos e itens próprios de contas homologadas, paginação com cursor/checkpoint, janela de reconciliação, idempotência externa + conta, upsert seguro, cancelamentos e devoluções, outbox para eventos internos de integração, métricas de erro/DLQ e PostgreSQL Row-Level Security (RLS) mandatória.
+
+OUTPUT ARTIFACTS:
+- docs/specs/P008-BE-orders-sync/spec.md
+- backend/src/main/resources/db/migration/V6__orders_and_items.sql
+- backend/src/main/resources/db/migration-postgresql/V6_1__postgresql_rls_orders.sql
+- com.sellerintelligence.modules.orderingestion.Order
+- com.sellerintelligence.modules.orderingestion.OrderItem
+- com.sellerintelligence.modules.orderingestion.OrderSyncCheckpoint
+- com.sellerintelligence.modules.orderingestion.OrderOutboxEvent
+- com.sellerintelligence.modules.orderingestion.OrderDlqRecord
+- com.sellerintelligence.modules.orderingestion.OrderRepository
+- com.sellerintelligence.modules.orderingestion.OrderItemRepository
+- com.sellerintelligence.modules.orderingestion.OrderSyncCheckpointRepository
+- com.sellerintelligence.modules.orderingestion.OrderOutboxEventRepository
+- com.sellerintelligence.modules.orderingestion.OrderDlqRecordRepository
+- com.sellerintelligence.modules.orderingestion.operations.ReadOwnOrdersOperation
+- com.sellerintelligence.modules.orderingestion.service.OrderSyncService
+- com.sellerintelligence.modules.orderingestion.service.OrderService
+- com.sellerintelligence.modules.orderingestion.OrderController
+- backend/src/test/java/com/sellerintelligence/modules/orderingestion/OrderSyncServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/orderingestion/OrderControllerTest.java
+- backend/src/test/java/com/sellerintelligence/modules/orderingestion/PostgresOrdersRlsIntegrationTest.java
+SECURITY CHECKS:
+- Isolamento multi-tenant absoluto via tenant_id e RLS nativa no PostgreSQL 17 ativada e forçada (FORCE ROW LEVEL SECURITY) em orders, order_items, order_sync_checkpoints, order_outbox_events e order_dlq_records.
+- Zero vazamento cross-tenant comprovado em teste real de banco de dados (Testcontainers) e no endpoint REST com HTTP 404.
+- Idempotência externa rigorosa via uk_orders_tenant_mkt_extid (tenant_id, marketplace, external_order_id).
+- Transactional Outbox em conformidade: eventos persistidos na mesma transação de banco.
+- Desvio de falhas irrecuperáveis para a Dead-Letter Queue (DLQ) sem interromper pedidos íntegros.
+TESTS EXECUTED:
+- OrderSyncServiceTest: 6 testes aprovados (idempotência, reconciliação, cancelamento, devolução, cursor/checkpoint, DLQ).
+- OrderControllerTest: 5 testes aprovados (paginação, filtros combináveis, detalhe com itens, HTTP 404 cross-tenant, endpoints de checkpoint e DLQ).
+- PostgresOrdersRlsIntegrationTest: 3 testes aprovados em Testcontainers PostgreSQL 17 (bloqueio de leitura cross-tenant, rejeição de escrita/spoofing, isolamento de checkpoint/outbox/dlq).
+- ModularArchitectureTest: 3 testes aprovados (zero ciclos, independência do core).
+- cd backend && ./mvnw test: 136/136 testes de backend aprovados, zero falhas.
+TEST RESULTS:
+- Backend: 136/136 testes PASSED (100% de sucesso).
+FAILURES / ROOT CAUSE:
+- Ajuste inicial no número de argumentos do construtor de ExecutionContext e SellerAccount nos testes; resolvido imediatamente.
+REMEDIATION:
+- Suíte completa 100% verde.
+DOCUMENTATION UPDATED:
+- docs/specs/P008-BE-orders-sync/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+NEXT PROMPT: UNLOCKED (P008-FE - Gestão e Detalhes de Pedidos com Filtros por Canal, Status e Incompletos liberado para IN_PROGRESS).
+```

@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P007-FE",
-  "status": "APPROVED",
-  "nextPrompt": "P008-BE",
-  "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-18T12:46:00-03:00",
+  "currentPrompt": "P008-FE",
+  "status": "IN_PROGRESS",
+  "nextPrompt": "P009-BE",
+  "nextPromptPrerequisiteMet": false,
+  "lastUpdated": "2026-11-18T13:32:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -19,7 +19,8 @@
     "P006-BE",
     "P006-FE",
     "P007-BE",
-    "P007-FE"
+    "P007-FE",
+    "P008-BE"
   ],
   "gates": {
     "P000": {
@@ -253,6 +254,32 @@
       "buildPassed": true,
       "blockingIssues": 0,
       "prerequisites": ["P007-BE"]
+    },
+    "P008-BE": {
+      "name": "Ingestão de Pedidos e Itens Próprios, Reconciliação, Outbox e RLS",
+      "status": "APPROVED",
+      "approvedAt": "2026-11-18T13:31:00-03:00",
+      "evidence": "backend/src/test/java/com/sellerintelligence/modules/orderingestion/OrderSyncServiceTest.java, backend/src/test/java/com/sellerintelligence/modules/orderingestion/OrderControllerTest.java, backend/src/test/java/com/sellerintelligence/modules/orderingestion/PostgresOrdersRlsIntegrationTest.java",
+      "testsExecuted": 14,
+      "testsPassed": 14,
+      "totalSuiteTestsPassed": 136,
+      "idempotentOrderIngestionEnforced": true,
+      "reconciliationAndCancellationsVerified": true,
+      "transactionalOutboxValidated": true,
+      "dlqRoutingTested": true,
+      "postgresqlRlsOrdersIsolation": true,
+      "blockingIssues": 0,
+      "prerequisites": ["P007-FE"]
+    },
+    "P008-FE": {
+      "name": "Gestão e Detalhes de Pedidos com Filtros por Canal, Status e Incompletos",
+      "status": "IN_PROGRESS",
+      "startedAt": "2026-11-18T13:32:00-03:00",
+      "evidence": "frontend/src/components/OrdersView.test.tsx",
+      "testsExecuted": 0,
+      "testsPassed": 0,
+      "blockingIssues": 0,
+      "prerequisites": ["P008-BE"]
     }
   },
   "maintenanceGates": {
