@@ -121,4 +121,17 @@ describe('AppShell Component (Shell Responsivo & Navegação)', () => {
       screen.getByRole('heading', { name: /Catálogo de Produtos & Anúncios/i })
     ).toBeInTheDocument();
   });
+
+  it('deve renderizar a tela OrdersView ao selecionar o módulo ORDERS (Pedidos de Venda & Reconciliação)', () => {
+    render(<AppShell />);
+
+    // Clica no botão do módulo Pedidos na barra lateral
+    const ordersBtns = screen.getAllByRole('button', { name: /Pedidos de Venda & Reconciliação/i });
+    fireEvent.click(ordersBtns[0]);
+
+    // Deve renderizar o título do módulo de pedidos
+    expect(
+      screen.getByRole('heading', { name: /Pedidos de Venda & Reconciliação/i })
+    ).toBeInTheDocument();
+  });
 });

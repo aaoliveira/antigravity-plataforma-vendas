@@ -1442,3 +1442,84 @@ DOCUMENTATION UPDATED:
 - docs/PROMPT_EXECUTION_LOG.md
 NEXT PROMPT: UNLOCKED (P008-FE - Gestão e Detalhes de Pedidos com Filtros por Canal, Status e Incompletos liberado para IN_PROGRESS).
 ```
+
+
+```
+================================================================================
+PROMPT ID: P008-FE
+TITLE: Gestão e Detalhes de Pedidos com Filtros por Canal, Status e Incompletos
+LAYER: Frontend
+DATE: 2026-11-18
+STATUS: APPROVED
+BRANCH: main
+HEAD COMMIT: working tree
+================================================================================
+INPUT PROMPT:
+Após backend aprovado, implemente lista/detalhe de pedidos com filtros por data, status, conta e canal. Exiba data de sincronização e sinalize pedidos incompletos.
+Aceite: filtros corretos; totais conciliam com backend; estados de sincronização visíveis; responsividade aprovada.
+
+OUTPUT ARTIFACTS:
+- docs/specs/P008-FE-orders-view/spec.md
+- frontend/src/app/api/orders/route.ts
+- frontend/src/app/api/orders/[id]/route.ts
+- frontend/src/app/api/orders/checkpoints/route.ts
+- frontend/src/components/OrderDetailDrawer.tsx
+- frontend/src/components/OrdersView.tsx
+- frontend/src/components/OrdersView.test.tsx
+- frontend/src/components/AppShell.tsx (integração do módulo ORDERS na navegação e renderização)
+- frontend/src/components/AppShell.test.tsx (teste de navegação para o módulo ORDERS)
+
+SECURITY & ACCESSIBILITY CHECKS:
+- Acessibilidade WCAG 2.2 AA: Touch targets >= 44px em todos os controles, teclado ESC para fechar Drawer, role="status" nos skeletons de loading e role="region" no EmptyState.
+- Isolamento multi-tenant: O BFF Next.js consome via cookies seguros o token com tenant ativo e o backend rejeita tentativas cross-tenant com HTTP 404.
+- Totais conciliam rigorosamente com backend: Faturamento, subtotal, frete e totais por item exibidos em BRL formatado sem arredondamentos indevidos.
+- Exibição de dados ausentes e sinalização de incompletude: Pedidos sem rastreamento em trânsito/entregue, compradores ausentes ou itens sem SKU recebem badges destacadas ("⚠ Pedido Incompleto", "Não informado", "Sem rastreio", "Sem SKU"), zero rendering de valores nulos ou "undefined".
+- Estado de sincronização oficial: Exibição no cabeçalho dos metadados de checkpoint oficial (última checagem, status Concluída/Em andamento e total de pedidos sincronizados).
+
+TESTS EXECUTED:
+- frontend/src/components/OrdersView.test.tsx: 10 testes aprovados:
+  1. Renderiza cabeçalho, contadores e lista com totais conciliados
+  2. Exibe o status da sincronização a partir do checkpoint oficial
+  3. Dispara busca e filtros combináveis para a API com parâmetros corretos
+  4. Botão "Limpar" redefine todos os filtros e restabelece a consulta padrão
+  5. Exibe loading skeleton acessível com role="status" durante requisições
+  6. Exibe EmptyState com role="region" quando nenhum pedido for encontrado
+  7. Trata erros 401/403/500 de forma sanitizada sem vazar dados sensíveis
+  8. Sinaliza pedidos incompletos com badges visíveis de alerta
+  9. Abre drawer de detalhes ao clicar em "Ver Detalhes" e fecha com Escape
+  10. Suporta navegação de paginação server-side com touch targets adequados
+- frontend/src/components/AppShell.test.tsx: 8 testes aprovados (incluindo navegação para módulo ORDERS).
+- pnpm --dir frontend exec tsc --noEmit: Concluído com zero erros de tipo.
+- pnpm --dir frontend run build: Build de produção Next.js 15.1.7 gerado com 20 rotas otimizadas.
+- cd backend && ./mvnw test: 136/136 testes de backend aprovados, zero falhas.
+- pnpm --dir frontend test: 84/84 testes frontend aprovados, zero falhas.
+
+TEST RESULTS:
+- Frontend: 84/84 testes PASSED (100% de sucesso).
+- Backend: 136/136 testes PASSED (100% de sucesso).
+- Total de Testes Automatizados do Projeto: 220 testes aprovados.
+
+POLICY EVIDENCE:
+- Paginação server-side implementada com controle de tamanho de página e limites seguros.
+- Filtros combináveis aplicados server-side no backend via JPQL e Spring Data.
+- Exibição explícita da proveniência, schema_version e timestamps de sincronização.
+- Zero consultas a concorrentes; dados estritamente restritos a pedidos de contas próprias homologadas.
+
+OPEN QUESTIONS:
+- Nenhuma dúvida técnica em aberto.
+
+FAILURES / ROOT CAUSE:
+- Ajuste inicial nas asserções de teste por presença simultânea de elementos desktop/mobile com o mesmo texto; resolvido utilizando seletores adaptativos.
+
+REMEDIATION:
+- Verificado com 100% de sucesso em toda a suíte.
+
+DOCUMENTATION UPDATED:
+- docs/specs/P008-FE-orders-view/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+
+NEXT PROMPT: UNLOCKED (P009-BE - Consolidação Financeira, DRE e Reconciliação liberado para READY).
+```

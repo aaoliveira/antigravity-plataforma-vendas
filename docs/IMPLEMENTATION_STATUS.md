@@ -1,6 +1,6 @@
 # Status de Implementação e Quality Gates do Roadmap
 
-> **Status Atual Geral:** PROMPT P008-FE = `IN_PROGRESS` | P008-BE = `PASSED`  
+> **Status Atual Geral:** PROMPT P008-FE = `PASSED` | P009-BE = `READY`  
 > **Data da Última Atualização:** 18/11/2026  
 > **Regra de Transição:** O próximo prompt só é liberado para `IN_PROGRESS` quando o anterior atingir formalmente `PASSED`.
 
@@ -26,7 +26,7 @@
 | **P007-BE** | Catálogo Canônico, Anúncios, Mapeamentos Externos e Sincronização Resiliente             | E05   | Backend    | **`PASSED`**   | P006-FE (`PASSED`)     | 18/11/2026     |
 | **P007-FE** | Catálogo Responsivo, Busca, Filtros Combináveis e Detalhe de Anúncio                      | E05   | Frontend   | **`PASSED`**   | P007-BE (`PASSED`)     | 18/11/2026     |
 | **P008-BE** | Ingestão de Pedidos e Itens Próprios, Reconciliação, Outbox e RLS                         | E04   | Backend    | **`PASSED`**   | P007-FE (`PASSED`)     | 18/11/2026     |
-| **P008-FE** | Gestão e Detalhes de Pedidos com Filtros por Canal, Status e Incompletos                 | E04   | Frontend   | `IN_PROGRESS`  | P008-BE (`PASSED`)     | ---            |
+| **P008-FE** | Gestão e Detalhes de Pedidos com Filtros por Canal, Status e Incompletos                 | E04   | Frontend   | **`PASSED`**   | P008-BE (`PASSED`)     | 18/11/2026     |
 | **P006-BE** | Monitoramento de Produtos e Snapshots Históricos                                         | E06   | Backend    | `NOT_STARTED`  | P005 (`PASSED`)        | ---            |
 | **P006-FE** | Watchlists e Linha do Tempo de Preços Observados                                         | E06   | Frontend   | `NOT_STARTED`  | P006-BE (`PASSED`)     | ---            |
 | **P007-BE** | Motor Financeiro Determinístico em BigDecimal                                            | E07   | Backend    | `NOT_STARTED`  | P004 (`PASSED`)        | ---            |

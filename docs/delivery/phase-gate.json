@@ -1,9 +1,9 @@
 {
   "currentPrompt": "P008-FE",
-  "status": "IN_PROGRESS",
+  "status": "APPROVED",
   "nextPrompt": "P009-BE",
-  "nextPromptPrerequisiteMet": false,
-  "lastUpdated": "2026-11-18T13:32:00-03:00",
+  "nextPromptPrerequisiteMet": true,
+  "lastUpdated": "2026-11-18T13:41:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -20,7 +20,8 @@
     "P006-FE",
     "P007-BE",
     "P007-FE",
-    "P008-BE"
+    "P008-BE",
+    "P008-FE"
   ],
   "gates": {
     "P000": {
@@ -273,11 +274,18 @@
     },
     "P008-FE": {
       "name": "Gestão e Detalhes de Pedidos com Filtros por Canal, Status e Incompletos",
-      "status": "IN_PROGRESS",
-      "startedAt": "2026-11-18T13:32:00-03:00",
-      "evidence": "frontend/src/components/OrdersView.test.tsx",
-      "testsExecuted": 0,
-      "testsPassed": 0,
+      "status": "APPROVED",
+      "approvedAt": "2026-11-18T13:41:00-03:00",
+      "evidence": "frontend/src/components/OrdersView.test.tsx, frontend/src/components/OrderDetailDrawer.tsx",
+      "testsExecuted": 10,
+      "testsPassed": 10,
+      "totalSuiteTestsPassed": 84,
+      "combinableFiltersTested": true,
+      "reconciledTotalsVerified": true,
+      "syncStateVisible: true": true,
+      "incompleteOrdersFlagged": true,
+      "mobileResponsiveValidated": true,
+      "buildPassed": true,
       "blockingIssues": 0,
       "prerequisites": ["P008-BE"]
     }

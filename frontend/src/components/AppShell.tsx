@@ -11,6 +11,7 @@ import { SessionBanner } from './SessionBanner';
 import { AccessDeniedFeedback } from './AccessDeniedFeedback';
 import { MarketplaceIntegrationsView } from './MarketplaceIntegrationsView';
 import { CatalogAndListingsView } from './CatalogAndListingsView';
+import { OrdersView } from './OrdersView';
 
 export interface NavModule {
   id: string;
@@ -142,6 +143,16 @@ export const navModules: NavModule[] = [
     description: 'Catálogo canônico multi-anúncio, vinculação de canais (Mercado Livre e Shopee), paginação server-side e detalhes.',
     status: 'READY',
     provenience: 'CANONICAL_CATALOG',
+  },
+  {
+    id: 'ORDERS',
+    name: 'Pedidos de Venda & Reconciliação',
+    shortLabel: 'Pedidos',
+    pillarKey: 'MANAGEMENT',
+    pillarName: 'Gestão & Integrações',
+    description: 'Ingestão e reconciliação de pedidos próprios, status de conciliação, itens e sinalização de incompletos.',
+    status: 'READY',
+    provenience: 'OFFICIAL_ORDERS_API',
   },
 
   // 6. Segurança & Governança
@@ -405,6 +416,8 @@ export const AppShell: React.FC = () => {
             <MarketplaceIntegrationsView />
           ) : activeModule.id === 'SYNC' ? (
             <CatalogAndListingsView />
+          ) : activeModule.id === 'ORDERS' ? (
+            <OrdersView />
           ) : (
             <ModulePlaceholder
               moduleId={activeModule.id}
