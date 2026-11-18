@@ -1273,3 +1273,110 @@ DOCUMENTATION UPDATED:
 NEXT PROMPT: UNLOCKED (P007-FE - Visualização de Catálogo, Anúncios Vinculados e Status de Sincronização liberado para READY).
 ```
 
+---
+
+## Execução: PROMPT 007-FE
+
+```text
+PROMPT ID: P007-FE
+FEATURE: Catálogo Responsivo, Busca, Filtros Combináveis e Detalhe de Anúncio
+STATUS: PASSED
+PRE-FLIGHT:
+- Repositório verificado; branch main sincronizada e saudável.
+- P007-BE formalmente aprovado no Phase Gate; pré-requisito satisfeito.
+- Documentação de UX, responsividade e regras de anti-alucinação revisadas.
+DOCUMENTS REVIEWED:
+- docs/PRD.md
+- docs/ARCHITECTURE.md
+- docs/TECH_STACK.md
+- docs/SECURITY.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/specs/P007-FE-catalog-and-listings-view/spec.md
+DEPENDENCIES:
+- P007-BE (Catálogo Canônico, Anúncios, Mapeamentos e Sincronização Resiliente) aprovado e auditado.
+FILES CHANGED:
+- backend/src/main/java/com/sellerintelligence/modules/catalog/MarketplaceListingRepository.java (Atualizado com searchListings paginado)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/service/CatalogService.java (Atualizado com searchListings, getListing, listSellerAccounts)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/model/ProductSummaryResponse.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/model/VariantSummaryResponse.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/model/SellerAccountResponse.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/model/ListingDetailResponse.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/model/PageResponse.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/catalog/CatalogController.java (Criado)
+- backend/src/test/java/com/sellerintelligence/modules/catalog/CatalogControllerTest.java (Criado)
+- frontend/src/app/api/catalog/listings/route.ts (Criado)
+- frontend/src/app/api/catalog/listings/[id]/route.ts (Criado)
+- frontend/src/app/api/catalog/seller-accounts/route.ts (Criado)
+- frontend/src/components/ListingDetailDrawer.tsx (Criado)
+- frontend/src/components/CatalogAndListingsView.tsx (Criado)
+- frontend/src/components/AppShell.tsx (Atualizado com módulo SYNC ativo e renderização de CatalogAndListingsView)
+- frontend/src/components/CatalogAndListingsView.test.tsx (Criado)
+- frontend/src/components/AppShell.test.tsx (Atualizado com teste de navegação para Catálogo)
+- docs/specs/P007-FE-catalog-and-listings-view/spec.md (Criado)
+- docs/delivery/phase-gate.json (Atualizado)
+- docs/delivery/PHASE_STATUS.md (Atualizado)
+- docs/IMPLEMENTATION_STATUS.md (Atualizado)
+- docs/PROMPT_EXECUTION_LOG.md (Atualizado)
+API/DB CONTRACTS:
+- Backend:
+  * GET /api/v1/catalog/listings (page, size, marketplace, sellerAccountId, status, search) -> PageResponse<ListingDetailResponse>
+  * GET /api/v1/catalog/listings/{id} -> ListingDetailResponse (HTTP 404 se não pertencer ao tenant)
+  * GET /api/v1/catalog/seller-accounts -> List<SellerAccountResponse>
+- BFF Next.js:
+  * GET /api/catalog/listings
+  * GET /api/catalog/listings/[id]
+  * GET /api/catalog/seller-accounts
+SECURITY CHECKS:
+- Isolamento multi-tenant: O controller lê estritamente o tenant ativo de TenantContextHolder.getRequiredTenantId().
+- Cross-tenant testado: Tentativa de leitura de anúncio de outro tenant resulta em HTTP 404 (ResourceNotFoundException).
+- Exibição de dados ausentes: Campos ausentes recebem badges informativas com destaque ("Não informado", "Sem SKU", "Sem variação", "Não vinculado"). Zero rendering de 'null' ou 'undefined'.
+- Acessibilidade & Responsividade: Touch targets >= 44px, tabela adaptativa para desktop e cards touch-friendly para mobile, tecla ESC para fechamento do Drawer e conformidade WCAG 2.2 AA.
+TESTS EXECUTED:
+- backend/src/test/java/com/sellerintelligence/modules/catalog/CatalogControllerTest.java: 5 testes aprovados:
+  1. shouldReturnPaginatedListingsForActiveTenant
+  2. shouldFilterListingsByMarketplaceAndStatusAndSearch
+  3. shouldReturnListingDetailById
+  4. shouldReturn404WhenTenantBetaAttemptsToAccessTenantAlphaListing (zero dados cross-tenant)
+  5. shouldReturnSellerAccountsForActiveTenant
+- frontend/src/components/CatalogAndListingsView.test.tsx: 10 testes aprovados:
+  1. Renderiza cabeçalho, contadores e tabela responsiva com badges
+  2. Dispara busca e filtros combináveis para a API com parâmetros corretos
+  3. Botão "Limpar" redefine todos os filtros e restabelece a lista
+  4. Exibe loading skeleton acessível com role="status" durante requisições
+  5. Exibe EmptyState com role="region" quando nenhum anúncio for encontrado
+  6. Trata erros 401/403/500 de forma sanitizada sem vazar dados ou stacktraces
+  7. Abre drawer de detalhes do anúncio ao clicar em "Ver Detalhes", exibe produto mestre e fecha com ESC
+  8. Exibe claramente dados ausentes no detalhe com badges explícitas
+  9. Garante acessibilidade e touch targets mínimos de 44px
+  10. Suporta navegação da paginação server-side
+- frontend/src/components/AppShell.test.tsx: 7 testes aprovados (incluindo navegação para módulo SYNC).
+- pnpm --dir frontend exec tsc --noEmit: Concluído com zero erros de tipo.
+- pnpm --dir frontend run build: Build de produção Next.js 15.1.7 gerado com 18 rotas otimizadas.
+- cd backend && ./mvnw test -Dtest=ModularArchitectureTest: 3/3 testes ArchUnit aprovados.
+- cd backend && ./mvnw test: 122/122 testes de backend aprovados, zero falhas.
+TEST RESULTS:
+- Frontend: 73/73 testes PASSED (100% de sucesso).
+- Backend: 122/122 testes PASSED (100% de sucesso).
+- Total de Testes Automatizados do Projeto: 195 testes aprovados.
+POLICY EVIDENCE:
+- Paginação server-side implementada com controle de volume.
+- Filtros combináveis aplicados server-side no backend via JPQL e Spring Data.
+- Zero consultas a concorrentes; catálogo estritamente restrito a anúncios próprios do lojista.
+OPEN QUESTIONS:
+- Nenhuma dúvida técnica em aberto.
+FAILURES / ROOT CAUSE:
+- Ajuste inicial nas asserções de teste de componente pela existência simultânea da tabela desktop e cards mobile com o mesmo texto. Resolvido com consultas adaptativas.
+REMEDIATION:
+- Verificado com 100% de sucesso em toda a suíte.
+DOCUMENTATION UPDATED:
+- docs/specs/P007-FE-catalog-and-listings-view/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+NEXT PROMPT: UNLOCKED (P008-BE - Analytics de Anúncios Próprios e Métricas Oficiais liberado para READY).
+```
+
+

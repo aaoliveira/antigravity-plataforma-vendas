@@ -1,6 +1,8 @@
 package com.sellerintelligence.modules.catalog.service;
 
 import com.sellerintelligence.modules.catalog.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -140,5 +142,52 @@ public class CatalogService {
     @Transactional(readOnly = true)
     public Optional<ListingSyncCheckpoint> getCheckpoint(UUID tenantId, UUID sellerAccountId, String marketplace) {
         return checkpointRepository.findByTenantIdAndSellerAccountIdAndMarketplace(tenantId, sellerAccountId, marketplace);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<MarketplaceListing> searchListings(
+            UUID tenantId,
+            String marketplace,
+            UUID sellerAccountId,
+            String status,
+            String search,
+            Pageable pageable
+    ) {
+        Objects.requireNonNull(tenantId, "tenantId não pode ser nulo");
+        return listingRepository.searchListings(
+                tenantId,
+                (marketplace != null && !marketplace.isBlank() && !marketplace.equalsIgnoreCase("ALL")) ? marketplace.trim() : null,
+                sellerAccountId,
+                (status != null && !status.isBlank() && !status.equalsIgnoreCase("ALL")) ? status.trim() : null,
+                (search != null && !search.isBlank()) ? search.trim() : null,
+                pageable
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<MarketplaceListing> getListing(UUID tenantId, UUID listingId) {
+        Objects.requireNonNull(tenantId, "tenantId não pode ser nulo");
+        Objects.requireNonNull(listingId, "listingId não pode ser nulo");
+        return listingRepository.findByIdAndTenantId(listingId, tenantId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<SellerAccount> listSellerAccounts(UUID tenantId) {
+        Objects.requireNonNull(tenantId, "tenantId não pode ser nulo");
+        return sellerAccountRepository.findAllByTenantId(tenantId);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<SellerAccount> getSellerAccount(UUID tenantId, UUID sellerAccountId) {
+        Objects.requireNonNull(tenantId, "tenantId não pode ser nulo");
+        Objects.requireNonNull(sellerAccountId, "sellerAccountId não pode ser nulo");
+        return sellerAccountRepository.findByIdAndTenantId(sellerAccountId, tenantId);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<ProductVariant> getVariant(UUID tenantId, UUID variantId) {
+        Objects.requireNonNull(tenantId, "tenantId não pode ser nulo");
+        Objects.requireNonNull(variantId, "variantId não pode ser nulo");
+        return productVariantRepository.findByIdAndTenantId(variantId, tenantId);
     }
 }

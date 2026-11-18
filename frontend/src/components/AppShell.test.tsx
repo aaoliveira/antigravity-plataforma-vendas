@@ -108,4 +108,17 @@ describe('AppShell Component (Shell Responsivo & Navegação)', () => {
       screen.getByRole('region', { name: /Gestão de Integrações e Capacidades de Marketplaces/i })
     ).toBeInTheDocument();
   });
+
+  it('deve renderizar a tela CatalogAndListingsView ao selecionar o módulo SYNC (Catálogo & Anúncios Próprios)', () => {
+    render(<AppShell />);
+
+    // Clica no botão do módulo Catálogo na barra lateral
+    const catalogBtns = screen.getAllByRole('button', { name: /Catálogo & Anúncios Próprios/i });
+    fireEvent.click(catalogBtns[0]);
+
+    // Deve renderizar o título do módulo de catálogo
+    expect(
+      screen.getByRole('heading', { name: /Catálogo de Produtos & Anúncios/i })
+    ).toBeInTheDocument();
+  });
 });

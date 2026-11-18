@@ -10,6 +10,7 @@ import { TenantSwitcher } from './TenantSwitcher';
 import { SessionBanner } from './SessionBanner';
 import { AccessDeniedFeedback } from './AccessDeniedFeedback';
 import { MarketplaceIntegrationsView } from './MarketplaceIntegrationsView';
+import { CatalogAndListingsView } from './CatalogAndListingsView';
 
 export interface NavModule {
   id: string;
@@ -134,13 +135,13 @@ export const navModules: NavModule[] = [
   },
   {
     id: 'SYNC',
-    name: 'Sincronização & Catálogo',
-    shortLabel: 'Sincronização',
+    name: 'Catálogo & Anúncios Próprios',
+    shortLabel: 'Catálogo',
     pillarKey: 'MANAGEMENT',
     pillarName: 'Gestão & Integrações',
-    description: 'Pipeline assíncrono de ingestão de catálogo próprio e pedidos com RabbitMQ.',
-    status: 'PLANNED',
-    provenience: 'AMQP_SYNC',
+    description: 'Catálogo canônico multi-anúncio, vinculação de canais (Mercado Livre e Shopee), paginação server-side e detalhes.',
+    status: 'READY',
+    provenience: 'CANONICAL_CATALOG',
   },
 
   // 6. Segurança & Governança
@@ -402,6 +403,8 @@ export const AppShell: React.FC = () => {
             <AccessDeniedFeedback onBackClick={() => setDemoState('NORMAL')} />
           ) : activeModule.id === 'STORES' ? (
             <MarketplaceIntegrationsView />
+          ) : activeModule.id === 'SYNC' ? (
+            <CatalogAndListingsView />
           ) : (
             <ModulePlaceholder
               moduleId={activeModule.id}
