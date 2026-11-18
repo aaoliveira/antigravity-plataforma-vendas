@@ -2,7 +2,7 @@
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
 > **Status Vigente:** PROMPT P001-FE = `APPROVED` &middot; PROMPT P002-BE = `READY`  
-> **Data:** 17/11/2026  
+> **Data:** 18/11/2026
 
 ---
 
@@ -24,6 +24,24 @@
 | **P010-BE** | IA Assistiva com Tool Calling Somente Leitura | `NOT_STARTED` | --- | Pré-requisitos: P007, P008 | Não |
 | **P011-BE** | Exportação Segura de Relatórios e Auditoria | `NOT_STARTED` | --- | Pré-requisito: P009 | Não |
 | **P012** | Hardening de Segurança, Testes E2E e Release MVP | `NOT_STARTED` | --- | Pré-requisitos: P001 a P011 | Não |
+
+---
+
+## 1.1 Gate de Manutenção
+
+| ID | Etapa | Status | Data da Avaliação | Evidência | Resultado |
+|---|---|---|---|---|---|
+| **JAVA-25** | Upgrade do runtime Java para LTS 25 | **`APPROVED`** | 18/11/2026 | `backend/pom.xml`; `./mvnw clean verify -q` | Java 25.0.5; Spring Boot 3.5.16; 11/11 testes aprovados |
+
+### Transição: Manutenção JAVA-25 → `APPROVED`
+- **Data/Hora:** 18/11/2026 08:49 BRT
+- **Critérios Validados:**
+  1. Maven configura Java 25 (`java.version=25`) e o build executa no runtime Java 25.0.5.
+  2. Spring Boot 3.5.16 é compatível com Java 25 conforme [requisitos oficiais](https://docs.spring.io/spring-boot/3.5/system-requirements.html).
+  3. ArchUnit 1.5.1 está alinhado para ler bytecode Java 25, inclusive a dependência transitiva usada pelo Spring Modulith.
+  4. `cd backend && ./mvnw clean verify -q` concluído com sucesso: 11 testes, zero falhas, erros ou skips.
+  5. CI já usa JDK 25; as referências atuais da documentação técnica e do shell foram sincronizadas.
+- **Resultado:** manutenção aprovada; o fluxo sequencial de prompts P001-FE → P002-BE permanece inalterado.
 
 ---
 

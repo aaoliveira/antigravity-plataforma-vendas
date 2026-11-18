@@ -10,7 +10,7 @@
 Certifique-se de que sua estação de trabalho possui as ferramentas abaixo instaladas e configuradas no `PATH`:
 
 ```bash
-# 1. Verificar Java (Java 21 LTS ou Java 25 LTS)
+# 1. Verificar Java (Java 25 LTS)
 java -version
 
 # 2. Verificar Node.js (Node 22 LTS ou superior)

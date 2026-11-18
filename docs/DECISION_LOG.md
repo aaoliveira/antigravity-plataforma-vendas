@@ -10,7 +10,7 @@
 
 | ADR ID | Título da Decisão | Status | Data | Impacto Principal |
 |---|---|---|---|---|
-| **ADR-001** | Adoção de Monólito Modular com Spring Modulith e Java 21 LTS | **Aprovado** | 17/11/2026 | Arquitetura unificada sem latência de rede; limites de domínio verificados no build. |
+| **ADR-001** | Adoção de Monólito Modular com Spring Modulith e Java 25 LTS | **Aprovado** | 17/11/2026 | Arquitetura unificada sem latência de rede; limites de domínio verificados no build. |
 | **ADR-002** | Defesa em Profundidade para Isolamento Multi-Tenant (Context + RLS) | **Aprovado** | 17/11/2026 | Impossibilidade de vazamento de dados entre clientes em todas as camadas. |
 | **ADR-003** | Cálculos Financeiros Determinísticos Exclusivamente com BigDecimal | **Aprovado** | 17/11/2026 | Precisão absoluta em centavos; proibição de floats e de cálculos via LLM. |
 | **ADR-004** | Conectores de Marketplace com Capability Matrix e Política Fail-Closed | **Aprovado** | 17/11/2026 | Proteção total das contas comerciais dos vendedores contra bloqueios ou scraping hostil. |
@@ -21,9 +21,10 @@
 
 ## 2. Detalhamento dos Architecture Decision Records (ADRs)
 
-### ADR-001: Adoção de Monólito Modular com Spring Modulith e Java 21 LTS
+### ADR-001: Adoção de Monólito Modular com Spring Modulith e Java 25 LTS
 * **Contexto:** A plataforma precisa de alta coesão entre módulos (produtos, pedidos, financeiro, concorrência), rapidez de iteração e baixo custo operacional inicial, mas sem gerar acoplamento caótico ("espaguete").
-* **Decisão:** Adotar um **Monólito Modular** usando Java 21 LTS, Spring Boot e Spring Modulith, com verificação automatizada por testes de arquitetura via **ArchUnit**.
+* **Decisão:** Adotar um **Monólito Modular** usando Java 25 LTS e Spring Boot 3.5.x, com Spring Modulith e verificação automatizada por testes de arquitetura via **ArchUnit**.
+* **Atualização de compatibilidade (18/11/2026):** O backend passou a compilar e executar em Java 25 LTS; Spring Boot 3.5.16 declara suporte até Java 25. ArchUnit foi alinhado em 1.5.1 (incluindo o artefato transitivo gerenciado pelo Spring Modulith), pois a versão 1.3.0 não consegue importar bytecode Java 25 (major 69).
 * **Consequências Positivas:** Deploy atômico, transações ACID locais simplificadas, sem sobrecarga de infraestrutura de rede, e fronteiras prontas para eventual extração futura de microsserviços quando houver evidência real de necessidade.
 * **Consequências Negativas:** Exige disciplina estrita de engenharia para não violar contratos internos.
 

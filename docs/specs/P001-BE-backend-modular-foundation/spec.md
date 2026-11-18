@@ -9,7 +9,7 @@
 
 ## 1. Contexto e Objetivo
 
-Implementar a base arquitetural do backend da **Seller Intelligence Platform** em Java 21 LTS e Spring Boot 3.5.x como um **Monólito Modular** com limites de domínio rígidos, build reproduzível, gerenciamento de perfis (`local`, `test`, `prod`), rastreamento distribuído via correlation ID, tratamento de erros padronizado (RFC 7807), documentação OpenAPI 3.0, migração inicial Flyway e suíte de testes de arquitetura (ArchUnit).
+Implementar a base arquitetural do backend da **Seller Intelligence Platform** em Java 25 LTS e Spring Boot 3.5.x como um **Monólito Modular** com limites de domínio rígidos, build reproduzível, gerenciamento de perfis (`local`, `test`, `prod`), rastreamento distribuído via correlation ID, tratamento de erros padronizado (RFC 7807), documentação OpenAPI 3.0, migração inicial Flyway e suíte de testes de arquitetura (ArchUnit).
 
 ---
 

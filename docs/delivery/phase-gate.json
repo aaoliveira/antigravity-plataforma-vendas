@@ -3,7 +3,7 @@
   "status": "APPROVED",
   "nextPrompt": "P002-BE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-17T21:32:00-03:00",
+  "lastUpdated": "2026-11-18T08:49:45-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -56,6 +56,19 @@
         "P001-BE",
         "P001-FE"
       ]
+    }
+  },
+  "maintenanceGates": {
+    "JAVA-25": {
+      "name": "Java 25 LTS runtime upgrade",
+      "status": "APPROVED",
+      "approvedAt": "2026-11-18T08:49:45-03:00",
+      "evidence": "docs/delivery/PHASE_STATUS.md",
+      "javaVersion": "25.0.5",
+      "springBootVersion": "3.5.16",
+      "testsExecuted": 11,
+      "testsPassed": 11,
+      "blockingIssues": 0
     }
   }
 }

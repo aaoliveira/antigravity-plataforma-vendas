@@ -306,7 +306,7 @@ export const AppShell: React.FC = () => {
           </div>
 
           <div className="pt-4 border-t border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 text-center">
-            Monólito Modular &middot; Java 21 & Next.js 15
+            Monólito Modular &middot; Java 25 & Next.js 15
           </div>
         </aside>
 
@@ -375,7 +375,7 @@ export const AppShell: React.FC = () => {
           {/* Footer Informativo */}
           <footer className="pt-8 border-t border-slate-200 dark:border-slate-800 text-center text-xs text-slate-500 dark:text-slate-400 space-y-1">
             <p>Seller Intelligence Platform &copy; 2026 &middot; Todos os direitos reservados.</p>
-            <p className="text-[11px]">Monólito Modular &middot; Java 21 LTS &middot; Next.js 15 &middot; Fail-Closed Ativo</p>
+            <p className="text-[11px]">Monólito Modular &middot; Java 25 LTS &middot; Next.js 15 &middot; Fail-Closed Ativo</p>
           </footer>
         </main>
       </div>

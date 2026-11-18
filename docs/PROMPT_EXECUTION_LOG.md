@@ -240,3 +240,31 @@ DOCUMENTATION UPDATED:
 - spec.md, phase-gate.json, PHASE_STATUS.md, IMPLEMENTATION_STATUS.md e PROMPT_EXECUTION_LOG.md.
 NEXT PROMPT: UNLOCKED (P002-BE - Identidade Mínima, Autenticação e Contexto do Tenant liberado para READY).
 ```
+
+---
+
+## Manutenção: JAVA-25 — Upgrade do runtime Java LTS
+
+```text
+STATUS: APPROVED
+DATA: 18/11/2026
+ESCOPO:
+- Backend atualizado para Java 25 LTS.
+- Spring Boot atualizado para 3.5.16, versão compatível com Java 25.
+- ArchUnit e sua dependência transitiva alinhados na versão 1.5.1 para suportar bytecode Java 25.
+ARQUIVOS:
+- backend/pom.xml
+- docs/DECISION_LOG.md
+- docs/ARCHITECTURE.md
+- docs/PRD.md e PRD.md
+- docs/specs/P001-BE-backend-modular-foundation/spec.md
+- docs/runbooks/ENVIRONMENT_SETUP.md
+- frontend/src/components/AppShell.tsx
+TESTES EXECUTADOS:
+- Ambiente: Java 25.0.5 LTS.
+- Comando: cd backend && ./mvnw clean verify -q
+- Resultado: BUILD SUCCESS; 11 testes aprovados, zero falhas, erros ou skips.
+- Dependências verificadas: ArchUnit 1.5.1 (archunit e archunit-junit5).
+CI:
+- Já configurada para JDK 25; nenhuma alteração necessária.
+```

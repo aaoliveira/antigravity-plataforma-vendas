@@ -357,7 +357,7 @@ do próprio tenant. - Auditoria de exportações.
 
 ### Backend
 
--   Java 21 LTS.
+-   Java 25 LTS.
 -   Spring Boot 4.x (selecionar patch estável compatível no início do
     projeto).
 -   Spring Security.

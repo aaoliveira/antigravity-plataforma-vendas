@@ -33,7 +33,7 @@ graph TD
         RLS_INTERCEPTOR["PostgreSQL RLS Interceptor (SET LOCAL)"]
     end
 
-    subgraph ModularMonolith["Monólito Modular (Spring Boot / Java 21 LTS)"]
+    subgraph ModularMonolith["Monólito Modular (Spring Boot 3.5.x / Java 25 LTS)"]
         subgraph CoreIdentity["Identidade & Organização"]
             ID_MOD["identity-access"]
             TEN_MOD["tenancy"]
