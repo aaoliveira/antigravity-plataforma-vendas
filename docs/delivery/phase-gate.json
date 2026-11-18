@@ -1,12 +1,13 @@
 {
-  "currentPrompt": "P001-BE",
+  "currentPrompt": "P001-FE",
   "status": "APPROVED",
-  "nextPrompt": "P001-FE",
+  "nextPrompt": "P002-BE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-17T21:22:00-03:00",
+  "lastUpdated": "2026-11-17T21:32:00-03:00",
   "approvedPrompts": [
     "P000",
-    "P001-BE"
+    "P001-BE",
+    "P001-FE"
   ],
   "gates": {
     "P000": {
@@ -29,9 +30,31 @@
     },
     "P001-FE": {
       "name": "Shell da Aplicação Web Responsiva",
-      "status": "READY",
+      "status": "APPROVED",
+      "approvedAt": "2026-11-17T21:32:00-03:00",
+      "evidence": "docs/PROMPT_EXECUTION_LOG.md",
+      "testsExecuted": 16,
+      "testsPassed": 16,
+      "buildPassed": true,
+      "lintPassed": true,
+      "typecheckPassed": true,
+      "responsiveBreakpointsTested": [
+        360,
+        768,
+        1024,
+        1440
+      ],
+      "blockingIssues": 0,
       "prerequisites": [
         "P001-BE"
+      ]
+    },
+    "P002-BE": {
+      "name": "Identidade Mínima, Autenticação e Contexto do Tenant",
+      "status": "READY",
+      "prerequisites": [
+        "P001-BE",
+        "P001-FE"
       ]
     }
   }
