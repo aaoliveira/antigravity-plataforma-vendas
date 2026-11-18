@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P002-FE = `APPROVED` &middot; PROMPT P003-BE = `READY`  
+> **Status Vigente:** PROMPT P003-BE = `APPROVED` &middot; PROMPT P003-FE = `READY`  
 > **Data:** 18/11/2026
 
 ---
@@ -15,7 +15,7 @@
 | **P001-FE** | Shell da Aplicação Web Responsiva | **`APPROVED`** | 17/11/2026 | [docs/PROMPT_EXECUTION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/PROMPT_EXECUTION_LOG.md) | **SIM (P002-BE liberado)** |
 | **P002-BE** | Identidade Mínima e Contexto do Tenant | **`APPROVED`** | 18/11/2026 | [docs/PROMPT_EXECUTION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/PROMPT_EXECUTION_LOG.md) | **SIM (P002-FE liberado)** |
 | **P002-FE** | Interface de Autenticação e Troca de Contexto | **`APPROVED`** | 18/11/2026 | [docs/PROMPT_EXECUTION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/PROMPT_EXECUTION_LOG.md) | **SIM (P003-BE liberado)** |
-| **P003-BE** | Conexões Oficiais com Marketplaces | `READY` | --- | Pré-requisito: P002-BE/P002-FE Aprovados | Sim |
+| **P003-BE** | Isolamento Multi-Tenant em Profundidade (RLS, Transacional e Testcontainers) | **`APPROVED`** | 18/11/2026 | [PostgresMultiTenantRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/tenancy/PostgresMultiTenantRlsIntegrationTest.java) | **SIM (P003-FE liberado)** |
 | **P004-BE** | Ingestão Idempotente de Catálogo e Pedidos | `NOT_STARTED` | --- | Pré-requisito: P003 | Não |
 | **P005-BE** | Inteligência de Mercado e Pesquisa Normalizada | `NOT_STARTED` | --- | Pré-requisito: P004 | Não |
 | **P006-BE** | Monitoramento de Produtos e Snapshots Históricos | `NOT_STARTED` | --- | Pré-requisito: P005 | Não |
@@ -47,6 +47,33 @@
 ---
 
 ## 2. Histórico de Transições e Auditoria dos Gates
+
+### Transição: PROMPT P003-BE $\rightarrow$ `APPROVED`
+- **Data/Hora:** 18/11/2026 09:35 BRT
+- **Avaliador:** Tech Lead / Staff Software Engineer
+- **Critérios Validados:**
+  1. `tenant_id` obrigatório nas tabelas tenant-scoped (`marketplace_connections`, `tenant_documents`) com integridade referencial estrita (`REFERENCES organizations(id) ON DELETE CASCADE`) e índices compostos de alto desempenho (`idx_conn_tenant_status`, `idx_conn_tenant_marketplace`, `idx_docs_tenant_created`).
+  2. Defesa em Profundidade ativada com PostgreSQL Row-Level Security (`ENABLE ROW LEVEL SECURITY` e `FORCE ROW LEVEL SECURITY`) via migration `V3_1__postgresql_rls_defense.sql`.
+  3. Políticas RLS estritas com verificação dupla (`USING` e `WITH CHECK`) ancoradas em `NULLIF(current_setting('app.current_tenant', true), '')::uuid`. Sem tenant ativo, zero registros são expostos ou aceitos.
+  4. Sessão de banco transacional atômica via `TenantDatabaseSession` (`SELECT set_config('app.current_tenant', ?, true)`), mantendo o isolamento estritamente no escopo da transação e limpando conexões devolvidas ao pool HikariCP.
+  5. Princípio do Menor Privilégio: usuário da aplicação `seller_app` configurado como `NOSUPERUSER NOBYPASSRLS`, garantindo aplicação infalível de RLS em ambiente PostgreSQL 17 real.
+  6. Isolamento estrito em infraestrutura auxiliar:
+     - `TenantJobExecutor`: execução segura de jobs em background com limpeza no `finally`.
+     - `TenantCacheKeyGenerator`: chaves de cache namespaced `tenant:{tenantId}:{entity}:{identifier}` prevenindo colisões no Redis.
+     - `TenantQueueValidator`: validação e extração mandatória de cabeçalho `x-tenant-id` para filas RabbitMQ com bloqueio de cross-tenant.
+     - `TenantStoragePathResolver`: caminhos seguros `/tenants/{tenantId}/...` com bloqueio terminante contra path traversal (`..`, `\`) e acesso a arquivos alheios.
+  7. Sanitização de segredos na auditoria via `AuditSanitizer`: mascaramento determinístico com `[REDACTED]` de senhas, access tokens, refresh tokens e JWTs soltos antes da persistência no banco e emissão em logs.
+  8. Suíte de testes de integração com PostgreSQL 17 real via Testcontainers (`PostgresMultiTenantRlsIntegrationTest`):
+     - Leitura cross-tenant negada (retorna vazio).
+     - Criação cross-tenant negada (RLS `WITH CHECK` lança violação de integridade).
+     - Alteração cross-tenant negada (0 linhas afetadas, dados originais preservados).
+     - Exclusão cross-tenant negada (0 linhas afetadas, dados originais preservados).
+     - Pesquisa e filtros cross-tenant negados (somente dados do próprio tenant retornados).
+     - Acesso a storage cross-tenant negado (`TenantAccessDeniedException`).
+     - Reutilização limpa de conexão no pool HikariCP (zero vazamento de contexto).
+     - Sanitização comprovada em registro real de auditoria no banco.
+  9. Total de 49/49 testes de backend aprovados (100% de sucesso) e 28/28 testes de frontend mantidos com 100% de sucesso.
+- **Resultado:** **`PROMPT P003-BE = APPROVED`**. O prompt subsequente (`P003-FE`) está formalmente liberado e transita para `READY`.
 
 ### Transição: PROMPT P002-FE $\rightarrow$ `APPROVED`
 - **Data/Hora:** 18/11/2026 09:19 BRT

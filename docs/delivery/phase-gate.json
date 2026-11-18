@@ -1,15 +1,16 @@
 {
-  "currentPrompt": "P002-FE",
+  "currentPrompt": "P003-BE",
   "status": "APPROVED",
-  "nextPrompt": "P003-BE",
+  "nextPrompt": "P003-FE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-18T09:19:00-03:00",
+  "lastUpdated": "2026-11-18T09:35:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
     "P001-FE",
     "P002-BE",
-    "P002-FE"
+    "P002-FE",
+    "P003-BE"
   ],
   "gates": {
     "P000": {
@@ -85,8 +86,18 @@
       ]
     },
     "P003-BE": {
-      "name": "Conexões Oficiais com Mercado Livre e Shopee",
-      "status": "READY",
+      "name": "Isolamento Multi-Tenant em Profundidade (RLS, Transacional e Testcontainers)",
+      "status": "APPROVED",
+      "approvedAt": "2026-11-18T09:35:00-03:00",
+      "evidence": "backend/src/test/java/com/sellerintelligence/modules/tenancy/PostgresMultiTenantRlsIntegrationTest.java",
+      "testsExecuted": 49,
+      "testsPassed": 49,
+      "postgresRlsEnforced": true,
+      "crossTenantDenied": true,
+      "transactionalSetLocalEnforced": true,
+      "auditSanitized": true,
+      "testcontainersPostgres17Passed": true,
+      "blockingIssues": 0,
       "prerequisites": [
         "P002-BE",
         "P002-FE"

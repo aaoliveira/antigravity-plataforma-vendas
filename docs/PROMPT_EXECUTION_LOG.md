@@ -449,3 +449,92 @@ DOCUMENTATION UPDATED:
 - spec.md, phase-gate.json, PHASE_STATUS.md, IMPLEMENTATION_STATUS.md e PROMPT_EXECUTION_LOG.md.
 NEXT PROMPT: UNLOCKED (P003-BE - Conexões Oficiais com Mercado Livre e Shopee liberado para READY).
 ```
+
+---
+
+## Execução: PROMPT 003-BE
+
+```text
+PROMPT ID: P003-BE
+FEATURE: Isolamento Multi-Tenant em Profundidade (RLS, Transacional e Testcontainers)
+STATUS: PASSED
+PRE-FLIGHT:
+- Verificado pré-requisito P002-BE e P002-FE como APPROVED em docs/delivery/phase-gate.json.
+- Verificado suporte do Docker Engine (Docker 29.10.0) para Testcontainers.
+- Confirmadas regras de menor privilégio (usuário de aplicação NOSUPERUSER/NOBYPASSRLS) para PostgreSQL Row-Level Security.
+DOCUMENTS REVIEWED:
+- docs/PRD.md (RF-001, RF-002, RF-003, RF-004, RNF-001, RNF-002, RNF-006, ADR-002)
+- docs/ARCHITECTURE.md
+- docs/SECURITY.md
+- docs/ENGINEERING_RULES.md
+- docs/specs/P003-BE-multi-tenant-isolation-rls/spec.md
+DEPENDENCIES:
+- P002-BE e P002-FE (Aprovados).
+FILES CHANGED:
+- backend/src/main/resources/db/migration/V3__tenant_scoped_entities.sql (Criada migração Flyway ANSI/PostgreSQL com tabelas tenant-scoped)
+- backend/src/main/resources/db/migration-postgresql/V3_1__postgresql_rls_defense.sql (Criada migração RLS para PostgreSQL com ENABLE e FORCE RLS)
+- backend/src/main/resources/application-local.yml (Configurado flyway.locations duplo)
+- backend/src/main/resources/application-prod.yml (Configurado flyway.locations duplo)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/MarketplaceConnection.java (Criada entidade JPA)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/MarketplaceConnectionRepository.java (Criado repositório com filtros server-side)
+- backend/src/main/java/com/sellerintelligence/modules/reporting/TenantDocument.java (Criada entidade JPA)
+- backend/src/main/java/com/sellerintelligence/modules/reporting/TenantDocumentRepository.java (Criado repositório com filtros server-side)
+- backend/src/main/java/com/sellerintelligence/core/tenant/TenantDatabaseSession.java (Criado gerenciador transacional SET LOCAL app.current_tenant)
+- backend/src/main/java/com/sellerintelligence/core/tenant/TenantJobExecutor.java (Criado executor de jobs com limpeza no finally)
+- backend/src/main/java/com/sellerintelligence/core/tenant/TenantCacheKeyGenerator.java (Criado gerador de chaves de cache namespaced)
+- backend/src/main/java/com/sellerintelligence/core/tenant/TenantQueueValidator.java (Criado validador de envelopes e headers x-tenant-id)
+- backend/src/main/java/com/sellerintelligence/core/tenant/TenantStoragePathResolver.java (Criado resolvedor seguro de storage com bloqueio a path traversal)
+- backend/src/main/java/com/sellerintelligence/modules/audit/AuditSanitizer.java (Criado sanitizador de segredos [REDACTED])
+- backend/src/main/java/com/sellerintelligence/modules/audit/AuditService.java (Atualizado para invocar AuditSanitizer.sanitize)
+- backend/src/test/resources/init-testcontainers-db.sql (Criado script de inicialização do role seller_app com menor privilégio)
+- backend/src/test/java/com/sellerintelligence/modules/audit/AuditSanitizerTest.java (Criados 6 testes unitários para mascaramento)
+- backend/src/test/java/com/sellerintelligence/core/tenant/TenantInfrastructureIsolationTest.java (Criados 4 testes unitários de infraestrutura)
+- backend/src/test/java/com/sellerintelligence/modules/tenancy/PostgresMultiTenantRlsIntegrationTest.java (Criados 8 testes com PostgreSQL 17 real via Testcontainers)
+- docs/specs/P003-BE-multi-tenant-isolation-rls/spec.md (Criada especificação técnica com cenários Gherkin)
+- docs/delivery/phase-gate.json (Atualizado)
+- docs/delivery/PHASE_STATUS.md (Atualizado)
+- docs/IMPLEMENTATION_STATUS.md (Atualizado)
+- docs/PROMPT_EXECUTION_LOG.md (Atualizado)
+API/DB CONTRACTS:
+- Tabelas criadas: marketplace_connections, tenant_documents com tenant_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE.
+- Índices compostos criados: (tenant_id, status), (tenant_id, marketplace), (tenant_id, created_at).
+- PostgreSQL Row-Level Security: ENABLE ROW LEVEL SECURITY e FORCE ROW LEVEL SECURITY com políticas baseadas em NULLIF(current_setting('app.current_tenant', true), '')::uuid.
+SECURITY CHECKS:
+- OWASP ASVS Nível 2 atendido com Defesa em Profundidade (Filtros JPA + PostgreSQL RLS + Transações isoladas + Validador de storage).
+- Menor privilégio: usuário seller_app (NOSUPERUSER, NOBYPASSRLS) garante que o PostgreSQL RLS nunca seja contornado.
+- Sem segredos em texto puro: AuditSanitizer sanitiza senhas, tokens de acesso, refresh tokens e JWTs para [REDACTED] antes da gravação no banco e nos logs.
+- Prevenção contra Path Traversal: TenantStoragePathResolver rejeita sequências .., \, bytes nulos e caminhos pertencentes a outros tenants.
+TESTS EXECUTED:
+- cd backend && ./mvnw clean test:
+  * PostgresMultiTenantRlsIntegrationTest (PostgreSQL 17 real via Testcontainers): 8 cenários executados com 100% de sucesso.
+    1. Leitura cross-tenant negada (retorna Optional.empty()).
+    2. Criação cross-tenant negada (lança violação de integridade de RLS WITH CHECK).
+    3. Alteração cross-tenant negada (0 linhas afetadas, dados originais de Alpha inalterados).
+    4. Exclusão cross-tenant negada (0 linhas afetadas, documento de Alpha preservado).
+    5. Listagem/pesquisa cross-tenant negada (Alpha visualiza apenas 2 docs de Alpha; Beta visualiza apenas 3 docs de Beta).
+    6. Acesso a storage de outro tenant bloqueado com TenantAccessDeniedException.
+    7. Conexão reutilizada no pool HikariCP limpa sem vazamento de contexto (SELECT COUNT(*) = 0 sem tenant).
+    8. Trilha de auditoria no PostgreSQL persiste detalhes sanitizados com [REDACTED].
+  * TenantInfrastructureIsolationTest: 4 testes aprovados (Job executor, Cache keys namespaced, Queue validator, Storage resolver).
+  * AuditSanitizerTest: 6 testes aprovados (JSON passwords, JSON tokens, Key-value pairs, Bearer tokens, JWTs soltos, strings comuns).
+  * ModularArchitectureTest (ArchUnit): 3 testes de arquitetura aprovados (zero dependência cíclica, modularidade estrita).
+  * AuthenticationAndTenancyIntegrationTest: 13 testes aprovados.
+  * JwtTokenProviderTest, BruteForceProtectionServiceTest, etc.: todos aprovados.
+  * Total Backend: 49 testes executados, 49 aprovados, 0 falhas, 0 erros, 0 skips.
+- pnpm --dir frontend test:
+  * Vitest 3.2.7: 28 testes executados, 28 aprovados, 0 falhas, 0 erros.
+TEST RESULTS:
+- Backend: 49/49 testes PASSED (100% de sucesso).
+- Frontend: 28/28 testes PASSED (100% de sucesso).
+POLICY EVIDENCE:
+- Nenhuma chamada externa a marketplaces executada.
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+FAILURES / ROOT CAUSE:
+- Falha inicial no teste Testcontainers onde RLS era contornado porque o container iniciava com usuário root/superuser ("test"). No PostgreSQL, SUPERUSER ignora RLS mesmo com FORCE ROW LEVEL SECURITY.
+REMEDIATION:
+- Criado script init-testcontainers-db.sql provisionando o usuário de aplicação "seller_app" com NOSUPERUSER e NOBYPASSRLS, conectando a aplicação com menor privilégio conforme OWASP ASVS e SECURITY.md. Todos os 8 testes de RLS passaram com sucesso.
+DOCUMENTATION UPDATED:
+- spec.md, phase-gate.json, PHASE_STATUS.md, IMPLEMENTATION_STATUS.md, PROMPT_EXECUTION_LOG.md.
+NEXT PROMPT: UNLOCKED (P003-FE - Gestão de Lojas, Conexões e Health Status liberado para READY).
+```

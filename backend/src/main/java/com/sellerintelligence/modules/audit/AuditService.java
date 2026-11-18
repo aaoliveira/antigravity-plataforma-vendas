@@ -35,6 +35,8 @@ public class AuditService implements AuditPublisher {
             String correlationId,
             String details
     ) {
+        String sanitizedDetails = AuditSanitizer.sanitize(details);
+
         AuditEvent event = new AuditEvent(
                 UUID.randomUUID(),
                 eventType,
@@ -44,13 +46,13 @@ public class AuditService implements AuditPublisher {
                 ipAddress,
                 userAgent,
                 correlationId,
-                details,
+                sanitizedDetails,
                 Instant.now()
         );
 
         auditEventRepository.save(event);
 
         log.info("AUDIT_EVENT: type={} principal={} tenant={} ip={} corrId={} details={}",
-                eventType, principalEmail, tenantId, ipAddress, correlationId, details);
+                eventType, principalEmail, tenantId, ipAddress, correlationId, sanitizedDetails);
     }
 }
