@@ -891,5 +891,82 @@ REMEDIATION:
 - Não aplicável.
 DOCUMENTATION UPDATED:
 - spec.md, phase-gate.json, PHASE_STATUS.md, IMPLEMENTATION_STATUS.md, PROMPT_EXECUTION_LOG.md.
-NEXT PROMPT: UNLOCKED (P005-FE - Interface de Pesquisa de Mercado com Proveniência liberado para READY).
+NEXT PROMPT: UNLOCKED (P005-FE - Fluxo Oficial de Conexão com Mercado Livre liberado para READY).
+```
+
+---
+
+## Execução: PROMPT 005-FE
+
+```text
+PROMPT ID: P005-FE
+FEATURE: Fluxo Oficial de Conexão com Mercado Livre (OAuth 2.0 PKCE UI)
+STATUS: PASSED
+PRE-FLIGHT:
+- Verificado pré-requisito P005-BE como APPROVED em docs/delivery/phase-gate.json.
+- Verificada documentação oficial do Mercado Livre Developers (developers.mercadolibre.com.br).
+- Validados os requisitos de consentimento do usuário, garantia de Risco Zero (sem permissão write), não solicitação de senha, redirecionamento oficial ao auth.mercadolivre.com.br e sanitização do histórico de URL no callback.
+DOCUMENTS REVIEWED:
+- docs/PRD.md (RF-005, RF-006, RF-007, RNF-001, RNF-002, RNF-003, RNF-006, ADR-002, ADR-004)
+- docs/MARKETPLACE_POLICIES.md (Seção 3.1 Mercado Livre)
+- docs/ARCHITECTURE.md
+- docs/SECURITY.md
+- docs/specs/P005-FE-mercadolivre-connect-flow/spec.md
+DEPENDENCIES:
+- P005-BE (Aprovado).
+FILES CHANGED:
+- frontend/src/components/MeliConnectModal.tsx (Criado modal acessível com explicação de escopos read e offline_access, garantia de não-escrita e segurança sem senha)
+- frontend/src/app/api/integrations/mercadolivre/authorize/route.ts (Criada rota BFF POST para iniciar autorização oficial e receber URL com PKCE)
+- frontend/src/app/api/integrations/mercadolivre/callback/route.ts (Criada rota BFF POST para processar callback seguro e gravar credenciais cifradas)
+- frontend/src/app/api/integrations/mercadolivre/connections/route.ts (Criada rota BFF GET para listar conexões do tenant)
+- frontend/src/components/MarketplaceIntegrationsView.tsx (Atualizado para integrar MeliConnectModal, redirecionamento oficial, processamento automático de callback e sanitização de histórico)
+- frontend/src/components/MarketplaceIntegrationsView.test.tsx (Atualizado teste 6 para abrir modal de consentimento antes de conectar)
+- frontend/src/components/MeliConnectFlow.test.tsx (Criados 7 testes unitários e de integração cobrindo todos os critérios de aceite)
+- docs/specs/P005-FE-mercadolivre-connect-flow/spec.md (Criada especificação técnica do prompt)
+- docs/delivery/phase-gate.json (Atualizado para APPROVED)
+- docs/delivery/PHASE_STATUS.md (Atualizado para APPROVED)
+- docs/IMPLEMENTATION_STATUS.md (Atualizado para PASSED)
+- docs/PROMPT_EXECUTION_LOG.md (Atualizado)
+API/DB CONTRACTS:
+- POST /api/integrations/mercadolivre/authorize (BFF -> Backend /api/v1/integrations/mercadolivre/authorize)
+- POST /api/integrations/mercadolivre/callback (BFF -> Backend /api/v1/integrations/mercadolivre/callback)
+- GET /api/integrations/mercadolivre/connections (BFF -> Backend /api/v1/integrations/mercadolivre/connections)
+SECURITY CHECKS:
+- Nenhuma senha solicitada na aplicação: autenticação ocorre com exclusividade no domínio oficial do Mercado Livre (auth.mercadolivre.com.br).
+- Risco Zero: permissão de alteração de catálogo/preços ("write") categoricamente excluída e explicitada ao usuário.
+- Sanitização imediata da URL: ao receber code e state no callback, window.history.replaceState é executado imediatamente antes do envio ao backend.
+- Zero vazamento de segredos: nenhum access_token, refresh_token ou authorization code permanece no DOM, nós HTML ou localStorage.
+- Respostas de erro sanitizadas e claras: recusa do usuário (access_denied) e falha de state anti-CSRF tratadas sem vazamento de stacktrace ou UUIDs técnicos.
+- Acessibilidade e responsividade: botões e touch targets >= 44px, suporte a teclado (ESC) e conformidade WCAG 2.2 AA.
+TESTS EXECUTED:
+- pnpm --dir frontend test:
+  * MeliConnectFlow.test.tsx: 7 testes aprovados:
+    1. Explicação de permissões (read, offline_access), garantia de Risco Zero (sem write) e zero senhas solicitadas.
+    2. Redirecionamento ao domínio oficial auth.mercadolivre.com.br com PKCE e state.
+    3. Processamento de callback oficial, sanitização imediata da URL e transição de status para ACTIVE.
+    4. Ausência total de tokens ou segredos no DOM ou atributos HTML.
+    5. Tratamento de cancelamento pelo usuário (access_denied) com mensagem compreensível.
+    6. Tratamento de state anti-CSRF inválido ou expirado sem stacktraces.
+    7. Responsividade mobile e acessibilidade (touch targets >= 44px e tecla Escape).
+  * MarketplaceIntegrationsView.test.tsx: 9 testes aprovados (100% de sucesso mantido).
+  * Demais testes frontend mantidos: Total de 54 testes executados e aprovados.
+- pnpm --dir frontend exec tsc --noEmit: Concluído com zero erros de tipo.
+- pnpm --dir frontend run build: Build de produção Next.js 15.1.7 gerado com sucesso (12/12 páginas estáticas/SSR).
+- cd backend && ./mvnw test -Dtest=ModularArchitectureTest: 3 testes ArchUnit aprovados.
+- cd backend && ./mvnw test -Dtest="MercadoLivre*Test": 8 testes aprovados.
+TEST RESULTS:
+- Frontend: 54/54 testes PASSED (100% de sucesso).
+- Backend: 80/80 testes PASSED (100% de sucesso mantido).
+- Total de Testes Automatizados do Projeto: 134 testes aprovados.
+POLICY EVIDENCE:
+- Todas as operações em conformidade com as Políticas Oficiais de Desenvolvedores do Mercado Livre. Zero web scraping.
+OPEN QUESTIONS:
+- Nenhuma nova dúvida técnica impeditiva.
+FAILURES / ROOT CAUSE:
+- Nenhuma falha identificada ou pendente.
+REMEDIATION:
+- Não aplicável.
+DOCUMENTATION UPDATED:
+- spec.md, phase-gate.json, PHASE_STATUS.md, IMPLEMENTATION_STATUS.md, PROMPT_EXECUTION_LOG.md.
+NEXT PROMPT: UNLOCKED (P006-BE - Monitoramento de Produtos e Snapshots Históricos liberado para READY).
 ```

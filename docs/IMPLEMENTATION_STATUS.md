@@ -1,6 +1,6 @@
 # Status de Implementação e Quality Gates do Roadmap
 
-> **Status Atual Geral:** PROMPT P005-BE = `PASSED` &middot; PROMPT P005-FE = `READY`  
+> **Status Atual Geral:** PROMPT P005-FE = `PASSED` &middot; PROMPT P006-BE = `READY`  
 > **Data da Última Atualização:** 18/11/2026  
 > **Regra de Transição:** O próximo prompt só é liberado para `IN_PROGRESS` quando o anterior atingir formalmente `PASSED`.  
 
@@ -20,7 +20,8 @@
 | **P004-BE** | Contrato MarketplaceAdapter, Registro de Capacidades, Evidências e Camada de Resiliência | E04 | Backend | **`PASSED`** | P003 (`PASSED`) | 18/11/2026 |
 | **P004-FE** | Interface de Gestão de Conexões Oficiais, Capacidades e Evidências | E04 | Frontend | **`PASSED`** | P004-BE (`PASSED`) | 18/11/2026 |
 | **P005-BE** | Integração Oficial OAuth 2.0 Mercado Livre, PKCE, Cifragem KMS e Rotação Segura | E04 | Backend | **`PASSED`** | P004 (`PASSED`) | 18/11/2026 |
-| **P005-FE** | Interface de Pesquisa de Mercado com Proveniência | E05 | Frontend | `READY` | P005-BE (`PASSED`) | --- |
+| **P005-FE** | Fluxo Oficial de Conexão com Mercado Livre (OAuth 2.0 PKCE UI) | E04 | Frontend | **`PASSED`** | P005-BE (`PASSED`) | 18/11/2026 |
+| **P006-BE** | Monitoramento de Produtos e Snapshots Históricos | E06 | Backend | `READY` | P005 (`PASSED`) | --- |
 | **P005-FE** | Interface de Pesquisa de Mercado com Proveniência | E05 | Frontend | `NOT_STARTED` | P005-BE (`PASSED`) | --- |
 | **P006-BE** | Monitoramento de Produtos e Snapshots Históricos | E06 | Backend | `NOT_STARTED` | P005 (`PASSED`) | --- |
 | **P006-FE** | Watchlists e Linha do Tempo de Preços Observados | E06 | Frontend | `NOT_STARTED` | P006-BE (`PASSED`) | --- |

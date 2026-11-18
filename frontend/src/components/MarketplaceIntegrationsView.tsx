@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { sanitizeErrorMessage } from '@/lib/errorHandler';
+import { MeliConnectModal } from '@/components/MeliConnectModal';
 
 export type CapabilityStatus = 'SUPPORTED' | 'RESTRICTED' | 'UNSUPPORTED' | 'UNVERIFIED';
 
@@ -237,6 +238,87 @@ export const MarketplaceIntegrationsView: React.FC = () => {
     text: string;
   } | null>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [isMeliModalOpen, setIsMeliModalOpen] = useState<boolean>(false);
+  const [isInitiatingMeli, setIsInitiatingMeli] = useState<boolean>(false);
+
+  // Processamento automático de retorno de Callback e Erros OAuth (P005-FE)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    const state = urlParams.get('state');
+    const error = urlParams.get('error');
+    const errorDescription = urlParams.get('error_description');
+
+    if (error) {
+      // 1. Limpa imediatamente a URL para não deixar parâmetros no histórico
+      window.history.replaceState({}, document.title, window.location.pathname);
+
+      let message = 'Falha ao autorizar no Mercado Livre.';
+      if (error === 'access_denied') {
+        message = 'Autorização cancelada no Mercado Livre pelo usuário. Nenhuma alteração foi realizada na sua conta.';
+      } else if (errorDescription) {
+        message = `Erro na autorização oficial: ${errorDescription}`;
+      }
+      setFeedbackMessage({
+        type: 'error',
+        text: message,
+      });
+      return;
+    }
+
+    if (code && state) {
+      // 1. Limpa imediatamente a URL antes de processar, removendo code e state do histórico
+      window.history.replaceState({}, document.title, window.location.pathname);
+
+      setIsProcessing(true);
+      setFeedbackMessage(null);
+
+      // 2. Despacha para o endpoint de callback seguro
+      fetch('/api/integrations/mercadolivre/callback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code, state }),
+      })
+        .then(async (res) => {
+          if (!res.ok) {
+            const errData = await res.json().catch(() => ({}));
+            throw new Error(errData.message || 'Falha na validação de segurança da autorização (state inválido ou expirado).');
+          }
+          return res.json();
+        })
+        .then(() => {
+          setChannels((prev) =>
+            prev.map((ch) =>
+              ch.id === 'MERCADO_LIVRE'
+                ? {
+                    ...ch,
+                    status: 'ACTIVE',
+                    lastVerificationDate: new Date().toLocaleDateString('pt-BR'),
+                  }
+                : ch
+            )
+          );
+          setFeedbackMessage({
+            type: 'success',
+            text: 'Canal Mercado Livre conectado com sucesso via fluxo oficial OAuth 2.0 PKCE. Tokens cifrados com segurança.',
+          });
+        })
+        .catch((err: unknown) => {
+          const errMsg = err instanceof Error ? err.message : 'Falha na validação de segurança da autorização (state inválido ou expirado). Por favor, tente conectar novamente.';
+          setFeedbackMessage({
+            type: 'error',
+            text: errMsg,
+          });
+        })
+        .finally(() => {
+          setIsProcessing(false);
+        });
+    }
+  }, []);
 
   // Canal selecionado
   const selectedChannel = useMemo(() => {
@@ -280,10 +362,15 @@ export const MarketplaceIntegrationsView: React.FC = () => {
 
   // Ação Permitida 1: Conectar Canal
   const handleConnect = (channelId: string) => {
+    if (channelId === 'MERCADO_LIVRE') {
+      setIsMeliModalOpen(true);
+      return;
+    }
+
     setIsProcessing(true);
     setFeedbackMessage(null);
 
-    // Simulação do redirecionamento oficial OAuth
+    // Simulação do redirecionamento oficial OAuth para canais secundários
     setTimeout(() => {
       setChannels((prev) =>
         prev.map((ch) =>
@@ -302,6 +389,50 @@ export const MarketplaceIntegrationsView: React.FC = () => {
         text: `Canal ${selectedChannel.name} conectado com sucesso via fluxo oficial OAuth. Tokens cifrados com segurança.`,
       });
     }, 600);
+  };
+
+  // Ação de confirmação do lojista no modal do Mercado Livre (P005-FE)
+  const handleConfirmMeliOAuth = async () => {
+    setIsInitiatingMeli(true);
+    setFeedbackMessage(null);
+
+    try {
+      const res = await fetch('/api/integrations/mercadolivre/authorize', {
+        method: 'POST',
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        setIsMeliModalOpen(false);
+        setIsInitiatingMeli(false);
+        setFeedbackMessage({
+          type: 'error',
+          text: errorData.message || 'Falha ao iniciar autorização oficial com Mercado Livre.',
+        });
+        return;
+      }
+
+      const data = await res.json();
+      setIsMeliModalOpen(false);
+      setIsInitiatingMeli(false);
+
+      if (data?.authorizationUrl) {
+        if (typeof window !== 'undefined') {
+          if (typeof window.location.assign === 'function') {
+            window.location.assign(data.authorizationUrl);
+          } else {
+            window.location.href = data.authorizationUrl;
+          }
+        }
+      }
+    } catch {
+      setIsMeliModalOpen(false);
+      setIsInitiatingMeli(false);
+      setFeedbackMessage({
+        type: 'error',
+        text: 'Não foi possível contatar o serviço de autenticação do Mercado Livre. Tente novamente mais tarde.',
+      });
+    }
   };
 
   // Ação Permitida 2: Atualizar Status da Conexão
@@ -831,6 +962,14 @@ export const MarketplaceIntegrationsView: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal Oficial de Consentimento e Explicação de Permissões (P005-FE) */}
+      <MeliConnectModal
+        isOpen={isMeliModalOpen}
+        onClose={() => setIsMeliModalOpen(false)}
+        onConfirm={handleConfirmMeliOAuth}
+        isInitiating={isInitiatingMeli}
+      />
     </div>
   );
 };

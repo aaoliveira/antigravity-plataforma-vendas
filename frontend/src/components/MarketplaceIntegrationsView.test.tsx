@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import React from 'react';
 import { MarketplaceIntegrationsView } from './MarketplaceIntegrationsView';
 
@@ -116,12 +116,39 @@ describe('P004-FE: MarketplaceIntegrationsView Component', () => {
     const connectBtn = screen.getByRole('button', { name: /Conectar com Mercado Livre/i });
     expect(connectBtn).toBeInTheDocument();
 
-    // Executar Conectar
+    // Executar Conectar - abre o modal oficial de permissões e segurança OAuth (P005-FE)
     fireEvent.click(connectBtn);
+
+    const dialog = screen.getByRole('dialog', { name: /Conectar Conta do Mercado Livre/i });
+    expect(dialog).toBeInTheDocument();
+    expect(within(dialog).getByText(/A sua senha NUNCA é solicitada nesta aplicação/i)).toBeInTheDocument();
+    expect(within(dialog).getByText(/^read$/i)).toBeInTheDocument();
+    expect(within(dialog).getByText(/^offline_access$/i)).toBeInTheDocument();
+
+    // Fecha o modal pelo botão fechar
+    const closeBtn = within(dialog).getByRole('button', { name: /Fechar modal/i });
+    fireEvent.click(closeBtn);
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+
+    // Testa conexão de canal secundário (Shopee)
+    const shopeeTab = screen.getByRole('tab', { name: /Shopee/i });
+    fireEvent.click(shopeeTab);
+
+    const revokeShopeeBtn = screen.getByRole('button', { name: /Revogar conexão com Shopee/i });
+    fireEvent.click(revokeShopeeBtn);
 
     await waitFor(() => {
       expect(
-        screen.getByText(/Canal Mercado Livre conectado com sucesso/i)
+        screen.getByText(/Autorização do canal Shopee revogada com sucesso/i)
+      ).toBeInTheDocument();
+    });
+
+    const connectShopeeBtn = screen.getByRole('button', { name: /Conectar com Shopee/i });
+    fireEvent.click(connectShopeeBtn);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/Canal Shopee conectado com sucesso/i)
       ).toBeInTheDocument();
     });
   });

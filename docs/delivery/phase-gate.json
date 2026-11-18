@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P005-BE",
+  "currentPrompt": "P005-FE",
   "status": "APPROVED",
-  "nextPrompt": "P005-FE",
+  "nextPrompt": "P006-BE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-18T10:42:00-03:00",
+  "lastUpdated": "2026-11-18T10:58:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -14,7 +14,8 @@
     "P003-FE",
     "P004-BE",
     "P004-FE",
-    "P005-BE"
+    "P005-BE",
+    "P005-FE"
   ],
   "gates": {
     "P000": {
@@ -183,6 +184,25 @@
       "prerequisites": [
         "P004-BE",
         "P004-FE"
+      ]
+    },
+    "P005-FE": {
+      "name": "Fluxo Oficial de Conexão com Mercado Livre (OAuth 2.0 PKCE UI)",
+      "status": "APPROVED",
+      "approvedAt": "2026-11-18T10:58:00-03:00",
+      "evidence": "frontend/src/components/MeliConnectFlow.test.tsx",
+      "testsExecuted": 54,
+      "testsPassed": 54,
+      "buildPassed": true,
+      "typecheckPassed": true,
+      "officialDomainRedirectEnforced": true,
+      "zeroTokensExposedInDom": true,
+      "zeroPasswordInputsEnforced": true,
+      "comprehensibleFailuresEnforced": true,
+      "mobileResponsiveValidated": true,
+      "blockingIssues": 0,
+      "prerequisites": [
+        "P005-BE"
       ]
     }
   },

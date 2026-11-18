@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P005-BE = `APPROVED` &middot; PROMPT P005-FE = `READY`  
+> **Status Vigente:** PROMPT P005-FE = `APPROVED` &middot; PROMPT P006-BE = `READY`  
 > **Data:** 18/11/2026
 
 ---
@@ -20,8 +20,8 @@
 | **P004-BE** | Contrato MarketplaceAdapter, Registro de Capacidades, Evidências e Camada de Resiliência | **`APPROVED`** | 18/11/2026 | [MarketplaceAdapterResilienceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/marketplaceadapters/MarketplaceAdapterResilienceTest.java) | **SIM (P004-FE liberado)** |
 | **P004-FE** | Interface de Gestão de Conexões Oficiais, Capacidades e Evidências | **`APPROVED`** | 18/11/2026 | [MarketplaceIntegrationsView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/MarketplaceIntegrationsView.test.tsx) | **SIM (P005-BE liberado)** |
 | **P005-BE** | Integração Oficial OAuth 2.0 Mercado Livre, PKCE, Cifragem KMS e Rotação Segura | **`APPROVED`** | 18/11/2026 | [MercadoLivreOAuthIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/marketplaceconnection/mercadolivre/MercadoLivreOAuthIntegrationTest.java) | **SIM (P005-FE liberado)** |
-| **P005-FE** | Interface de Pesquisa de Mercado com Proveniência | `READY` | --- | Pré-requisito: P005-BE (`APPROVED`) | Sim |
-| **P006-BE** | Monitoramento de Produtos e Snapshots Históricos | `NOT_STARTED` | --- | Pré-requisito: P005 | Não |
+| **P005-FE** | Fluxo Oficial de Conexão com Mercado Livre (OAuth 2.0 PKCE UI) | **`APPROVED`** | 18/11/2026 | [MeliConnectFlow.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/MeliConnectFlow.test.tsx) | **SIM (P006-BE liberado)** |
+| **P006-BE** | Monitoramento de Produtos e Snapshots Históricos | `READY` | --- | Pré-requisito: P005 atendido | Não |
 | **P007-BE** | Motor Financeiro Determinístico em BigDecimal | `NOT_STARTED` | --- | Pré-requisito: P004 | Não |
 | **P008-BE** | Analytics de Anúncios Próprios e Métricas Oficiais | `NOT_STARTED` | --- | Pré-requisito: P004 | Não |
 | **P009-BE** | Consolidação Financeira, DRE e Reconciliação | `NOT_STARTED` | --- | Pré-requisito: P007 | Não |
@@ -50,6 +50,21 @@
 ---
 
 ## 2. Histórico de Transições e Auditoria dos Gates
+
+### Transição: PROMPT P005-FE $\rightarrow$ `APPROVED`
+- **Data/Hora:** 18/11/2026 10:58 BRT
+- **Avaliador:** Tech Lead / Staff Software Engineer
+- **Critérios Validados:**
+  1. **Redirecionamento ao Domínio Oficial:** O fluxo aciona `POST /api/integrations/mercadolivre/authorize` e redireciona o lojista com exclusividade para o domínio oficial `auth.mercadolivre.com.br` com parâmetros criptográficos PKCE (`code_challenge`) e anti-CSRF (`state`).
+  2. **Transparência e Explicação de Permissões:** Modal de consentimento (`MeliConnectModal.tsx`) detalha os escopos solicitados (`read` e `offline_access`) em linguagem clara para o vendedor.
+  3. **Garantia de Não-Escrita (Risco Zero):** Alerta destacado de que a permissão `write` **NÃO** é solicitada, garantindo categoricamente que a plataforma nunca alterará preços, anúncios ou inventário.
+  4. **Segurança Inegociável — Zero Senhas Solicitadas:** A aplicação nunca solicita, armazena ou manipula senhas do Mercado Livre; ausência total de inputs do tipo password.
+  5. **Callback sem Exposição de Tokens:** Processamento automático de callback limpa imediatamente a URL via `window.history.replaceState`, despacha `code` e `state` via POST ao BFF/backend, e garante ausência total de tokens ou segredos no DOM ou storage do navegador.
+  6. **Status Reflete Backend:** Conexão atualizada para `ACTIVE` (Conectado) e persistida de forma consistente.
+  7. **Falhas Compreensíveis:** Tratamento amigável e desprovido de stacktraces para cenários de recusa do usuário (`access_denied`), expiração de state anti-CSRF e falhas de rede.
+  8. **Responsividade & Acessibilidade:** Conformidade WCAG 2.2 AA, touch targets $\ge 44\text{px}$, suporte a navegação por teclado (ESC).
+  9. **Build & Testes:** 54/54 testes frontend aprovados (incluindo 7 testes de fluxo OAuth e 9 testes de integrações), `tsc --noEmit` sem erros e `next build` 15.1.7 gerando build estático/SSR limpo.
+- **Resultado:** **`PROMPT P005-FE = APPROVED`**. O prompt subsequente (`P006-BE`) está formalmente liberado e transita para `READY`.
 
 ### Transição: PROMPT P005-BE $\rightarrow$ `APPROVED`
 - **Data/Hora:** 18/11/2026 10:42 BRT
