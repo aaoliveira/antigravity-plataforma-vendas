@@ -98,4 +98,19 @@ describe('TenantSwitcher Component (Isolamento e Troca de Contexto de Tenant)', 
 
     expect(screen.queryByRole('listbox')).toBeNull();
   });
+
+  it('não deve exibir nenhum tenant ID técnico (UUID) no texto visível ao usuário', () => {
+    const { container } = render(<TenantSwitcher />);
+
+    const triggerBtn = screen.getByRole('button', { name: /Organização ativa: Alpha Seller Org/i });
+    fireEvent.click(triggerBtn);
+
+    // Valida que o texto do componente não contém o UUID 11111111-1111-1111-1111-111111111111 nem 33333333-3333-3333-3333-333333333333
+    const textContent = container.textContent || '';
+    expect(textContent).not.toContain('11111111-1111-1111-1111-111111111111');
+    expect(textContent).not.toContain('33333333-3333-3333-3333-333333333333');
+
+    const uuidRegex = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/;
+    expect(uuidRegex.test(textContent)).toBe(false);
+  });
 });

@@ -536,5 +536,75 @@ REMEDIATION:
 - Criado script init-testcontainers-db.sql provisionando o usuário de aplicação "seller_app" com NOSUPERUSER e NOBYPASSRLS, conectando a aplicação com menor privilégio conforme OWASP ASVS e SECURITY.md. Todos os 8 testes de RLS passaram com sucesso.
 DOCUMENTATION UPDATED:
 - spec.md, phase-gate.json, PHASE_STATUS.md, IMPLEMENTATION_STATUS.md, PROMPT_EXECUTION_LOG.md.
-NEXT PROMPT: UNLOCKED (P003-FE - Gestão de Lojas, Conexões e Health Status liberado para READY).
+NEXT PROMPT: UNLOCKED (P003-FE - Tratamento Padronizado de Erros e Segurança de Tenant na UI liberado para READY).
+```
+
+---
+
+## Execução: PROMPT 003-FE
+
+```text
+PROMPT ID: P003-FE
+FEATURE: Tratamento Padronizado de Erros (401/403/404) e Segurança de Tenant na UI
+STATUS: PASSED
+PRE-FLIGHT:
+- Verificado pré-requisito P003-BE como APPROVED em docs/delivery/phase-gate.json.
+- Verificado suporte a Next.js 15.1.7, React 19, TypeScript e Vitest.
+- Confirmadas regras de segurança: anti-enumeração de recursos alheios, bloqueio de manipulação de tenant via URL e ocultação de UUIDs técnicos.
+DOCUMENTS REVIEWED:
+- docs/PRD.md (RF-001, RF-002, RF-003, RNF-001, RNF-009, RNF-010)
+- docs/ARCHITECTURE.md
+- docs/SECURITY.md
+- docs/specs/P003-FE-error-handling-and-tenant-security/spec.md
+DEPENDENCIES:
+- P003-BE (Aprovado).
+FILES CHANGED:
+- frontend/src/middleware.ts (Adicionada proteção anti-tampering expurgando parâmetros tenantId, orgId, etc., e redirecionando para URL limpa)
+- frontend/src/lib/errorHandler.ts (Criado utilitário de tratamento de erros com sanitização de UUIDs e respostas idênticas anti-enumeração para 403 e 404)
+- frontend/src/components/AccessDeniedFeedback.tsx (Criado componente acessível de feedback para 403/404 uniforme)
+- frontend/src/components/SessionBanner.tsx (Criado componente de alerta acessível role="alert" para sessão expirada 401)
+- frontend/src/app/not-found.tsx (Criada página padrão 404/403 uniforme do Next.js 15)
+- frontend/src/app/error.tsx (Atualizado com sanitização estrita de mensagens de erro contra vazamento de stack ou UUIDs)
+- frontend/src/components/AppShell.tsx (Integrado com SessionBanner e suporte para simulação de acesso restrito)
+- frontend/src/test/UrlTenantProtection.test.ts (Criados 3 testes validando descarte de injeção de parâmetros de tenant na URL)
+- frontend/src/components/ErrorHandlingUniformity.test.tsx (Criados 5 testes validando respostas anti-enumeração, sanitização e ocultação de UUIDs)
+- frontend/src/components/TenantSwitcher.test.tsx (Adicionado teste verificando ausência de UUIDs técnicos visíveis no DOM)
+- docs/specs/P003-FE-error-handling-and-tenant-security/spec.md (Criada especificação técnica do prompt)
+- docs/delivery/phase-gate.json (Atualizado)
+- docs/delivery/PHASE_STATUS.md (Atualizado)
+- docs/IMPLEMENTATION_STATUS.md (Atualizado)
+- docs/PROMPT_EXECUTION_LOG.md (Atualizado)
+API/DB CONTRACTS:
+- Anti-tampering em URLs: parâmetros de busca de tenant são interceptados e descartados via redirecionamento 307 pelo middleware.
+- Respostas de erro uniformes: status 403 e 404 apresentam rigorosamente a mesma mensagem ("Recurso não encontrado ou acesso restrito") para impedir enumeração e timing attacks.
+SECURITY CHECKS:
+- OWASP ASVS Nível 2 atendido: nenhuma informação sobre a existência prévia de recursos de outros tenants é revelada em erros.
+- Acesso e alternância de tenant governados estritamente pelo cookie HttpOnly e endpoint POST /api/auth/switch-tenant; manipulação de query string é impossibilitada.
+- Zero UUIDs técnicos expostos: expressões regulares e sanitização garantem que nenhum UUID v4 seja apresentado ao usuário.
+- Acessibilidade WCAG 2.2 AA mantida com touch targets >= 44px e alertas semânticos role="alert".
+TESTS EXECUTED:
+- pnpm --dir frontend run build:
+  * Next.js 15.1.7 build de produção gerado com sucesso (código de saída 0).
+  * Linting, validação de tipos e geração estática de rotas concluídos com sucesso.
+- pnpm --dir frontend test (Vitest 3.2.7):
+  * 37 testes executados em 9 suítes, 37 aprovados (100% de sucesso em 1.82s).
+  * UrlTenantProtection.test.ts: 3 testes aprovados (redirecionamento com remoção de tenantId, múltiplos parâmetros proibidos descartados, parâmetros legítimos preservados).
+  * ErrorHandlingUniformity.test.tsx: 5 testes aprovados (AccessDeniedFeedback uniforme, not-found.tsx com link seguro, SessionBanner para 401, mascaramento de UUIDs, respostas idênticas para 403 e 404).
+  * TenantSwitcher.test.tsx: 5 testes aprovados (incluindo ausência de UUIDs no DOM).
+  * RouteProtection.test.ts, LoginPage.test.tsx, ResponsiveLayout.test.tsx, AppShell.test.tsx, etc.: todos aprovados.
+- cd backend && ./mvnw test -Dtest="ModularArchitectureTest" (3 testes de arquitetura aprovados).
+TEST RESULTS:
+- Frontend: 37/37 testes PASSED (100% de sucesso).
+- Backend: 49/49 testes PASSED (100% de sucesso mantido).
+POLICY EVIDENCE:
+- Nenhuma chamada de escrita ou modificação externa realizada.
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+FAILURES / ROOT CAUSE:
+- Nenhuma falha durante a implementação.
+REMEDIATION:
+- Não aplicável.
+DOCUMENTATION UPDATED:
+- spec.md, phase-gate.json, PHASE_STATUS.md, IMPLEMENTATION_STATUS.md, PROMPT_EXECUTION_LOG.md.
+NEXT PROMPT: UNLOCKED (P004-BE - Ingestão Idempotente de Catálogo e Pedidos Próprios liberado para READY).
 ```

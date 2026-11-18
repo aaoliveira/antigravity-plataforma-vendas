@@ -1,6 +1,6 @@
 # Status de Implementação e Quality Gates do Roadmap
 
-> **Status Atual Geral:** PROMPT P003-BE = `PASSED` &middot; PROMPT P003-FE = `READY`  
+> **Status Atual Geral:** PROMPT P003-FE = `PASSED` &middot; PROMPT P004-BE = `READY`  
 > **Data da Última Atualização:** 18/11/2026  
 > **Regra de Transição:** O próximo prompt só é liberado para `IN_PROGRESS` quando o anterior atingir formalmente `PASSED`.  
 
@@ -16,7 +16,7 @@
 | **P002-BE** | Identidade Mínima, Autenticação e Contexto do Tenant | E02 | Backend | **`PASSED`** | P001 (`PASSED`) | 18/11/2026 |
 | **P002-FE** | Interface de Autenticação e Troca de Contexto | E02 | Frontend | **`PASSED`** | P002-BE (`PASSED`) | 18/11/2026 |
 | **P003-BE** | Isolamento Multi-Tenant em Profundidade (RLS, Transacional e Testcontainers) | E03 | Backend | **`PASSED`** | P002 (`PASSED`) | 18/11/2026 |
-| **P003-FE** | Gestão de Lojas, Conexões e Health Status | E03 | Frontend | `NOT_STARTED` | P003-BE (`PASSED`) | --- |
+| **P003-FE** | Tratamento Padronizado de Erros (401/403/404) e Segurança de Tenant na UI | E03 | Frontend | **`PASSED`** | P003-BE (`PASSED`) | 18/11/2026 |
 | **P004-BE** | Ingestão Idempotente de Catálogo e Pedidos Próprios | E04 | Backend | `NOT_STARTED` | P003 (`PASSED`) | --- |
 | **P004-FE** | Visão Operacional de Catálogo e Sincronização | E04 | Frontend | `NOT_STARTED` | P004-BE (`PASSED`) | --- |
 | **P005-BE** | Inteligência de Mercado e Pesquisa Normalizada | E05 | Backend | `NOT_STARTED` | P004 (`PASSED`) | --- |

@@ -7,6 +7,8 @@ import { EmptyState } from './EmptyState';
 import { LoadingSkeleton } from './LoadingSkeleton';
 import { useAuth } from '@/context/AuthContext';
 import { TenantSwitcher } from './TenantSwitcher';
+import { SessionBanner } from './SessionBanner';
+import { AccessDeniedFeedback } from './AccessDeniedFeedback';
 
 export interface NavModule {
   id: string;
@@ -164,11 +166,11 @@ export const navModules: NavModule[] = [
 ];
 
 export const AppShell: React.FC = () => {
-  const { user, currentTenant, logout, isAuthenticated } = useAuth();
+  const { user, currentTenant, logout, isAuthenticated, sessionExpired } = useAuth();
   const [activeModuleId, setActiveModuleId] = useState<string>('FINANCIAL');
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
   const [searchFilter, setSearchFilter] = useState<string>('');
-  const [demoState, setDemoState] = useState<'NORMAL' | 'EMPTY' | 'LOADING'>('NORMAL');
+  const [demoState, setDemoState] = useState<'NORMAL' | 'EMPTY' | 'LOADING' | 'DENIED'>('NORMAL');
 
   const activeModule = useMemo(
     () => navModules.find((m) => m.id === activeModuleId) || navModules[0],
@@ -264,6 +266,9 @@ export const AppShell: React.FC = () => {
           <ThemeToggle />
         </div>
       </header>
+
+      {/* Alerta de Sessão Expirada / Falha de Autenticação */}
+      {sessionExpired && <SessionBanner />}
 
       {/* =========================================================================
           2. WORKSPACE CONTAINER (Sidebar Desktop + Conteúdo Principal)
@@ -369,6 +374,16 @@ export const AppShell: React.FC = () => {
               >
                 Carregando (Skeleton)
               </button>
+              <button
+                onClick={() => setDemoState('DENIED')}
+                className={`px-3 py-1 rounded-md font-medium transition-colors ${
+                  demoState === 'DENIED'
+                    ? 'bg-blue-600 text-white'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                Acesso Restrito (403/404)
+              </button>
             </div>
           </div>
 
@@ -382,6 +397,8 @@ export const AppShell: React.FC = () => {
               actionLabel="Conectar Nova Loja"
               onAction={() => setActiveModuleId('STORES')}
             />
+          ) : demoState === 'DENIED' ? (
+            <AccessDeniedFeedback onBackClick={() => setDemoState('NORMAL')} />
           ) : (
             <ModulePlaceholder
               moduleId={activeModule.id}

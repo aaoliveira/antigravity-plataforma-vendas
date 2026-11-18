@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P003-BE = `APPROVED` &middot; PROMPT P003-FE = `READY`  
+> **Status Vigente:** PROMPT P003-FE = `APPROVED` &middot; PROMPT P004-BE = `READY`  
 > **Data:** 18/11/2026
 
 ---
@@ -16,6 +16,7 @@
 | **P002-BE** | Identidade Mínima e Contexto do Tenant | **`APPROVED`** | 18/11/2026 | [docs/PROMPT_EXECUTION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/PROMPT_EXECUTION_LOG.md) | **SIM (P002-FE liberado)** |
 | **P002-FE** | Interface de Autenticação e Troca de Contexto | **`APPROVED`** | 18/11/2026 | [docs/PROMPT_EXECUTION_LOG.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/PROMPT_EXECUTION_LOG.md) | **SIM (P003-BE liberado)** |
 | **P003-BE** | Isolamento Multi-Tenant em Profundidade (RLS, Transacional e Testcontainers) | **`APPROVED`** | 18/11/2026 | [PostgresMultiTenantRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/tenancy/PostgresMultiTenantRlsIntegrationTest.java) | **SIM (P003-FE liberado)** |
+| **P003-FE** | Tratamento Padronizado de Erros (401/403/404) e Segurança de Tenant na UI | **`APPROVED`** | 18/11/2026 | [ErrorHandlingUniformity.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/ErrorHandlingUniformity.test.tsx) | **SIM (P004-BE liberado)** |
 | **P004-BE** | Ingestão Idempotente de Catálogo e Pedidos | `NOT_STARTED` | --- | Pré-requisito: P003 | Não |
 | **P005-BE** | Inteligência de Mercado e Pesquisa Normalizada | `NOT_STARTED` | --- | Pré-requisito: P004 | Não |
 | **P006-BE** | Monitoramento de Produtos e Snapshots Históricos | `NOT_STARTED` | --- | Pré-requisito: P005 | Não |
@@ -47,6 +48,18 @@
 ---
 
 ## 2. Histórico de Transições e Auditoria dos Gates
+
+### Transição: PROMPT P003-FE $\rightarrow$ `APPROVED`
+- **Data/Hora:** 18/11/2026 09:45 BRT
+- **Avaliador:** Tech Lead / Staff Software Engineer
+- **Critérios Validados:**
+  1. Tratamento padronizado de erros 403 e 404 implementado via `lib/errorHandler.ts`, `components/AccessDeniedFeedback.tsx` e `app/not-found.tsx` com mensagem neutra estrita ("Recurso não encontrado ou acesso restrito"), eliminando completamente vetores de enumeração de recursos alheios e timing attacks.
+  2. Proteção contra manipulação de tenant via URL implementada no `middleware.ts`: qualquer tentativa de injetar query parameters (`?tenantId=...`, `?orgId=...`, `?tenant=...`) é imediatamente interceptada, expurgada e redirecionada para a URL canônica limpa, mantendo o contexto governado exclusivamente pela sessão segura HttpOnly e memberships validadas.
+  3. Ocultação absoluta de UUIDs técnicos de tenant na UI: auditoria e testes unitários comprovam que nenhum identificador técnico no padrão UUID v4 é renderizado para o usuário; a interface exibe estritamente nomes amigáveis das empresas e papéis associados.
+  4. Estados de sessão e feedback acessível (WCAG 2.2 AA): componente `SessionBanner` alerta com `role="alert"` e `aria-live="assertive"` quando a sessão expira (HTTP 401), oferecendo ação rápida para login sem exposição de detalhes internos.
+  5. Modo Fail-Closed e sanitização de exceções em `app/error.tsx`: mensagens de erro globais são filtradas por `sanitizeErrorMessage`, impedindo que traces, nomes de classes internas ou UUIDs sejam expostos ao usuário.
+  6. Suíte de testes do frontend com 37/37 testes aprovados (100% de sucesso) e build Next.js 15 gerado sem erros de compilação, lint ou tipo.
+- **Resultado:** **`PROMPT P003-FE = APPROVED`**. O prompt subsequente (`P004-BE`) está formalmente liberado e transita para `READY`.
 
 ### Transição: PROMPT P003-BE $\rightarrow$ `APPROVED`
 - **Data/Hora:** 18/11/2026 09:35 BRT
