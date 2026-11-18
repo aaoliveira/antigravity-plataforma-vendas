@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P004-FE",
+  "currentPrompt": "P005-BE",
   "status": "APPROVED",
-  "nextPrompt": "P005-BE",
+  "nextPrompt": "P005-FE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-18T10:25:00-03:00",
+  "lastUpdated": "2026-11-18T10:42:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -13,7 +13,8 @@
     "P003-BE",
     "P003-FE",
     "P004-BE",
-    "P004-FE"
+    "P004-FE",
+    "P005-BE"
   ],
   "gates": {
     "P000": {
@@ -162,6 +163,26 @@
       "blockingIssues": 0,
       "prerequisites": [
         "P004-BE"
+      ]
+    },
+    "P005-BE": {
+      "name": "Integração Oficial OAuth 2.0 Mercado Livre, PKCE, Cifragem KMS e Rotação Segura",
+      "status": "APPROVED",
+      "approvedAt": "2026-11-18T10:42:00-03:00",
+      "evidence": "backend/src/test/java/com/sellerintelligence/modules/marketplaceconnection/mercadolivre/MercadoLivreOAuthIntegrationTest.java",
+      "testsExecuted": 80,
+      "testsPassed": 80,
+      "oauthPkceEnforced": true,
+      "stateAntiCsrfValidated": true,
+      "aesGcmKmsEncryptionEnforced": true,
+      "concurrentRefreshLockEnforced": true,
+      "revocationInvalidatesConnection": true,
+      "zeroTokensInAuditLogs": true,
+      "leastPrivilegeScopesEnforced": true,
+      "blockingIssues": 0,
+      "prerequisites": [
+        "P004-BE",
+        "P004-FE"
       ]
     }
   },

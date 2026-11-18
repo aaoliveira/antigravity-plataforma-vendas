@@ -57,4 +57,18 @@ security:
   brute-force:
     max-attempts: 5
     lockout-duration-seconds: 900
+  token-encryption:
+    master-key: ${TOKEN_ENCRYPTION_KEY:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef}
+
+# Integração Oficial com o Mercado Livre (OAuth 2.0 PKCE)
+mercadolivre:
+  oauth:
+    app-id: ${MELI_APP_ID:test-app-id}
+    client-secret: ${MELI_CLIENT_SECRET:test-client-secret}
+    redirect-uri: ${MELI_REDIRECT_URI:http://localhost:3000/api/v1/integrations/mercadolivre/callback}
+    auth-url: ${MELI_AUTH_URL:https://auth.mercadolivre.com.br/authorization}
+    token-url: ${MELI_TOKEN_URL:https://api.mercadolibre.com/oauth/token}
+    scopes:
+      - read
+      - offline_access
 

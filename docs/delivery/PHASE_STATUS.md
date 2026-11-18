@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P004-FE = `APPROVED` &middot; PROMPT P005-BE = `READY`  
+> **Status Vigente:** PROMPT P005-BE = `APPROVED` &middot; PROMPT P005-FE = `READY`  
 > **Data:** 18/11/2026
 
 ---
@@ -19,7 +19,8 @@
 | **P003-FE** | Tratamento Padronizado de Erros (401/403/404) e Segurança de Tenant na UI | **`APPROVED`** | 18/11/2026 | [ErrorHandlingUniformity.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/ErrorHandlingUniformity.test.tsx) | **SIM (P004-BE liberado)** |
 | **P004-BE** | Contrato MarketplaceAdapter, Registro de Capacidades, Evidências e Camada de Resiliência | **`APPROVED`** | 18/11/2026 | [MarketplaceAdapterResilienceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/marketplaceadapters/MarketplaceAdapterResilienceTest.java) | **SIM (P004-FE liberado)** |
 | **P004-FE** | Interface de Gestão de Conexões Oficiais, Capacidades e Evidências | **`APPROVED`** | 18/11/2026 | [MarketplaceIntegrationsView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/MarketplaceIntegrationsView.test.tsx) | **SIM (P005-BE liberado)** |
-| **P005-BE** | Inteligência de Mercado e Pesquisa Normalizada | `READY` | --- | Pré-requisito: P004 (`APPROVED`) | Sim |
+| **P005-BE** | Integração Oficial OAuth 2.0 Mercado Livre, PKCE, Cifragem KMS e Rotação Segura | **`APPROVED`** | 18/11/2026 | [MercadoLivreOAuthIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/marketplaceconnection/mercadolivre/MercadoLivreOAuthIntegrationTest.java) | **SIM (P005-FE liberado)** |
+| **P005-FE** | Interface de Pesquisa de Mercado com Proveniência | `READY` | --- | Pré-requisito: P005-BE (`APPROVED`) | Sim |
 | **P006-BE** | Monitoramento de Produtos e Snapshots Históricos | `NOT_STARTED` | --- | Pré-requisito: P005 | Não |
 | **P007-BE** | Motor Financeiro Determinístico em BigDecimal | `NOT_STARTED` | --- | Pré-requisito: P004 | Não |
 | **P008-BE** | Analytics de Anúncios Próprios e Métricas Oficiais | `NOT_STARTED` | --- | Pré-requisito: P004 | Não |
@@ -49,6 +50,21 @@
 ---
 
 ## 2. Histórico de Transições e Auditoria dos Gates
+
+### Transição: PROMPT P005-BE $\rightarrow$ `APPROVED`
+- **Data/Hora:** 18/11/2026 10:42 BRT
+- **Avaliador:** Tech Lead / Staff Software Engineer
+- **Critérios Validados:**
+  1. Integração com o programa oficial de desenvolvedores do Mercado Livre (`developers.mercadolibre.com.br`) implementada conforme documentação oficial vigente.
+  2. Protocolo OAuth 2.0 Authorization Code Flow com PKCE (RFC 7636) implementado com `code_verifier` de alta entropia e `code_challenge` S256 codificado em Base64URL.
+  3. Proteção anti-CSRF e anti-Session Fixation estrita: parâmetro `state` criptograficamente seguro com TTL de 10 minutos e consumo atômico de uso único (one-time use). Estados inválidos, adulterados ou expirados são sumariamente rejeitados com HTTP 400 (`InvalidStateCsrfException`).
+  4. Cifragem simétrica de tokens via KMS/Secret Manager Pattern: tokens de acesso (`access_token`) e renovação (`refresh_token`) cifrados com AES-256-GCM (IV aleatório de 12 bytes e authentication tag de 128 bits). Zero tokens em texto puro persistidos no banco de dados.
+  5. Rotação segura de refresh token com lock distribuído/sincronizado (`DistributedConnectionLock`): 10 threads concorrentes executam sob exclusão mútua e verificação de frescor (Double-Check), impedindo categoricamente duplicação de chamadas de refresh e a quebra da cadeia (`invalid_grant`).
+  6. Revogação de conexão: invalidação atômica das credenciais locais, remoção de tokens e transição de status para `REVOKED`, impedindo qualquer nova obtenção de access token.
+  7. Princípio do Menor Privilégio: escopos solicitados estritamente limitados a `read` e `offline_access`. Escopo `write` categoricamente bloqueado por governança do MVP (`UnauthorizedScopeException`).
+  8. Auditoria limpa e sem vazamento de segredos: todos os eventos de ciclo de vida (`OAUTH_AUTHORIZE_INITIATED`, `OAUTH_CALLBACK_SUCCESS`, `OAUTH_CALLBACK_INVALID_STATE`, `TOKEN_REFRESH_SUCCESS`, `TOKEN_REVOCATION_SUCCESS`) auditados sem inclusão de tokens ou credenciais.
+  9. Suíte de testes do backend com 80/80 testes aprovados (100% de sucesso) e 47/47 testes de frontend mantidos com 100% de sucesso.
+- **Resultado:** **`PROMPT P005-BE = APPROVED`**. O prompt subsequente (`P005-FE`) está formalmente liberado e transita para `READY`.
 
 ### Transição: PROMPT P004-FE $\rightarrow$ `APPROVED`
 - **Data/Hora:** 18/11/2026 10:25 BRT

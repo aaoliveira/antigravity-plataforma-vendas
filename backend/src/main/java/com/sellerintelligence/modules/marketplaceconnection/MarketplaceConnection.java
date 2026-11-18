@@ -41,6 +41,15 @@ public class MarketplaceConnection {
     @Column(name = "status", nullable = false, length = 50)
     private String status;
 
+    @Column(name = "token_expires_at")
+    private Instant tokenExpiresAt;
+
+    @Column(name = "authorized_scopes", length = 255)
+    private String authorizedScopes;
+
+    @Column(name = "last_refreshed_at")
+    private Instant lastRefreshedAt;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -122,6 +131,33 @@ public class MarketplaceConnection {
 
     public void setStatus(String status) {
         this.status = status;
+        this.updatedAt = Instant.now();
+    }
+
+    public Instant getTokenExpiresAt() {
+        return tokenExpiresAt;
+    }
+
+    public void setTokenExpiresAt(Instant tokenExpiresAt) {
+        this.tokenExpiresAt = tokenExpiresAt;
+        this.updatedAt = Instant.now();
+    }
+
+    public String getAuthorizedScopes() {
+        return authorizedScopes;
+    }
+
+    public void setAuthorizedScopes(String authorizedScopes) {
+        this.authorizedScopes = authorizedScopes;
+        this.updatedAt = Instant.now();
+    }
+
+    public Instant getLastRefreshedAt() {
+        return lastRefreshedAt;
+    }
+
+    public void setLastRefreshedAt(Instant lastRefreshedAt) {
+        this.lastRefreshedAt = lastRefreshedAt;
         this.updatedAt = Instant.now();
     }
 

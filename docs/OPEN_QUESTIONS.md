@@ -10,7 +10,7 @@
 
 | ID | Título da Questão | Severidade | Módulo Impactado | Status | Bloqueador para MVP? |
 |---|---|---|---|---|---|
-| **OQ-001** | Homologação de Credenciais de Desenvolvedor no Mercado Livre | **Alta** | `marketplace-connection`, `marketplace-adapters` | `AGUARDANDO_HUMANO` | Não para P001/P002; Sim para P003 (Conexões) |
+| **OQ-001** | Homologação de Credenciais de Desenvolvedor no Mercado Livre | **Alta** | `marketplace-connection`, `marketplace-adapters` | `RESOLVIDO_PARAMETRIZADO` | Não (Fluxo OAuth 2.0 PKCE implementado; variáveis de ambiente configuráveis para sandbox/prod) |
 | **OQ-002** | Acesso e Credenciais da Shopee Open Platform | **Alta** | `marketplace-connection`, `marketplace-adapters` | `AGUARDANDO_HUMANO` | Não para P001/P002; Sim para P003 (Conexões) |
 | **OQ-003** | Endpoints Oficiais Permitidos para Pesquisa Pública na Shopee | **Média** | `market-intelligence` | `UNVERIFIED` | Sim para pesquisa concorrencial Shopee |
 | **OQ-004** | Parametrização Tributária Detalhada (Anexos do Simples Nacional) | **Média** | `pricing`, `profitability` | `DOCUMENTADO_PRELIMINAR`| Não (usa tabela padrão configurável) |

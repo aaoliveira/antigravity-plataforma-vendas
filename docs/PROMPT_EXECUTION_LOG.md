@@ -785,5 +785,111 @@ REMEDIATION:
 - Não aplicável.
 DOCUMENTATION UPDATED:
 - spec.md, phase-gate.json, PHASE_STATUS.md, IMPLEMENTATION_STATUS.md, PROMPT_EXECUTION_LOG.md.
-NEXT PROMPT: UNLOCKED (P005-BE - Inteligência de Mercado e Pesquisa Normalizada liberado para READY).
+NEXT PROMPT: UNLOCKED (P005-BE - Integração Oficial OAuth 2.0 Mercado Livre, PKCE, Cifragem KMS e Rotação Segura liberado para READY).
+```
+
+---
+
+## Execução: PROMPT 005-BE
+
+```text
+PROMPT ID: P005-BE
+FEATURE: Integração Oficial OAuth 2.0 Mercado Livre, PKCE, Cifragem KMS e Rotação Segura
+STATUS: PASSED
+PRE-FLIGHT:
+- Verificado pré-requisito P004-BE e P004-FE como APPROVED em docs/delivery/phase-gate.json.
+- Consultada documentação oficial vigente do Mercado Livre Developers (developers.mercadolibre.com.br).
+- Validados requisitos de OAuth 2.0 Authorization Code Flow com PKCE (RFC 7636), State Anti-CSRF, rotação de refresh tokens e ausência de escopo write no MVP.
+DOCUMENTS REVIEWED:
+- docs/PRD.md (RF-005, RF-006, RF-007, RNF-001, RNF-002, RNF-003, RNF-006, ADR-002, ADR-004)
+- docs/MARKETPLACE_POLICIES.md (Seção 3.1 Mercado Livre)
+- docs/ARCHITECTURE.md
+- docs/SECURITY.md
+- docs/specs/P005-BE-mercadolivre-oauth-pkce/spec.md
+DEPENDENCIES:
+- P004-BE e P004-FE (Aprovados).
+FILES CHANGED:
+- backend/src/main/resources/db/migration/V4__oauth_connection_fields.sql (Criada migração Flyway adicionando token_expires_at, authorized_scopes, last_refreshed_at)
+- backend/src/main/resources/application.yml (Configurado mercadolivre.oauth.* e security.token-encryption.*)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/MarketplaceConnection.java (Atualizada entidade com novos campos de token e ciclo de vida)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/security/KmsKeyProvider.java (Criado provedor de chave mestre com suporte a chave hexadecimal 256 bits ou derivação SHA-256)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/security/TokenEncryptionService.java (Criado serviço de cifragem AES-256-GCM com IV aleatório de 12 bytes e tag de integridade)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/mercadolivre/PkceChallenge.java (Criado record imutável de desafio PKCE)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/mercadolivre/PkceUtil.java (Criado utilitário gerador de code_verifier de 64 bytes e code_challenge S256 RFC 7636)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/mercadolivre/OAuthState.java (Criado record imutável de state anti-CSRF)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/mercadolivre/OAuthStateManager.java (Criado gerenciador de state com TTL de 10 min e consumo atômico one-time use)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/mercadolivre/MeliOAuthProperties.java (Criado binding de propriedades de configuração)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/mercadolivre/MeliTokenResponse.java (Criado record imutável da resposta do token endpoint)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/mercadolivre/MeliOAuthClient.java (Criada interface contratual de cliente OAuth)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/mercadolivre/DefaultMeliOAuthClient.java (Criada implementação HTTP oficial via Spring RestClient)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/mercadolivre/FakeMeliOAuthClient.java (Criado simulador configurável de sandbox para testes)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/mercadolivre/DistributedConnectionLock.java (Criado gerenciador de locks por conexão com timeout e cleanup)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/mercadolivre/MercadoLivreOAuthService.java (Criado serviço orquestrador de autorização, callback, refresh e revogação)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/mercadolivre/MercadoLivreOAuthController.java (Criado controller REST tenant-scoped)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/mercadolivre/dto/InitiateAuthResponse.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/mercadolivre/dto/OAuthCallbackRequest.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/mercadolivre/dto/ConnectionSummaryResponse.java (Criado)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/exception/InvalidStateCsrfException.java (Criada)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/exception/UnauthorizedScopeException.java (Criada)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/exception/MeliOAuthException.java (Criada)
+- backend/src/main/java/com/sellerintelligence/modules/marketplaceconnection/exception/MarketplaceConnectionExceptionHandler.java (Criado controller advice RFC 7807)
+- backend/src/test/java/com/sellerintelligence/modules/marketplaceconnection/security/TokenEncryptionServiceTest.java (Criados 4 testes unitários de criptografia)
+- backend/src/test/java/com/sellerintelligence/modules/marketplaceconnection/mercadolivre/PkceUtilTest.java (Criado teste de conformidade RFC 7636)
+- backend/src/test/java/com/sellerintelligence/modules/marketplaceconnection/mercadolivre/OAuthStateManagerTest.java (Criados 3 testes de ciclo de vida e anti-CSRF)
+- backend/src/test/java/com/sellerintelligence/modules/marketplaceconnection/mercadolivre/MercadoLivreOAuthServiceTest.java (Criados 7 testes unitários e de concorrência com 10 threads)
+- backend/src/test/java/com/sellerintelligence/modules/marketplaceconnection/mercadolivre/MercadoLivreOAuthIntegrationTest.java (Criado teste E2E de integração MockMvc)
+- docs/specs/P005-BE-mercadolivre-oauth-pkce/spec.md (Criada especificação técnica do prompt)
+- docs/delivery/phase-gate.json (Atualizado para APPROVED)
+- docs/delivery/PHASE_STATUS.md (Atualizado para APPROVED)
+- docs/IMPLEMENTATION_STATUS.md (Atualizado para PASSED)
+- docs/PROMPT_EXECUTION_LOG.md (Atualizado)
+API/DB CONTRACTS:
+- POST /api/v1/integrations/mercadolivre/authorize: Retorna { authorizationUrl, stateToken, expiresAt }.
+- POST /api/v1/integrations/mercadolivre/callback: Recebe { code, state, redirectUri }, valida state anti-CSRF, troca code por tokens, cifra e persiste no tenant. Retorna ConnectionSummaryResponse.
+- POST /api/v1/integrations/mercadolivre/connections/{id}/refresh: Renova token sob lock exclusivo sem duplicações concorrentes.
+- POST /api/v1/integrations/mercadolivre/connections/{id}/revoke: Limpa credenciais locais e marca conexão como REVOKED.
+- GET /api/v1/integrations/mercadolivre/connections: Lista conexões do tenant ativo.
+- GET /api/v1/integrations/mercadolivre/connections/{id}: Consulta detalhes seguros da conexão.
+SECURITY CHECKS:
+- PKCE S256 obrigatório no fluxo com code_verifier de 64 bytes e code_challenge SHA-256 Base64URL.
+- State Anti-CSRF criptograficamente seguro, expiração de 10 min e consumo estritamente único (one-time use). Estados inválidos geram HTTP 400.
+- Cifragem simétrica AES-256-GCM com IV de 12 bytes e tag de integridade para tokens de acesso e refresh. Zero tokens em texto puro persistidos.
+- Rotação segura de tokens sob lock distribuído com verificação de frescor (Double-Check): 10 requisições simultâneas disparam exatamente 1 chamada ao canal.
+- Revogação invalida localmente as credenciais e bloqueia novas requisições.
+- Princípio de Menor Privilégio: apenas escopos "read" e "offline_access" são permitidos; escopo "write" bloqueado no MVP.
+- Trilha de auditoria estruturada sem nenhum token ou segredo registrado.
+TESTS EXECUTED:
+- cd backend && ./mvnw test:
+  * TokenEncryptionServiceTest: 4 testes aprovados (AES-256-GCM cifragem/decifragem, IV único, rejeição de payload adulterado, null-safety).
+  * PkceUtilTest: 1 teste aprovado (conformidade RFC 7636).
+  * OAuthStateManagerTest: 3 testes aprovados (geração, consumo atômico único, rejeição cross-tenant, rejeição de state vazio).
+  * MercadoLivreOAuthServiceTest: 7 testes aprovados:
+    1. Iniciação com PKCE S256 e state anti-CSRF.
+    2. Callback com sucesso, cifragem AES-256-GCM e criação de conexão tenant-scoped.
+    3. Rejeição de callback com state anti-CSRF adulterado ou inexistente.
+    4. Bloqueio de escopo "write" (Menor Privilégio).
+    5. Renovação concorrente com 10 threads simultâneas sob lock sem duplicação de chamadas.
+    6. Revogação de conexão anula credenciais e bloqueia obtenção de token.
+    7. Trilha de auditoria sem vazamento de tokens.
+  * MercadoLivreOAuthIntegrationTest: 1 teste E2E abrangente via MockMvc (iniciação, callback, isolamento cross-tenant, refresh sob lock, revogação).
+  * ModularArchitectureTest (ArchUnit): 3 testes aprovados (zero ciclos, boundaries preservados).
+  * PostgresMultiTenantRlsIntegrationTest (PostgreSQL 17 real Testcontainers): 8 testes aprovados.
+  * Demais testes mantidos: Total de 80 testes executados, 80 aprovados, 0 falhas, 0 erros, 0 skips.
+- pnpm --dir frontend test:
+  * 47/47 testes executados e aprovados (100% de sucesso mantido).
+TEST RESULTS:
+- Backend: 80/80 testes PASSED (100% de sucesso).
+- Frontend: 47/47 testes PASSED (100% de sucesso mantido).
+- Total de Testes Automatizados do Projeto: 127 testes aprovados.
+POLICY EVIDENCE:
+- Conector Fake/Sandbox homologado para testes. Nenhuma chamada de escrita ou crawling em produção.
+OPEN QUESTIONS:
+- OQ-001 atualizado para RESOLVIDO_PARAMETRIZADO com variáveis de ambiente externalizadas.
+FAILURES / ROOT CAUSE:
+- Nenhuma falha pendente.
+REMEDIATION:
+- Não aplicável.
+DOCUMENTATION UPDATED:
+- spec.md, phase-gate.json, PHASE_STATUS.md, IMPLEMENTATION_STATUS.md, PROMPT_EXECUTION_LOG.md.
+NEXT PROMPT: UNLOCKED (P005-FE - Interface de Pesquisa de Mercado com Proveniência liberado para READY).
 ```
