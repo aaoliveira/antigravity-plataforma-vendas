@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P006-BE = `APPROVED`, P006-FE = `READY`  
+> **Status Vigente:** PROMPT P006-FE = `APPROVED`, P007-BE = `READY`  
 > **Data:** 18/11/2026
 
 ---
@@ -22,6 +22,7 @@
 | **P005-BE** | Integração Oficial OAuth 2.0 Mercado Livre, PKCE, Cifragem KMS e Rotação Segura          | **`APPROVED`** | 18/11/2026        | [MercadoLivreOAuthIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/marketplaceconnection/mercadolivre/MercadoLivreOAuthIntegrationTest.java) | **SIM (P005-FE liberado)** |
 | **P005-FE** | Fluxo Oficial de Conexão com Mercado Livre (OAuth 2.0 PKCE UI)                           | **`APPROVED`** | 18/11/2026        | [MeliConnectFlow.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/MeliConnectFlow.test.tsx)                                                                                           | **SIM (P006-BE liberado)** |
 | **P006-BE** | Integração Shopee Open Platform v2, Assinatura HMAC, Webhooks e Políticas | **`APPROVED`** | 18/11/2026 | [ShopeeOpenPlatformIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/marketplaceconnection/shopee/ShopeeOpenPlatformIntegrationTest.java) | **SIM (P006-FE liberado)** |
+| **P006-FE** | Fluxo Oficial de Conexão com Shopee (Open Platform v2 UI)                                | **`APPROVED`** | 18/11/2026        | [ShopeeConnectFlow.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/ShopeeConnectFlow.test.tsx)                                                                                         | **SIM (P007-BE liberado)** |
 | **P007-BE** | Motor Financeiro Determinístico em BigDecimal                                            | `NOT_STARTED`  | ---               | Pré-requisito: P004                                                                                                                                                                                                                | Não                        |
 | **P008-BE** | Analytics de Anúncios Próprios e Métricas Oficiais                                       | `NOT_STARTED`  | ---               | Pré-requisito: P004                                                                                                                                                                                                                | Não                        |
 | **P009-BE** | Consolidação Financeira, DRE e Reconciliação                                             | `NOT_STARTED`  | ---               | Pré-requisito: P007                                                                                                                                                                                                                | Não                        |
@@ -51,6 +52,22 @@
 ---
 
 ## 2. Histórico de Transições e Auditoria dos Gates
+
+### Transição: PROMPT P006-FE $\rightarrow$ `APPROVED`
+
+- **Data/Hora:** 18/11/2026 11:34 BRT
+- **Avaliador:** Tech Lead / Staff Software Engineer
+- **Critérios Validados:**
+  1. **Consentimento Oficial e Orientações Claras:** Modal `ShopeeConnectModal.tsx` implementado com orientações detalhadas sobre autorização oficial da Shopee Open Platform OpenAPI v2, Shop Level (`v2.product.get_item_list`), métricas oficiais (`v2.analytics`) e sincronização por Webhooks Push.
+  2. **Garantia de Não-Escrita (Risco Zero):** Alerta ostensivo assegurando que permissões de escrita/alteração de catálogo e preços (`write`) **NÃO** são solicitadas.
+  3. **Segurança Inegociável — Zero Credenciais Solicitadas:** A aplicação nunca solicita, armazena ou transita login, senha, chave secreta ou token da conta da Shopee. Ausência total de campos de senha (`input[type="password"]`).
+  4. **Redirecionamento ao Portal Oficial com Assinatura HMAC:** Acionamento de `POST /api/integrations/shopee/authorize` no BFF gera a URL assinada via HMAC-SHA256 (`partner_id`, `timestamp`, `sign`, `redirect`) e redireciona o vendedor com exclusividade para o domínio oficial da Shopee.
+  5. **Processamento de Callback sem Exposição de Segredos:** Ao retornar com `code` e `shop_id`, a interface executa imediatamente `window.history.replaceState` para limpar a URL, despacha POST para `/api/integrations/shopee/callback` e atualiza o canal para `ACTIVE` (Conectado). Zero tokens ou segredos permanecem no DOM ou storage do cliente.
+  6. **Tratamento de Cancelamento e Erros Sanitizados:** Cancelamento pelo lojista (`error=cancelled`) ou falhas no callback tratadas com mensagens claras e sem expor exceções, stacktraces ou UUIDs técnicos.
+  7. **Monitoramento de Webhooks Push em Tempo Real:** Card de informações técnicas destaca a sincronização via Push Mechanism v2 com desautorização atômica automática (Push Code 2).
+  8. **Acessibilidade & Responsividade:** Conformidade WCAG 2.2 AA, touch targets $\ge 44\text{px}$, suporte a navegação por teclado (ESC).
+  9. **Build & Testes:** 62/62 testes frontend aprovados (incluindo 8 testes dedicados de ShopeeConnectFlow e 9 de MarketplaceIntegrationsView), `tsc --noEmit` limpo e build de produção Next.js 15.1.7 gerado com 16 rotas estáticas/SSR.
+- **Resultado:** **`PROMPT P006-FE = APPROVED`**. O prompt subsequente (`P007-BE`) está formalmente liberado e transita para `READY`.
 
 ### Transição: PROMPT P006-BE $\rightarrow$ `APPROVED`
 

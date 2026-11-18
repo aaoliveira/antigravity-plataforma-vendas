@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P006-BE",
+  "currentPrompt": "P006-FE",
   "status": "APPROVED",
-  "nextPrompt": "P006-FE",
+  "nextPrompt": "P007-BE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-18T11:21:00-03:00",
+  "lastUpdated": "2026-11-18T11:34:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -16,7 +16,8 @@
     "P004-FE",
     "P005-BE",
     "P005-FE",
-    "P006-BE"
+    "P006-BE",
+    "P006-FE"
   ],
   "gates": {
     "P000": {
@@ -196,6 +197,24 @@
       "quotaAndRateLimitHandlingEnforced": true,
       "blockingIssues": 0,
       "prerequisites": ["P005-FE"]
+    },
+    "P006-FE": {
+      "name": "Fluxo Oficial de Conexão com Shopee (Open Platform v2 UI)",
+      "status": "APPROVED",
+      "approvedAt": "2026-11-18T11:34:00-03:00",
+      "evidence": "frontend/src/components/ShopeeConnectFlow.test.tsx",
+      "testsExecuted": 62,
+      "testsPassed": 62,
+      "buildPassed": true,
+      "typecheckPassed": true,
+      "officialShopeeRedirectEnforced": true,
+      "zeroTokensExposedInDom": true,
+      "zeroPasswordInputsEnforced": true,
+      "shopeeWebhookStatusDisplayed": true,
+      "comprehensibleFailuresEnforced": true,
+      "mobileResponsiveValidated": true,
+      "blockingIssues": 0,
+      "prerequisites": ["P006-BE"]
     }
   },
   "maintenanceGates": {

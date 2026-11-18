@@ -146,11 +146,15 @@ describe('P004-FE: MarketplaceIntegrationsView Component', () => {
     const connectShopeeBtn = screen.getByRole('button', { name: /Conectar com Shopee/i });
     fireEvent.click(connectShopeeBtn);
 
-    await waitFor(() => {
-      expect(
-        screen.getByText(/Canal Shopee conectado com sucesso/i)
-      ).toBeInTheDocument();
-    });
+    // Executar Conectar Shopee abre o modal oficial de orientações e consentimento (P006-FE)
+    const shopeeDialog = screen.getByRole('dialog', { name: /Conectar Loja da Shopee/i });
+    expect(shopeeDialog).toBeInTheDocument();
+    expect(within(shopeeDialog).getByText(/A sua senha NUNCA é solicitada nesta aplicação/i)).toBeInTheDocument();
+    expect(within(shopeeDialog).getByText(/Shopee Open Platform OpenAPI v2/i)).toBeInTheDocument();
+
+    const closeShopeeBtn = within(shopeeDialog).getByRole('button', { name: /Fechar modal/i });
+    fireEvent.click(closeShopeeBtn);
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
   it('7. Exibe mensagens de erro devidamente sanitizadas sem expor UUIDs técnicos ou stacktraces', () => {

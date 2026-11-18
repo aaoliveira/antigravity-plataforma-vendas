@@ -3,6 +3,7 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { sanitizeErrorMessage } from '@/lib/errorHandler';
 import { MeliConnectModal } from '@/components/MeliConnectModal';
+import { ShopeeConnectModal } from '@/components/ShopeeConnectModal';
 
 export type CapabilityStatus = 'SUPPORTED' | 'RESTRICTED' | 'UNSUPPORTED' | 'UNVERIFIED';
 
@@ -240,24 +241,29 @@ export const MarketplaceIntegrationsView: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [isMeliModalOpen, setIsMeliModalOpen] = useState<boolean>(false);
   const [isInitiatingMeli, setIsInitiatingMeli] = useState<boolean>(false);
+  const [isShopeeModalOpen, setIsShopeeModalOpen] = useState<boolean>(false);
+  const [isInitiatingShopee, setIsInitiatingShopee] = useState<boolean>(false);
 
-  // Processamento automático de retorno de Callback e Erros OAuth (P005-FE)
+  // Processamento automático de retorno de Callback e Erros OAuth (P005-FE / P006-FE)
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
     const state = urlParams.get('state');
+    const shopId = urlParams.get('shop_id');
     const error = urlParams.get('error');
-    const errorDescription = urlParams.get('error_description');
+    const errorDescription = urlParams.get('error_description') || urlParams.get('message');
 
     if (error) {
       // 1. Limpa imediatamente a URL para não deixar parâmetros no histórico
       window.history.replaceState({}, document.title, window.location.pathname);
 
-      let message = 'Falha ao autorizar no Mercado Livre.';
+      let message = 'Falha na autorização oficial.';
       if (error === 'access_denied') {
         message = 'Autorização cancelada no Mercado Livre pelo usuário. Nenhuma alteração foi realizada na sua conta.';
+      } else if (error === 'cancelled' || error === 'cancel') {
+        message = 'Autorização cancelada na Shopee pelo usuário. Nenhuma alteração foi realizada na sua conta.';
       } else if (errorDescription) {
         message = `Erro na autorização oficial: ${errorDescription}`;
       }
@@ -268,6 +274,60 @@ export const MarketplaceIntegrationsView: React.FC = () => {
       return;
     }
 
+    // Retorno oficial da Shopee (OpenAPI v2 com code e shop_id)
+    if (code && shopId) {
+      // 1. Limpa imediatamente a URL antes de processar
+      window.history.replaceState({}, document.title, window.location.pathname);
+
+      setIsProcessing(true);
+      setFeedbackMessage(null);
+
+      // 2. Despacha para o endpoint de callback seguro da Shopee
+      fetch('/api/integrations/shopee/callback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code, shop_id: Number(shopId) }),
+      })
+        .then(async (res) => {
+          if (!res.ok) {
+            const errData = await res.json().catch(() => ({}));
+            throw new Error(errData.message || 'Falha ao processar autorização da loja na Shopee.');
+          }
+          return res.json();
+        })
+        .then(() => {
+          setChannels((prev) =>
+            prev.map((ch) =>
+              ch.id === 'SHOPEE'
+                ? {
+                    ...ch,
+                    status: 'ACTIVE',
+                    lastVerificationDate: new Date().toLocaleDateString('pt-BR'),
+                  }
+                : ch
+            )
+          );
+          setFeedbackMessage({
+            type: 'success',
+            text: 'Canal Shopee conectado com sucesso via Shopee Open Platform v2. Assinatura criptográfica HMAC-SHA256 e tokens cifrados com KMS.',
+          });
+        })
+        .catch((err: unknown) => {
+          const errMsg = err instanceof Error ? err.message : 'Falha na validação de autorização da Shopee. Por favor, tente novamente.';
+          setFeedbackMessage({
+            type: 'error',
+            text: errMsg,
+          });
+        })
+        .finally(() => {
+          setIsProcessing(false);
+        });
+      return;
+    }
+
+    // Retorno oficial do Mercado Livre (OAuth 2.0 PKCE com code e state)
     if (code && state) {
       // 1. Limpa imediatamente a URL antes de processar, removendo code e state do histórico
       window.history.replaceState({}, document.title, window.location.pathname);
@@ -275,7 +335,7 @@ export const MarketplaceIntegrationsView: React.FC = () => {
       setIsProcessing(true);
       setFeedbackMessage(null);
 
-      // 2. Despacha para o endpoint de callback seguro
+      // 2. Despacha para o endpoint de callback seguro do Mercado Livre
       fetch('/api/integrations/mercadolivre/callback', {
         method: 'POST',
         headers: {
@@ -367,6 +427,11 @@ export const MarketplaceIntegrationsView: React.FC = () => {
       return;
     }
 
+    if (channelId === 'SHOPEE') {
+      setIsShopeeModalOpen(true);
+      return;
+    }
+
     setIsProcessing(true);
     setFeedbackMessage(null);
 
@@ -431,6 +496,50 @@ export const MarketplaceIntegrationsView: React.FC = () => {
       setFeedbackMessage({
         type: 'error',
         text: 'Não foi possível contatar o serviço de autenticação do Mercado Livre. Tente novamente mais tarde.',
+      });
+    }
+  };
+
+  // Ação de confirmação do lojista no modal da Shopee (P006-FE)
+  const handleConfirmShopeeOAuth = async () => {
+    setIsInitiatingShopee(true);
+    setFeedbackMessage(null);
+
+    try {
+      const res = await fetch('/api/integrations/shopee/authorize', {
+        method: 'POST',
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        setIsShopeeModalOpen(false);
+        setIsInitiatingShopee(false);
+        setFeedbackMessage({
+          type: 'error',
+          text: errorData.message || 'Falha ao iniciar autorização oficial com Shopee Open Platform.',
+        });
+        return;
+      }
+
+      const data = await res.json();
+      setIsShopeeModalOpen(false);
+      setIsInitiatingShopee(false);
+
+      if (data?.authorizationUrl) {
+        if (typeof window !== 'undefined') {
+          if (typeof window.location.assign === 'function') {
+            window.location.assign(data.authorizationUrl);
+          } else {
+            window.location.href = data.authorizationUrl;
+          }
+        }
+      }
+    } catch {
+      setIsShopeeModalOpen(false);
+      setIsInitiatingShopee(false);
+      setFeedbackMessage({
+        type: 'error',
+        text: 'Não foi possível contatar o serviço de autenticação da Shopee. Tente novamente mais tarde.',
       });
     }
   };
@@ -847,6 +956,32 @@ export const MarketplaceIntegrationsView: React.FC = () => {
               Segredos & Tokens: [CIFRADOS EM BANCO E COOKIES HTTPONLY]
             </span>
           </div>
+
+          {/* Informações Oficiais e Webhooks Push da Shopee (P006-FE) */}
+          {selectedChannel.id === 'SHOPEE' && (
+            <div
+              data-testid="shopee-push-indicator"
+              className="mt-3 p-3.5 rounded-xl bg-orange-50/80 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-900/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+            >
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-orange-900 dark:text-orange-200 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    Webhooks Push Ativos (HMAC-SHA256)
+                  </span>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-orange-100 dark:bg-orange-900/60 text-orange-800 dark:text-orange-300">
+                    Push Mechanism v2
+                  </span>
+                </div>
+                <p className="text-orange-800 dark:text-orange-300 leading-relaxed">
+                  Sincronização em tempo real de eventos da loja. Em caso de revogação no portal da Shopee (Push Code 2), o encerramento da conexão ocorre de forma automática e atômica.
+                </p>
+              </div>
+              <div className="shrink-0 text-[11px] text-orange-700 dark:text-orange-400 font-medium bg-white/80 dark:bg-slate-900/80 px-3 py-1.5 rounded-lg border border-orange-200 dark:border-orange-800">
+                Single-Use Token Rotation &middot; KMS Cifrado
+              </div>
+            </div>
+          )}
         </div>
 
         {/* =========================================================================
@@ -969,6 +1104,14 @@ export const MarketplaceIntegrationsView: React.FC = () => {
         onClose={() => setIsMeliModalOpen(false)}
         onConfirm={handleConfirmMeliOAuth}
         isInitiating={isInitiatingMeli}
+      />
+
+      {/* Modal Oficial de Consentimento e Orientações Shopee (P006-FE) */}
+      <ShopeeConnectModal
+        isOpen={isShopeeModalOpen}
+        onClose={() => setIsShopeeModalOpen(false)}
+        onConfirm={handleConfirmShopeeOAuth}
+        isInitiating={isInitiatingShopee}
       />
     </div>
   );

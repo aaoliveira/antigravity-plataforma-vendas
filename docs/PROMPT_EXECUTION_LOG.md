@@ -1076,3 +1076,89 @@ DOCUMENTATION UPDATED:
 - docs/PROMPT_EXECUTION_LOG.md
 NEXT PROMPT: UNLOCKED (P006-FE - Fluxo Oficial de Conexão com Shopee liberado para READY).
 ```
+
+---
+
+## Execução: PROMPT 006-FE
+
+```text
+PROMPT ID: P006-FE
+FEATURE: Fluxo Oficial de Conexão com Shopee (Open Platform v2 UI)
+STATUS: PASSED
+PRE-FLIGHT:
+- Verificado pré-requisito P006-BE como APPROVED em docs/delivery/phase-gate.json.
+- Verificada documentação oficial da Shopee Open Platform OpenAPI v2 (open.shopee.com).
+- Validados os requisitos de consentimento do usuário, explicações sobre autorização oficial da loja, assinatura HMAC-SHA256, garantia de Risco Zero (sem permissões de alteração de catálogo/preço write), não solicitação de senhas ou credenciais primárias, redirecionamento oficial assinado, e sanitização imediata da URL no callback.
+DOCUMENTS REVIEWED:
+- docs/PRD.md (RF-005, RF-006, RF-007, RNF-001, RNF-002, RNF-003, RNF-006, ADR-002, ADR-004)
+- docs/MARKETPLACE_POLICIES.md (Seção 3.2 Shopee Open Platform)
+- docs/ARCHITECTURE.md
+- docs/SECURITY.md
+- docs/specs/P006-FE-shopee-connect-flow/spec.md
+DEPENDENCIES:
+- P006-BE (Aprovado).
+FILES CHANGED:
+- frontend/src/components/ShopeeConnectModal.tsx (Criado modal acessível com orientações de autorização OpenAPI v2, escopos Shop Level, métricas, Webhooks Push, garantia de Risco Zero e zero senhas)
+- frontend/src/app/api/integrations/shopee/authorize/route.ts (Criada rota BFF POST para solicitar ao backend a URL oficial assinada com HMAC-SHA256)
+- frontend/src/app/api/integrations/shopee/callback/route.ts (Criada rota BFF POST para processar callback com code e shop_id)
+- frontend/src/app/api/integrations/shopee/connections/route.ts (Criada rota BFF GET para listar conexões da Shopee do tenant)
+- frontend/src/app/api/integrations/shopee/revoke/route.ts (Criada rota BFF POST para revogação da Shopee)
+- frontend/src/components/MarketplaceIntegrationsView.tsx (Atualizado para integrar ShopeeConnectModal, callback automático de code/shop_id com sanitização imediata da barra de URLs, badge informativo de Webhooks Push v2 e ações restritas)
+- frontend/src/components/MarketplaceIntegrationsView.test.tsx (Atualizado teste 6 para validar abertura e fechamento do modal de consentimento da Shopee)
+- frontend/src/components/ShopeeConnectFlow.test.tsx (Criada suíte completa com 8 testes unitários e de integração cobrindo todos os critérios de aceite)
+- docs/specs/P006-FE-shopee-connect-flow/spec.md (Criada especificação técnica do prompt)
+- docs/delivery/phase-gate.json (Atualizado para APPROVED)
+- docs/delivery/PHASE_STATUS.md (Atualizado para APPROVED)
+- docs/IMPLEMENTATION_STATUS.md (Atualizado para PASSED)
+- docs/PROMPT_EXECUTION_LOG.md (Atualizado)
+API/DB CONTRACTS:
+- POST /api/integrations/shopee/authorize (BFF -> Backend /api/v1/integrations/shopee/authorize)
+- POST /api/integrations/shopee/callback (BFF -> Backend /api/v1/integrations/shopee/callback)
+- GET /api/integrations/shopee/connections (BFF -> Backend /api/v1/integrations/shopee/connections)
+- POST /api/integrations/shopee/revoke (BFF -> Backend /api/v1/integrations/shopee/connections/{connectionId}/revoke)
+SECURITY CHECKS:
+- Zero credenciais do seller: nenhuma senha, email, API key ou segredo da conta da Shopee é solicitada no sistema.
+- Risco Zero: permissão de alteração de catálogo/preços ("write") categoricamente bloqueada e explicitada no modal.
+- Sanitização imediata da URL: ao receber code e shop_id no callback, window.history.replaceState é executado imediatamente antes do envio ao backend.
+- Zero vazamento de segredos: nenhum access_token, refresh_token, partner_key ou authorization code permanece no DOM, nós HTML ou storage.
+- Respostas de erro sanitizadas: cancelamento pelo usuário e falha no callback tratadas com mensagens amigáveis sem exposição de stacktrace ou UUIDs.
+- Sincronização por Push: Webhook Push Mechanism v2 ativo com revogação automática e atômica da conexão local em caso de desautorização.
+- Acessibilidade e responsividade: botões e touch targets >= 44px, suporte a teclado (ESC) e conformidade WCAG 2.2 AA.
+TESTS EXECUTED:
+- pnpm --dir frontend test:
+  * ShopeeConnectFlow.test.tsx: 8 testes aprovados:
+    1. Explica processo oficial Shopee OpenAPI v2, Shop Level, Webhooks Push e NUNCA solicita senha.
+    2. Redireciona o usuário para o portal oficial da Shopee com URL assinada por HMAC-SHA256.
+    3. Processa callback oficial com code e shop_id, limpa URL imediatamente e atualiza status para ACTIVE.
+    4. Callback NÃO expõe access_token, refresh_token ou segredos no DOM.
+    5. Trata cancelamento de autorização na Shopee com mensagem compreensível e sanitização da URL.
+    6. Trata falha no callback da Shopee com erro sanitizado sem stacktraces técnicos.
+    7. Garante responsividade mobile e acessibilidade (touch targets >= 44px e tecla ESC).
+    8. Exibe indicador oficial dos Webhooks Push em tempo real (Push Mechanism v2).
+  * MeliConnectFlow.test.tsx: 7 testes aprovados (100% de sucesso mantido).
+  * MarketplaceIntegrationsView.test.tsx: 9 testes aprovados (100% de sucesso mantido).
+  * Demais testes frontend mantidos: Total de 62 testes executados e aprovados.
+- pnpm --dir frontend exec tsc --noEmit: Concluído com zero erros de tipo.
+- pnpm --dir frontend run build: Build de produção Next.js 15.1.7 gerado com sucesso (16 rotas estáticas/SSR).
+- cd backend && ./mvnw test -Dtest=ModularArchitectureTest: 3 testes ArchUnit aprovados.
+- cd backend && ./mvnw test: 105 testes de backend aprovados, zero falhas.
+TEST RESULTS:
+- Frontend: 62/62 testes PASSED (100% de sucesso).
+- Backend: 105/105 testes PASSED (100% de sucesso).
+- Total de Testes Automatizados do Projeto: 167 testes aprovados.
+POLICY EVIDENCE:
+- Todas as operações em estrita conformidade com a Shopee Open Platform OpenAPI v2. Zero web scraping.
+OPEN QUESTIONS:
+- Nenhuma nova dúvida técnica impeditiva.
+FAILURES / ROOT CAUSE:
+- Nenhuma falha identificada ou pendente.
+REMEDIATION:
+- Não aplicável.
+DOCUMENTATION UPDATED:
+- docs/specs/P006-FE-shopee-connect-flow/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+NEXT PROMPT: UNLOCKED (P007-BE - Motor Financeiro Determinístico em BigDecimal liberado para READY).
+```
