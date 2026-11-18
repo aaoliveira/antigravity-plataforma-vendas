@@ -1960,3 +1960,85 @@ DOCUMENTATION UPDATED:
 
 NEXT PROMPT: UNLOCKED (P011-FE liberado para READY).
 ```
+
+---
+
+```yaml
+PROMPT: P011-FE
+START_DATE: 2026-11-18 16:28 BRT
+END_DATE: 2026-11-18 16:42 BRT
+STATUS: PASSED
+GATE_TRANSITION: P011-FE -> APPROVED
+COMMIT_SHA: PENDING (a ser gerado)
+```
+
+### PROMPT EXECUTION RECORD: P011-FE
+
+```text
+PROMPT: P011-FE — Interface de Comparação Lado a Lado, Detalhes de Correspondência e Destaque de Confiança
+
+INPUT:
+Após backend aprovado, crie comparação lado a lado, filtros e detalhe de correspondência. Mostrar diferenças de atributos e nível de confiança.
+
+Aceite: diferenças claras; baixa confiança destacada; sem falsa equivalência visual.
+
+PRE-FLIGHT CHECKS:
+- Prompt P011-BE formalmente concluído e aprovado com 203 testes de backend verdes.
+- Leitura de .agents/rules/anti-hallucination.md e verificação de proibições absolutas de UX: proibido rotular anúncios incompatíveis como "Equivalente", exibição mandatória de alertas anti-falsa equivalência, ausência de valores inventados de frete ou percentuais de preço para observações defasadas (> 30 dias).
+- Verificação de acessibilidade WCAG 2.2 AA (touch targets >= 44px, modais com dialog/aria-modal/ESC).
+
+FILES CREATED:
+- docs/specs/P011-FE-listing-comparison-view/spec.md
+- frontend/src/app/api/market-comparison/compare/route.ts
+- frontend/src/app/api/market-comparison/find-equivalents/route.ts
+- frontend/src/app/api/market-comparison/price-history/route.ts
+- frontend/src/app/api/market-comparison/saved/route.ts
+- frontend/src/components/ListingPriceHistoryDrawer.tsx
+- frontend/src/components/ListingPriceHistoryDrawer.test.tsx
+- frontend/src/components/ListingComparisonView.tsx
+- frontend/src/components/ListingComparisonView.test.tsx
+
+FILES MODIFIED:
+- frontend/src/components/MarketIntelligenceView.tsx
+- frontend/src/components/MarketIntelligenceView.test.tsx
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+
+COMMANDS EXECUTED:
+- pnpm --dir frontend test src/components/ListingComparisonView.test.tsx
+- pnpm --dir frontend test
+- pnpm --dir frontend exec tsc --noEmit
+- pnpm --dir frontend build
+- cd backend && ./mvnw test
+
+TEST RESULTS:
+- Frontend: 119/119 testes aprovados (100% de sucesso em 18 arquivos de teste).
+  * 11 testes em ListingComparisonView.test.tsx (renderização lado a lado, diferenças claras, baixa confiança destacada, anti-falsa equivalência, integridade temporal, frete não inferido, filtros de confiança/compatibilidade, matriz vs cards, modal explicabilidade de score, drawer de histórico com ESC, callback de busca).
+  * 6 testes em ListingPriceHistoryDrawer.test.tsx (renderização fechada/aberta, dados iniciais, fechamento por ESC/botão, fetch automático via API, tratamento de erro, estado vazio).
+  * 1 teste adicional em MarketIntelligenceView.test.tsx cobrindo a nova aba "⚖️ Comparação & Equivalência".
+- Backend: 203/203 testes aprovados (zero regressões).
+- Total de Testes Automatizados do Projeto: 322 testes aprovados (203 backend + 119 frontend), 0 falhas, 0 skips.
+- Build Next.js 15.1.7: 28 rotas estáticas/SSR compiladas com sucesso sem erros TypeScript.
+
+POLICY EVIDENCE:
+- Critério de Aceite 1: Diferenças claras: matriz de atributos lado a lado comparando linha a linha preço, frete, total, condição, marca, modelo, GTIN, voltagem e especificações técnicas com badges distintos para "✓ Idêntico" e "⚠️ Divergente".
+- Critério de Aceite 2: Baixa confiança destacada: itens com score < 75% ou baixa confiança (< 50%) recebem badges em tons de âmbar/vermelho com aviso de revisão manual e nunca se confundem com equivalentes aprovados.
+- Critério de Aceite 3: Sem falsa equivalência visual: anúncios incompatíveis (isCompatible === false) NUNCA exibem o selo verde "Equivalente". Exibem distintivo "⛔ INCOMPATÍVEL" e banner ostensivo de "ALERTA ANTI-FALSA EQUIVALÊNCIA" com lista detalhada de motivos (ex.: NOVO vs USADO, marcas divergentes), prevenindo distorções na precificação do lojista.
+- Integridade Temporal: observações com defasagem > 30 dias ocultam a variação percentual de preço com aviso explicativo.
+- Frete Desconhecido: status UNKNOWN exibe "⚠️ Não informado pelo canal" e nunca inventa preço final com frete.
+- Histórico Legítimo de Preços: drawer auditável exibe estritamente pontos reais persistidos sem dados retroativos fictícios, com nota de transparência.
+
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+
+DOCUMENTATION UPDATED:
+- docs/specs/P011-FE-listing-comparison-view/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+
+NEXT PROMPT: UNLOCKED (P012-BE liberado para READY).
+```

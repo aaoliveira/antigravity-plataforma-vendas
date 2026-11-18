@@ -276,4 +276,18 @@ describe('P009-FE: MarketIntelligenceView & ObservationDetailDrawer', () => {
     expect(screen.getByText('Falha na Consulta de Observações')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Tentar Novamente/i })).toBeInTheDocument();
   });
+
+  it('9. Permite alternar para a aba de Comparação & Equivalência', async () => {
+    render(<MarketIntelligenceView />);
+
+    await waitFor(() => {
+      expect(screen.getByText('⚖️ Comparação & Equivalência')).toBeInTheDocument();
+    });
+
+    const comparisonTabBtn = screen.getByText('⚖️ Comparação & Equivalência');
+    fireEvent.click(comparisonTabBtn);
+
+    expect(screen.getByText('⚖️ Comparação Lado a Lado de Listings Equivalentes')).toBeInTheDocument();
+    expect(screen.getByText('🎯 REFERÊNCIA PRÓPRIA')).toBeInTheDocument();
+  });
 });

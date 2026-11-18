@@ -32,7 +32,8 @@
 | **P010-BE** | Pesquisa de Mercado e Concorrência Autorizada, Registro de Fontes e Cache                | E06   | Backend    | **`PASSED`**   | P009-FE (`PASSED`)     | 18/11/2026     |
 | **P010-FE** | Interface de Pesquisa Autorizada, Políticas de Fontes e Fallback Seguro                  | E06   | Frontend   | **`PASSED`**   | P010-BE (`PASSED`)     | 18/11/2026     |
 | **P011-BE** | Comparação de Listings Equivalentes, Variação Temporal e Histórico Não-Inventado         | E06   | Backend    | **`PASSED`**   | P010-FE (`PASSED`)     | 18/11/2026     |
-| **P011-FE** | Interface de Comparação de Listings, Histórico Real e Alertas de Incompatibilidade       | E06   | Frontend   | `READY`        | P011-BE (`PASSED`)     | ---            |
+| **P011-FE** | Interface de Comparação de Listings, Histórico Real e Alertas de Incompatibilidade       | E06   | Frontend   | **`PASSED`**   | P011-BE (`PASSED`)     | 18/11/2026     |
+| **P012-BE** | Exportação Segura de Relatórios e Auditoria                                              | E11   | Backend    | `READY`        | P011-FE (`PASSED`)     | ---            |
 | **P007-FE** | Simulador de Preço e Painel de Rentabilidade                                             | E07   | Frontend   | `NOT_STARTED`  | P007-BE (`PASSED`)     | ---            |
 | **P008-BE** | Analytics de Anúncios Próprios e Métricas Oficiais                                       | E08   | Backend    | `NOT_STARTED`  | P004 (`PASSED`)        | ---            |
 | **P008-FE** | Dashboard de Desempenho e Saúde de Anúncios                                              | E08   | Frontend   | `NOT_STARTED`  | P008-BE (`PASSED`)     | ---            |

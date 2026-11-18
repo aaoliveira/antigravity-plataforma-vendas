@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P011-BE",
-  "status": "APPROVED",
-  "nextPrompt": "P011-FE",
+  "currentPrompt": "P012-BE",
+  "status": "READY",
+  "nextPrompt": "P012-FE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-18T15:51:00-03:00",
+  "lastUpdated": "2026-11-18T16:40:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -26,7 +26,8 @@
     "P009-FE",
     "P010-BE",
     "P010-FE",
-    "P011-BE"
+    "P011-BE",
+    "P011-FE"
   ],
   "gates": {
     "P000": {
@@ -346,6 +347,20 @@
       "buildPassed": true,
       "blockingIssues": 0,
       "prerequisites": ["P010-FE"]
+    },
+    "P011-FE": {
+      "name": "Interface de Comparação Lado a Lado, Detalhes de Correspondência e Destaque de Confiança",
+      "status": "APPROVED",
+      "startedAt": "2026-11-18T16:28:00-03:00",
+      "approvedAt": "2026-11-18T16:40:00-03:00",
+      "evidence": "docs/specs/P011-FE-listing-comparison-view/spec.md",
+      "testsExecuted": 18,
+      "testsPassed": 18,
+      "totalFrontendSuiteTests": 119,
+      "totalBackendSuiteTests": 203,
+      "buildPassed": true,
+      "blockingIssues": 0,
+      "prerequisites": ["P011-BE"]
     }
   },
   "maintenanceGates": {
