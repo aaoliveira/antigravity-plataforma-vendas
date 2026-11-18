@@ -1691,3 +1691,90 @@ DOCUMENTATION UPDATED:
 
 NEXT PROMPT: UNLOCKED (P010-BE liberado para READY).
 ```
+
+
+```text
+PROMPT: P010-BE — Pesquisa de Mercado e Concorrência Autorizada, Registro de Fontes, Cache e Respeito a Limites
+
+INPUT:
+Implemente pesquisa de produtos/anúncios somente usando capacidades oficialmente suportadas, fontes licenciadas ou dados públicos cujo uso tenha sido validado. Antes de cada endpoint/fonte, registrar política, limites e permissão. Se a pesquisa concorrencial não estiver autorizada/disponível via API, não contornar com scraping; oferecer apenas dados próprios ou fonte alternativa licenciada. Implementar filtros, paginação, normalização e cache com validade.
+
+Aceite: cada resultado rastreável; nenhuma fonte não aprovada é chamada; limites respeitados; resultados não disponíveis retornam capability status, não dados fabricados.
+
+PRE-FLIGHT CHECKS:
+- Prompt P009-FE formalmente concluído e aprovado com 93 testes de frontend verdes.
+- Leitura de MARKETPLACE_POLICIES.md e especificação dos canais prioritários (Mercado Livre, Shopee, Amazon).
+- Confirmação das regras inegociáveis:
+  * Proibição absoluta de scraping não autorizado;
+  * Política Fail-Closed em fontes UNVERIFIED ou RESTRICTED;
+  * Garantia Anti-Alucinação: métricas de concorrentes (vendas unitárias, faturamento, CTR) NUNCA fabricadas;
+  * Cache com validade (TTL) e limitador de taxa (RateLimiter) para respeito integral às cotas das APIs oficiais;
+  * Isolamento multi-tenant PostgreSQL Row-Level Security forçado em queries e cache.
+
+FILES CREATED:
+- docs/specs/P010-BE-market-search/spec.md
+- backend/src/main/resources/db/migration/V8__market_search_and_policies.sql
+- backend/src/main/resources/db/migration-postgresql/V8_1__postgresql_rls_market_search.sql
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/model/MarketSearchSourcePolicy.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/model/MarketSearchSourcePolicyRepository.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/model/MarketSearchQueryRecord.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/model/MarketSearchQueryRepository.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/model/MarketSearchCacheRecord.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/model/MarketSearchCacheRepository.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/model/MarketSearchRequest.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/model/NormalizedMarketSearchResult.java
+- backend/src/main/java/com/sellerintelligence/modules.competitorresearch/model/MarketSearchResponse.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/model/MarketSearchSourcePolicyDto.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/model/MarketSearchHistoryItemDto.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/model/PageResponse.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/service/SearchSourcePolicyRegistry.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/service/MarketSearchCacheService.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/service/MarketSearchRateLimiter.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/service/MarketProductSearchService.java
+- backend/src/main/java/com/sellerintelligence/modules/competitorresearch/MarketSearchController.java
+- backend/src/test/java/com/sellerintelligence/modules/competitorresearch/SearchSourcePolicyRegistryTest.java
+- backend/src/test/java/com/sellerintelligence/modules/competitorresearch/MarketSearchRateLimiterTest.java
+- backend/src/test/java/com/sellerintelligence/modules/competitorresearch/MarketProductSearchServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/competitorresearch/MarketSearchControllerTest.java
+- backend/src/test/java/com/sellerintelligence/modules/competitorresearch/PostgresMarketSearchRlsIntegrationTest.java
+
+FILES MODIFIED:
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+
+COMMANDS EXECUTED:
+- cd backend && ./mvnw test -Dtest="SearchSourcePolicyRegistryTest,MarketSearchRateLimiterTest,MarketProductSearchServiceTest,MarketSearchControllerTest,ModularArchitectureTest"
+- cd backend && ./mvnw test -Dtest="PostgresMarketSearchRlsIntegrationTest"
+- cd backend && ./mvnw clean test
+- pnpm --dir frontend test
+- pnpm --dir frontend build
+
+TEST RESULTS:
+- Backend: 179/179 testes aprovados (100% de sucesso).
+  * 21 novos testes adicionados no módulo competitorresearch cobrindo registry, rate limiter, fail-closed, anti-scraping fallback, cache TTL, MockMvc controller e Testcontainers PostgreSQL 17 RLS.
+  * ModularArchitectureTest ArchUnit: 3/3 testes aprovados com 0 ciclos.
+- Frontend: 93/93 testes aprovados (100% de sucesso).
+- Next.js Production Build: 21 rotas estáticas e dinâmicas geradas com sucesso.
+- Total de Testes Automatizados do Projeto: 272 testes aprovados (179 backend + 93 frontend), 0 falhas, 0 skips.
+
+POLICY EVIDENCE:
+- Critério de Aceite 1: Cada resultado rastreável: NormalizedMarketSearchResult expõe sourcePolicyId, provenanceType, URL oficial sanitizada, sellerName, sellerClassification e timestamp de coleta.
+- Critério de Aceite 2: Nenhuma fonte não aprovada é chamada: Amazon (UNVERIFIED) bloqueia chamadas externas e retorna aviso Fail-Closed.
+- Critério de Aceite 3: Limites respeitados: RateLimiter em janela deslizante protege cotas de canais e retorna HTTP 429 Too Many Requests com cabeçalho Retry-After.
+- Critério de Aceite 4: Resultados não disponíveis retornam capability status, não dados fabricados: Shopee (RESTRICTED) não sofre web scraping; retorna CapabilityStatus.RESTRICTED e aviso legal, com fallback transparente para o catálogo próprio do tenant (OWN_CATALOG).
+- Critério de Aceite 5: Dados não fabricados: métricas não fornecidas oficialmente são nulas e acompanham a notificação formal anti-alucinação.
+- Isolamento Multi-Tenant: PostgreSQL 17 RLS ativo e forçado (FORCE ROW LEVEL SECURITY) nas tabelas market_search_queries e market_search_cache, validado por teste de integração com Testcontainers.
+
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+
+DOCUMENTATION UPDATED:
+- docs/specs/P010-BE-market-search/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+
+NEXT PROMPT: UNLOCKED (P010-FE liberado para READY).
+```

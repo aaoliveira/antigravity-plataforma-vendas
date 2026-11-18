@@ -28,18 +28,20 @@
 | **P008-BE** | Ingestão de Pedidos e Itens Próprios, Reconciliação, Outbox e RLS                        | E04   | Backend    | **`PASSED`**   | P007-FE (`PASSED`)     | 18/11/2026     |
 | **P008-FE** | Gestão e Detalhes de Pedidos com Filtros por Canal, Status e Incompletos                 | E04   | Frontend   | **`PASSED`**   | P008-BE (`PASSED`)     | 18/11/2026     |
 | **P009-BE** | Modelo Comum para Observações de Mercado, Proveniência, Deduplicação e Matching          | E06   | Backend    | **`PASSED`**   | P008-FE (`PASSED`)     | 18/11/2026     |
-| **P009-FE** | Exibição de Origem, Evidências, Confiança e Explicação de Dados na UI                     | E06   | Frontend   | **`PASSED`**   | P009-BE (`PASSED`)     | 18/11/2026     |
+| **P009-FE** | Exibição de Origem, Evidências, Confiança e Explicação de Dados na UI                    | E06   | Frontend   | **`PASSED`**   | P009-BE (`PASSED`)     | 18/11/2026     |
+| **P010-BE** | Pesquisa de Mercado e Concorrência Autorizada, Registro de Fontes e Cache                | E06   | Backend    | **`PASSED`**   | P009-FE (`PASSED`)     | 18/11/2026     |
+| **P010-FE** | Interface de Pesquisa Autorizada, Políticas de Fontes e Fallback Seguro                  | E06   | Frontend   | `READY`        | P010-BE (`PASSED`)     | ---            |
 | **P007-BE** | Motor Financeiro Determinístico em BigDecimal                                            | E07   | Backend    | `NOT_STARTED`  | P004 (`PASSED`)        | ---            |
 | **P007-FE** | Simulador de Preço e Painel de Rentabilidade                                             | E07   | Frontend   | `NOT_STARTED`  | P007-BE (`PASSED`)     | ---            |
 | **P008-BE** | Analytics de Anúncios Próprios e Métricas Oficiais                                       | E08   | Backend    | `NOT_STARTED`  | P004 (`PASSED`)        | ---            |
 | **P008-FE** | Dashboard de Desempenho e Saúde de Anúncios                                              | E08   | Frontend   | `NOT_STARTED`  | P008-BE (`PASSED`)     | ---            |
 | **P009-BE** | Consolidação Financeira, DRE e Reconciliação                                             | E09   | Backend    | `NOT_STARTED`  | P007 (`PASSED`)        | ---            |
 | **P009-FE** | Painel Financeiro Consolidado Multi-CNPJ                                                 | E09   | Frontend   | `NOT_STARTED`  | P009-BE (`PASSED`)     | ---            |
-| **P010-BE** | IA Assistiva com Tool Calling Somente Leitura                                            | E10   | Backend    | `NOT_STARTED`  | P007, P008 (`PASSED`)  | ---            |
-| **P010-FE** | Chat Assistente e Geração Assistida de Anúncios                                          | E10   | Frontend   | `NOT_STARTED`  | P010-BE (`PASSED`)     | ---            |
-| **P011-BE** | Exportação Segura de Relatórios e Auditoria                                              | E11   | Backend    | `NOT_STARTED`  | P009 (`PASSED`)        | ---            |
-| **P011-FE** | Central de Relatórios e Downloads Auditados                                              | E11   | Frontend   | `NOT_STARTED`  | P011-BE (`PASSED`)     | ---            |
-| **P012**    | Hardening de Segurança, Testes E2E e Release MVP                                         | E12   | Fullstack  | `NOT_STARTED`  | P001 a P011 (`PASSED`) | ---            |
+| **P011-BE** | IA Assistiva com Tool Calling Somente Leitura                                            | E10   | Backend    | `NOT_STARTED`  | P007, P008 (`PASSED`)  | ---            |
+| **P011-FE** | Chat Assistente e Geração Assistida de Anúncios                                          | E10   | Frontend   | `NOT_STARTED`  | P011-BE (`PASSED`)     | ---            |
+| **P012-BE** | Exportação Segura de Relatórios e Auditoria                                              | E11   | Backend    | `NOT_STARTED`  | P009 (`PASSED`)        | ---            |
+| **P012-FE** | Central de Relatórios e Downloads Auditados                                              | E11   | Frontend   | `NOT_STARTED`  | P012-BE (`PASSED`)     | ---            |
+| **P013**    | Hardening de Segurança, Testes E2E e Release MVP                                         | E12   | Fullstack  | `NOT_STARTED`  | P001 a P012 (`PASSED`) | ---            |
 
 ---
 
