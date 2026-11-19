@@ -311,7 +311,7 @@ class AccountMetricIngestionServiceTest {
                 Instant.now(), null, Instant.now(), Instant.now()
         );
 
-        when(metricRepository.findForSummary(eq(tenantId), eq(accountId), eq("MERCADO_LIVRE"), any(), any()))
+        when(metricRepository.findForSummary(eq(tenantId), eq(accountId), eq("MERCADO_LIVRE"), any(), any(), any()))
                 .thenReturn(List.of(m1, m2, m3));
 
         MetricsSummaryDto summary = ingestionService.getSummary(tenantId, accountId, "MERCADO_LIVRE", start, end);

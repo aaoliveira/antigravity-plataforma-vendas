@@ -59,12 +59,14 @@ public interface AccountMetricRepository extends JpaRepository<AccountMetricReco
     @Query("SELECT m FROM AccountMetricRecord m WHERE m.tenantId = :tenantId " +
             "AND (:sellerAccountId IS NULL OR m.sellerAccountId = :sellerAccountId) " +
             "AND (:marketplace IS NULL OR :marketplace = '' OR m.marketplace = :marketplace) " +
+            "AND (:externalListingId IS NULL OR :externalListingId = '' OR m.externalListingId = :externalListingId) " +
             "AND (:startDate IS NULL OR m.windowEnd >= :startDate) " +
             "AND (:endDate IS NULL OR m.windowStart <= :endDate)")
     List<AccountMetricRecord> findForSummary(
             @Param("tenantId") UUID tenantId,
             @Param("sellerAccountId") UUID sellerAccountId,
             @Param("marketplace") String marketplace,
+            @Param("externalListingId") String externalListingId,
             @Param("startDate") Instant startDate,
             @Param("endDate") Instant endDate
     );

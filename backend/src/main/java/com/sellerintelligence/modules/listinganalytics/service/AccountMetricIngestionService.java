@@ -387,6 +387,7 @@ public class AccountMetricIngestionService {
             UUID tenantId,
             UUID sellerAccountId,
             String marketplace,
+            String externalListingId,
             Instant startDate,
             Instant endDate
     ) {
@@ -394,6 +395,7 @@ public class AccountMetricIngestionService {
                 tenantId,
                 sellerAccountId,
                 marketplace,
+                externalListingId,
                 startDate,
                 endDate
         );
@@ -453,6 +455,17 @@ public class AccountMetricIngestionService {
                 overallCtr.value(),
                 antiHallucinationNotice
         );
+    }
+
+    @Transactional(readOnly = true)
+    public MetricsSummaryDto getSummary(
+            UUID tenantId,
+            UUID sellerAccountId,
+            String marketplace,
+            Instant startDate,
+            Instant endDate
+    ) {
+        return getSummary(tenantId, sellerAccountId, marketplace, null, startDate, endDate);
     }
 
     public AccountMetricDto toDto(AccountMetricRecord r) {

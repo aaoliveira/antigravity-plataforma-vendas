@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P018-BE = `APPROVED`  
+> **Status Vigente:** PROMPT P018-FE = `APPROVED`  
 > **Data:** 19/11/2026
 
 ---
@@ -46,6 +46,7 @@
 | **P017-BE** | Fatos Financeiros por Pedido/Item, Reconciliação e Trilha de Cálculo                      | **`APPROVED`** | 19/11/2026        | [docs/specs/P017-BE-financial-facts-reconciliation/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P017-BE-financial-facts-reconciliation/spec.md), [OrderFinancialFactServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/OrderFinancialFactServiceTest.java), [OrderFinancialFactControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/OrderFinancialFactControllerTest.java), [PostgresFinancialFactsRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/PostgresFinancialFactsRlsIntegrationTest.java) | **SIM (P017-FE liberado)** |
 | **P017-FE** | Painel Financeiro, Filtros Combináveis, Detalhamento de Componentes e Alertas             | **`APPROVED`** | 19/11/2026        | [docs/specs/P017-FE-financial-dashboard-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P017-FE-financial-dashboard-view/spec.md), [FinancialFactsDashboardView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/financial/FinancialFactsDashboardView.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (P018-BE liberado)** |
 | **P018-BE** | Inventário de Métricas Oficiais por Canal, Catálogo Documentado e Ingestão               | **`APPROVED`** | 19/11/2026        | [docs/specs/P018-BE-official-metrics-inventory/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P018-BE-official-metrics-inventory/spec.md), [AccountMetricIngestionServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/listinganalytics/AccountMetricIngestionServiceTest.java), [MetricFormulaEngineTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/listinganalytics/MetricFormulaEngineTest.java), [PostgresConnectedAccountMetricsRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/listinganalytics/PostgresConnectedAccountMetricsRlsIntegrationTest.java) | **SIM (P018-FE liberado)** |
+| **P018-FE** | Dashboard de Analytics por Anúncio, Período, Comparação Temporal e Aviso de Indisponível | **`APPROVED`** | 19/11/2026        | [docs/specs/P018-FE-listing-analytics-dashboard/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P018-FE-listing-analytics-dashboard/spec.md), [ListingAnalyticsDashboardView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/listinganalytics/ListingAnalyticsDashboardView.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (P019-BE liberado)** |
 
 ---
 
@@ -915,3 +916,35 @@
      - Total geral do projeto: 555 testes automatizados aprovados sem regressões.
      - ModularArchitectureTest (ArchUnit): conformidade de pacotes e zero ciclos mantidos.
 - **Resultado:** **`PROMPT P018-BE = APPROVED`**. O prompt subsequente (`P018-FE`) está formalmente liberado e transita para `READY`.
+
+---
+
+### Transição: PROMPT P018-FE $\rightarrow$ `APPROVED`
+
+- **Data/Hora:** 19/11/2026 14:12 BRT
+- **Avaliador:** Tech Lead / Staff Software Engineer
+- **Critérios Validados:**
+  1. **Período e Timezone Explícitos (`ListingAnalyticsDashboardView.tsx`):**
+     - Exibição em destaque do fuso horário de referência (`America/Sao_Paulo (UTC-03:00)`).
+     - Presets de período configuráveis (Hoje, 7 Dias, 14 Dias, 30 Dias, Mês Atual e Personalizado) com normalização UTC na camada BFF e datas locais amigáveis.
+  2. **Cálculos Conferem e Comparação Temporal Determinística (`MetricKpiGrid.tsx`):**
+     - Variação percentual ($\Delta\%$) e absoluta calculadas frente ao período anterior de igual duração.
+     - Tratamento determinístico de métricas sem histórico anterior ("Sem base anterior"), evitando alucinações como $+100\%$ ou divisão por zero.
+     - Indicadores de Visitas, Pedidos, Unidades, Receita, Conversão de Pedidos e CTR com botões acessíveis de ajuda ARIA e tooltips de fórmulas oficiais.
+  3. **Gráficos e Detecção Explícita de Lacunas (`MetricTimeSeriesChart.tsx`):**
+     - **Gráficos não mascaram dados ausentes:** As séries temporais sinalizam explicitamente datas sem dados coletados com zonas de lacuna e alerta visual (`Aviso de lacunas de coleta`), quebrando as linhas contínuas (`discontinuous line segments`).
+     - Proibição estrita de interpolar dados ausentes ou plotar dias não coletados como 0.
+     - Alternância de visualização entre gráfico SVG responsivo e tabela diária de dados acessível por leitores de tela.
+  4. **Aviso de Indisponibilidade & Regra Anti-Alucinação Estrita:**
+     - CTR de tráfego orgânico no Mercado Livre e métricas de concorrentes classificadas com badge `UNSUPPORTED_BY_CHANNEL` e justificativa explícita.
+     - Banner institucional permanente afirmando a conformidade com APIs oficiais homologadas.
+     - Gaveta deslizante (`MetricCatalogDrawer.tsx`) para consulta das quotas de API, rate limits e limitações de cada canal.
+  5. **Testes Automatizados & Builds:**
+     - 7 novos testes criados em `ListingAnalyticsDashboardView.test.tsx` (100% aprovados).
+     - 1 novo teste de integração de navegação em `AppShell.test.tsx` (14/14 testes aprovados).
+     - Suíte frontend: 200/200 testes aprovados em 30 arquivos (0 falhas).
+     - TypeScript verificado com zero erros (`npx tsc --noEmit`).
+     - Build de produção Next.js 15.1.7 (`next build`) aprovado com 42 rotas compiladas e geradas.
+     - Suíte backend: 363/363 testes aprovados (0 falhas, 0 erros, 0 skips).
+     - Total geral do projeto: 563 testes automatizados aprovados (363 backend + 200 frontend).
+- **Resultado:** **`PROMPT P018-FE = APPROVED`**. O prompt subsequente (`P019-BE`) está formalmente liberado e transita para `READY`.

@@ -18,6 +18,7 @@ import { ProductMonitoringView } from './ProductMonitoringView';
 import { PricingAndCostsView } from './pricing/PricingAndCostsView';
 import { CompaniesAndAccountsView } from './company/CompaniesAndAccountsView';
 import { FinancialFactsDashboardView } from './financial/FinancialFactsDashboardView';
+import { ListingAnalyticsDashboardView } from './listinganalytics/ListingAnalyticsDashboardView';
 
 export interface NavModule {
   id: string;
@@ -51,6 +52,16 @@ export const navModules: NavModule[] = [
     description: 'Pesquisa autorizada e monitoramento de concorrência com proveniência e comparação lado a lado.',
     status: 'READY',
     provenience: 'OBSERVED / OFFICIAL',
+  },
+  {
+    id: 'LISTING_ANALYTICS',
+    name: 'Analytics de Anúncios & Métricas Oficiais',
+    shortLabel: 'Analytics',
+    pillarKey: 'BI',
+    pillarName: 'Business Intelligence & Ações',
+    description: 'Dashboard de métricas oficiais de anúncios por período, comparação temporal e aviso de indisponibilidade.',
+    status: 'READY',
+    provenience: 'OFFICIAL_METRICS_API',
   },
 
   // 2. Market Intelligence
@@ -428,6 +439,8 @@ export const AppShell: React.FC = () => {
             <MarketIntelligenceView />
           ) : activeModule.id === 'MONITORING' ? (
             <ProductMonitoringView onOpenMarketSearch={() => setActiveModuleId('MARKET')} />
+          ) : activeModule.id === 'LISTING_ANALYTICS' ? (
+            <ListingAnalyticsDashboardView />
           ) : activeModule.id === 'FINANCIAL' ? (
             <PricingAndCostsView />
           ) : activeModule.id === 'RECONCILIATION_DRE' ? (

@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P018-BE",
+  "currentPrompt": "P018-FE",
   "status": "APPROVED",
-  "nextPrompt": "P018-FE",
+  "nextPrompt": "P019-BE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-19T13:35:00-03:00",
+  "lastUpdated": "2026-11-19T14:12:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -40,7 +40,8 @@
     "P016-FE",
     "P017-BE",
     "P017-FE",
-    "P018-BE"
+    "P018-BE",
+    "P018-FE"
   ],
   "gates": {
     "P000": {
@@ -624,9 +625,29 @@
       "prerequisites": ["P017-FE"]
     },
     "P018-FE": {
-      "name": "Painel de Métricas Oficiais de Anúncios e Contas com Indicadores de Indisponibilidade",
+      "name": "Dashboard de Analytics por Anúncio e Período com Comparação Temporal e Aviso de Indisponibilidade",
+      "status": "APPROVED",
+      "startedAt": "2026-11-19T13:56:00-03:00",
+      "approvedAt": "2026-11-19T14:12:00-03:00",
+      "evidence": "docs/specs/P018-FE-listing-analytics-dashboard/spec.md",
+      "testsExecuted": 7,
+      "testsPassed": 7,
+      "totalBackendSuiteTests": 363,
+      "totalFrontendSuiteTests": 200,
+      "totalProjectTests": 563,
+      "buildPassed": true,
+      "explicitTimezoneAndPeriodVerified": true,
+      "temporalComparisonDeterministicVerified": true,
+      "absenceAndGapsUnmaskedVerified": true,
+      "antiHallucinationDisclaimerAndTooltipsVerified": true,
+      "officialCatalogDrawerVerified": true,
+      "blockingIssues": 0,
+      "prerequisites": ["P018-BE"]
+    },
+    "P019-BE": {
+      "name": "Inteligência Artificial Assistiva e Auditoria de Qualidade de Anúncios",
       "status": "READY",
-      "prerequisites": ["P018-BE"],
+      "prerequisites": ["P018-FE"],
       "blockingIssues": 0
     }
   },

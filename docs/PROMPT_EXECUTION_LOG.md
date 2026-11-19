@@ -3052,3 +3052,82 @@ DOCUMENTATION UPDATED:
 - docs/PROMPT_EXECUTION_LOG.md
 NEXT PROMPT: UNLOCKED (P018-FE liberado para READY).
 ```
+
+---
+
+## Execução: PROMPT 018-FE
+
+```text
+PROMPT ID: P018-FE
+FEATURE: Dashboard de Analytics por Anúncio e Período com Comparação Temporal e Aviso de Indisponibilidade
+STATUS: PASSED
+PRE-FLIGHT:
+- Verificado pré-requisito P018-BE como APPROVED em docs/delivery/phase-gate.json.
+- Verificadas as regras de anti-alucinação: proibição rigorosa de estimativas silenciosas ou substituição de métricas ausentes por zero.
+- Confirmadas definições de período/timezone explícitos e exibição visual de lacunas de coleta sem interpolação falsa.
+DOCUMENTS REVIEWED:
+- docs/PRD.md (MVP-08, RF-040, RF-041, RNF-001, RNF-007, RNF-014)
+- docs/ARCHITECTURE.md
+- docs/SECURITY.md
+- docs/ENGINEERING_RULES.md
+- .agents/rules/anti-hallucination.md
+- .agents/rules/architecture-and-stack.md
+- .agents/rules/testing-and-quality.md
+- .agents/rules/phase-gates.md
+- docs/specs/P018-FE-listing-analytics-dashboard/spec.md
+DEPENDENCIES:
+- P018-BE (Aprovado).
+FILES CREATED:
+- docs/specs/P018-FE-listing-analytics-dashboard/spec.md
+- frontend/src/types/metrics.ts
+- frontend/src/app/api/metrics/route.ts
+- frontend/src/app/api/metrics/summary/route.ts
+- frontend/src/app/api/metrics/catalog/route.ts
+- frontend/src/app/api/metrics/ingest/route.ts
+- frontend/src/components/listinganalytics/MetricKpiGrid.tsx
+- frontend/src/components/listinganalytics/MetricTimeSeriesChart.tsx
+- frontend/src/components/listinganalytics/MetricCatalogDrawer.tsx
+- frontend/src/components/listinganalytics/ListingAnalyticsDetailTable.tsx
+- frontend/src/components/listinganalytics/ListingAnalyticsDashboardView.tsx
+- frontend/src/components/listinganalytics/ListingAnalyticsDashboardView.test.tsx
+FILES MODIFIED:
+- backend/src/main/java/com/sellerintelligence/modules/listinganalytics/repository/AccountMetricRepository.java
+- backend/src/main/java/com/sellerintelligence/modules/listinganalytics/service/AccountMetricIngestionService.java
+- backend/src/main/java/com/sellerintelligence/modules/listinganalytics/AccountMetricController.java
+- backend/src/test/java/com/sellerintelligence/modules/listinganalytics/AccountMetricIngestionServiceTest.java
+- frontend/src/components/AppShell.tsx
+- frontend/src/components/AppShell.test.tsx
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+COMMANDS EXECUTED:
+- cd frontend && npx vitest run src/components/listinganalytics/ListingAnalyticsDashboardView.test.tsx (7 testes aprovados)
+- cd frontend && npx vitest run src/components/AppShell.test.tsx (14 testes aprovados)
+- cd frontend && npx tsc --noEmit (zero erros de tipagem TypeScript)
+- cd frontend && npm run build (Next.js 15.1.7 build de produção compilado com 42 rotas limpas)
+- cd frontend && npm test -- --run (200 testes de frontend aprovados em 30 arquivos, 100% de sucesso)
+- cd backend && ./mvnw test (363 testes de backend aprovados, 0 falhas, 0 erros, 0 skips)
+TEST RESULTS:
+- Frontend: 200/200 testes aprovados em 30 arquivos (100% de sucesso).
+  * 7 novos testes em ListingAnalyticsDashboardView.test.tsx cobrindo renderização com período/timezone explícito, cards de KPIs com deltas determinísticos, banner e badges anti-alucinação no CTR do Mercado Livre orgânico, tooltips com acessibilidade ARIA de fórmulas oficiais, detecção explícita de lacunas no gráfico temporal sem interpolação, alternância para tabela diária, gaveta de catálogo oficial e tabela de auditoria individual.
+  * 14 testes em AppShell.test.tsx incluindo navegação integrada para o módulo LISTING_ANALYTICS.
+- Backend: 363/363 testes mantidos com 100% de sucesso (0 falhas, 0 erros, 0 skips).
+  * 3/3 testes de arquitetura modular em ModularArchitectureTest (ArchUnit) aprovados.
+- Total Geral do Projeto: 563 testes automatizados aprovados (363 backend + 200 frontend), 0 falhas, 0 erros, 0 skips.
+POLICY EVIDENCE:
+- Critério de Aceite 1: Período/Timezone Explícitos: Exibição clara e inequívoca do fuso oficial America/Sao_Paulo (UTC-03:00) nos cabeçalhos, gráficos e tabelas, com presets rápidos (Hoje, 7d, 14d, 30d, mês, personalizado) e conversão UTC nos filtros.
+- Critério de Aceite 2: Cálculos Conferem: Motor determinístico com fórmulas oficiais documentadas via tooltips e drawer (CTR = clicks/impressions * 100, Conversão = orders/visits * 100), variação temporal delta% frente ao período anterior de igual duração com tratamento seguro para ausência de histórico ("Sem base anterior").
+- Critério de Aceite 3: Gráficos Não Mascaram Dados Ausentes: Séries temporais diárias com identificação visual de lacunas de coleta, quebra de linha (segmentos descontínuos) e alerta explícito de datas sem observação oficial, sem interpolação falsa nem substituição por 0.
+- Critério de Aceite 4: Aviso de Métricas Indisponíveis: CTR no Mercado Livre orgânico categoricamente exibido como Não Suportado (UNSUPPORTED_BY_CHANNEL) com aviso de que métricas de impressões exigem Mercado Ads contratado. Banner anti-alucinação permanente.
+- Critério de Aceite 5: Acessibilidade & Mobile: Navegação completa por teclado, tecla Escape para fechamento de modais/drawers, atributos ARIA e touch targets >= 44px.
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+DOCUMENTATION UPDATED:
+- docs/specs/P018-FE-listing-analytics-dashboard/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+NEXT PROMPT: UNLOCKED (P019-BE liberado para READY).
+```

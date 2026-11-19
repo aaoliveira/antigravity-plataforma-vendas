@@ -199,4 +199,15 @@ describe('AppShell Component (Shell Responsivo & Navegação)', () => {
       screen.getByRole('heading', { name: /Painel Financeiro & Conciliação/i })
     ).toBeInTheDocument();
   });
+
+  it('deve renderizar a tela ListingAnalyticsDashboardView ao selecionar o módulo LISTING_ANALYTICS (Analytics de Anúncios)', () => {
+    render(<AppShell />);
+
+    const analyticsBtns = screen.getAllByRole('button', { name: /Analytics de Anúncios/i });
+    fireEvent.click(analyticsBtns[0]);
+
+    expect(
+      screen.getByRole('heading', { name: /Analytics de Anúncios & Desempenho Oficial/i })
+    ).toBeInTheDocument();
+  });
 });

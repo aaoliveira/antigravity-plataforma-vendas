@@ -1,6 +1,6 @@
 # Status de Implementação e Quality Gates do Roadmap
 
-> **Status Atual Geral:** PROMPT P017-FE = `IN_PROGRESS` | P018-BE = `READY`  
+> **Status Atual Geral:** PROMPT P018-FE = `PASSED` | P019-BE = `READY`  
 > **Data da Última Atualização:** 19/11/2026  
 > **Regra de Transição:** O próximo prompt só é liberado para `IN_PROGRESS` quando o anterior atingir formalmente `PASSED`.
 
@@ -55,7 +55,8 @@
 | **P017-BE** | Fatos Financeiros por Pedido/Item, Reconciliação e Trilha de Cálculo                     | E09   | Backend    | **`PASSED`**   | P016-FE (`PASSED`)    | 19/11/2026     |
 | **P017-FE** | Painel Financeiro, Filtros Combináveis e Detalhamento de Componentes                     | E09   | Frontend   | **`PASSED`**   | P017-BE (`PASSED`)    | 19/11/2026     |
 | **P018-BE** | Inventário de Métricas Oficiais por Canal, Catálogo Documentado e Ingestão               | E08   | Backend    | **`PASSED`**   | P017-FE (`PASSED`)    | 19/11/2026     |
-| **P018-FE** | Painel de Métricas Oficiais de Anúncios e Contas com Indicadores de Indisponibilidade     | E08   | Frontend   | `READY`        | P018-BE (`PASSED`)    | ---            |
+| **P018-FE** | Dashboard de Analytics por Anúncio, Período, Comparação Temporal e Aviso de Indisponível | E08   | Frontend   | **`PASSED`**   | P018-BE (`PASSED`)    | 19/11/2026     |
+| **P019-BE** | Inteligência Artificial Assistiva e Auditoria de Qualidade de Anúncios                   | E10   | Backend    | `READY`        | P018-FE (`PASSED`)    | ---            |
 
 ---
 

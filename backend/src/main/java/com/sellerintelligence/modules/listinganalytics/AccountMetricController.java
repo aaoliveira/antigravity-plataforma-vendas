@@ -111,6 +111,7 @@ public class AccountMetricController {
     public ResponseEntity<MetricsSummaryDto> getSummary(
             @RequestParam(required = false) UUID sellerAccountId,
             @RequestParam(required = false) String marketplace,
+            @RequestParam(required = false) String externalListingId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant endDate
     ) {
@@ -119,6 +120,7 @@ public class AccountMetricController {
                 tenantId,
                 sellerAccountId,
                 marketplace,
+                externalListingId,
                 startDate,
                 endDate
         );
