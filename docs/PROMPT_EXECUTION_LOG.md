@@ -2812,3 +2812,79 @@ DOCUMENTATION UPDATED:
 - docs/PROMPT_EXECUTION_LOG.md
 NEXT PROMPT: UNLOCKED (P017-BE liberado para READY).
 ```
+
+
+## Execução: PROMPT 017-BE
+
+```text
+PROMPT ID: P017-BE
+FEATURE: Fatos Financeiros por Pedido/Item, Reconciliação com Origem Externa e Trilha de Cálculo Persistida
+STATUS: PASSED
+PRE-FLIGHT:
+- Verificado status de P016-FE como APPROVED em phase-gate.json e PHASE_STATUS.md.
+- Requisitos funcionais de inteligência e reconciliação financeira (E09, PRD Seção 4) mapeados.
+- Regra anti-alucinação estrita revista: vedação categórica de rotular Margem de Contribuição como Lucro Líquido.
+DOCUMENTS REVIEWED:
+- docs/PRD.md (E09 - Consolidação Financeira, DRE e Reconciliação)
+- .agents/rules/anti-hallucination.md
+- .agents/rules/architecture-and-stack.md
+- .agents/rules/testing-and-quality.md
+- .agents/rules/phase-gates.md
+- docs/specs/P017-BE-financial-facts-reconciliation/spec.md
+DEPENDENCIES:
+- P016-FE (Aprovado).
+FILES CREATED:
+- docs/specs/P017-BE-financial-facts-reconciliation/spec.md
+- backend/src/main/resources/db/migration/V14__financial_facts_and_reconciliation.sql
+- backend/src/main/resources/db/migration-postgresql/V14_1__postgresql_rls_financial_facts.sql
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/model/FinancialValueProvenance.java
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/model/ReconciliationStatus.java
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/model/OrderItemFinancialFactDto.java
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/model/OrderFinancialFactDto.java
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/model/FinancialFactSummaryDto.java
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/model/ReconcileSettlementCommand.java
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/entity/OrderFinancialFactRecord.java
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/entity/OrderItemFinancialFactRecord.java
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/repository/OrderFinancialFactRepository.java
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/repository/OrderItemFinancialFactRepository.java
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/service/OrderFinancialFactService.java
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/OrderFinancialFactController.java
+- backend/src/test/java/com/sellerintelligence/modules/financialanalytics/OrderFinancialFactServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/financialanalytics/OrderFinancialFactControllerTest.java
+- backend/src/test/java/com/sellerintelligence/modules/financialanalytics/PostgresFinancialFactsRlsIntegrationTest.java
+FILES MODIFIED:
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+COMMANDS EXECUTED:
+- cd backend && ./mvnw test -Dtest=OrderFinancialFactServiceTest (7 testes aprovados)
+- cd backend && ./mvnw test -Dtest=OrderFinancialFactControllerTest (2 testes aprovados)
+- cd backend && ./mvnw test -Dtest=PostgresFinancialFactsRlsIntegrationTest (3 testes Testcontainers PostgreSQL 17 RLS aprovados)
+- cd backend && ./mvnw test -Dtest=ModularArchitectureTest (3 testes ArchUnit aprovados)
+- cd backend && ./mvnw test (334 testes de backend aprovados, 0 falhas, 0 erros, 0 skips)
+- cd frontend && npm test -- --run (185 testes de frontend aprovados, 28 arquivos, 0 falhas)
+TEST RESULTS:
+- Backend: 334/334 testes aprovados (100% de sucesso).
+  * 7 testes unitários/serviço em OrderFinancialFactServiceTest: reconciliabilidade aditiva de itens e pedido, rateio proporcional de frete com compensação de centavos no último item, idempotência no reprocessamento, sinalização de dados ausentes de custos de produto e regras de taxas, cancelamento e devolução determinísticos, reconciliação com extrato externo exato, detecção de divergência e sumarização consolidada.
+  * 2 testes de controller REST em OrderFinancialFactControllerTest: fluxo completo de apuração (/compute), consulta detalhada (/orders/{orderId}), conciliação externa (/reconcile), listagem filtrada e resumo (/summary), com tratamento padronizado 404.
+  * 3 testes de integração PostgreSQL 17 RLS em PostgresFinancialFactsRlsIntegrationTest: isolamento multi-tenant hermético em order_financial_facts e order_item_financial_facts e bloqueio de tentativa de injeção cross-tenant pela política de segurança.
+  * 3 testes de arquitetura modular em ModularArchitectureTest: zero ciclos entre fatias do Spring Modulith e conformidade de pacotes.
+- Frontend: 185/185 testes mantidos com 100% de sucesso em 28 arquivos.
+- Total Geral do Projeto: 519 testes automatizados aprovados (334 backend + 185 frontend), 0 falhas, 0 erros, 0 skips.
+POLICY EVIDENCE:
+- Critério de Aceite 1: Soma por item/pedido reconciliável: comprovada igualdade exata entre o consolidado do pedido e a soma dos itens para todas as parcelas (gross_revenue, shipping_cost, total_deductions, contribution_margin_amount), com compensação centesimal determinística no último item.
+- Critério de Aceite 2: Reprocessamento idempotente: reprocessar o mesmo pedido N vezes executa atualização atômica preservando a unicidade sem duplicar linhas em order_financial_facts ou order_item_financial_facts.
+- Critério de Aceite 3: Dados ausentes sinalizados: ausência de custo em product_costs ou de regras de taxas no canal sinaliza hasMissingData = true, costProvenance = MISSING ou feeProvenance = MISSING, com motivos estruturados em missingDataReasons sem inventar valores ou presumir taxas inexistentes.
+- Critério de Aceite 4: Trilha de cálculo persistida: JSON estruturado em calculation_trace_json contendo engineVersion, timestamp, empresa vinculada, premissas fiscais, regras de taxas aplicadas e histórico da conciliação.
+- Regra Anti-Alucinação: Proibição estrita de rotular Margem de Contribuição como Lucro Líquido. Disclaimer obrigatório presente em todas as entidades, DTOs e trilhas auditáveis.
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+DOCUMENTATION UPDATED:
+- docs/specs/P017-BE-financial-facts-reconciliation/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+NEXT PROMPT: UNLOCKED (P017-FE liberado para READY).
+```

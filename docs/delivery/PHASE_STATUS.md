@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P016-BE = `IN_PROGRESS`  
+> **Status Vigente:** PROMPT P017-BE = `APPROVED` | P017-FE = `READY`  
 > **Data:** 19/11/2026
 
 ---
@@ -43,6 +43,8 @@
 | **P015-FE** | Calculadora Interativa de Precificação, Detalhamento de Margens e Cenários               | **`APPROVED`** | 19/11/2026        | [docs/specs/P015-FE-pricing-calculator-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P015-FE-pricing-calculator-view/spec.md), [PricingCalculator.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/pricing/PricingCalculator.test.tsx), [PricingAndCostsView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/pricing/PricingAndCostsView.test.tsx)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | **SIM (P016-BE liberado)** |
 | **P016-BE** | Entidades Company/BusinessUnit com CNPJ Sintático e Vínculo de Contas de Marketplace     | **`APPROVED`** | 19/11/2026        | [docs/specs/P016-BE-company-and-account-link/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P016-BE-company-and-account-link/spec.md), [CompanyServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/company/CompanyServiceTest.java), [CompanyAccountLinkServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/company/CompanyAccountLinkServiceTest.java), [CompanyControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/company/CompanyControllerTest.java), [CnpjValidatorTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/company/CnpjValidatorTest.java), [PostgresCompanyRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/company/PostgresCompanyRlsIntegrationTest.java)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | **SIM (P016-FE liberado)** |
 | **P016-FE** | Cadastro de Empresa e Vínculo de Contas de Marketplace com Proteção de CNPJ              | **`APPROVED`** | 19/11/2026        | [docs/specs/P016-FE-company-and-account-link-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P016-FE-company-and-account-link-view/spec.md), [CompaniesAndAccountsView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/company/CompaniesAndAccountsView.test.tsx), [cnpj.test.ts](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/utils/cnpj.test.ts), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (P017-BE liberado)** |
+| **P017-BE** | Fatos Financeiros por Pedido/Item, Reconciliação e Trilha de Cálculo                      | **`APPROVED`** | 19/11/2026        | [docs/specs/P017-BE-financial-facts-reconciliation/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P017-BE-financial-facts-reconciliation/spec.md), [OrderFinancialFactServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/OrderFinancialFactServiceTest.java), [OrderFinancialFactControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/OrderFinancialFactControllerTest.java), [PostgresFinancialFactsRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/PostgresFinancialFactsRlsIntegrationTest.java) | **SIM (P017-FE liberado)** |
+| **P017-FE** | Visão Financeira por Pedido/Item, Reconciliação e DRE Simplificada                       | `READY`        | 19/11/2026        | Aguardando início formal                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | Próximo prompt             |
 
 ---
 
@@ -802,3 +804,44 @@
      - TypeScript verificado com zero erros (`tsc --noEmit`).
      - Next.js 15.1.7 build de produção compilado com sucesso com 47 rotas.
 - **Resultado:** **`PROMPT P016-FE = APPROVED`**. O prompt subsequente (`P017-BE`) está formalmente liberado e transita para `READY`.
+
+---
+
+### Transição: PROMPT P017-BE $\rightarrow$ `APPROVED`
+
+- **Data/Hora:** 19/11/2026 12:05 BRT
+- **Avaliador:** Tech Lead / Staff Software Engineer
+- **Critérios Validados:**
+  1. **Modelo de Fatos Financeiros por Pedido e por Item (`OrderFinancialFactRecord.java`, `OrderItemFinancialFactRecord.java`):**
+     - Estrutura completa de parcelas: receita bruta (`gross_revenue`), desconto (`discount_amount`), receita líquida (`net_revenue`), cancelamento (`cancellation_amount`), devolução (`return_amount`), comissão (`marketplace_fee`), tarifa fixa (`fixed_fee`), frete (`shipping_cost`), custo de aquisição/CMV (`product_cost`), embalagem (`packaging_cost`), adicionais (`additional_cost`), imposto informado (`tax_amount`), outras despesas informadas (`other_expenses_amount`), deduções totais (`total_deductions`), margem de contribuição em valor (`contribution_margin_amount`) e margem percentual (`contribution_margin_ratio`).
+  2. **Diferenciação Estrita de Proveniência (`FinancialValueProvenance`):**
+     - `CONFIRMED`: valores conferidos e confirmados por extrato/liquidação externa do canal.
+     - `ESTIMATED`: valores apurados deterministamente via regras vigentes (`FeeResolutionService`).
+     - `USER_INFORMED`: custos unitários de aquisição, insumos e alíquotas fiscais declaradas pelo usuário no sistema (`ProductCostRecord`).
+     - `MISSING`: valores ausentes ou não parametrizados, explicitados formalmente sem inventar valores zerados (Anti-Alucinação).
+  3. **Reconciliabilidade Matemática Aditiva Rigorosa:**
+     - A soma de todas as parcelas dos itens (`gross_revenue`, `shipping_cost`, `total_deductions`, `contribution_margin_amount`) é exatamente idêntica ao total consolidado do cabeçalho do pedido.
+     - Rateio proporcional determinístico do frete do pedido entre os itens com compensação de centavos no último item, garantindo zero resíduos de arredondamento.
+     - Aritmética financeira com `BigDecimal`, escala 4 (`NUMERIC(15, 4)`), modo bancário `RoundingMode.HALF_EVEN`.
+  4. **Reprocessamento Idempotente:**
+     - Restrições de unicidade `(tenant_id, order_id)` e `(tenant_id, order_item_id)`.
+     - Reprocessar o mesmo pedido N vezes executa atualização atômica sem gerar duplicatas.
+  5. **Regra Anti-Alucinação Estrita (Proibição de Lucro Líquido):**
+     - Enquanto despesas fixas estruturais do negócio não estiverem modeladas, qualquer campo ou menção a lucro líquido é sumariamente proibido.
+     - Campo obrigatório `antiHallucinationDisclaimer` presente em entidades, DTOs e trilhas de cálculo: *"Este demonstrativo apura estritamente a Margem de Contribuição (Receita Líquida deduzida de custos diretos variáveis, comissões, fretes e impostos informados). Despesas fixas estruturais e operacionais da empresa não estão contempladas, sendo proibido rotular este valor como Lucro Líquido."*
+  6. **Reconciliação com Origem Externa (`ReconcileSettlementCommand`):**
+     - Comando `POST /api/v1/financial-facts/orders/{orderId}/reconcile` para vincular repasse externo (`settlementExternalId`, `settlementDate`).
+     - Comparação automática entre tarifas estimadas e confirmadas: diferença $\le 0.01$ transita para `RECONCILED`; diferença $> 0.01$ transita para `DIVERGENT` com auditoria das discrepâncias.
+     - Recálculo das margens reais com base nos valores confirmados e rateio proporcional entre os itens.
+  7. **Trilha de Cálculo Auditável em JSON (`calculation_trace_json`):**
+     - Registro estruturado com versão da engine (`v1.0.0`), timestamp, ID da empresa vinculada, regras de comissão aplicadas, custos unitários adotados e motivos de dados ausentes.
+  8. **Isolamento Multi-Tenant e RLS no PostgreSQL 17 (`PostgresFinancialFactsRlsIntegrationTest.java`):**
+     - Migrações Flyway `V14__financial_facts_and_reconciliation.sql` e `V14_1__postgresql_rls_financial_facts.sql` com políticas RLS forçadas (`FORCE ROW LEVEL SECURITY`).
+     - Testes comprovam isolamento hermético entre tenants e bloqueio de violações cross-tenant pelo PostgreSQL.
+  9. **Testes Automatizados & Builds:**
+     - 12 novos testes de backend aprovados (7 unitários/serviço, 2 de controller REST, 3 de integração RLS PostgreSQL).
+     - 334/334 testes de backend mantidos com 100% de sucesso (0 falhas, 0 erros, 0 skips).
+     - 185/185 testes de frontend mantidos com 100% de sucesso em 28 arquivos.
+     - Total geral do projeto: 519 testes automatizados aprovados sem regressões.
+     - ModularArchitectureTest (ArchUnit): 3/3 regras de arquitetura limpa e sem ciclos aprovadas.
+- **Resultado:** **`PROMPT P017-BE = APPROVED`**. O prompt subsequente (`P017-FE`) está formalmente liberado e transita para `READY`.

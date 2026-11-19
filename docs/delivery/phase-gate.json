@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P016-FE",
+  "currentPrompt": "P017-BE",
   "status": "APPROVED",
-  "nextPrompt": "P017-BE",
+  "nextPrompt": "P017-FE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-19T11:30:00-03:00",
+  "lastUpdated": "2026-11-19T12:05:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -37,7 +37,8 @@
     "P015-BE",
     "P015-FE",
     "P016-BE",
-    "P016-FE"
+    "P016-FE",
+    "P017-BE"
   ],
   "gates": {
     "P000": {
@@ -555,6 +556,28 @@
       "mobileResponsive": true,
       "blockingIssues": 0,
       "prerequisites": ["P016-BE"]
+    },
+    "P017-BE": {
+      "name": "Fatos Financeiros por Pedido/Item, Reconciliação e Trilha de Cálculo",
+      "status": "APPROVED",
+      "startedAt": "2026-11-19T11:35:00-03:00",
+      "approvedAt": "2026-11-19T12:05:00-03:00",
+      "evidence": "docs/specs/P017-BE-financial-facts-reconciliation/spec.md",
+      "testsExecuted": 12,
+      "testsPassed": 12,
+      "totalBackendSuiteTests": 334,
+      "totalFrontendSuiteTests": 185,
+      "totalProjectTests": 519,
+      "buildPassed": true,
+      "additiveReconciliabilityVerified": true,
+      "idempotentReprocessingVerified": true,
+      "missingDataFlaggedWithoutHallucination": true,
+      "antiHallucinationNoNetProfitStrictlyEnforced": true,
+      "externalReconciliationAndDivergenceVerified": true,
+      "calculationTracePersistedInJson": true,
+      "rlsPostgresIsolationVerified": true,
+      "blockingIssues": 0,
+      "prerequisites": ["P016-FE"]
     }
   },
   "maintenanceGates": {
