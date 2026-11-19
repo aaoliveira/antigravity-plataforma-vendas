@@ -78,7 +78,7 @@ describe('AppShell Component (Shell Responsivo & Navegação)', () => {
     fireEvent.click(normalBtn);
 
     expect(screen.queryByRole('status')).toBeNull();
-    expect(screen.getByText('Segurança & Isolamento')).toBeDefined();
+    expect(screen.getByText(/Gestão de Custos, Taxas e Simulação Financeira/i)).toBeDefined();
   });
 
   it('deve abrir o menu gaveta mobile e fechar via botão e tecla Escape', () => {
@@ -154,6 +154,17 @@ describe('AppShell Component (Shell Responsivo & Navegação)', () => {
 
     expect(
       screen.getByRole('heading', { name: /Monitoramento de Produtos & Concorrentes/i })
+    ).toBeInTheDocument();
+  });
+
+  it('deve renderizar a tela PricingAndCostsView ao selecionar o módulo FINANCIAL (Motor Financeiro)', () => {
+    render(<AppShell />);
+
+    const financialBtns = screen.getAllByRole('button', { name: /Motor Financeiro Determinístico/i });
+    fireEvent.click(financialBtns[0]);
+
+    expect(
+      screen.getByRole('heading', { name: /Gestão de Custos, Taxas e Simulação Financeira/i })
     ).toBeInTheDocument();
   });
 });

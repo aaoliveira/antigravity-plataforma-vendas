@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P014-BE = `APPROVED` (Liberado para P014-FE)  
+> **Status Vigente:** PROMPT P014-FE = `APPROVED` (Liberado para P015-BE)  
 > **Data:** 19/11/2026
 
 ---
@@ -38,6 +38,7 @@
 | **P013-BE** | Snapshots Idempotentes, Detecção de Alterações e Resiliência de Coleta                    | **`APPROVED`** | 18/11/2026        | [docs/specs/P013-BE-idempotent-snapshots/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P013-BE-idempotent-snapshots/spec.md), [MonitoredItemSnapshotServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/productmonitoring/service/MonitoredItemSnapshotServiceTest.java), [ProductMonitoringControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/productmonitoring/ProductMonitoringControllerTest.java), [PostgresProductMonitoringRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/productmonitoring/PostgresProductMonitoringRlsIntegrationTest.java) | **SIM (P013-FE liberado)** |
 | **P013-FE** | Gráfico Histórico, Tooltips de Fonte e Lacunas Visíveis                                  | **`APPROVED`** | 19/11/2026        | [docs/specs/P013-FE-price-history-chart/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P013-FE-price-history-chart/spec.md), [PriceHistoryChart.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/PriceHistoryChart.test.tsx), [MonitoringTimelineDrawer.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/MonitoringTimelineDrawer.test.tsx) | **SIM (P014-BE liberado)** |
 | **P014-BE** | Cadastro de Custos por Produto/Variante/Empresa e Regras de Taxas                        | **`APPROVED`** | 19/11/2026        | [docs/specs/P014-BE-product-costs-and-fee-rules/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P014-BE-product-costs-and-fee-rules/spec.md), [ProductCostServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/pricing/ProductCostServiceTest.java), [FeeRuleServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/pricing/FeeRuleServiceTest.java), [FeeResolutionServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/pricing/FeeResolutionServiceTest.java), [PricingAndCostsControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/pricing/PricingAndCostsControllerTest.java), [PostgresPricingRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/pricing/PostgresPricingRlsIntegrationTest.java) | **SIM (P014-FE liberado)** |
+| **P014-FE** | Interface de Gestão de Custos, Tabela de Taxas e Simulador                               | **`APPROVED`** | 19/11/2026        | [docs/specs/P014-FE-pricing-and-costs-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P014-FE-pricing-and-costs-view/spec.md), [ProductCostForm.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/pricing/ProductCostForm.test.tsx), [FeeRuleForm.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/pricing/FeeRuleForm.test.tsx), [FeeSimulator.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/pricing/FeeSimulator.test.tsx), [PricingAndCostsView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/pricing/PricingAndCostsView.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (P015-BE liberado)** |
 
 ---
 
@@ -620,3 +621,36 @@
      - Total geral do projeto: 411 testes automatizados aprovados (0 falhas, 0 erros, 0 skips).
      - TypeScript limpo (`tsc --noEmit`).
 - **Resultado:** **`PROMPT P014-BE = APPROVED`**. O prompt subsequente (`P014-FE`) está formalmente liberado e transita para `READY`.
+
+---
+
+### Transição: PROMPT P014-FE $\rightarrow$ `APPROVED`
+
+- **Data/Hora:** 19/11/2026 09:27 BRT
+- **Avaliador:** Tech Lead / Staff Software Engineer
+- **Critérios Validados:**
+  1. **Validação Estrita de Campos de Custos e Taxas (`ProductCostForm.tsx`, `FeeRuleForm.tsx`):**
+     - Custos: Bloqueio de submissão sem `productId` válido (formato UUID) e `acquisitionCost` $> 0$; validação de alíquotas percentuais (0-100%) e custos indiretos ($\ge 0$).
+     - Taxas: Validação de obrigatoriedade de `marketplace`, `feeType`, valores percentuais/fixos conforme modalidade e coerência de faixas de preço (`minPriceThreshold <= maxPriceThreshold`).
+     - Todas as mensagens de erro associadas com `role="alert"` e `aria-describedby` para leitores de tela.
+  2. **Histórico Visível de Versões de Custos:**
+     - Carregamento automático via `/api/pricing/costs/history?productId=...`.
+     - Exibição tabular estruturada com identificador de versão (`v1`, `v2`...), badge de status ("Vigente" vs "Encerrado"), intervalo de vigência (`effectiveFrom` a `effectiveTo`), decomposição de custos (aquisição, embalagem, frete subsidiado, adicionais) e autoria.
+  3. **Regra Anti-Alucinação Estrita (Nenhuma Regra Não Verificada como Oficial):**
+     - Ao selecionar `sourceType = 'MANUAL_OVERRIDE'` no formulário, a UI renderiza imediatamente alerta ostensivo informando que a regra não possui validação contratual.
+     - Na tabela de taxas, regras manuais são marcadas com badge de destaque `"⚠️ Manual (Não Oficial)"`, enquanto regras oficiais exibem `"🛡️ Portal Oficial"` ou `"🛡️ Contrato"` com a URL/referência contratual visível.
+  4. **Alertas no Cálculo / Simulador (`FeeSimulator.tsx`):**
+     - **Alerta de Valor Manual:** Quando o motor de cálculo utiliza regra com `sourceType = 'MANUAL_OVERRIDE'`, o simulador exibe aviso ostensivo informando que o resultado é uma estimativa preliminar baseada em entrada manual.
+     - **Alerta de Taxa Ausente:** Quando `hasMissingFees = true`, a UI exibe banner destacado listando `missingFeeTypes` (ex: `COMMISSION`) e informando expressamente que o sistema **NUNCA assume 0%** nem inventa valores, solicitando o cadastro da regra oficial.
+  5. **Acessibilidade e Usabilidade (WCAG 2.2 AA):**
+     - Estrutura semântica com `<label>`, `role="tablist"`, `role="tab"` e `role="tabpanel"`.
+     - Touch targets com altura mínima garantida $\ge 44\text{px}$ em todos os botões e inputs.
+     - Modo tabela com rolagem horizontal acessível e compatível com mobile.
+  6. **Integração no Shell da Aplicação (`AppShell.tsx`):**
+     - Renderização de `PricingAndCostsView` no módulo `FINANCIAL` ("Motor Financeiro Determinístico").
+  7. **Testes Automatizados & Builds:**
+     - 163/163 testes de frontend aprovados (19 novos testes cobrindo formulários, histórico, anti-alucinação, simulador e tabs).
+     - 267/267 testes de backend mantidos com 100% de sucesso.
+     - Total geral do projeto: 430 testes automatizados aprovados (0 falhas, 0 erros, 0 skips).
+     - TypeScript limpo (`tsc --noEmit`) e build de produção Next.js 15.1.7 gerando todas as 38 rotas com sucesso.
+- **Resultado:** **`PROMPT P014-FE = APPROVED`**. O prompt subsequente (`P015-BE`) está formalmente liberado e transita para `READY`.

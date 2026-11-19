@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P014-BE",
+  "currentPrompt": "P014-FE",
   "status": "APPROVED",
-  "nextPrompt": "P014-FE",
+  "nextPrompt": "P015-BE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-19T08:54:00-03:00",
+  "lastUpdated": "2026-11-19T09:27:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -32,7 +32,8 @@
     "P012-FE",
     "P013-BE",
     "P013-FE",
-    "P014-BE"
+    "P014-BE",
+    "P014-FE"
   ],
   "gates": {
     "P000": {
@@ -449,6 +450,26 @@
       "decimalPrecisionEnforced": true,
       "blockingIssues": 0,
       "prerequisites": ["P013-FE"]
+    },
+    "P014-FE": {
+      "name": "Interface de Gestão de Custos, Tabela de Taxas e Simulador de Comissões",
+      "status": "APPROVED",
+      "startedAt": "2026-11-19T09:15:00-03:00",
+      "completedAt": "2026-11-19T09:27:00-03:00",
+      "evidence": "docs/specs/P014-FE-pricing-and-costs-view/spec.md",
+      "testsExecuted": 19,
+      "testsPassed": 19,
+      "totalFrontendSuiteTests": 163,
+      "totalBackendSuiteTests": 267,
+      "totalProjectTests": 430,
+      "buildPassed": true,
+      "typecheckPassed": true,
+      "antiHallucinationManualOverrideAlertEnforced": true,
+      "antiHallucinationMissingFeesAlertEnforced": true,
+      "costHistoryVisibilityEnforced": true,
+      "fieldValidationEnforced": true,
+      "blockingIssues": 0,
+      "prerequisites": ["P014-BE"]
     }
   },
   "maintenanceGates": {

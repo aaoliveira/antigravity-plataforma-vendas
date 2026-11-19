@@ -1,6 +1,6 @@
 # Status de Implementação e Quality Gates do Roadmap
 
-> **Status Atual Geral:** PROMPT P014-BE = `PASSED` | P014-FE = `READY`  
+> **Status Atual Geral:** PROMPT P014-FE = `PASSED` | P015-BE = `READY`  
 > **Data da Última Atualização:** 19/11/2026  
 > **Regra de Transição:** O próximo prompt só é liberado para `IN_PROGRESS` quando o anterior atingir formalmente `PASSED`.
 
@@ -47,7 +47,8 @@
 | **P013-BE** | Snapshots Idempotentes, Detecção de Alterações e Resiliência de Coleta                    | E05   | Backend    | `PASSED`       | P012-FE (`PASSED`)     | 18/11/2026     |
 | **P013-FE** | Gráfico Histórico, Tooltips de Fonte e Lacunas Visíveis                                  | E05   | Frontend   | **`PASSED`**   | P013-BE (`PASSED`)     | 19/11/2026     |
 | **P014-BE** | Cadastro de Custos por Produto/Variante/Empresa e Regras de Taxas                        | E07   | Backend    | **`PASSED`**   | P013-FE (`PASSED`)     | 19/11/2026     |
-| **P014-FE** | Interface de Gestão de Custos, Tabela de Taxas e Simulador de Comissões                 | E07   | Frontend   | `READY`        | P014-BE (`PASSED`)     | ---            |
+| **P014-FE** | Interface de Gestão de Custos, Tabela de Taxas e Simulador de Comissões                 | E07   | Frontend   | **`PASSED`**   | P014-BE (`PASSED`)     | 19/11/2026     |
+| **P015-BE** | Motor de Precificação e Rentabilidade com Custos e Taxas                                 | E07   | Backend    | `READY`        | P014-FE (`PASSED`)     | ---            |
 
 ---
 

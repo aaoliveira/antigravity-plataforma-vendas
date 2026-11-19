@@ -2448,3 +2448,73 @@ DOCUMENTATION UPDATED:
 - docs/PROMPT_EXECUTION_LOG.md
 NEXT PROMPT: UNLOCKED (P014-FE liberado para READY).
 ```
+
+---
+
+```log
+PROMPT: P014-FE
+STATUS: APPROVED
+TIMESTAMP: 2026-11-19T09:27:00-03:00
+SUMMARY:
+Implementada interface completa de gestão de custos e regras de taxas por produto/variante/empresa e marketplace, com validação de campos, histórico de versões visível, simulador de resolução determinística e regra anti-alucinação estrita que proíbe exibir regras não verificadas como oficiais e alerta enfaticamente sobre ausência de taxas ou uso de estimativas manuais.
+INPUTS:
+- docs/specs/P014-FE-pricing-and-costs-view/spec.md
+- docs/PRD.md
+- .agents/rules/anti-hallucination.md
+- .agents/rules/testing-and-quality.md
+- .agents/rules/phase-gates.md
+DEPENDENCIES:
+- P014-BE (Aprovado).
+FILES CREATED:
+- docs/specs/P014-FE-pricing-and-costs-view/spec.md
+- frontend/src/types/pricing.ts
+- frontend/src/app/api/pricing/costs/route.ts
+- frontend/src/app/api/pricing/costs/history/route.ts
+- frontend/src/app/api/pricing/fee-rules/route.ts
+- frontend/src/app/api/pricing/fee-rules/resolve/route.ts
+- frontend/src/components/pricing/ProductCostForm.tsx
+- frontend/src/components/pricing/FeeRuleForm.tsx
+- frontend/src/components/pricing/FeeSimulator.tsx
+- frontend/src/components/pricing/PricingAndCostsView.tsx
+- frontend/src/components/pricing/ProductCostForm.test.tsx
+- frontend/src/components/pricing/FeeRuleForm.test.tsx
+- frontend/src/components/pricing/FeeSimulator.test.tsx
+- frontend/src/components/pricing/PricingAndCostsView.test.tsx
+FILES MODIFIED:
+- frontend/src/components/AppShell.tsx
+- frontend/src/components/AppShell.test.tsx
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+COMMANDS EXECUTED:
+- pnpm --dir frontend exec vitest run src/components/pricing/ (18 testes aprovados)
+- pnpm --dir frontend exec vitest run src/components/AppShell.test.tsx (11 testes aprovados)
+- pnpm --dir frontend exec vitest run (Suíte completa de 163 testes em 25 arquivos aprovada)
+- pnpm --dir frontend exec tsc --noEmit (TypeScript limpo, zero erros)
+- pnpm --dir frontend build (Next.js 15.1.7 build gerando 38 rotas com sucesso)
+- cd backend && ./mvnw test (Suíte completa de 267 testes mantida com 100% de sucesso)
+TEST RESULTS:
+- Frontend: 163/163 testes aprovados (100% de sucesso em 25 arquivos).
+  * 5 testes em ProductCostForm.test.tsx (campos obrigatórios, validação de limites > 0 e 0-100%, histórico visível com vigências e status vigente vs encerrado, cadastro de nova versão com sucesso).
+  * 6 testes em FeeRuleForm.test.tsx (obrigatoriedade de marketplace, tipo, alíquota/fixo, sourceReference obrigatório, faixas de preço coerentes min <= max, regra anti-alucinação com alerta de MANUAL_OVERRIDE e distinção estrita na tabela).
+  * 5 testes em FeeSimulator.test.tsx (simulação de taxas determinísticas, composição e receita líquida, regra anti-alucinação alertando ostensivamente sobre ausência de taxas sem assumir 0%, alerta de taxa manual e validação de preço positivo).
+  * 2 testes em PricingAndCostsView.test.tsx (cabeçalho, badges de governança, alternância acessível entre abas role="tablist" e role="tabpanel").
+  * 11 testes em AppShell.test.tsx (integração do módulo FINANCIAL renderizando PricingAndCostsView).
+- Backend: 267/267 testes aprovados (zero regressões).
+- Total Geral do Projeto: 430 testes automatizados aprovados (267 backend + 163 frontend), 0 falhas, 0 erros, 0 skips.
+POLICY EVIDENCE:
+- Critério de Aceite 1: Validação de campos: campos numéricos, alíquotas (0-100%), faixas de preço (min <= max) e referências obrigatórias validados com mensagens acessíveis role="alert" e aria-describedby.
+- Critério de Aceite 2: Histórico visível: histórico de versões do produto exibido com identificadores (v1, v2...), período de vigência (effectiveFrom a effectiveTo), custos diretos/indiretos decompostos, status vigente vs encerrado e autor.
+- Critério de Aceite 3: Nenhuma regra não verificada apresentada como oficial: regras com sourceType MANUAL_OVERRIDE são demarcadas ostensivamente com "⚠️ Manual (Não Oficial)" e aviso de ausência de comprovação contratual. Regras com OFFICIAL_PORTAL ou CONTRACT exibem a fonte oficial verificada.
+- Critério de Aceite 4: Alerta quando cálculo usar valor manual ou taxa desatualizada: simulador exibe banner de aviso quando qualquer taxa aplicada for manual ou desatualizada, e banner de erro enfático quando taxas obrigatórias estiverem ausentes (recusando assumir 0% de comissão).
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+DOCUMENTATION UPDATED:
+- docs/specs/P014-FE-pricing-and-costs-view/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+NEXT PROMPT: UNLOCKED (P015-BE liberado para READY).
+```
