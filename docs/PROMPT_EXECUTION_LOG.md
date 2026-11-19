@@ -2963,3 +2963,92 @@ DOCUMENTATION UPDATED:
 - docs/PROMPT_EXECUTION_LOG.md
 NEXT PROMPT: UNLOCKED (P018-BE liberado para READY).
 ```
+
+---
+
+## Execução: PROMPT 018-BE
+
+```text
+PROMPT ID: P018-BE
+FEATURE: Inventário de Métricas Oficiais por Marketplace, Catálogo Documentado e Ingestão Comprovada
+STATUS: PASSED
+PRE-FLIGHT:
+- Verificado pré-requisito P017-FE como APPROVED em docs/delivery/phase-gate.json.
+- Verificadas as regras de anti-alucinação: proibição rigorosa de estimativas silenciosas ou substituição de métricas ausentes por zero.
+- Confirmadas definições consistentes para CTR e Conversão e restrições de APIs oficiais (Mercado Livre vs. Shopee).
+DOCUMENTS REVIEWED:
+- docs/PRD.md (MVP-08, RF-040, RF-041, RNF-001, RNF-007, RNF-014)
+- docs/ARCHITECTURE.md
+- docs/SECURITY.md
+- docs/ENGINEERING_RULES.md
+- .agents/rules/anti-hallucination.md
+- .agents/rules/architecture-and-stack.md
+- .agents/rules/testing-and-quality.md
+- .agents/rules/phase-gates.md
+- docs/specs/P018-BE-official-metrics-inventory/spec.md
+DEPENDENCIES:
+- P017-FE (Aprovado).
+FILES CREATED:
+- docs/specs/P018-BE-official-metrics-inventory/spec.md
+- backend/src/main/resources/db/migration/V15__connected_account_metrics.sql
+- backend/src/main/resources/db/migration-postgresql/V15_1__postgresql_rls_connected_account_metrics.sql
+- backend/src/main/java/com/sellerintelligence/modules/listinganalytics/model/MetricScope.java
+- backend/src/main/java/com/sellerintelligence/modules/listinganalytics/model/MetricGranularity.java
+- backend/src/main/java/com/sellerintelligence/modules/listinganalytics/model/MetricAvailabilityStatus.java
+- backend/src/main/java/com/sellerintelligence/modules/listinganalytics/model/MetricProvenance.java
+- backend/src/main/java/com/sellerintelligence/modules/listinganalytics/model/MetricUnit.java
+- backend/src/main/java/com/sellerintelligence/modules/listinganalytics/model/MetricCatalogEntry.java
+- backend/src/main/java/com/sellerintelligence/modules/listinganalytics/model/OfficialMetricCatalog.java
+- backend/src/main/java/com/sellerintelligence/modules/listinganalytics/model/MetricCalculationResult.java
+- backend/src/main/java/com/sellerintelligence/modules/listinganalytics/model/MetricFormulaEngine.java
+- backend/src/main/java/com/sellerintelligence/modules/listinganalytics/model/AccountMetricDto.java
+- backend/src/main/java/com/sellerintelligence/modules/listinganalytics/model/IngestMetricsCommand.java
+- backend/src/main/java/com/sellerintelligence/modules/listinganalytics/model/MetricsSummaryDto.java
+- backend/src/main/java/com/sellerintelligence/modules/listinganalytics/entity/AccountMetricRecord.java
+- backend/src/main/java/com/sellerintelligence/modules/listinganalytics/repository/AccountMetricRepository.java
+- backend/src/main/java/com/sellerintelligence/modules/listinganalytics/service/AccountMetricIngestionService.java
+- backend/src/main/java/com/sellerintelligence/modules/listinganalytics/AccountMetricController.java
+- backend/src/test/java/com/sellerintelligence/modules/listinganalytics/MetricFormulaEngineTest.java
+- backend/src/test/java/com/sellerintelligence/modules/listinganalytics/OfficialMetricCatalogTest.java
+- backend/src/test/java/com/sellerintelligence/modules/listinganalytics/AccountMetricIngestionServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/listinganalytics/AccountMetricControllerTest.java
+- backend/src/test/java/com/sellerintelligence/modules/listinganalytics/PostgresConnectedAccountMetricsRlsIntegrationTest.java
+FILES MODIFIED:
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+COMMANDS EXECUTED:
+- cd backend && ./mvnw test -Dtest=MetricFormulaEngineTest (11 testes aprovados)
+- cd backend && ./mvnw test -Dtest=OfficialMetricCatalogTest (5 testes aprovados)
+- cd backend && ./mvnw test -Dtest=AccountMetricIngestionServiceTest (6 testes aprovados)
+- cd backend && ./mvnw test -Dtest=AccountMetricControllerTest (5 testes aprovados)
+- cd backend && ./mvnw test -Dtest=PostgresConnectedAccountMetricsRlsIntegrationTest (2 testes Testcontainers PostgreSQL 17 RLS aprovados)
+- cd backend && ./mvnw test -Dtest=ModularArchitectureTest (3 testes ArchUnit aprovados)
+- cd backend && ./mvnw test (363 testes de backend aprovados, 0 falhas, 0 erros, 0 skips)
+- cd frontend && npm test -- --run (192 testes de frontend mantidos com 100% de sucesso)
+TEST RESULTS:
+- Backend: 363/363 testes aprovados (100% de sucesso).
+  * 11 testes unitários em MetricFormulaEngineTest: cálculo de CTR, conversão por pedidos e unidades, tratamento de divisões por zero com status INSUFFICIENT_DATA e 0.0000, rejeição de anomalias (cliques > impressões) e ausência tratada como UNAVAILABLE.
+  * 5 testes no OfficialMetricCatalogTest: verificação do inventário oficial para Mercado Livre e Shopee, documentação formal de impressões e cliques orgânicos como UNSUPPORTED_BY_CHANNEL no ML, e métricas privadas de concorrentes bloqueadas.
+  * 6 testes de serviço em AccountMetricIngestionServiceTest: ingestão de métricas oficiais de ML e Shopee, marcação de CTR como UNSUPPORTED_BY_CHANNEL no tráfego orgânico sem alucinar estimativas, idempotência de reprocessamento na mesma janela, validação multi-tenant da conta e resumo consolidado.
+  * 5 testes de controller REST em AccountMetricControllerTest: endpoints /catalog, /catalog?marketplace=SHOPEE, /ingest, /metrics e /summary testados com Spring Security e MockMvc.
+  * 2 testes de integração PostgreSQL 17 RLS em PostgresConnectedAccountMetricsRlsIntegrationTest: isolamento hermético entre tenants e bloqueio de inserção cross-tenant pela política RLS.
+  * 3 testes de arquitetura modular em ModularArchitectureTest: zero ciclos entre fatias do Spring Modulith e conformidade de pacotes.
+- Frontend: 192/192 testes mantidos com 100% de sucesso em 29 arquivos.
+- Total Geral do Projeto: 555 testes automatizados aprovados (363 backend + 192 frontend), 0 falhas, 0 erros, 0 skips.
+POLICY EVIDENCE:
+- Critério de Aceite 1: Catálogo de métricas documentado: OfficialMetricCatalog com escopo, janela, granularidade, endpoints e limites documentados para Mercado Livre e Shopee.
+- Critério de Aceite 2: Ausência representada como indisponível: impressões no Mercado Livre orgânico e métricas de concorrentes registradas como UNSUPPORTED_BY_CHANNEL com valor nulo e justificativa, proibindo terminantemente estimativas silenciosas.
+- Critério de Aceite 3: Fórmulas testadas: CTR = clicks / impressions e Conversão = orders_count / visits determinísticos em BigDecimal, com tratamento formal para denominador zero (INSUFFICIENT_DATA).
+- Critério de Aceite 4: Origem e janela registradas: cada registro em connected_account_metrics persiste source_endpoint, window_start, window_end, granularity, provenance e ingested_at com unicidade para idempotência.
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+DOCUMENTATION UPDATED:
+- docs/specs/P018-BE-official-metrics-inventory/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+NEXT PROMPT: UNLOCKED (P018-FE liberado para READY).
+```

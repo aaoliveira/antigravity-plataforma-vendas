@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P017-FE",
+  "currentPrompt": "P018-BE",
   "status": "APPROVED",
-  "nextPrompt": "P018-BE",
+  "nextPrompt": "P018-FE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-19T13:00:00-03:00",
+  "lastUpdated": "2026-11-19T13:35:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -39,7 +39,8 @@
     "P016-BE",
     "P016-FE",
     "P017-BE",
-    "P017-FE"
+    "P017-FE",
+    "P018-BE"
   ],
   "gates": {
     "P000": {
@@ -602,9 +603,30 @@
       "prerequisites": ["P017-BE"]
     },
     "P018-BE": {
-      "name": "Classificação de Despesas Fixas, Custos Operacionais e Rateio Financeiro",
+      "name": "Inventário de Métricas Oficiais por Marketplace, Catálogo Documentado e Ingestão Comprovada",
+      "status": "APPROVED",
+      "startedAt": "2026-11-19T13:16:00-03:00",
+      "approvedAt": "2026-11-19T13:35:00-03:00",
+      "evidence": "docs/specs/P018-BE-official-metrics-inventory/spec.md",
+      "testsExecuted": 29,
+      "testsPassed": 29,
+      "totalBackendSuiteTests": 363,
+      "totalFrontendSuiteTests": 192,
+      "totalProjectTests": 555,
+      "buildPassed": true,
+      "catalogDocumentedVerified": true,
+      "absenceRepresentedAsUnavailableVerified": true,
+      "formulasTestedDeterministic": true,
+      "provenanceAndWindowRecorded": true,
+      "antiHallucinationStrictlyEnforced": true,
+      "rlsPostgresIsolationVerified": true,
+      "blockingIssues": 0,
+      "prerequisites": ["P017-FE"]
+    },
+    "P018-FE": {
+      "name": "Painel de Métricas Oficiais de Anúncios e Contas com Indicadores de Indisponibilidade",
       "status": "READY",
-      "prerequisites": ["P017-FE"],
+      "prerequisites": ["P018-BE"],
       "blockingIssues": 0
     }
   },

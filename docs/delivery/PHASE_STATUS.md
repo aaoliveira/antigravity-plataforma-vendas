@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P017-FE = `APPROVED`  
+> **Status Vigente:** PROMPT P018-BE = `APPROVED`  
 > **Data:** 19/11/2026
 
 ---
@@ -45,6 +45,7 @@
 | **P016-FE** | Cadastro de Empresa e Vínculo de Contas de Marketplace com Proteção de CNPJ              | **`APPROVED`** | 19/11/2026        | [docs/specs/P016-FE-company-and-account-link-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P016-FE-company-and-account-link-view/spec.md), [CompaniesAndAccountsView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/company/CompaniesAndAccountsView.test.tsx), [cnpj.test.ts](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/utils/cnpj.test.ts), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (P017-BE liberado)** |
 | **P017-BE** | Fatos Financeiros por Pedido/Item, Reconciliação e Trilha de Cálculo                      | **`APPROVED`** | 19/11/2026        | [docs/specs/P017-BE-financial-facts-reconciliation/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P017-BE-financial-facts-reconciliation/spec.md), [OrderFinancialFactServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/OrderFinancialFactServiceTest.java), [OrderFinancialFactControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/OrderFinancialFactControllerTest.java), [PostgresFinancialFactsRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/PostgresFinancialFactsRlsIntegrationTest.java) | **SIM (P017-FE liberado)** |
 | **P017-FE** | Painel Financeiro, Filtros Combináveis, Detalhamento de Componentes e Alertas             | **`APPROVED`** | 19/11/2026        | [docs/specs/P017-FE-financial-dashboard-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P017-FE-financial-dashboard-view/spec.md), [FinancialFactsDashboardView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/financial/FinancialFactsDashboardView.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (P018-BE liberado)** |
+| **P018-BE** | Inventário de Métricas Oficiais por Canal, Catálogo Documentado e Ingestão               | **`APPROVED`** | 19/11/2026        | [docs/specs/P018-BE-official-metrics-inventory/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P018-BE-official-metrics-inventory/spec.md), [AccountMetricIngestionServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/listinganalytics/AccountMetricIngestionServiceTest.java), [MetricFormulaEngineTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/listinganalytics/MetricFormulaEngineTest.java), [PostgresConnectedAccountMetricsRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/listinganalytics/PostgresConnectedAccountMetricsRlsIntegrationTest.java) | **SIM (P018-FE liberado)** |
 
 ---
 
@@ -881,3 +882,36 @@
      - TypeScript verificado com zero erros (`tsc --noEmit`).
      - Next.js 15.1.7 build de produção compilado com 52 rotas limpas.
 - **Resultado:** **`PROMPT P017-FE = APPROVED`**. O prompt subsequente (`P018-BE`) está formalmente liberado e transita para `READY`.
+
+---
+
+### Transição: PROMPT P018-BE $\rightarrow$ `APPROVED`
+
+- **Data/Hora:** 19/11/2026 13:35 BRT
+- **Avaliador:** Tech Lead / Staff Software Engineer
+- **Critérios Validados:**
+  1. **Catálogo de Métricas Documentado (`OfficialMetricCatalog.java`):**
+     - Inventário exaustivo por marketplace com escopo (`ACCOUNT`, `LISTING`), granularidade (`DAILY`, `PERIOD_TOTAL`), unidade (`COUNT`, `CURRENCY`, `PERCENTAGE`), endpoint oficial, limites operacionais/quotas e janela temporal máxima suportada.
+     - Mercado Livre: `VISITS` (100 req/min, até 365 dias), `ORDERS_COUNT`, `UNITS_SOLD`, `REVENUE`, `CONVERSION_RATE_ORDERS`, `CONVERSION_RATE_UNITS`.
+     - Shopee (OpenAPI v2): `PAGE_VIEWS`, `UNIQUE_VISITORS`, `ORDERS_COUNT`, `UNITS_SOLD`, `REVENUE`, `IMPRESSIONS` (Ads), `CLICKS` (Ads), `CTR` (Ads), `CONVERSION_RATE_ORDERS`, `CONVERSION_RATE_UNITS`.
+  2. **Ausência Representada como Indisponível (Regra Anti-Alucinação Estrita):**
+     - **Proibição absoluta de estimativas silenciosas ou substituição por zero:** No tráfego orgânico do Mercado Livre, `IMPRESSIONS` e `CLICKS` não são disponibilizados para sellers (exclusivos de Mercado Ads contratado); a métrica `CTR` é categoricamente persistida como `UNSUPPORTED_BY_CHANNEL` com valor `null` e motivo explícito.
+     - Métricas concorrenciais de terceiros (`COMPETITOR_SALES_VOLUME`, `COMPETITOR_CTR`) são catalogadas como `UNSUPPORTED_BY_CHANNEL` e proibidas de inferência sintética.
+  3. **Fórmulas Determinísticas Testadas (`MetricFormulaEngine.java`):**
+     - $\text{CTR} = \frac{\text{clicks}}{\text{impressions}} \times 100$ computado com `BigDecimal`, escala 6 e arredondamento `HALF_EVEN`.
+     - $\text{Conversion Rate (Orders)} = \frac{\text{orders\_count}}{\text{visits}} \times 100$ e $\text{Conversion Rate (Units)} = \frac{\text{units\_sold}}{\text{visits}} \times 100$.
+     - Tratamento formal de divisão por zero: quando o denominador for 0, o status é classificado como `INSUFFICIENT_DATA` com valor `0.0000` e denominador `0.0000` registrado, sem disparar exceções não tratadas.
+     - Rejeição de anomalias estatísticas (`clicks > impressions`) e valores negativos.
+  4. **Origem e Janela Registradas (`connected_account_metrics`):**
+     - Metadados completos gravados por registro: `source_endpoint`, `window_start`, `window_end`, `granularity`, `ingested_at`, `provenance` (`OFFICIAL_API`, `DERIVED_FORMULA`, `UNAVAILABLE`), `formula_definition`, `denominator_metric` e `denominator_value`.
+     - Idempotência externa rigorosa: restrição única composta `(tenant_id, seller_account_id, marketplace, target_identifier, metric_key, granularity, window_start, window_end)` garantindo atualização atômica sem duplicatas ao reprocessar a mesma janela.
+  5. **Isolamento Multi-Tenant e RLS no PostgreSQL 17 (`PostgresConnectedAccountMetricsRlsIntegrationTest.java`):**
+     - Migrações Flyway `V15__connected_account_metrics.sql` e `V15_1__postgresql_rls_connected_account_metrics.sql` com `FORCE ROW LEVEL SECURITY`.
+     - Testes comprovam que Tenant Beta não enxerga métricas do Tenant Alpha e tentativas de inserção cross-tenant são bloqueadas pelo PostgreSQL com violação de política.
+  6. **Testes Automatizados & Arquitetura:**
+     - 29 novos testes de backend aprovados (11 em `MetricFormulaEngineTest`, 5 em `OfficialMetricCatalogTest`, 6 em `AccountMetricIngestionServiceTest`, 5 em `AccountMetricControllerTest`, 2 em `PostgresConnectedAccountMetricsRlsIntegrationTest`).
+     - 363/363 testes de backend mantidos com 100% de sucesso (0 falhas, 0 erros, 0 skips).
+     - 192/192 testes de frontend mantidos com 100% de sucesso em 29 arquivos.
+     - Total geral do projeto: 555 testes automatizados aprovados sem regressões.
+     - ModularArchitectureTest (ArchUnit): conformidade de pacotes e zero ciclos mantidos.
+- **Resultado:** **`PROMPT P018-BE = APPROVED`**. O prompt subsequente (`P018-FE`) está formalmente liberado e transita para `READY`.

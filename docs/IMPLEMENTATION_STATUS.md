@@ -54,7 +54,8 @@
 | **P016-FE** | Cadastro de Empresas e Vínculo de Contas de Marketplace                                  | E07   | Frontend   | **`PASSED`**   | P016-BE (`PASSED`)    | 19/11/2026     |
 | **P017-BE** | Fatos Financeiros por Pedido/Item, Reconciliação e Trilha de Cálculo                     | E09   | Backend    | **`PASSED`**   | P016-FE (`PASSED`)    | 19/11/2026     |
 | **P017-FE** | Painel Financeiro, Filtros Combináveis e Detalhamento de Componentes                     | E09   | Frontend   | **`PASSED`**   | P017-BE (`PASSED`)    | 19/11/2026     |
-| **P018-BE** | Classificação de Despesas Fixas, Custos Operacionais e Rateio Financeiro                 | E09   | Backend    | `READY`        | P017-FE (`PASSED`)    | ---            |
+| **P018-BE** | Inventário de Métricas Oficiais por Canal, Catálogo Documentado e Ingestão               | E08   | Backend    | **`PASSED`**   | P017-FE (`PASSED`)    | 19/11/2026     |
+| **P018-FE** | Painel de Métricas Oficiais de Anúncios e Contas com Indicadores de Indisponibilidade     | E08   | Frontend   | `READY`        | P018-BE (`PASSED`)    | ---            |
 
 ---
 
