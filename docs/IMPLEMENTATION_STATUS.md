@@ -1,7 +1,7 @@
 # Status de Implementação e Quality Gates do Roadmap
 
-> **Status Atual Geral:** PROMPT P013-BE = `PASSED` | P013-FE = `READY`  
-> **Data da Última Atualização:** 18/11/2026  
+> **Status Atual Geral:** PROMPT P013-FE = `IN_PROGRESS` | P014-BE = `READY`  
+> **Data da Última Atualização:** 19/11/2026  
 > **Regra de Transição:** O próximo prompt só é liberado para `IN_PROGRESS` quando o anterior atingir formalmente `PASSED`.
 
 ---
@@ -45,7 +45,8 @@
 | **P012-BE** | Exportação Segura de Relatórios e Auditoria                                              | E11   | Backend    | `NOT_STARTED`  | P009 (`PASSED`)        | ---            |
 | **P012-FE** | Central de Relatórios e Downloads Auditados                                              | E11   | Frontend   | `NOT_STARTED`  | P012-BE (`PASSED`)     | ---            |
 | **P013-BE** | Snapshots Idempotentes, Detecção de Alterações e Resiliência de Coleta                    | E05   | Backend    | `PASSED`       | P012-FE (`PASSED`)     | 18/11/2026     |
-| **P013-FE** | Gráfico Histórico, Tooltips de Fonte e Lacunas Visíveis                                  | E05   | Frontend   | `READY`        | P013-BE (`PASSED`)     | ---            |
+| **P013-FE** | Gráfico Histórico, Tooltips de Fonte e Lacunas Visíveis                                  | E05   | Frontend   | **`PASSED`**   | P013-BE (`PASSED`)     | 19/11/2026     |
+| **P014-BE** | Cadastro de Custos por Produto/Variante e Regras de Taxas                                | E06   | Backend    | `READY`        | P013-FE (`PASSED`)     | ---            |
 
 ---
 

@@ -1,26 +1,9 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { PriceHistoryChart, MonitoredItemSnapshotDto } from './PriceHistoryChart';
 
-export interface MonitoredItemSnapshotDto {
-  id: string;
-  tenantId: string;
-  itemId: string;
-  groupId: string;
-  marketplace: string;
-  externalListingId: string;
-  price: number;
-  currency: string;
-  shippingCost?: number | null;
-  shippingType?: string | null;
-  availableQuantity?: number | null;
-  listingStatus?: string | null;
-  provenanceType: string;
-  collectedAt: string;
-  observedAt: string;
-  isAvailable: boolean;
-  createdAt: string;
-}
+export type { MonitoredItemSnapshotDto };
 
 export interface MonitoringTimelineDrawerProps {
   isOpen: boolean;
@@ -297,6 +280,16 @@ export function MonitoringTimelineDrawer({
             >
               {errorMessage}
             </div>
+          )}
+
+          {/* Gráfico Histórico com Intervalos e Lacunas Visíveis (P013-FE) */}
+          {!isLoading && snapshots.length > 0 && (
+            <PriceHistoryChart
+              snapshots={snapshots}
+              minIntervalMinutes={item.minIntervalMinutes || 60}
+              marketplace={item.marketplace}
+              itemTitle={item.title}
+            />
           )}
 
           {/* Timeline */}

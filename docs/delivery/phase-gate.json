@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P013-BE",
+  "currentPrompt": "P013-FE",
   "status": "APPROVED",
-  "nextPrompt": "P013-FE",
+  "nextPrompt": "P014-BE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-18T18:05:00-03:00",
+  "lastUpdated": "2026-11-19T08:11:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -30,7 +30,8 @@
     "P011-FE",
     "P012-BE",
     "P012-FE",
-    "P013-BE"
+    "P013-BE",
+    "P013-FE"
   ],
   "gates": {
     "P000": {
@@ -410,6 +411,25 @@
       "buildPassed": true,
       "blockingIssues": 0,
       "prerequisites": ["P012-FE"]
+    },
+    "P013-FE": {
+      "name": "Gráfico Histórico de Preços, Tooltip de Fonte e Detecção Visual de Lacunas",
+      "status": "APPROVED",
+      "startedAt": "2026-11-19T08:05:00-03:00",
+      "completedAt": "2026-11-19T08:11:00-03:00",
+      "evidence": "docs/specs/P013-FE-price-history-chart/spec.md",
+      "testsExecuted": 8,
+      "testsPassed": 8,
+      "totalFrontendSuiteTests": 144,
+      "totalBackendSuiteTests": 243,
+      "buildPassed": true,
+      "typecheckPassed": true,
+      "antiHallucinationGapsEnforced": true,
+      "accessibleTableToggleEnforced": true,
+      "keyboardNavigationEnforced": true,
+      "mobileTouchTargetsCompliant": true,
+      "blockingIssues": 0,
+      "prerequisites": ["P013-BE"]
     }
   },
   "maintenanceGates": {

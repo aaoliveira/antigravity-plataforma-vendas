@@ -2304,3 +2304,63 @@ DOCUMENTATION UPDATED:
 - docs/PROMPT_EXECUTION_LOG.md
 NEXT PROMPT: UNLOCKED (P013-FE liberado para READY).
 ```
+
+```log
+PROMPT: P013-FE
+STATUS: APPROVED
+TIMESTAMP: 2026-11-19T08:13:00-03:00
+SUMMARY:
+Implementado componente visual de gráfico histórico de preços, tooltips de proveniência e demarcação explícita de lacunas de coleta (gaps) para o módulo de monitoramento de concorrentes, em estrita conformidade com a política anti-alucinação e as diretrizes WCAG 2.2 AA.
+INPUTS:
+- docs/product/PRD.md
+- docs/specs/P013-BE-idempotent-snapshots/spec.md
+- docs/specs/P013-FE-price-history-chart/spec.md
+- .agents/rules/anti-hallucination.md
+- .agents/rules/testing-and-quality.md
+- .agents/rules/phase-gates.md
+DEPENDENCIES:
+- P013-BE (Aprovado).
+FILES CREATED:
+- docs/specs/P013-FE-price-history-chart/spec.md
+- frontend/src/components/PriceHistoryChart.tsx
+- frontend/src/components/PriceHistoryChart.test.tsx
+FILES MODIFIED:
+- frontend/src/components/MonitoringTimelineDrawer.tsx
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+COMMANDS EXECUTED:
+- pnpm --dir frontend exec vitest run src/components/PriceHistoryChart.test.tsx (8 testes aprovados)
+- pnpm --dir frontend exec vitest run (Suíte completa de 144 testes em 21 arquivos)
+- pnpm --dir frontend exec tsc --noEmit (TypeScript check limpo, zero erros)
+- pnpm --dir frontend build (Next.js 15.1.7 build gerando 34 rotas)
+- cd backend && ./mvnw test (Suíte completa de 243 testes mantida com 100% de sucesso)
+TEST RESULTS:
+- Frontend: 144/144 testes aprovados (100% de sucesso).
+  * 8 testes dedicados em PriceHistoryChart.test.tsx:
+    1. Renderização de título, marketplace, KPIs (Atual, Mínimo, Máximo e Variação ΔR$ e Δ%).
+    2. Alternância e filtragem operacional por período temporal (24h, 7d, 30d, 90d, Tudo).
+    3. REGRA ANTI-ALUCINAÇÃO: Não interpolar visualmente dados ausentes, dividir segmentos de linha em gaps > 2x intervalo e exibir banner com garantia explícita.
+    4. Exibição de tooltip/painel de auditoria ao selecionar pontos, com sourceType, collectionStatus, validUntil, estoque e link seguro com rel="noopener noreferrer".
+    5. Acessibilidade por teclado completa (ArrowRight, ArrowLeft, Enter, Space) permitindo inspeção sequencial de dados históricos.
+    6. Modo alternativo em Tabela Acessível (WCAG 2.2 AA) com semântica <table>, cabeçalhos th/td e alertas de lacuna com role="alert".
+    7. Estado vazio acessível com role="status" quando não há snapshots no período.
+    8. Mobile funcional: botões com touch target mínimo garantido >= 44px (min-h-[44px]).
+- Backend: 243/243 testes aprovados (zero regressões).
+- Total Geral do Projeto: 387 testes automatizados aprovados (243 backend + 144 frontend), 0 falhas, 0 erros, 0 skips.
+POLICY EVIDENCE:
+- Critério de Aceite 1: Gráfico acessível: SVG semântico com role="region", role="img" e aria-label descritivo; pontos focáveis com tabIndex={0} e navegação por setas; modo alternativo "Visão em Tabela" para leitores de tela; touch targets >= 44px.
+- Critério de Aceite 2: Períodos corretos: filtragem temporal estrita por cutoff em ms para 24h, 7d, 30d, 90d e histórico completo (Tudo), calculando mínimo, máximo, atual e variações relativas com precisão.
+- Critério de Aceite 3: Lacunas identificáveis (Anti-Alucinação Estrita): "Não interpolar visualmente dados ausentes como observações reais." Se o intervalo consecutivo ultrapassar 2x o intervalo configurado (gapThresholdMs), a linha é quebrada em múltiplos caminhos <path>; a área vazia é destacada com preenchimento hachurado (pattern), linhas tracejadas, tag "⚠️ Lacuna (Xh)" e modal/banner explicativo afirmando que a plataforma não inventa observações ausentes.
+- Critério de Aceite 4: Mobile funcional: SVG responsivo com viewBox e touch-pan-x sem overflow horizontal; interação via tap para fixar detalhes; botões com padding e altura >= 44px.
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+DOCUMENTATION UPDATED:
+- docs/specs/P013-FE-price-history-chart/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+NEXT PROMPT: UNLOCKED (P014-BE liberado para READY).
+```

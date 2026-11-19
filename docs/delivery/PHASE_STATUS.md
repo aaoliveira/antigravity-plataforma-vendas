@@ -1,8 +1,8 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P013-BE = `APPROVED` | PROMPT P013-FE = `READY`  
-> **Data:** 18/11/2026
+> **Status Vigente:** PROMPT P013-FE = `APPROVED` (Liberado para P014-BE)  
+> **Data:** 19/11/2026
 
 ---
 
@@ -36,7 +36,7 @@
 | **P012-BE** | Grupos por Tenant, Itens Monitorados e Snapshots Históricos Seguros                      | **`APPROVED`** | 18/11/2026        | [docs/specs/P012-BE-product-monitoring/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P012-BE-product-monitoring/spec.md), [MonitoringGroupServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/productmonitoring/service/MonitoringGroupServiceTest.java), [MonitoredItemServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/productmonitoring/service/MonitoredItemServiceTest.java), [MonitoredItemSnapshotServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/productmonitoring/service/MonitoredItemSnapshotServiceTest.java), [MonitoringSchedulerPolicyValidatorTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/productmonitoring/service/MonitoringSchedulerPolicyValidatorTest.java), [MonitoringRetentionServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/productmonitoring/service/MonitoringRetentionServiceTest.java), [ProductMonitoringControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/productmonitoring/ProductMonitoringControllerTest.java), [PostgresProductMonitoringRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/productmonitoring/PostgresProductMonitoringRlsIntegrationTest.java) | **SIM (P012-FE liberado)** |
 | **P012-FE** | Interface de Grupos de Monitoramento, Snapshots e Alertas                                | **`APPROVED`** | 18/11/2026        | [docs/specs/P012-FE-product-monitoring-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P012-FE-product-monitoring-view/spec.md), [ProductMonitoringView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/ProductMonitoringView.test.tsx), [MonitoringTimelineDrawer.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/MonitoringTimelineDrawer.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (P013 liberado)**    |
 | **P013-BE** | Snapshots Idempotentes, Detecção de Alterações e Resiliência de Coleta                    | **`APPROVED`** | 18/11/2026        | [docs/specs/P013-BE-idempotent-snapshots/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P013-BE-idempotent-snapshots/spec.md), [MonitoredItemSnapshotServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/productmonitoring/service/MonitoredItemSnapshotServiceTest.java), [ProductMonitoringControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/productmonitoring/ProductMonitoringControllerTest.java), [PostgresProductMonitoringRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/productmonitoring/PostgresProductMonitoringRlsIntegrationTest.java) | **SIM (P013-FE liberado)** |
-| **P013-FE** | Gráfico Histórico, Tooltips de Fonte e Lacunas Visíveis                                  | `READY`        | ---               | Pré-requisito: P013-BE (`APPROVED`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Não                        |
+| **P013-FE** | Gráfico Histórico, Tooltips de Fonte e Lacunas Visíveis                                  | **`APPROVED`** | 19/11/2026        | [docs/specs/P013-FE-price-history-chart/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P013-FE-price-history-chart/spec.md), [PriceHistoryChart.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/PriceHistoryChart.test.tsx), [MonitoringTimelineDrawer.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/MonitoringTimelineDrawer.test.tsx) | **SIM (P014-BE liberado)** |
 
 ---
 
@@ -547,3 +547,38 @@
      - 136/136 testes de frontend aprovados (regressão mantida).
      - Total geral do projeto: 379 testes automatizados aprovados (0 falhas, 0 erros, 0 skips).
 - **Resultado:** **`PROMPT P013-BE = APPROVED`**. O prompt subsequente (`P013-FE`) está formalmente liberado e transita para `READY`.
+
+---
+
+### Transição: PROMPT P013-FE $\rightarrow$ `APPROVED`
+
+- **Data/Hora:** 19/11/2026 08:12 BRT
+- **Avaliador:** Tech Lead / Staff Software Engineer
+- **Critérios Validados:**
+  1. **Gráfico Histórico com Intervalos Temporais (`PriceHistoryChart.tsx`):**
+     - Plotagem precisa em SVG responsivo (`viewBox`) da curva cronológica de preços observados.
+     - Filtros de período temporal operacionais: `24h`, `7d`, `30d`, `90d`, `all` ("Tudo").
+     - Cards de estatísticas e KPIs do período selecionado: Preço Atual, Mínimo no Período, Máximo no Período e Variação ($\Delta R\$$ e $\Delta\%$).
+  2. **Regra Anti-Alucinação Estrita (Visualização de Lacunas de Coleta):**
+     - O gráfico **não interpola** visualmente observações ausentes como dados contínuos reais.
+     - Quando o intervalo entre duas observações consecutivas ultrapassa o limiar de tolerância ($> 2 \times$ `minIntervalMinutes`), a linha é quebrada em segmentos isolados (`path`).
+     - A lacuna é demarcada por área sombreada com padrão hachurado (`gap-pattern`), linhas tracejadas e marcador central (`⚠️ Lacuna (Xh)`).
+     - Clique na lacuna exibe banner com aviso explícito de que dados intermediários não são inventados nem interpolados.
+  3. **Tooltip e Painel de Auditoria de Fonte:**
+     - Interação via clique, foco ou toque revela metadados completos de proveniência: `sourceType` (`OFFICIAL_API`, etc.), `collectionStatus` (`SUCCESS`), `availableQuantity`, `validUntil` e link oficial seguro com `rel="noopener noreferrer"`.
+     - Badges de alteração cromática por `changeType` (`PRICE_DECREASE` em verde, `PRICE_INCREASE` em vermelho, `AVAILABILITY_CHANGE` em âmbar, `INITIAL` em azul).
+  4. **Acessibilidade e WCAG 2.2 AA:**
+     - Navegação total por teclado nos pontos com setas (`ArrowRight`, `ArrowLeft`), `Enter` e `Space`.
+     - Atributos semânticos `role="region"`, `role="img"`, `role="button"` e `aria-label` descritivos em todos os pontos.
+     - Alternância para **"Visão em Tabela"** (`<table>`), apresentando observações cronológicas em formato tabular estruturado com linhas de alerta para lacunas.
+  5. **Mobile Funcional:**
+     - Touch targets com altura mínima garantida $\ge 44\text{px}$ (`min-h-[44px]`).
+     - Layout adaptativo touch-friendly sem overflow horizontal (`touch-pan-x`).
+  6. **Integração na Linha do Tempo (`MonitoringTimelineDrawer.tsx`):**
+     - Componente integrado ao Drawer de Monitoramento, renderizado automaticamente quando snapshots estão presentes.
+  7. **Testes Automatizados & Builds:**
+     - 144/144 testes de frontend aprovados (8 novos testes em `PriceHistoryChart.test.tsx` cobrindo filtros, gaps anti-alucinação, tooltips, tabela e teclado).
+     - 243/243 testes de backend mantidos com 100% de sucesso.
+     - Total geral do projeto: 387 testes automatizados aprovados (0 falhas, 0 erros, 0 skips).
+     - TypeScript limpo (`tsc --noEmit`) e build Next.js 15.1.7 gerando todas as 34 rotas com sucesso.
+- **Resultado:** **`PROMPT P013-FE = APPROVED`**. O prompt subsequente (`P014-BE`) está formalmente liberado e transita para `READY`.
