@@ -3280,3 +3280,84 @@ DOCUMENTATION UPDATED:
 - docs/PROMPT_EXECUTION_LOG.md
 NEXT PROMPT: UNLOCKED (P020-BE liberado para READY).
 ```
+
+---
+
+## Execução: PROMPT P020-BE
+
+```text
+PROMPT ID: P020-BE
+FEATURE: Geração Assistida de Título e Descrição como Rascunho com Restrição de Claims
+STATUS: APPROVED
+DESCRIPTION: Geração assistida de títulos e descrições a partir de atributos confirmados do produto, categoria e palavras fornecidas. Restrição estrita de claims (certificações, compatibilidade, material, dimensões, garantias e benefícios não comprovados). Seleção de tom e limites oficiais de caracteres por marketplace validado. Versionamento imutável e zero publicação externa.
+CHANGES MADE:
+- docs/specs/P020-BE-draft-listing-generation/spec.md
+- backend/src/main/resources/db/migration/V17__draft_listing_content.sql
+- backend/src/main/resources/db/migration-postgresql/V17_1__postgresql_rls_draft_listing_content.sql
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/prompts/PromptCatalog.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/draft/model/DraftTone.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/draft/model/MarketplaceRuleLimits.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/draft/model/MarketplaceRuleLimitsDto.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/draft/model/ClaimValidationResult.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/draft/model/DraftGenerationRequest.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/draft/model/DraftEditRequest.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/draft/model/DraftApproveRequest.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/draft/model/DraftRejectRequest.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/draft/model/DraftListingSummaryDto.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/draft/model/DraftListingDetailDto.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/draft/model/DraftListingVersionDto.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/draft/catalog/MarketplaceLimitCatalog.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/draft/guardrails/ClaimViolationException.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/draft/guardrails/ListingClaimGuardrailService.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/draft/entity/DraftListing.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/draft/entity/DraftListingVersion.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/draft/repository/DraftListingRepository.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/draft/repository/DraftListingVersionRepository.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/draft/service/DraftListingService.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/draft/DraftListingController.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/AiAssistantExceptionHandler.java
+- backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/guardrails/ListingClaimGuardrailServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/catalog/MarketplaceLimitCatalogTest.java
+- backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/service/DraftListingServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/DraftListingControllerTest.java
+- backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/PostgresDraftListingRlsIntegrationTest.java
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+COMMANDS EXECUTED:
+- cd backend && ./mvnw test -Dtest=ListingClaimGuardrailServiceTest (8 testes aprovados)
+- cd backend && ./mvnw test -Dtest=MarketplaceLimitCatalogTest (6 testes aprovados)
+- cd backend && ./mvnw test -Dtest=DraftListingServiceTest (10 testes aprovados)
+- cd backend && ./mvnw test -Dtest=DraftListingControllerTest (6 testes aprovados)
+- cd backend && ./mvnw test -Dtest=PostgresDraftListingRlsIntegrationTest (1 teste de integração PostgreSQL 17 com RLS aprovado)
+- cd backend && ./mvnw test -Dtest=ModularArchitectureTest (3 testes ArchUnit aprovados, zero ciclos)
+- cd backend && ./mvnw test (429 testes de backend aprovados, 0 falhas, 0 erros, 0 skips)
+- cd frontend && npm test -- --run (208 testes de frontend mantidos com 100% de sucesso)
+TEST RESULTS:
+- Backend: 429/429 testes aprovados (0 falhas, 0 erros, 0 skips), totalizando 31 novos testes.
+- Frontend: 208/208 testes mantidos em 31 arquivos (100% de sucesso).
+- Total Geral do Projeto: 637 testes automatizados aprovados sem regressões.
+POLICY EVIDENCE:
+- Critério de Aceite 1: Saída Estruturada:
+  * DraftListingDetailDto e DraftListingVersionDto retornam estrutura tipada com títulos, descrições, contagens, limites, tom, prompt version e metadados.
+- Critério de Aceite 2: Atributos Rastreáveis e Guardrails Anti-Alucinação:
+  * ListingClaimGuardrailService rastreia atributos confirmados (traceableAttributes) e bloqueia tentativas de alucinar certificações (Inmetro, Anvisa, Anatel, ISO, CE, FDA), compatibilidades com terceiros, materiais nobres, dimensões numéricas, garantias e superlativos enganosos.
+- Critério de Aceite 3: Limites Validados por Regras Oficiais:
+  * MarketplaceLimitCatalog impõe regras comprovadas para Mercado Livre (título <= 60 chars, descrição plain text <= 25000 chars) e Shopee (título [20-120] chars, descrição [20-3000] chars). Marketplaces não validados são rejeitados de forma fail-closed.
+- Critério de Aceite 4: Conteúdo é Rascunho com Suporte a Edição e Aprovação:
+  * Entidades DraftListing e DraftListingVersion gerenciam ciclo DRAFT -> REVIEWED -> APPROVED / REJECTED com versionamento imutável, userEdited=true e preservação de histórico.
+- Critério de Aceite 5: Nenhuma Publicação Externa:
+  * Nenhuma chamada para mutação externa ou escrita em marketplaces implementada. publicationStatus fixado em NOT_PUBLISHED_DRAFT_ONLY e externalPublishBlocked em true.
+- Critério de Aceite 6: Isolamento Multi-Tenant com PostgreSQL 17 RLS:
+  * Teste PostgresDraftListingRlsIntegrationTest com Testcontainers comprova que Tenant Beta não visualiza rascunhos nem versões do Tenant Alpha.
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+DOCUMENTATION UPDATED:
+- docs/specs/P020-BE-draft-listing-generation/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+NEXT PROMPT: UNLOCKED (P020-FE liberado para READY).
+```

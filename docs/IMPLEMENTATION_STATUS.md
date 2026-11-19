@@ -58,6 +58,8 @@
 | **P018-FE** | Dashboard de Analytics por Anúncio, Período, Comparação Temporal e Aviso de Indisponível | E08   | Frontend   | **`PASSED`**   | P018-BE (`PASSED`)    | 19/11/2026     |
 | **P019-BE** | Gateway Multi-Provider com Secrets, Defesa Prompt Injection e Tool Calling Read-Only     | E10   | Backend    | **`PASSED`**   | P018-FE (`PASSED`)    | 19/11/2026     |
 | **P019-FE** | Assistente de IA Interativo, Chat com Ferramentas e Indicador de Custo/Origem             | E10   | Frontend   | **`PASSED`**   | P019-BE (`PASSED`)    | 19/11/2026     |
+| **P020-BE** | Geração Assistida de Título e Descrição como Rascunho com Restrição de Claims             | E10   | Backend    | **`PASSED`**   | P019-FE (`PASSED`)    | 19/11/2026     |
+| **P020-FE** | Editor de Rascunho com Original/Gerado, Contagem de Caracteres e Histórico de Versões     | E10   | Frontend   | `READY`        | P020-BE (`PASSED`)    | ---            |
 
 ---
 

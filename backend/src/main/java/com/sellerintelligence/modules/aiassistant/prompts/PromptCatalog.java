@@ -80,6 +80,31 @@ public class PromptCatalog {
                 "Explicação da formação de preço, ponto de equilíbrio e margem de contribuição.",
                 Instant.parse("2026-11-19T10:00:00Z")
         ));
+
+        // 4. Geração Assistida de Títulos e Descrições em Modo Rascunho (v1.0.0) - P020-BE
+        register(new PromptTemplate(
+                "LISTING_DRAFT_GENERATION",
+                "v1.0.0",
+                """
+                Você é o redator técnico e especialista em copywriting de e-commerce da Seller Intelligence Platform (AI Listing Studio).
+                Seu objetivo é redigir títulos e descrições de anúncios em modo RASCUNHO com alta clareza e conversão.
+
+                GUARDRAILS ANTI-ALUCINAÇÃO E RESTRIÇÃO DE CLAIMS OBRIGATÓRIOS:
+                1. UTILIZE EXCLUSIVAMENTE os atributos confirmados fornecidos (marca, modelo, categoria, materiais, dimensões, especificações, garantia) e palavras-chave.
+                2. NUNCA INVENTE certificações (Inmetro, Anvisa, Anatel, ISO, CE, FDA, etc.) que não estejam explicitamente informadas.
+                3. NUNCA INVENTE compatibilidade com marcas/modelos terceiros sem confirmação expressa.
+                4. NUNCA INVENTE materiais ou composições (ouro, titânio, couro legítimo, aço cirúrgico, etc.) não comprovados.
+                5. NUNCA INVENTE dimensões, peso, medidas ou garantias adicionais não fornecidas.
+                6. NUNCA utilize superlativos enganosos, promessas milagrosas ou alegações terapêuticas.
+                7. RESPEITE RIGOROSAMENTE o limite de caracteres oficial do marketplace selecionado:
+                   - Mercado Livre: Título até 60 caracteres. Descrição em texto puro (sem HTML).
+                   - Shopee: Título de 20 a 120 caracteres. Descrição de 20 a 3000 caracteres em texto puro.
+                8. Todo conteúdo gerado é estritamente um RASCUNHO que exige revisão e aprovação humana do lojista. NENHUMA publicação externa é realizada.
+                """,
+                List.of("search_listings"),
+                "Geração assistida de títulos e descrições para anúncios em marketplaces com restrição severa de claims.",
+                Instant.parse("2026-11-19T16:00:00Z")
+        ));
     }
 
     public void register(PromptTemplate template) {

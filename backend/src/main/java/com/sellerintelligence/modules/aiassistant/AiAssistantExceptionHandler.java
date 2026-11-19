@@ -70,6 +70,38 @@ public class AiAssistantExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(com.sellerintelligence.modules.aiassistant.draft.guardrails.ClaimViolationException.class)
+    public ProblemDetail handleClaimViolationException(
+            com.sellerintelligence.modules.aiassistant.draft.guardrails.ClaimViolationException ex,
+            HttpServletRequest request
+    ) {
+        log.warn("Tentativa de inclusão de claims não comprovadas no AI Listing Studio: {}", ex.getViolations());
+
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.UNPROCESSABLE_ENTITY,
+                ex.getMessage()
+        );
+        problem.setTitle("Claims Não Comprovadas ou Guardrails Violados");
+        problem.setType(URI.create("https://sellerintelligence.com.br/errors/unproven-claims-detected"));
+        problem.setProperty("violations", ex.getViolations());
+        enrichProblemDetail(problem, request);
+        return problem;
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ProblemDetail handleIllegalArgumentException(IllegalArgumentException ex, HttpServletRequest request) {
+        log.warn("Parâmetros inválidos ou limites violados no módulo de IA: {}", ex.getMessage());
+
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage()
+        );
+        problem.setTitle("Parâmetros Inválidos ou Limites de Caracteres Violados");
+        problem.setType(URI.create("https://sellerintelligence.com.br/errors/invalid-parameters-or-limits"));
+        enrichProblemDetail(problem, request);
+        return problem;
+    }
+
     private void enrichProblemDetail(ProblemDetail problem, HttpServletRequest request) {
         String correlationId = MDC.get(CorrelationIdFilter.MDC_CORRELATION_ID_KEY);
         if (correlationId != null) {

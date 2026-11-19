@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P019-FE = `APPROVED` (P020-BE Liberado)  
+> **Status Vigente:** PROMPT P020-BE = `APPROVED` (P020-FE Liberado)  
 > **Data:** 19/11/2026
 
 ---
@@ -49,6 +49,8 @@
 | **P018-FE** | Dashboard de Analytics por Anúncio, Período, Comparação Temporal e Aviso de Indisponível | **`APPROVED`** | 19/11/2026        | [docs/specs/P018-FE-listing-analytics-dashboard/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P018-FE-listing-analytics-dashboard/spec.md), [ListingAnalyticsDashboardView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/listinganalytics/ListingAnalyticsDashboardView.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | **SIM (P019-BE liberado)** |
 | **P019-BE** | Gateway Multi-Provider com Secrets, Defesa Prompt Injection e Tool Calling Read-Only     | **`APPROVED`** | 19/11/2026        | [docs/specs/P019-BE-ai-gateway-and-readonly-tools/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P019-BE-ai-gateway-and-readonly-tools/spec.md), [DefaultAiSecretManagerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/gateway/DefaultAiSecretManagerTest.java), [PromptInjectionDefenseServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/security/PromptInjectionDefenseServiceTest.java), [AiToolRegistryAndInternalToolsTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/tools/AiToolRegistryAndInternalToolsTest.java), [AiGatewayServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/service/AiGatewayServiceTest.java), [AiAssistantControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/AiAssistantControllerTest.java), [PostgresAiAuditRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/PostgresAiAuditRlsIntegrationTest.java) | **SIM (P019-FE liberado)** |
 | **P019-FE** | Assistente de IA Interativo, Chat com Ferramentas e Indicador de Custo/Origem             | **`APPROVED`** | 19/11/2026        | [docs/specs/P019-FE-ai-assistant-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P019-FE-ai-assistant-view/spec.md), [AiAssistantView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/aiassistant/AiAssistantView.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (P020-BE liberado)** |
+| **P020-BE** | Geração de Título e Descrição como Rascunho com Restrição de Claims                       | **`APPROVED`** | 19/11/2026        | [docs/specs/P020-BE-draft-listing-generation/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P020-BE-draft-listing-generation/spec.md), [ListingClaimGuardrailServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/guardrails/ListingClaimGuardrailServiceTest.java), [MarketplaceLimitCatalogTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/catalog/MarketplaceLimitCatalogTest.java), [DraftListingServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/service/DraftListingServiceTest.java), [DraftListingControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/DraftListingControllerTest.java), [PostgresDraftListingRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/PostgresDraftListingRlsIntegrationTest.java) | **SIM (P020-FE liberado)** |
+| **P020-FE** | Editor de Rascunho com Comparação, Contagem de Caracteres e Versões                      | `READY`        | ---               | [docs/specs/P020-FE-draft-listing-editor-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P020-FE-draft-listing-editor-view/spec.md) | Não (Aguardando P020-FE)   |
 
 ---
 
@@ -1030,3 +1032,50 @@
      - Suíte backend: 398/398 testes aprovados (0 falhas, 0 erros, 0 skips).
      - Total geral do projeto: 606 testes automatizados aprovados (398 backend + 208 frontend).
 - **Resultado:** **`PROMPT P019-FE = APPROVED`**. O prompt subsequente (`P020-BE`) está formalmente liberado e transita para `READY`.
+
+---
+
+### Transição: PROMPT P020-BE $\rightarrow$ `APPROVED`
+
+- **Data/Hora:** 19/11/2026 16:22 BRT
+- **Avaliador:** Tech Lead / Staff Software Engineer
+- **Critérios Validados:**
+  1. **Saída Estruturada e Tipada (`DraftListingDetailDto`, `DraftListingVersionDto`):**
+     - Retorno de DTO estruturado contendo ID do rascunho, versão, título gerado/revisado, descrição gerada/revisada, contagem de caracteres, conformidade com os limites do canal, tom selecionado, modelo e template utilizados.
+  2. **Atributos Rastreáveis e Guardrails Anti-Alucinação (`ListingClaimGuardrailService.java`):**
+     - O conteúdo é gerado exclusivamente com base nos atributos confirmados do produto (`brand`, `category`, `model`, `materials`, `dimensions`, `warranty`, `technicalSpecifications`, `confirmedBenefits`) e palavras-chave expressamente fornecidas pelo usuário.
+     - `traceableAttributes`: Mapeamento explícito de cada atributo confirmado referenciado no texto.
+     - Proibição absoluta de alucinar:
+       * Certificações não confirmadas (Inmetro, Anvisa, Anatel, ISO, CE, FDA, etc.) -> bloqueadas/rejeitadas com `ClaimViolationException`.
+       * Compatibilidade com marcas terceiras não confirmadas -> bloqueadas.
+       * Materiais nobres ou específicos não informados (ouro, titânio, couro legítimo, aço cirúrgico, etc.) -> bloqueados.
+       * Dimensões ou pesos numéricos não informados -> bloqueados.
+       * Prazos ou condições de garantia abusivos ou não confirmados -> bloqueados.
+       * Superlativos enganosos ou promessas terapêuticas ("o melhor do mundo", "cura", "infalível", "100% eficaz", "sem defeitos") -> bloqueados.
+  3. **Limites Oficiais de Caracteres por Marketplace Homologado (`MarketplaceLimitCatalog.java`):**
+     - Validação estrita por documentação oficial comprovada:
+       * **Mercado Livre:** Título $\le 60$ caracteres; Descrição $\le 25.000$ caracteres em texto plano (sem HTML).
+       * **Shopee:** Título entre 20 e 120 caracteres; Descrição entre 20 e 3.000 caracteres em texto plano.
+     - Canais sem regras oficiais homologadas são rejeitados de forma fail-closed (`UNVALIDATED_MARKETPLACE_RULE`).
+  4. **Conteúdo é Rascunho com Suporte a Edição e Aprovação:**
+     - Entidade `DraftListing` e histórico de versões imutáveis `DraftListingVersion` (`DRAFT`, `REVIEWED`, `APPROVED`, `REJECTED`).
+     - Edição humana pelo lojista cria nova versão (`versionNumber = n + 1`), atualiza status para `REVIEWED`, marca `userEdited = true` e revalida guardrails contra injeção de claims.
+     - Aprovação formal (`status = APPROVED`) pelo lojista para uso local.
+  5. **Nenhuma Publicação Externa no MVP (Risco Zero):**
+     - Nenhuma chamada para mutação ou publicação externa em APIs de marketplaces.
+     - Resposta da API expõe categoricamente `publicationStatus = "NOT_PUBLISHED_DRAFT_ONLY"` e `externalPublishBlocked = true`.
+  6. **Isolamento Multi-Tenant em Profundidade com PostgreSQL 17 RLS:**
+     - Migrações Flyway `V17__draft_listing_content.sql` e `V17_1__postgresql_rls_draft_listing_content.sql` com ativação mandatória de `FORCE ROW LEVEL SECURITY`.
+     - `PostgresDraftListingRlsIntegrationTest.java` com Testcontainers PostgreSQL 17 real comprova que Tenant Beta não visualiza nem modifica rascunhos ou versões do Tenant Alpha.
+  7. **Testes Automatizados & Arquitetura:**
+     - 31 novos testes de backend criados e aprovados:
+       - 8 testes em `ListingClaimGuardrailServiceTest`
+       - 6 testes em `MarketplaceLimitCatalogTest`
+       - 10 testes em `DraftListingServiceTest`
+       - 6 testes em `DraftListingControllerTest`
+       - 1 teste de integração Testcontainers PostgreSQL 17 em `PostgresDraftListingRlsIntegrationTest`
+     - Suíte backend: 429/429 testes aprovados (0 falhas, 0 erros, 0 skips).
+     - Suíte frontend: 208/208 testes aprovados em 31 arquivos (0 falhas).
+     - Total geral do projeto: 637 testes automatizados aprovados (429 backend + 208 frontend).
+     - `ModularArchitectureTest` (ArchUnit): conformidade estrita mantida com zero dependências cíclicas.
+- **Resultado:** **`PROMPT P020-BE = APPROVED`**. O prompt subsequente (`P020-FE`) está formalmente liberado e transita para `READY`.

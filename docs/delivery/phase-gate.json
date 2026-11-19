@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P019-FE",
+  "currentPrompt": "P020-BE",
   "status": "APPROVED",
-  "nextPrompt": "P020-BE",
+  "nextPrompt": "P020-FE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-19T15:50:00-03:00",
+  "lastUpdated": "2026-11-19T16:21:30-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -43,7 +43,8 @@
     "P018-BE",
     "P018-FE",
     "P019-BE",
-    "P019-FE"
+    "P019-FE",
+    "P020-BE"
   ],
   "gates": {
     "P000": {
@@ -687,6 +688,28 @@
       "accessibleAndResponsiveVerified": true,
       "blockingIssues": 0,
       "prerequisites": ["P019-BE"]
+    },
+    "P020-BE": {
+      "name": "Geração Assistida de Título e Descrição como Rascunho com Restrição de Claims",
+      "status": "APPROVED",
+      "startedAt": "2026-11-19T16:08:00-03:00",
+      "approvedAt": "2026-11-19T16:21:30-03:00",
+      "evidence": "docs/specs/P020-BE-draft-listing-generation/spec.md",
+      "testsExecuted": 31,
+      "testsPassed": 31,
+      "totalBackendSuiteTests": 429,
+      "totalFrontendSuiteTests": 208,
+      "totalProjectTests": 637,
+      "buildPassed": true,
+      "structuredOutputVerified": true,
+      "traceableAttributesVerified": true,
+      "limitsValidatedVerified": true,
+      "contentIsDraftVerified": true,
+      "userCanEditApproveVerified": true,
+      "noExternalPublishVerified": true,
+      "rlsPostgresIsolationVerified": true,
+      "blockingIssues": 0,
+      "prerequisites": ["P019-FE"]
     }
   },
   "maintenanceGates": {
