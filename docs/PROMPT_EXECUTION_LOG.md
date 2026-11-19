@@ -2518,3 +2518,69 @@ DOCUMENTATION UPDATED:
 - docs/PROMPT_EXECUTION_LOG.md
 NEXT PROMPT: UNLOCKED (P015-BE liberado para READY).
 ```
+
+---
+
+## Execução: PROMPT 015-BE
+
+```text
+PROMPT ID: P015-BE
+FEATURE: Serviço Determinístico de Preço, Margem de Contribuição e Preço de Equilíbrio
+STATUS: PASSED
+PRE-FLIGHT:
+- P014-FE verificado como APPROVED em phase-gate.json e PHASE_STATUS.md.
+- Requisitos funcionais (FR-FIN-01, FR-FIN-02, FR-FIN-03) e não funcionais (NFR-DET-01, NFR-ACC-01, NFR-AUD-01) mapeados.
+- Regra inviolável: motor 100% determinístico com BigDecimal (scale 4/2, RoundingMode.HALF_UP) e NUNCA chamar LLM para calcular.
+- Regra anti-alucinação: Margem de Contribuição NUNCA rotulada como Lucro Líquido; taxa ausente gera aviso/bloqueio sem inventar percentuais.
+INPUTS:
+- docs/specs/P015-BE-deterministic-pricing-engine/spec.md
+- docs/PRD.md
+- .agents/rules/anti-hallucination.md
+- .agents/rules/architecture-and-stack.md
+- .agents/rules/testing-and-quality.md
+- .agents/rules/phase-gates.md
+DEPENDENCIES:
+- P014-FE (Aprovado).
+FILES CREATED:
+- docs/specs/P015-BE-deterministic-pricing-engine/spec.md
+- backend/src/main/java/com/sellerintelligence/modules/pricing/model/DeductionCategory.java
+- backend/src/main/java/com/sellerintelligence/modules/pricing/model/PricingDeductionItem.java
+- backend/src/main/java/com/sellerintelligence/modules/pricing/model/PricingCalculationRequest.java
+- backend/src/main/java/com/sellerintelligence/modules/pricing/model/PricingCalculationResult.java
+- backend/src/main/java/com/sellerintelligence/modules/pricing/model/ProductMarginSimulationRequest.java
+- backend/src/main/java/com/sellerintelligence/modules/pricing/service/PricingEngineService.java
+- backend/src/test/java/com/sellerintelligence/modules/pricing/PricingEngineServiceTest.java
+FILES MODIFIED:
+- backend/src/main/java/com/sellerintelligence/modules/pricing/PricingAndCostsController.java
+- backend/src/test/java/com/sellerintelligence/modules/pricing/PricingAndCostsControllerTest.java
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+COMMANDS EXECUTED:
+- cd backend && ./mvnw test -Dtest=PricingEngineServiceTest,PricingAndCostsControllerTest (14 testes aprovados)
+- cd backend && ./mvnw test (Suíte completa de 277 testes aprovada com 100% de sucesso)
+- pnpm --dir frontend exec vitest run (Suíte completa de 163 testes em 25 arquivos mantida com 100% de sucesso)
+TEST RESULTS:
+- Backend Pricing Tests: 14/14 testes aprovados.
+  * 8 testes em PricingEngineServiceTest (cálculo de referência R$100 com deduções, margem negativa, divisão por zero fail-safe em receita nula, impossibilidade matemática de break-even quando taxas >= 100%, preço mínimo e alvo por margem percentual e valor monetário fixo, alerta de ausência de taxas sem inventar comissão zero, alerta ostensivo de taxa manual aplicada).
+  * 6 testes em PricingAndCostsControllerTest (incluindo endpoints POST /api/v1/pricing/margins/calculate e POST /api/v1/pricing/margins/simulate-product).
+- Backend Suite: 277/277 testes aprovados (0 falhas, 0 erros, 0 skips).
+- Frontend Suite: 163/163 testes mantidos (0 falhas, 0 erros, 0 skips).
+- Total Geral do Projeto: 440 testes automatizados aprovados, 0 falhas, 0 erros, 0 skips.
+POLICY EVIDENCE:
+- Critério de Aceite 1: Testes de referência aprovados e resultados reproduzíveis: teste canônico valida R$100 bruto com R$30 custo, R$15 comissão, R$5 taxa fixa, R$7 impostos, R$4 frete resultando em R$50 deduções totais (50.00%), R$50 margem de contribuição (50.00%) e preço de equilíbrio R$47.95 com precisão determinística.
+- Critério de Aceite 2: Divisões por zero tratadas: receita nula ou negativa (ex: desconto total) retorna determinístico em 0.00% de margem sem disparar ArithmeticException. Taxas somando >= 100% retornam isBreakEvenAttainable = false e breakEvenPrice = null com mensagem explicativa clara.
+- Critério de Aceite 3: Margem de contribuição não rotulada como lucro líquido: o DTO PricingCalculationResult inclui disclaimer anti-alucinação explícito ("Margem de Contribuição não representa Lucro Líquido, pois não contempla custos e despesas fixas estruturais do negócio"), versionamento da fórmula v1.0.0 e decomposição granular em PricingDeductionItem.
+- Critério de Aceite 4: Taxa ausente gera aviso/bloqueio conforme regra: FeeResolutionService com hasMissingFees = true bloqueia o cálculo seguro, sinaliza missingFeeTypes e orienta o cadastro da regra contratual sem assumir 0% de comissão.
+- Critério de Aceite 5: Não chamar LLM para calcular: algoritmo puramente aritmético em Java BigDecimal com scale 4 interno e scale 2 de apresentação, RoundingMode.HALF_UP.
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+DOCUMENTATION UPDATED:
+- docs/specs/P015-BE-deterministic-pricing-engine/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+NEXT PROMPT: UNLOCKED (P015-FE liberado para READY).
+```

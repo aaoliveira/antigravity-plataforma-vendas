@@ -8,8 +8,12 @@ import com.sellerintelligence.modules.pricing.model.FeeRuleDto;
 import com.sellerintelligence.modules.pricing.model.ProductCostDto;
 import com.sellerintelligence.modules.pricing.model.RegisterFeeRuleCommand;
 import com.sellerintelligence.modules.pricing.model.RegisterProductCostCommand;
+import com.sellerintelligence.modules.pricing.model.PricingCalculationRequest;
+import com.sellerintelligence.modules.pricing.model.PricingCalculationResult;
+import com.sellerintelligence.modules.pricing.model.ProductMarginSimulationRequest;
 import com.sellerintelligence.modules.pricing.service.FeeResolutionService;
 import com.sellerintelligence.modules.pricing.service.FeeRuleService;
+import com.sellerintelligence.modules.pricing.service.PricingEngineService;
 import com.sellerintelligence.modules.pricing.service.ProductCostService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -28,7 +32,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Controller REST para cadastro de custos por produto/variante/empresa e gestão de regras de comissões e taxas.
+ * Controller REST para cadastro de custos por produto/variante/empresa, gestão de regras de comissões e motor de precificação.
  */
 @RestController
 @RequestMapping("/api/v1/pricing")
@@ -37,15 +41,18 @@ public class PricingAndCostsController {
     private final ProductCostService productCostService;
     private final FeeRuleService feeRuleService;
     private final FeeResolutionService feeResolutionService;
+    private final PricingEngineService pricingEngineService;
 
     public PricingAndCostsController(
             ProductCostService productCostService,
             FeeRuleService feeRuleService,
-            FeeResolutionService feeResolutionService
+            FeeResolutionService feeResolutionService,
+            PricingEngineService pricingEngineService
     ) {
         this.productCostService = productCostService;
         this.feeRuleService = feeRuleService;
         this.feeResolutionService = feeResolutionService;
+        this.pricingEngineService = pricingEngineService;
     }
 
     // --- CUSTOS DE PRODUTOS ---
@@ -116,6 +123,25 @@ public class PricingAndCostsController {
     ) {
         UUID tenantId = TenantContextHolder.getRequiredTenantId();
         FeeResolutionResult result = feeResolutionService.resolveFees(tenantId, request);
+        return ResponseEntity.ok(result);
+    }
+
+    // --- MOTOR DETERMINÍSTICO DE PREÇO E MARGEM ---
+
+    @PostMapping("/margins/calculate")
+    public ResponseEntity<PricingCalculationResult> calculateMargins(
+            @Valid @RequestBody PricingCalculationRequest request
+    ) {
+        PricingCalculationResult result = pricingEngineService.calculateMargins(request);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/margins/simulate-product")
+    public ResponseEntity<PricingCalculationResult> simulateProductMargin(
+            @Valid @RequestBody ProductMarginSimulationRequest request
+    ) {
+        UUID tenantId = TenantContextHolder.getRequiredTenantId();
+        PricingCalculationResult result = pricingEngineService.calculateWithEffectiveFees(tenantId, request);
         return ResponseEntity.ok(result);
     }
 }
