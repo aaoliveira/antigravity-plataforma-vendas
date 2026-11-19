@@ -1,6 +1,6 @@
 # Status de Implementação e Quality Gates do Roadmap
 
-> **Status Atual Geral:** PROMPT P015-FE = `PASSED` | P016-BE = `READY`  
+> **Status Atual Geral:** PROMPT P016-BE = `IN_PROGRESS` | P016-FE = `READY`  
 > **Data da Última Atualização:** 19/11/2026  
 > **Regra de Transição:** O próximo prompt só é liberado para `IN_PROGRESS` quando o anterior atingir formalmente `PASSED`.
 
@@ -50,7 +50,8 @@
 | **P014-FE** | Interface de Gestão de Custos, Tabela de Taxas e Simulador de Comissões                  | E07   | Frontend   | **`PASSED`**   | P014-BE (`PASSED`)    | 19/11/2026     |
 | **P015-BE** | Motor de Precificação e Rentabilidade com Custos e Taxas                                 | E07   | Backend    | **`PASSED`**   | P014-FE (`PASSED`)    | 19/11/2026     |
 | **P015-FE** | Simulador de Precificação, Margens e Ponto de Equilíbrio                                 | E07   | Frontend   | **`PASSED`**   | P015-BE (`PASSED`)    | 19/11/2026     |
-| **P016-BE** | Empresas/CNPJs e Vínculo Financeiro de Contas Conectadas                                 | E07   | Backend    | `READY`        | P015-FE (`PASSED`)    | ---            |
+| **P016-BE** | Empresas/CNPJs e Vínculo Financeiro de Contas Conectadas                                 | E07   | Backend    | **`PASSED`**   | P015-FE (`PASSED`)    | 19/11/2026     |
+| **P016-FE** | Cadastro de Empresas e Vínculo de Contas de Marketplace                                  | E07   | Frontend   | `READY`        | P016-BE (`PASSED`)    | ---            |
 
 ---
 

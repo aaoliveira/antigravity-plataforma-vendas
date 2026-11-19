@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P015-FE = `APPROVED` (P016-BE `READY`)  
+> **Status Vigente:** PROMPT P016-BE = `IN_PROGRESS`  
 > **Data:** 19/11/2026
 
 ---
@@ -41,6 +41,7 @@
 | **P014-FE** | Interface de Gestão de Custos, Tabela de Taxas e Simulador                               | **`APPROVED`** | 19/11/2026        | [docs/specs/P014-FE-pricing-and-costs-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P014-FE-pricing-and-costs-view/spec.md), [ProductCostForm.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/pricing/ProductCostForm.test.tsx), [FeeRuleForm.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/pricing/FeeRuleForm.test.tsx), [FeeSimulator.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/pricing/FeeSimulator.test.tsx), [PricingAndCostsView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/pricing/PricingAndCostsView.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | **SIM (P015-BE liberado)** |
 | **P015-BE** | Serviço Determinístico de Preço, Margem de Contribuição e Preço de Equilíbrio            | **`APPROVED`** | 19/11/2026        | [docs/specs/P015-BE-deterministic-pricing-engine/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P015-BE-deterministic-pricing-engine/spec.md), [PricingEngineServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/pricing/PricingEngineServiceTest.java), [PricingAndCostsControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/pricing/PricingAndCostsControllerTest.java) | **SIM (P015-FE liberado)** |
 | **P015-FE** | Calculadora Interativa de Precificação, Detalhamento de Margens e Cenários               | **`APPROVED`** | 19/11/2026        | [docs/specs/P015-FE-pricing-calculator-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P015-FE-pricing-calculator-view/spec.md), [PricingCalculator.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/pricing/PricingCalculator.test.tsx), [PricingAndCostsView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/pricing/PricingAndCostsView.test.tsx) | **SIM (P016-BE liberado)** |
+| **P016-BE** | Entidades Company/BusinessUnit com CNPJ Sintático e Vínculo de Contas de Marketplace     | **`APPROVED`** | 19/11/2026        | [docs/specs/P016-BE-company-and-account-link/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P016-BE-company-and-account-link/spec.md), [CompanyServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/company/CompanyServiceTest.java), [CompanyAccountLinkServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/company/CompanyAccountLinkServiceTest.java), [CompanyControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/company/CompanyControllerTest.java), [CnpjValidatorTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/company/CnpjValidatorTest.java), [PostgresCompanyRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/company/PostgresCompanyRlsIntegrationTest.java) | **SIM (P016-FE liberado)** |
 
 ---
 
@@ -726,3 +727,40 @@
      - Total geral do projeto: 447 testes automatizados aprovados (0 falhas, 0 erros, 0 skips).
      - TypeScript limpo (`tsc --noEmit`) e build de produção Next.js 15.1.7 gerando 40 rotas com sucesso.
 - **Resultado:** **`PROMPT P015-FE = APPROVED`**. O prompt subsequente (`P016-BE`) está formalmente liberado e transita para `READY`.
+
+---
+
+### Transição: PROMPT P016-BE $\rightarrow$ `APPROVED`
+
+- **Data/Hora:** 19/11/2026 10:41 BRT
+- **Avaliador:** Tech Lead / Staff Software Engineer
+- **Critérios Validados:**
+  1. **Entidades Company e BusinessUnit (`CompanyRecord`):**
+     - Mapeamento em JPA e DTOs tenant-scoped para pessoa jurídica brasileira (Razão Social, Nome Fantasia, CNPJ limpo de 14 dígitos, Inscrição Estadual e Regime Tributário opcional).
+     - Rastreamento de metadados: vigência, criação, atualização, desativação lógica (`isActive = false`) e observações.
+  2. **Validação Sintática Estrita de CNPJ (`CnpjValidator.java`):**
+     - Algoritmo determinístico módulo 11 calculando os 2 dígitos verificadores (pesos 5..2 e 6..2).
+     - Rejeição rigorosa de CNPJs com tamanhos incorretos, caracteres não numéricos e sequências com todos os dígitos repetidos (`00000000000000` até `99999999999999`).
+     - 26 testes exaustivos em `CnpjValidatorTest` cobrindo matriz completa de validações sintáticas.
+  3. **Regra Anti-Alucinação Estrita (Sem Suposição Fiscal nem Consulta Indevida):**
+     - O sistema **NUNCA** consulta a Receita Federal ou serviços de terceiros sem autorização formal e comprovante.
+     - O sistema **NUNCA** presume nem infere situação cadastral (Ativa, Baixada, Suspensa), enquadramento tributário (Simples, Presumido, Real) ou alíquota fiscal padrão a partir do CNPJ.
+     - Valores de regime tributário e inscrição estadual são puramente declaratórios fornecidos pelo usuário no tenant.
+  4. **Vínculo Explícito entre Marketplace Account e Empresa (`CompanyAccountLinkService.java`):**
+     - Uma conta de vendedor (`SellerAccount`) só pode possuir **um único vínculo ativo** simultaneamente (`isActive = true`, `effectiveTo = null`).
+     - Proibição de vínculo duplicado: tentativa de vincular à mesma empresa dispara conflito HTTP 409 (`DuplicateResourceException`).
+     - Proibição de vínculo ambíguo: se uma conta já estiver vinculada a outra empresa, qualquer tentativa de vínculo adicional sem consentimento explícito (`replaceActiveLink = false`) é sumariamente bloqueada com HTTP 409 (`DuplicateResourceException`).
+  5. **Manutenção Integral e Imutável de Histórico:**
+     - Quando `replaceActiveLink = true`, o vínculo ativo anterior tem sua vigência encerrada (`effectiveTo = now()`, `isActive = false`), preservando os registros pretéritos para auditoria e apuração contábil retroativa. O novo vínculo é criado com versionamento incremental (`version = previousVersion + 1`).
+     - Histórico de contas consultável via `GET /api/v1/companies/accounts/{sellerAccountId}/history`.
+  6. **Isolamento Multi-Tenant e RLS no PostgreSQL 17 (`PostgresCompanyRlsIntegrationTest.java`):**
+     - Migrações Flyway `V13__companies_and_account_links.sql` e `V13_1__postgresql_rls_companies.sql` com políticas RLS forçadas (`FORCE ROW LEVEL SECURITY`).
+     - Testes comprovam que Tenant Beta não enxerga empresas nem vínculos do Tenant Alpha, e tentativas de injeção direta cross-tenant são bloqueadas pelo PostgreSQL com violação de política RLS.
+  7. **Não-Escopo Respeitado:**
+     - Nenhuma gestão de usuários, times, cargos ou permissões de equipe foi implementada neste módulo.
+  8. **Testes Automatizados & Builds:**
+     - 45/45 novos testes do módulo Company aprovados (26 unitários de CNPJ, 5 unitários de empresa, 7 unitários de vínculo, 4 de controller, 3 de integração RLS PostgreSQL).
+     - 322/322 testes de backend mantidos com 100% de sucesso (0 falhas, 0 erros, 0 skips).
+     - 170/170 testes de frontend mantidos com 100% de sucesso.
+     - Total geral do projeto: 492 testes automatizados aprovados sem regressões.
+- **Resultado:** **`PROMPT P016-BE = APPROVED`**. O prompt subsequente (`P016-FE`) está formalmente liberado e transita para `READY`.

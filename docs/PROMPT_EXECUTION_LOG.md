@@ -2651,3 +2651,87 @@ DOCUMENTATION UPDATED:
 - docs/PROMPT_EXECUTION_LOG.md
 NEXT PROMPT: UNLOCKED (P016-BE liberado para READY).
 ```
+
+---
+
+## Execução: PROMPT 016-BE
+
+```text
+PROMPT ID: P016-BE
+FEATURE: Entidades Company/BusinessUnit com CNPJ Sintático e Vínculo de Contas de Marketplace
+STATUS: PASSED
+PRE-FLIGHT:
+- Verificado pré-requisito P015-FE como APPROVED em docs/delivery/phase-gate.json.
+- Verificado suporte do Docker Engine (Docker 29.10.0) para Testcontainers PostgreSQL 17.
+- Confirmadas regras de menor privilégio para PostgreSQL Row-Level Security.
+DOCUMENTS REVIEWED:
+- docs/PRD.md (RF-001, RF-002, RF-003, RF-004, RNF-001, RNF-002, RNF-006, ADR-002)
+- docs/ARCHITECTURE.md
+- docs/SECURITY.md
+- docs/ENGINEERING_RULES.md
+- .agents/rules/anti-hallucination.md
+- .agents/rules/testing-and-quality.md
+- .agents/rules/phase-gates.md
+- docs/specs/P016-BE-company-and-account-link/spec.md
+DEPENDENCIES:
+- P015-FE (Aprovado).
+FILES CREATED:
+- docs/specs/P016-BE-company-and-account-link/spec.md
+- backend/src/main/resources/db/migration/V13__companies_and_account_links.sql
+- backend/src/main/resources/db/migration-postgresql/V13_1__postgresql_rls_companies.sql
+- backend/src/main/java/com/sellerintelligence/modules/company/CompanyModule.java
+- backend/src/main/java/com/sellerintelligence/modules/company/package-info.java
+- backend/src/main/java/com/sellerintelligence/modules/company/entity/CompanyRecord.java
+- backend/src/main/java/com/sellerintelligence/modules/company/entity/CompanyAccountLinkRecord.java
+- backend/src/main/java/com/sellerintelligence/modules/company/model/CompanyDto.java
+- backend/src/main/java/com/sellerintelligence/modules/company/model/CompanyAccountLinkDto.java
+- backend/src/main/java/com/sellerintelligence/modules/company/model/CreateCompanyCommand.java
+- backend/src/main/java/com/sellerintelligence/modules/company/model/UpdateCompanyCommand.java
+- backend/src/main/java/com/sellerintelligence/modules/company/model/LinkAccountCommand.java
+- backend/src/main/java/com/sellerintelligence/modules/company/util/CnpjValidator.java
+- backend/src/main/java/com/sellerintelligence/modules/company/repository/CompanyRepository.java
+- backend/src/main/java/com/sellerintelligence/modules/company/repository/CompanyAccountLinkRepository.java
+- backend/src/main/java/com/sellerintelligence/modules/company/service/CompanyService.java
+- backend/src/main/java/com/sellerintelligence/modules/company/service/CompanyAccountLinkService.java
+- backend/src/main/java/com/sellerintelligence/modules/company/CompanyController.java
+- backend/src/test/java/com/sellerintelligence/modules/company/CnpjValidatorTest.java
+- backend/src/test/java/com/sellerintelligence/modules/company/CompanyServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/company/CompanyAccountLinkServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/company/CompanyControllerTest.java
+- backend/src/test/java/com/sellerintelligence/modules/company/PostgresCompanyRlsIntegrationTest.java
+FILES MODIFIED:
+- backend/src/main/java/com/sellerintelligence/core/exception/GlobalExceptionHandler.java
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+COMMANDS EXECUTED:
+- cd backend && ./mvnw test -Dtest=Company*Test,CnpjValidatorTest,PostgresCompanyRlsIntegrationTest (45 testes aprovados)
+- cd backend && ./mvnw test (Suíte completa de 322 testes aprovada, 0 falhas, 0 erros, 0 skips)
+- cd frontend && npm test (Suíte de 170 testes mantida com 100% de sucesso)
+TEST RESULTS:
+- Backend: 322/322 testes aprovados (100% de sucesso em todas as suítes).
+  * 26 testes em CnpjValidatorTest (validação módulo 11, dígitos verificadores, formatação, rejeição de repetidos e tamanhos inválidos).
+  * 5 testes em CompanyServiceTest (criação, rejeição de CNPJ inválido, rejeição de CNPJ duplicado no tenant com 409, atualização e desativação com auditoria).
+  * 7 testes em CompanyAccountLinkServiceTest (vínculo com sucesso, bloqueio de duplicidade na mesma empresa, bloqueio de ambiguidade com outra empresa sem confirmação, transferência com encerramento de vigência anterior e histórico versionado, rejeição a empresa inativa, desvinculação com auditoria).
+  * 4 testes em CompanyControllerTest (ciclo CRUD completo REST, validação de payload, bloqueio 409 para CNPJ duplicado, fluxo completo de vinculação, transferência e consulta de histórico).
+  * 3 testes em PostgresCompanyRlsIntegrationTest (isolamento multi-tenant real no PostgreSQL 17 com Testcontainers para empresas e vínculos, verificação de bloqueio RLS a injeção cross-tenant).
+- Frontend: 170/170 testes mantidos com 100% de sucesso em 26 arquivos.
+- Total Geral do Projeto: 492 testes automatizados aprovados (322 backend + 170 frontend), 0 falhas, 0 erros, 0 skips.
+POLICY EVIDENCE:
+- Critério de Aceite 1: Conta vinculada a empresa válida: serviço valida existência e status ativo da empresa e da SellerAccount no tenant ativo antes da vinculação.
+- Critério de Aceite 2: Vínculo duplicado e ambíguo bloqueado: verificação estrita impede que uma conta seja associada a mais de uma empresa ativa simultaneamente. Tentativas duplicadas ou sem replaceActiveLink disparam HTTP 409 Conflict (DuplicateResourceException).
+- Critério de Aceite 3: Auditoria: todos os eventos de ciclo de vida (COMPANY_CREATED, COMPANY_UPDATED, COMPANY_DEACTIVATED, ACCOUNT_COMPANY_LINKED, ACCOUNT_COMPANY_UNLINKED) registram eventos auditados estruturados com IP, principal e tenant.
+- Critério de Aceite 4: Testes cross-tenant: validação com PostgreSQL 17 real via Testcontainers comprovando isolamento RLS e bloqueio nativo a acessos e injeções cruzadas.
+- Regra Anti-Alucinação Estrita: Validação puramente sintática de CNPJ por algoritmo determinístico módulo 11. O sistema não consulta a Receita Federal nem infere situação cadastral, regime fiscal ou alíquota fiscal padrão.
+- Não-Escopo Respeitado: Nenhuma gestão de usuários, equipes ou permissões foi implementada.
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+DOCUMENTATION UPDATED:
+- docs/specs/P016-BE-company-and-account-link/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+NEXT PROMPT: UNLOCKED (P016-FE liberado para READY).
+```

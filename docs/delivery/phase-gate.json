@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P015-FE",
+  "currentPrompt": "P016-BE",
   "status": "APPROVED",
-  "nextPrompt": "P016-BE",
+  "nextPrompt": "P016-FE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-19T10:07:00-03:00",
+  "lastUpdated": "2026-11-19T10:41:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -35,7 +35,8 @@
     "P014-BE",
     "P014-FE",
     "P015-BE",
-    "P015-FE"
+    "P015-FE",
+    "P016-BE"
   ],
   "gates": {
     "P000": {
@@ -513,6 +514,25 @@
       "mobileResponsive": true,
       "blockingIssues": 0,
       "prerequisites": ["P015-BE"]
+    },
+    "P016-BE": {
+      "name": "Entidades Company/BusinessUnit com CNPJ Sintático e Vínculo de Contas de Marketplace",
+      "status": "APPROVED",
+      "startedAt": "2026-11-19T10:19:00-03:00",
+      "approvedAt": "2026-11-19T10:41:00-03:00",
+      "evidence": "docs/specs/P016-BE-company-and-account-link/spec.md",
+      "testsExecuted": 45,
+      "testsPassed": 45,
+      "totalBackendSuiteTests": 322,
+      "totalFrontendSuiteTests": 170,
+      "totalProjectTests": 492,
+      "syntacticCnpjValidationEnforced": true,
+      "antiHallucinationNoFiscalAssumption": true,
+      "singleActiveAccountLinkEnforced": true,
+      "immutableLinkHistoryPreserved": true,
+      "rlsPostgresIsolationVerified": true,
+      "blockingIssues": 0,
+      "prerequisites": ["P015-FE"]
     }
   },
   "maintenanceGates": {
