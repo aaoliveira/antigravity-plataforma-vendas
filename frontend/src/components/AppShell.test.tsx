@@ -167,4 +167,15 @@ describe('AppShell Component (Shell Responsivo & Navegação)', () => {
       screen.getByRole('heading', { name: /Gestão de Custos, Taxas e Simulação Financeira/i })
     ).toBeInTheDocument();
   });
+
+  it('deve renderizar a tela CompaniesAndAccountsView ao selecionar o módulo COMPANIES (Empresas & CNPJs)', () => {
+    render(<AppShell />);
+
+    const companyBtns = screen.getAllByRole('button', { name: /Empresas & CNPJs/i });
+    fireEvent.click(companyBtns[0]);
+
+    expect(
+      screen.getByRole('heading', { name: /Empresas & Unidades de Negócio/i })
+    ).toBeInTheDocument();
+  });
 });

@@ -2735,3 +2735,80 @@ DOCUMENTATION UPDATED:
 - docs/PROMPT_EXECUTION_LOG.md
 NEXT PROMPT: UNLOCKED (P016-FE liberado para READY).
 ```
+
+---
+
+## Execução: PROMPT 016-FE
+
+```text
+PROMPT ID: P016-FE
+FEATURE: Cadastro de Empresa e Vínculo de Contas de Marketplace com Proteção de CNPJ
+STATUS: PASSED
+PRE-FLIGHT:
+- Verificado pré-requisito P016-BE como APPROVED em docs/delivery/phase-gate.json.
+- Verificado ambiente frontend (Node.js, Next.js 15.1.7, Vitest 3.2.7).
+- Confirmadas regras de proteção e não-exposição desnecessária de CNPJ em logs e listagens.
+DOCUMENTS REVIEWED:
+- docs/PRD.md (RF-001, RF-002, RF-003, RF-004, RNF-001, RNF-002, RNF-006, ADR-002)
+- docs/ARCHITECTURE.md
+- docs/SECURITY.md
+- docs/ENGINEERING_RULES.md
+- .agents/rules/anti-hallucination.md
+- .agents/rules/testing-and-quality.md
+- .agents/rules/phase-gates.md
+- docs/specs/P016-FE-company-and-account-link-view/spec.md
+DEPENDENCIES:
+- P016-BE (Aprovado).
+FILES CREATED:
+- docs/specs/P016-FE-company-and-account-link-view/spec.md
+- frontend/src/types/company.ts
+- frontend/src/utils/cnpj.ts
+- frontend/src/utils/cnpj.test.ts
+- frontend/src/app/api/companies/route.ts
+- frontend/src/app/api/companies/[id]/route.ts
+- frontend/src/app/api/companies/[id]/links/route.ts
+- frontend/src/app/api/companies/links/[linkId]/route.ts
+- frontend/src/app/api/companies/accounts/[accountId]/history/route.ts
+- frontend/src/components/company/CompanyFormModal.tsx
+- frontend/src/components/company/LinkAccountModal.tsx
+- frontend/src/components/company/AccountLinkHistoryDrawer.tsx
+- frontend/src/components/company/CompaniesAndAccountsView.tsx
+- frontend/src/components/company/CompaniesAndAccountsView.test.tsx
+FILES MODIFIED:
+- frontend/src/components/AppShell.tsx
+- frontend/src/components/AppShell.test.tsx
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+COMMANDS EXECUTED:
+- cd frontend && npx vitest run src/utils/cnpj.test.ts (6 testes aprovados)
+- cd frontend && npx vitest run src/components/company/CompaniesAndAccountsView.test.tsx (8 testes aprovados)
+- cd frontend && npx vitest run src/components/AppShell.test.tsx (12 testes aprovados)
+- cd frontend && npx tsc --noEmit (TypeScript limpo, 0 erros)
+- cd frontend && npm test (28 arquivos, 185 testes aprovados)
+- cd frontend && npm run build (Next.js 15.1.7 build gerando 47 rotas estáticas e dinâmicas com sucesso)
+- cd backend && ./mvnw test (322 testes de backend mantidos com 100% de sucesso)
+TEST RESULTS:
+- Frontend: 185/185 testes aprovados (100% de sucesso em 28 arquivos).
+  * 6 testes em cnpj.test.ts (limpeza, máscara progressiva, validação módulo 11, rejeição de repetidos, ofuscação segura de lista e sanitização de logs).
+  * 8 testes em CompaniesAndAccountsView.test.tsx (cabeçalho e abas, proteção de privacidade com alternância sob demanda, máscara e validação em tempo real com bloqueio de CNPJ inválido, criação de empresa, vínculo explícito com confirmação de transferência por checkbox, RBAC com perfil VIEWER desabilitado, gaveta de histórico e touch targets mobile >= 44px).
+  * 12 testes em AppShell.test.tsx (incluindo navegação direta para o módulo COMPANIES).
+- Backend: 322/322 testes mantidos com 100% de sucesso.
+- Total Geral do Projeto: 507 testes automatizados aprovados (322 backend + 185 frontend), 0 falhas, 0 erros, 0 skips.
+POLICY EVIDENCE:
+- Critério de Aceite 1: Validação e máscara: digitação com máscara dinâmica 00.000.000/0000-00 e validação imediata módulo 11 bloqueando submissão de CNPJs inválidos ou repetidos.
+- Critério de Aceite 2: Vínculo explícito: seleção inequívoca de conta e empresa, detecção proativa de vínculos prévios e exigência de confirmação explícita (replaceActiveLink: true) para transferências.
+- Critério de Aceite 3: Permissões aplicadas: perfil VIEWER visualiza com botões de ação desabilitados (aria-disabled="true") e banner explicativo.
+- Critério de Aceite 4: Mobile funcional: layout 100% responsivo para 360px+, botões com altura mínima >= 44px, gavetas e modais fechando com Escape.
+- Proteção de Dados: CNPJ ofuscado por padrão na listagem (12.***.***/0001-34) com revelação controlada por botão e sanitização contra vazamento em logs.
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+DOCUMENTATION UPDATED:
+- docs/specs/P016-FE-company-and-account-link-view/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+NEXT PROMPT: UNLOCKED (P017-BE liberado para READY).
+```

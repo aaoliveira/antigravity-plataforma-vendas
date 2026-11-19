@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P016-BE",
+  "currentPrompt": "P016-FE",
   "status": "APPROVED",
-  "nextPrompt": "P016-FE",
+  "nextPrompt": "P017-BE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-19T10:41:00-03:00",
+  "lastUpdated": "2026-11-19T11:30:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -36,7 +36,8 @@
     "P014-FE",
     "P015-BE",
     "P015-FE",
-    "P016-BE"
+    "P016-BE",
+    "P016-FE"
   ],
   "gates": {
     "P000": {
@@ -533,6 +534,27 @@
       "rlsPostgresIsolationVerified": true,
       "blockingIssues": 0,
       "prerequisites": ["P015-FE"]
+    },
+    "P016-FE": {
+      "name": "Cadastro de Empresa e Vínculo de Contas de Marketplace com Proteção de CNPJ",
+      "status": "APPROVED",
+      "startedAt": "2026-11-19T11:18:00-03:00",
+      "approvedAt": "2026-11-19T11:30:00-03:00",
+      "evidence": "docs/specs/P016-FE-company-and-account-link-view/spec.md",
+      "testsExecuted": 15,
+      "testsPassed": 15,
+      "totalFrontendSuiteTests": 185,
+      "totalBackendSuiteTests": 322,
+      "totalProjectTests": 507,
+      "buildPassed": true,
+      "typecheckPassed": true,
+      "cnpjMaskAndValidationRealTime": true,
+      "cnpjPrivacyMaskingInListAndLogs": true,
+      "explicitAccountLinkingWithTransferConfirmation": true,
+      "rbacPermissionsEnforced": true,
+      "mobileResponsive": true,
+      "blockingIssues": 0,
+      "prerequisites": ["P016-BE"]
     }
   },
   "maintenanceGates": {

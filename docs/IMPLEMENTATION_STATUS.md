@@ -51,7 +51,7 @@
 | **P015-BE** | Motor de Precificação e Rentabilidade com Custos e Taxas                                 | E07   | Backend    | **`PASSED`**   | P014-FE (`PASSED`)    | 19/11/2026     |
 | **P015-FE** | Simulador de Precificação, Margens e Ponto de Equilíbrio                                 | E07   | Frontend   | **`PASSED`**   | P015-BE (`PASSED`)    | 19/11/2026     |
 | **P016-BE** | Empresas/CNPJs e Vínculo Financeiro de Contas Conectadas                                 | E07   | Backend    | **`PASSED`**   | P015-FE (`PASSED`)    | 19/11/2026     |
-| **P016-FE** | Cadastro de Empresas e Vínculo de Contas de Marketplace                                  | E07   | Frontend   | `READY`        | P016-BE (`PASSED`)    | ---            |
+| **P016-FE** | Cadastro de Empresas e Vínculo de Contas de Marketplace                                  | E07   | Frontend   | **`PASSED`**   | P016-BE (`PASSED`)    | 19/11/2026     |
 
 ---
 

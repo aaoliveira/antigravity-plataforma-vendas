@@ -16,6 +16,7 @@ import { MarketIntelligenceView } from './MarketIntelligenceView';
 import { MarketSearchView } from './MarketSearchView';
 import { ProductMonitoringView } from './ProductMonitoringView';
 import { PricingAndCostsView } from './pricing/PricingAndCostsView';
+import { CompaniesAndAccountsView } from './company/CompaniesAndAccountsView';
 
 export interface NavModule {
   id: string;
@@ -428,6 +429,8 @@ export const AppShell: React.FC = () => {
             <ProductMonitoringView onOpenMarketSearch={() => setActiveModuleId('MARKET')} />
           ) : activeModule.id === 'FINANCIAL' ? (
             <PricingAndCostsView />
+          ) : activeModule.id === 'COMPANIES' ? (
+            <CompaniesAndAccountsView />
           ) : (
             <ModulePlaceholder
               moduleId={activeModule.id}
