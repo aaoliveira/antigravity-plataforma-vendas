@@ -2364,3 +2364,87 @@ DOCUMENTATION UPDATED:
 - docs/PROMPT_EXECUTION_LOG.md
 NEXT PROMPT: UNLOCKED (P014-BE liberado para READY).
 ```
+
+---
+
+```log
+PROMPT: P014-BE
+STATUS: APPROVED
+TIMESTAMP: 2026-11-19T08:54:00-03:00
+SUMMARY:
+Implementado o cadastro versionado de custos por produto/variante/empresa e o motor de regras de taxas e comissões com resolução determinística por especificidade, isolamento PostgreSQL 17 RLS e regra anti-alucinação estrita que não inventa tabelas de taxas na ausência de regras cadastradas.
+INPUTS:
+- docs/specs/P014-BE-product-costs-and-fee-rules/spec.md
+- docs/PRD.md
+- .agents/rules/anti-hallucination.md
+- .agents/rules/testing-and-quality.md
+- .agents/rules/phase-gates.md
+DEPENDENCIES:
+- P013-FE (Aprovado).
+FILES CREATED:
+- docs/specs/P014-BE-product-costs-and-fee-rules/spec.md
+- backend/src/main/resources/db/migration/V12__product_costs_and_fee_rules.sql
+- backend/src/main/resources/db/migration-postgresql/V12_1__postgresql_rls_pricing_and_fees.sql
+- backend/src/main/java/com/sellerintelligence/modules/pricing/PricingAndCostsController.java
+- backend/src/main/java/com/sellerintelligence/modules/pricing/entity/ProductCostRecord.java
+- backend/src/main/java/com/sellerintelligence/modules/pricing/entity/FeeRuleRecord.java
+- backend/src/main/java/com/sellerintelligence/modules/pricing/model/FeeType.java
+- backend/src/main/java/com/sellerintelligence/modules/pricing/model/FeeValueType.java
+- backend/src/main/java/com/sellerintelligence/modules/pricing/model/FeeSourceType.java
+- backend/src/main/java/com/sellerintelligence/modules/pricing/model/FeeResolutionStatus.java
+- backend/src/main/java/com/sellerintelligence/modules/pricing/model/RegisterProductCostCommand.java
+- backend/src/main/java/com/sellerintelligence/modules/pricing/model/ProductCostDto.java
+- backend/src/main/java/com/sellerintelligence/modules/pricing/model/RegisterFeeRuleCommand.java
+- backend/src/main/java/com/sellerintelligence/modules/pricing/model/FeeRuleDto.java
+- backend/src/main/java/com/sellerintelligence/modules/pricing/model/FeeResolutionRequest.java
+- backend/src/main/java/com/sellerintelligence/modules/pricing/model/ResolvedFeeItem.java
+- backend/src/main/java/com/sellerintelligence/modules/pricing/model/FeeResolutionResult.java
+- backend/src/main/java/com/sellerintelligence/modules/pricing/repository/ProductCostRepository.java
+- backend/src/main/java/com/sellerintelligence/modules/pricing/repository/FeeRuleRepository.java
+- backend/src/main/java/com/sellerintelligence/modules/pricing/service/ProductCostService.java
+- backend/src/main/java/com/sellerintelligence/modules/pricing/service/FeeRuleService.java
+- backend/src/main/java/com/sellerintelligence/modules/pricing/service/FeeResolutionService.java
+- backend/src/test/java/com/sellerintelligence/modules/pricing/ProductCostServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/pricing/FeeRuleServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/pricing/FeeResolutionServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/pricing/PricingAndCostsControllerTest.java
+- backend/src/test/java/com/sellerintelligence/modules/pricing/PostgresPricingRlsIntegrationTest.java
+FILES MODIFIED:
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+COMMANDS EXECUTED:
+- cd backend && ./mvnw test -Dtest=ProductCostServiceTest (5 testes aprovados)
+- cd backend && ./mvnw test -Dtest=FeeRuleServiceTest (5 testes aprovados)
+- cd backend && ./mvnw test -Dtest=FeeResolutionServiceTest (6 testes aprovados)
+- cd backend && ./mvnw test -Dtest=PricingAndCostsControllerTest (4 testes aprovados)
+- cd backend && ./mvnw test -Dtest=PostgresPricingRlsIntegrationTest (4 testes aprovados com Testcontainers)
+- cd backend && ./mvnw test (Suíte completa de 267 testes mantida com 100% de sucesso)
+- pnpm --dir frontend exec vitest run (Suíte completa de 144 testes mantida com 100% de sucesso)
+- pnpm --dir frontend exec tsc --noEmit (TypeScript limpo, zero erros)
+TEST RESULTS:
+- Backend: 267/267 testes aprovados (100% de sucesso).
+  * 5 testes em ProductCostServiceTest (cadastro versionado, fechamento de vigência de versão anterior, cascata hierárquica por especificidade, retorno empty sem inventar zero, histórico completo preservado).
+  * 5 testes em FeeRuleServiceTest (cadastro versionado com sourceReference obrigatório, rejeição de ausência de fonte, desativação de versão anterior, histórico preservado).
+  * 6 testes em FeeResolutionServiceTest (resolução de taxas ativas por data, cálculo de PERCENTAGE, FIXED_AMOUNT e PERCENTAGE_PLUS_FIXED, faixas de preço inclusivas min/max, REGRA ANTI-ALUCINAÇÃO que retorna missingFeeTypes e orienta input do usuário quando não há regra cadastrada).
+  * 4 testes em PricingAndCostsControllerTest (endpoints REST para custos, regras e resolução de taxas, auditoria disparada via AuditPublisher).
+  * 4 testes em PostgresPricingRlsIntegrationTest (validação real com PostgreSQL 17 alpine e Testcontainers, comprovando isolamento RLS e impedindo vazamento ou inserção forjada entre tenants).
+- Frontend: 144/144 testes aprovados (zero regressões).
+- Total Geral do Projeto: 411 testes automatizados aprovados (267 backend + 144 frontend), 0 falhas, 0 erros, 0 skips.
+POLICY EVIDENCE:
+- Critério de Aceite 1: Regras vigentes selecionadas corretamente: resolução temporal estrita (effective_from <= refDate < effective_to) e por faixa de preço do anúncio.
+- Critério de Aceite 2: Histórico preservado: ao cadastrar nova versão de custo ou regra de taxa, o registro anterior tem sua vigência encerrada (effective_to = newEffectiveFrom) e a versão é incrementada, sem perda de dados históricos.
+- Critério de Aceite 3: Ausência de taxa é explícita: não assume comissão 0% ou valores padrão fictícios; retorna status MISSING/PARTIAL, lista missingFeeTypes e orienta o lojista a cadastrar a fonte oficial/contratual.
+- Critério de Aceite 4: Alteração auditada: eventos PRODUCT_COST_CREATED, PRODUCT_COST_UPDATED, FEE_RULE_CREATED, FEE_RULE_UPDATED publicados no AuditPublisher em todo ciclo de vida.
+- Critério de Aceite 5: Testes de fronteira passam: limites de faixa de preço (min_price_threshold e max_price_threshold) testados com valores limítrofes exatos e precisão BigDecimal escala 4 HALF_UP.
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+DOCUMENTATION UPDATED:
+- docs/specs/P014-BE-product-costs-and-fee-rules/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+NEXT PROMPT: UNLOCKED (P014-FE liberado para READY).
+```

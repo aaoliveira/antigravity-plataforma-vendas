@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P013-FE",
+  "currentPrompt": "P014-BE",
   "status": "APPROVED",
-  "nextPrompt": "P014-BE",
+  "nextPrompt": "P014-FE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-19T08:11:00-03:00",
+  "lastUpdated": "2026-11-19T08:54:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -31,7 +31,8 @@
     "P012-BE",
     "P012-FE",
     "P013-BE",
-    "P013-FE"
+    "P013-FE",
+    "P014-BE"
   ],
   "gates": {
     "P000": {
@@ -430,6 +431,24 @@
       "mobileTouchTargetsCompliant": true,
       "blockingIssues": 0,
       "prerequisites": ["P013-BE"]
+    },
+    "P014-BE": {
+      "name": "Cadastro de Custos por Produto/Variante/Empresa e Regras de Taxas",
+      "status": "APPROVED",
+      "startedAt": "2026-11-19T08:38:00-03:00",
+      "completedAt": "2026-11-19T08:54:00-03:00",
+      "evidence": "docs/specs/P014-BE-product-costs-and-fee-rules/spec.md",
+      "testsExecuted": 24,
+      "testsPassed": 24,
+      "totalBackendSuiteTests": 267,
+      "totalFrontendSuiteTests": 144,
+      "totalProjectTests": 411,
+      "postgresRlsEnforced": true,
+      "antiHallucinationFeeAbsenceEnforced": true,
+      "costHistoryPreserved": true,
+      "decimalPrecisionEnforced": true,
+      "blockingIssues": 0,
+      "prerequisites": ["P013-FE"]
     }
   },
   "maintenanceGates": {

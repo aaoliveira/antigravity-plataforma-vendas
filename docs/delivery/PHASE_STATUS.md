@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P013-FE = `APPROVED` (Liberado para P014-BE)  
+> **Status Vigente:** PROMPT P014-BE = `APPROVED` (Liberado para P014-FE)  
 > **Data:** 19/11/2026
 
 ---
@@ -37,6 +37,9 @@
 | **P012-FE** | Interface de Grupos de Monitoramento, Snapshots e Alertas                                | **`APPROVED`** | 18/11/2026        | [docs/specs/P012-FE-product-monitoring-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P012-FE-product-monitoring-view/spec.md), [ProductMonitoringView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/ProductMonitoringView.test.tsx), [MonitoringTimelineDrawer.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/MonitoringTimelineDrawer.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (P013 liberado)**    |
 | **P013-BE** | Snapshots Idempotentes, Detecção de Alterações e Resiliência de Coleta                    | **`APPROVED`** | 18/11/2026        | [docs/specs/P013-BE-idempotent-snapshots/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P013-BE-idempotent-snapshots/spec.md), [MonitoredItemSnapshotServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/productmonitoring/service/MonitoredItemSnapshotServiceTest.java), [ProductMonitoringControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/productmonitoring/ProductMonitoringControllerTest.java), [PostgresProductMonitoringRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/productmonitoring/PostgresProductMonitoringRlsIntegrationTest.java) | **SIM (P013-FE liberado)** |
 | **P013-FE** | Gráfico Histórico, Tooltips de Fonte e Lacunas Visíveis                                  | **`APPROVED`** | 19/11/2026        | [docs/specs/P013-FE-price-history-chart/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P013-FE-price-history-chart/spec.md), [PriceHistoryChart.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/PriceHistoryChart.test.tsx), [MonitoringTimelineDrawer.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/MonitoringTimelineDrawer.test.tsx) | **SIM (P014-BE liberado)** |
+| **P014-BE** | Cadastro de Custos por Produto/Variante/Empresa e Regras de Taxas                        | **`APPROVED`** | 19/11/2026        | [docs/specs/P014-BE-product-costs-and-fee-rules/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P014-BE-product-costs-and-fee-rules/spec.md), [ProductCostServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/pricing/ProductCostServiceTest.java), [FeeRuleServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/pricing/FeeRuleServiceTest.java), [FeeResolutionServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/pricing/FeeResolutionServiceTest.java), [PricingAndCostsControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/pricing/PricingAndCostsControllerTest.java), [PostgresPricingRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/pricing/PostgresPricingRlsIntegrationTest.java) | **SIM (P014-FE liberado)** |
+
+---
 
 ---
 
@@ -582,3 +585,38 @@
      - Total geral do projeto: 387 testes automatizados aprovados (0 falhas, 0 erros, 0 skips).
      - TypeScript limpo (`tsc --noEmit`) e build Next.js 15.1.7 gerando todas as 34 rotas com sucesso.
 - **Resultado:** **`PROMPT P013-FE = APPROVED`**. O prompt subsequente (`P014-BE`) está formalmente liberado e transita para `READY`.
+
+---
+
+### Transição: PROMPT P014-BE $\rightarrow$ `APPROVED`
+
+- **Data/Hora:** 19/11/2026 08:54 BRT
+- **Avaliador:** Tech Lead / Staff Software Engineer
+- **Critérios Validados:**
+  1. **Cadastro de Custos Versionado e Imutável (`ProductCostRecord.java`, `ProductCostService.java`):**
+     - Estrutura de custos diretos (`acquisitionCost`, `packagingCost`, `additionalCost`, `subsidizedShippingCost`) e percentuais (`taxRatePercent`, `otherExpensesPercent`) escopados por `(tenantId, productId, variantId, companyId)`.
+     - Versionamento estrito: novas atualizações encerram a vigência do registro anterior (`effectiveTo = newEffectiveFrom`) e incrementam a versão, preservando 100% do histórico pretérito sem sobrescrever dados.
+  2. **Cascata de Resolução Determinística por Especificidade:**
+     - Resolução hierárquica por 4 níveis de especificidade decrescente: Variante + Empresa $\rightarrow$ Variante $\rightarrow$ Produto + Empresa $\rightarrow$ Produto Base.
+     - Ausência de custo retorna `Optional.empty()` sem inventar valores ou assumir custo zero.
+  3. **Regras de Taxas Parametrizáveis com Vigência e Faixas (`FeeRuleRecord.java`, `FeeRuleService.java`):**
+     - Suporte a tipos de cobrança: `COMMISSION`, `FIXED_FEE`, `LOGISTICS_FEE`, `PAYMENT_PROCESSING`, `OTHER`.
+     - Modalidades: `PERCENTAGE`, `FIXED_AMOUNT`, `PERCENTAGE_PLUS_FIXED`.
+     - Filtros por canal/marketplace (`MERCADO_LIVRE`, `SHOPEE`), modalidade de anúncio (`listingType`), categoria, faixas de preço (`minPriceThreshold`, `maxPriceThreshold`), vigência (`effectiveFrom`, `effectiveTo`) e versão.
+  4. **Regra Anti-Alucinação Estrita (Ausência Explícita de Taxas - `FeeResolutionService.java`):**
+     - "Não inventar tabela de taxas; iniciar sem regra quando não houver fonte validada e solicitar input do usuário."
+     - Se o canal/categoria não possuir regra contratual cadastrada, a plataforma **não assume 0,00% de comissão** nem calcula valores falsos.
+     - Retorno explícito de `hasMissingFees = true`, enumeração em `missingFeeTypes` (ex: `COMMISSION`) e mensagem ostensiva orientando o usuário a cadastrar a regra com fonte oficial.
+     - Campo `sourceReference` obrigatório e não vazio em todo cadastro de regra (`CONTRACT`, `OFFICIAL_PORTAL`, `MANUAL_OVERRIDE`).
+  5. **Precisão Decimal e Arredondamento Documentado:**
+     - Uso universal de `BigDecimal` com escala interna 4 e arredondamento padrão `RoundingMode.HALF_UP` documentado na especificação técnica.
+  6. **Isolamento PostgreSQL 17 RLS e Auditoria:**
+     - Migrations Flyway `V12__product_costs_and_fee_rules.sql` e `V12_1__postgresql_rls_pricing_and_fees.sql` aplicam RLS forçado em `product_costs` e `marketplace_fee_rules`.
+     - Testes com Testcontainers (`PostgresPricingRlsIntegrationTest`) comprovam isolamento estrito contra injeção ou leitura cruzada entre tenants.
+     - Eventos de auditoria emitidos via `AuditPublisher` para `PRODUCT_COST_CREATED`, `PRODUCT_COST_UPDATED`, `FEE_RULE_CREATED`, `FEE_RULE_UPDATED`.
+  7. **Testes Automatizados & Builds:**
+     - 267/267 testes de backend aprovados (+24 novos testes unitários, de controller e integração RLS).
+     - 144/144 testes de frontend mantidos com 100% de sucesso.
+     - Total geral do projeto: 411 testes automatizados aprovados (0 falhas, 0 erros, 0 skips).
+     - TypeScript limpo (`tsc --noEmit`).
+- **Resultado:** **`PROMPT P014-BE = APPROVED`**. O prompt subsequente (`P014-FE`) está formalmente liberado e transita para `READY`.
