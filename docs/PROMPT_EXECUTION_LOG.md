@@ -2584,3 +2584,70 @@ DOCUMENTATION UPDATED:
 - docs/PROMPT_EXECUTION_LOG.md
 NEXT PROMPT: UNLOCKED (P015-FE liberado para READY).
 ```
+
+---
+
+## Execução: PROMPT 015-FE
+
+```text
+PROMPT ID: P015-FE
+FEATURE: Calculadora Interativa de Precificação, Detalhamento de Margens e Cenários
+STATUS: PASSED
+PRE-FLIGHT:
+- P015-BE verificado como APPROVED em phase-gate.json e PHASE_STATUS.md.
+- Requisitos funcionais e de experiência de usuário mapeados (cálculo interativo com inputs, resultado detalhado, simulação de cenários, avisos de dados ausentes/desatualizados).
+- Critérios de aceite: valores batem com API; acessível por teclado; validação clara; layout mobile utilizável.
+- Anti-alucinação: Margem de Contribuição NUNCA rotulada como Lucro Líquido; aviso ostensivo para taxas manuais ou não oficiais; aviso de dados ausentes.
+INPUTS:
+- docs/specs/P015-FE-pricing-calculator-view/spec.md
+- docs/PRD.md
+- .agents/rules/anti-hallucination.md
+- .agents/rules/testing-and-quality.md
+- .agents/rules/phase-gates.md
+DEPENDENCIES:
+- P015-BE (Aprovado).
+FILES CREATED:
+- docs/specs/P015-FE-pricing-calculator-view/spec.md
+- frontend/src/app/api/pricing/margins/calculate/route.ts
+- frontend/src/app/api/pricing/margins/simulate-product/route.ts
+- frontend/src/components/pricing/PricingCalculator.tsx
+- frontend/src/components/pricing/PricingCalculator.test.tsx
+FILES MODIFIED:
+- frontend/src/types/pricing.ts
+- frontend/src/components/pricing/PricingAndCostsView.tsx
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+COMMANDS EXECUTED:
+- pnpm --dir frontend exec vitest run src/components/pricing/ (25 testes aprovados)
+- pnpm --dir frontend exec vitest run (Suíte completa de 170 testes em 26 arquivos aprovada)
+- pnpm --dir frontend exec tsc --noEmit (TypeScript limpo, zero erros)
+- pnpm --dir frontend build (Next.js 15.1.7 build gerando 40 rotas com sucesso)
+- cd backend && ./mvnw test (Suíte completa de 277 testes mantida com 100% de sucesso)
+TEST RESULTS:
+- Frontend: 170/170 testes aprovados (100% de sucesso em 26 arquivos).
+  * 7 testes em PricingCalculator.test.tsx (renderização inicial, aviso anti-alucinação de lucro líquido, alternância de modos manual vs produto cadastrado, validação clara de inputs numéricos e desconto < preço, validação de formato UUID, cálculo manual determinístico com cards de métricas, cenários comparativos e deduções detalhadas, alertas ostensivos de taxas manuais/desatualizadas da API, tratamento de break-even inatingível por taxas >= 100%, tratamento de falha do backend).
+  * 5 testes em ProductCostForm.test.tsx.
+  * 6 testes em FeeRuleForm.test.tsx.
+  * 5 testes em FeeSimulator.test.tsx.
+  * 2 testes em PricingAndCostsView.test.tsx.
+  * 11 testes em AppShell.test.tsx.
+- Backend: 277/277 testes mantidos com 100% de sucesso.
+- Total Geral do Projeto: 447 testes automatizados aprovados (277 backend + 170 frontend), 0 falhas, 0 erros, 0 skips.
+POLICY EVIDENCE:
+- Critério de Aceite 1: Valores batem com API: integração com BFF routes /api/pricing/margins/calculate e /api/pricing/margins/simulate-product consumindo diretamente o motor determinístico PricingEngineService, refletindo deduções, margem de contribuição monetária/percentual e break-even calculados.
+- Critério de Aceite 2: Acessível por teclado: estrutura semântica completa com <label htmlFor="...">, IDs únicos gerados com useId(), botões com altura mínima >= 44px e foco sequencial sem armadilhas.
+- Critério de Aceite 3: Validação clara: erros imediatos de preço <= 0, desconto >= preço, alíquotas inválidas (> 100%) e formato de UUID no modo produto, associados via role="alert" e aria-describedby.
+- Critério de Aceite 4: Layout mobile utilizável: cards de métricas e inputs adaptativos de 1 a 4 colunas; tabelas de cenários e deduções com overflow horizontal rolável acessível.
+- Critério de Aceite 5: Margem de contribuição NÃO é lucro líquido: disclaimer regulatório perene destacando a não inclusão de custos e despesas fixas estruturais unitárias.
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+DOCUMENTATION UPDATED:
+- docs/specs/P015-FE-pricing-calculator-view/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+NEXT PROMPT: UNLOCKED (P016-BE liberado para READY).
+```

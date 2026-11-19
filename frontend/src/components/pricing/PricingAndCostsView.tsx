@@ -4,8 +4,9 @@ import React, { useState } from 'react';
 import { ProductCostForm } from './ProductCostForm';
 import { FeeRuleForm } from './FeeRuleForm';
 import { FeeSimulator } from './FeeSimulator';
+import { PricingCalculator } from './PricingCalculator';
 
-type TabKey = 'COSTS' | 'FEES' | 'SIMULATOR';
+type TabKey = 'COSTS' | 'FEES' | 'SIMULATOR' | 'CALCULATOR';
 
 export function PricingAndCostsView() {
   const [activeTab, setActiveTab] = useState<TabKey>('COSTS');
@@ -90,6 +91,22 @@ export function PricingAndCostsView() {
           <span>⚡</span>
           <span>Simulador de Resolução</span>
         </button>
+
+        <button
+          role="tab"
+          id="tab-calculator"
+          aria-selected={activeTab === 'CALCULATOR'}
+          aria-controls="tabpanel-calculator"
+          onClick={() => setActiveTab('CALCULATOR')}
+          className={`px-4 py-2.5 text-xs font-bold rounded-lg transition-colors flex items-center gap-2 min-h-[44px] whitespace-nowrap ${
+            activeTab === 'CALCULATOR'
+              ? 'bg-blue-600 text-white shadow-sm'
+              : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+          }`}
+        >
+          <span>🧮</span>
+          <span>Calculadora de Margem & Cenários</span>
+        </button>
       </div>
 
       {/* Conteúdo das Abas (Tabpanels Acessíveis) */}
@@ -121,6 +138,16 @@ export function PricingAndCostsView() {
             aria-labelledby="tab-simulator"
           >
             <FeeSimulator />
+          </div>
+        )}
+
+        {activeTab === 'CALCULATOR' && (
+          <div
+            role="tabpanel"
+            id="tabpanel-calculator"
+            aria-labelledby="tab-calculator"
+          >
+            <PricingCalculator />
           </div>
         )}
       </div>

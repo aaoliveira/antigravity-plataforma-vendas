@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P015-BE",
+  "currentPrompt": "P015-FE",
   "status": "APPROVED",
-  "nextPrompt": "P015-FE",
+  "nextPrompt": "P016-BE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-19T09:51:00-03:00",
+  "lastUpdated": "2026-11-19T10:07:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -34,7 +34,8 @@
     "P013-FE",
     "P014-BE",
     "P014-FE",
-    "P015-BE"
+    "P015-BE",
+    "P015-FE"
   ],
   "gates": {
     "P000": {
@@ -490,6 +491,28 @@
       "breakEvenMathGuarded": true,
       "blockingIssues": 0,
       "prerequisites": ["P014-FE"]
+    },
+    "P015-FE": {
+      "name": "Calculadora Interativa de Precificação, Detalhamento de Margens e Cenários",
+      "status": "APPROVED",
+      "startedAt": "2026-11-19T09:59:00-03:00",
+      "completedAt": "2026-11-19T10:07:00-03:00",
+      "evidence": "docs/specs/P015-FE-pricing-calculator-view/spec.md",
+      "testsExecuted": 25,
+      "testsPassed": 25,
+      "totalFrontendSuiteTests": 170,
+      "totalBackendSuiteTests": 277,
+      "totalProjectTests": 447,
+      "buildPassed": true,
+      "typecheckPassed": true,
+      "antiHallucinationNeverLabeledAsNetProfit": true,
+      "antiHallucinationMissingFeeEnforced": true,
+      "breakEvenMathGuarded": true,
+      "scenarioComparisonEnforced": true,
+      "keyboardNavigable": true,
+      "mobileResponsive": true,
+      "blockingIssues": 0,
+      "prerequisites": ["P015-BE"]
     }
   },
   "maintenanceGates": {

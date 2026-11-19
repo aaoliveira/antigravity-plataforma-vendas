@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P015-BE = `APPROVED` (P015-FE `READY`)  
+> **Status Vigente:** PROMPT P015-FE = `APPROVED` (P016-BE `READY`)  
 > **Data:** 19/11/2026
 
 ---
@@ -40,6 +40,7 @@
 | **P014-BE** | Cadastro de Custos por Produto/Variante/Empresa e Regras de Taxas                        | **`APPROVED`** | 19/11/2026        | [docs/specs/P014-BE-product-costs-and-fee-rules/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P014-BE-product-costs-and-fee-rules/spec.md), [ProductCostServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/pricing/ProductCostServiceTest.java), [FeeRuleServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/pricing/FeeRuleServiceTest.java), [FeeResolutionServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/pricing/FeeResolutionServiceTest.java), [PricingAndCostsControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/pricing/PricingAndCostsControllerTest.java), [PostgresPricingRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/pricing/PostgresPricingRlsIntegrationTest.java)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | **SIM (P014-FE liberado)** |
 | **P014-FE** | Interface de Gestão de Custos, Tabela de Taxas e Simulador                               | **`APPROVED`** | 19/11/2026        | [docs/specs/P014-FE-pricing-and-costs-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P014-FE-pricing-and-costs-view/spec.md), [ProductCostForm.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/pricing/ProductCostForm.test.tsx), [FeeRuleForm.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/pricing/FeeRuleForm.test.tsx), [FeeSimulator.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/pricing/FeeSimulator.test.tsx), [PricingAndCostsView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/pricing/PricingAndCostsView.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | **SIM (P015-BE liberado)** |
 | **P015-BE** | Serviço Determinístico de Preço, Margem de Contribuição e Preço de Equilíbrio            | **`APPROVED`** | 19/11/2026        | [docs/specs/P015-BE-deterministic-pricing-engine/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P015-BE-deterministic-pricing-engine/spec.md), [PricingEngineServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/pricing/PricingEngineServiceTest.java), [PricingAndCostsControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/pricing/PricingAndCostsControllerTest.java) | **SIM (P015-FE liberado)** |
+| **P015-FE** | Calculadora Interativa de Precificação, Detalhamento de Margens e Cenários               | **`APPROVED`** | 19/11/2026        | [docs/specs/P015-FE-pricing-calculator-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P015-FE-pricing-calculator-view/spec.md), [PricingCalculator.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/pricing/PricingCalculator.test.tsx), [PricingAndCostsView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/pricing/PricingAndCostsView.test.tsx) | **SIM (P016-BE liberado)** |
 
 ---
 
@@ -691,3 +692,37 @@
      - 163/163 testes de frontend mantidos com 100% de sucesso.
      - Total geral do projeto: 440 testes automatizados aprovados (0 falhas, 0 erros, 0 skips).
 - **Resultado:** **`PROMPT P015-BE = APPROVED`**. O prompt subsequente (`P015-FE`) está formalmente liberado e transita para `READY`.
+
+---
+
+### Transição: PROMPT P015-FE $\rightarrow$ `APPROVED`
+
+- **Data/Hora:** 19/11/2026 10:07 BRT
+- **Avaliador:** Tech Lead / Staff Software Engineer
+- **Critérios Validados:**
+  1. **Valores Batem Fielmente com a API (`PricingCalculator.tsx`):**
+     - Integração direta e determinística via rotas BFF `/api/pricing/margins/calculate` e `/api/pricing/margins/simulate-product`.
+     - Exibição de métricas calculadas (Receita Bruta, Desconto, Receita Líquida, Deduções Totais, Margem de Contribuição em R$ e %, Preço de Equilíbrio, Preço-Alvo e Preço Mínimo).
+  2. **Acessibilidade por Teclado e Padrões WCAG 2.2 AA:**
+     - Todos os campos com rótulos semânticos `<label>` e identificadores únicos `useId()`.
+     - Mensagens de validação e erro integradas via `role="alert"` e `aria-describedby`.
+     - Todos os botões e seletores com altura mínima $\ge 44\text{px}$ garantindo touch targets adequados.
+     - Navegação fluida por Tab e tecla Enter para submissão e alternância entre modos.
+  3. **Validação Clara de Formulário:**
+     - Bloqueio e feedback imediato quando preço de venda $\le 0$, desconto $\ge$ preço de venda, alíquotas fora de $[0\%, 100\%]$ ou UUID em formato inválido no modo produto.
+  4. **Layout Mobile Utilizável e Responsivo:**
+     - Layout fluido em grid adaptativo (1 coluna em 360px móvel, 2 colunas em tablet, 4 colunas em desktop).
+     - Tabelas de cenários e de deduções encapsuladas em containers com rolagem horizontal acessível (`overflow-x-auto`).
+  5. **Simulação Comparativa de Cenários:**
+     - Comparação lado a lado entre Cenário Atual, Cenário Ponto de Equilíbrio (Break-Even) e Meta Desejada (Target Margin).
+  6. **Regras Anti-Alucinação Estritas:**
+     - **Margem de Contribuição NÃO é Lucro Líquido:** Banner permanente destacado esclarecendo a ausência de despesas fixas estruturais na conta unitária.
+     - **Avisos de Fontes e Dados Ausentes/Manuais:** Exibição ostensiva de avisos do motor quando regras aplicadas forem manuais ou quando houver taxas faltantes no canal.
+     - **Tratamento de Inviabilidade Matemática:** Mensagem explicativa e bloqueio visual elegante quando taxas variáveis $\ge 100\%$ inviabilizam o break-even.
+  7. **Testes Automatizados & Builds:**
+     - 25/25 testes do módulo de pricing aprovados (7 novos testes em `PricingCalculator.test.tsx`).
+     - 170/170 testes de frontend mantidos com 100% de sucesso em 26 arquivos.
+     - 277/277 testes de backend mantidos com 100% de sucesso.
+     - Total geral do projeto: 447 testes automatizados aprovados (0 falhas, 0 erros, 0 skips).
+     - TypeScript limpo (`tsc --noEmit`) e build de produção Next.js 15.1.7 gerando 40 rotas com sucesso.
+- **Resultado:** **`PROMPT P015-FE = APPROVED`**. O prompt subsequente (`P016-BE`) está formalmente liberado e transita para `READY`.

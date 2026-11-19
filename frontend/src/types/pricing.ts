@@ -74,3 +74,79 @@ export interface FeeResolutionResult {
   resolvedFees: ResolvedFeeItem[];
   message?: string | null;
 }
+
+export type DeductionCategory =
+  | 'DIRECT_COST'
+  | 'COMMISSION'
+  | 'FIXED_FEE'
+  | 'LOGISTICS_FEE'
+  | 'TAX'
+  | 'OTHER_VARIABLE'
+  | 'OTHER_FIXED';
+
+export interface PricingDeductionItem {
+  name: string;
+  category: DeductionCategory;
+  amount: number;
+  percentageOfNetRevenue: number;
+  appliedRate: number;
+  isPercentage: boolean;
+}
+
+export interface PricingCalculationRequest {
+  grossSellingPrice: number;
+  promotionalDiscount?: number;
+  acquisitionCost: number;
+  packagingCost?: number;
+  additionalCost?: number;
+  subsidizedShippingCost?: number;
+  channelCommissionPercent?: number;
+  channelFixedFee?: number;
+  logisticsFee?: number;
+  taxRatePercent?: number;
+  otherVariableExpensesPercent?: number;
+  otherFixedDeductions?: number;
+  minMarginPercent?: number;
+  targetMarginPercent?: number;
+  targetMarginAmount?: number;
+  currency?: string;
+}
+
+export interface PricingCalculationResult {
+  grossSellingPrice: number;
+  promotionalDiscount: number;
+  netSellingPrice: number;
+  totalDirectCosts: number;
+  totalVariableDeductions: number;
+  totalFixedDeductions: number;
+  totalDeductions: number;
+  contributionMarginAmount: number;
+  contributionMarginPercent: number;
+  breakEvenPrice: number | null;
+  isBreakEvenAttainable: boolean;
+  minPrice: number | null;
+  isMinPriceAttainable: boolean;
+  targetPrice: number | null;
+  isTargetPriceAttainable: boolean;
+  currency: string;
+  formulaVersion: string;
+  calculatedAt: string;
+  deductionItems: PricingDeductionItem[];
+  assumptions: string[];
+  warnings: string[];
+}
+
+export interface ProductMarginSimulationRequest {
+  productId: string;
+  variantId?: string | null;
+  companyId?: string | null;
+  marketplace: string;
+  grossSellingPrice: number;
+  promotionalDiscount?: number;
+  listingType?: string | null;
+  category?: string | null;
+  referenceDate?: string | null;
+  minMarginPercent?: number | null;
+  targetMarginPercent?: number | null;
+  targetMarginAmount?: number | null;
+}
