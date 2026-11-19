@@ -19,6 +19,7 @@ import { PricingAndCostsView } from './pricing/PricingAndCostsView';
 import { CompaniesAndAccountsView } from './company/CompaniesAndAccountsView';
 import { FinancialFactsDashboardView } from './financial/FinancialFactsDashboardView';
 import { ListingAnalyticsDashboardView } from './listinganalytics/ListingAnalyticsDashboardView';
+import { AiAssistantView } from './aiassistant/AiAssistantView';
 
 export interface NavModule {
   id: string;
@@ -99,12 +100,12 @@ export const navModules: NavModule[] = [
   },
   {
     id: 'ASSISTANT',
-    name: 'Assistente & MCP Read-Only',
+    name: 'Assistente de IA & Governança',
     shortLabel: 'Assistente',
     pillarKey: 'AI',
     pillarName: 'AI Commerce',
-    description: 'Assistente conversacional fundamentado em RAG interno e servidor MCP somente leitura.',
-    status: 'PLANNED',
+    description: 'Consultoria assistiva multi-canal fundamentada em ferramentas determinísticas e isolamento multi-tenant.',
+    status: 'READY',
     provenience: 'INTERNAL_TOOLS_ONLY',
   },
 
@@ -447,6 +448,8 @@ export const AppShell: React.FC = () => {
             <FinancialFactsDashboardView />
           ) : activeModule.id === 'COMPANIES' ? (
             <CompaniesAndAccountsView />
+          ) : activeModule.id === 'ASSISTANT' ? (
+            <AiAssistantView />
           ) : (
             <ModulePlaceholder
               moduleId={activeModule.id}

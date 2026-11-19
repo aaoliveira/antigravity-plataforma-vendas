@@ -210,4 +210,15 @@ describe('AppShell Component (Shell Responsivo & Navegação)', () => {
       screen.getByRole('heading', { name: /Analytics de Anúncios & Desempenho Oficial/i })
     ).toBeInTheDocument();
   });
+
+  it('deve renderizar a tela AiAssistantView ao selecionar o módulo ASSISTANT (Assistente de IA & Governança)', () => {
+    render(<AppShell />);
+
+    const assistantBtns = screen.getAllByRole('button', { name: /Assistente de IA/i });
+    fireEvent.click(assistantBtns[0]);
+
+    expect(
+      screen.getByRole('heading', { name: /Assistente de IA & Governança Analítica/i })
+    ).toBeInTheDocument();
+  });
 });

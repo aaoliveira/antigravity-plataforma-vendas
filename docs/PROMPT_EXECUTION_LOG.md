@@ -3216,3 +3216,67 @@ DOCUMENTATION UPDATED:
 - docs/PROMPT_EXECUTION_LOG.md
 NEXT PROMPT: UNLOCKED (P019-FE liberado para READY).
 ```
+
+---
+
+## Execução: PROMPT P019-FE
+
+```text
+PROMPT ID: P019-FE
+FEATURE: Interface do Assistente de IA, Chat com Ferramentas e Indicador de Custo/Origem
+STATUS: APPROVED
+DESCRIPTION: Interface do Assistente de IA com Histórico Tenant-Scoped, Indicação de Fontes, Data dos Dados, Aviso de Estimativa, Feedback de Resposta e Sem Botões de Execução Externa no MVP.
+CHANGES MADE:
+- docs/specs/P019-FE-ai-assistant-view/spec.md
+- frontend/src/types/aiassistant.ts
+- frontend/src/app/api/ai/execute/route.ts
+- frontend/src/app/api/ai/prompts/route.ts
+- frontend/src/app/api/ai/tools/route.ts
+- frontend/src/app/api/ai/audits/route.ts
+- frontend/src/components/aiassistant/AiUsageMetricsPill.tsx
+- frontend/src/components/aiassistant/AiSourcesDrawer.tsx
+- frontend/src/components/aiassistant/AiChatMessage.tsx
+- frontend/src/components/aiassistant/AiAssistantView.tsx
+- frontend/src/components/aiassistant/AiAssistantView.test.tsx
+- frontend/src/components/AppShell.tsx
+- frontend/src/components/AppShell.test.tsx
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+COMMANDS EXECUTED:
+- npx tsc --noEmit (0 erros)
+- npx vitest run src/components/aiassistant/AiAssistantView.test.tsx (7 testes aprovados)
+- npx vitest run src/components/AppShell.test.tsx (15 testes aprovados)
+- npm test -- --run (208 testes de frontend aprovados em 31 arquivos, 100% de sucesso)
+- npm run build (Next.js 15.1.7 build de produção aprovado, 46 rotas compiladas)
+- cd backend && ./mvnw test -q (398 testes de backend mantidos com 100% de sucesso)
+TEST RESULTS:
+- Frontend: 208/208 testes aprovados em 31 arquivos (0 falhas, 0 erros).
+- Backend: 398/398 testes aprovados (0 falhas, 0 erros, 0 skips).
+- Total Geral do Projeto: 606 testes automatizados aprovados sem regressões.
+POLICY EVIDENCE:
+- Critério de Aceite 1: Fontes Acessíveis:
+  * AiSourcesDrawer permite inspecionar cada ferramenta executada (catalog:marketplace_listings, pricing:PricingEngineService, analytics:connected_account_metrics), seus dados estruturados brutos, timestamps e notas de indisponibilidade.
+- Critério de Aceite 2: Respostas Não Alegam Ação Executada:
+  * Badge permanente "Modo Consultivo / Informativo: Esta resposta é analítica e baseada em dados históricos/configurações. Nenhuma ação externa foi disparada ou executada em marketplaces."
+  * Disclaimer anti-alucinação explícito e avisos de dados ausentes ou estimativas.
+- Critério de Aceite 3: Sem Botões de Execução Externa no MVP:
+  * Verificado via teste automatizado que nenhuma ação de mutação externa existe no DOM (sem botões de alteração no Mercado Livre ou Shopee).
+- Critério de Aceite 4: Erros e Limites Claros:
+  * AiUsageMetricsPill exibe tokens de entrada e saída, latência em ms e custo financeiro estimado formatado em BRL.
+  * Tentativas de prompt injection são interceptadas com banner amigável RFC 7807 indicando o código da violação de segurança sem expor dados internos.
+- Critério de Aceite 5: Feedback de Resposta Operacional:
+  * Botões Útil e Não útil com formulário para envio de feedback do operador.
+- Critério de Aceite 6: Acessível e Responsivo:
+  * WCAG 2.1 AA (role="log", aria-live="polite", role="tablist", touch targets >= 44px, fechamento por ESC). Layout mobile responsivo para telas >= 360px sem overflow horizontal.
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+DOCUMENTATION UPDATED:
+- docs/specs/P019-FE-ai-assistant-view/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+NEXT PROMPT: UNLOCKED (P020-BE liberado para READY).
+```

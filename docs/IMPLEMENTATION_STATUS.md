@@ -57,7 +57,7 @@
 | **P018-BE** | Inventário de Métricas Oficiais por Canal, Catálogo Documentado e Ingestão               | E08   | Backend    | **`PASSED`**   | P017-FE (`PASSED`)    | 19/11/2026     |
 | **P018-FE** | Dashboard de Analytics por Anúncio, Período, Comparação Temporal e Aviso de Indisponível | E08   | Frontend   | **`PASSED`**   | P018-BE (`PASSED`)    | 19/11/2026     |
 | **P019-BE** | Gateway Multi-Provider com Secrets, Defesa Prompt Injection e Tool Calling Read-Only     | E10   | Backend    | **`PASSED`**   | P018-FE (`PASSED`)    | 19/11/2026     |
-| **P019-FE** | Assistente de IA Interativo, Chat com Ferramentas e Indicador de Custo/Origem             | E10   | Frontend   | `READY`        | P019-BE (`PASSED`)    | ---            |
+| **P019-FE** | Assistente de IA Interativo, Chat com Ferramentas e Indicador de Custo/Origem             | E10   | Frontend   | **`PASSED`**   | P019-BE (`PASSED`)    | 19/11/2026     |
 
 ---
 

@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P019-BE",
+  "currentPrompt": "P019-FE",
   "status": "APPROVED",
-  "nextPrompt": "P019-FE",
+  "nextPrompt": "P020-BE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-19T15:37:00-03:00",
+  "lastUpdated": "2026-11-19T15:50:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -42,7 +42,8 @@
     "P017-FE",
     "P018-BE",
     "P018-FE",
-    "P019-BE"
+    "P019-BE",
+    "P019-FE"
   ],
   "gates": {
     "P000": {
@@ -665,6 +666,27 @@
       "rlsPostgresIsolationVerified": true,
       "blockingIssues": 0,
       "prerequisites": ["P018-FE"]
+    },
+    "P019-FE": {
+      "name": "Interface do Assistente de IA, Chat com Ferramentas e Indicador de Custo/Origem",
+      "status": "APPROVED",
+      "startedAt": "2026-11-19T15:40:00-03:00",
+      "approvedAt": "2026-11-19T15:50:00-03:00",
+      "evidence": "docs/specs/P019-FE-ai-assistant-view/spec.md",
+      "testsExecuted": 8,
+      "testsPassed": 8,
+      "totalBackendSuiteTests": 398,
+      "totalFrontendSuiteTests": 208,
+      "totalProjectTests": 606,
+      "buildPassed": true,
+      "sourcesAccessibleVerified": true,
+      "responsesDoNotClaimExecutionVerified": true,
+      "noExternalExecutionButtonsVerified": true,
+      "errorsAndLimitsClearVerified": true,
+      "responseFeedbackWorkingVerified": true,
+      "accessibleAndResponsiveVerified": true,
+      "blockingIssues": 0,
+      "prerequisites": ["P019-BE"]
     }
   },
   "maintenanceGates": {

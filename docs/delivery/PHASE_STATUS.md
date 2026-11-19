@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P019-BE = `APPROVED` (P019-FE Liberado)  
+> **Status Vigente:** PROMPT P019-FE = `APPROVED` (P020-BE Liberado)  
 > **Data:** 19/11/2026
 
 ---
@@ -48,6 +48,7 @@
 | **P018-BE** | Inventário de Métricas Oficiais por Canal, Catálogo Documentado e Ingestão               | **`APPROVED`** | 19/11/2026        | [docs/specs/P018-BE-official-metrics-inventory/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P018-BE-official-metrics-inventory/spec.md), [AccountMetricIngestionServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/listinganalytics/AccountMetricIngestionServiceTest.java), [MetricFormulaEngineTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/listinganalytics/MetricFormulaEngineTest.java), [PostgresConnectedAccountMetricsRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/listinganalytics/PostgresConnectedAccountMetricsRlsIntegrationTest.java)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | **SIM (P018-FE liberado)** |
 | **P018-FE** | Dashboard de Analytics por Anúncio, Período, Comparação Temporal e Aviso de Indisponível | **`APPROVED`** | 19/11/2026        | [docs/specs/P018-FE-listing-analytics-dashboard/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P018-FE-listing-analytics-dashboard/spec.md), [ListingAnalyticsDashboardView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/listinganalytics/ListingAnalyticsDashboardView.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | **SIM (P019-BE liberado)** |
 | **P019-BE** | Gateway Multi-Provider com Secrets, Defesa Prompt Injection e Tool Calling Read-Only     | **`APPROVED`** | 19/11/2026        | [docs/specs/P019-BE-ai-gateway-and-readonly-tools/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P019-BE-ai-gateway-and-readonly-tools/spec.md), [DefaultAiSecretManagerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/gateway/DefaultAiSecretManagerTest.java), [PromptInjectionDefenseServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/security/PromptInjectionDefenseServiceTest.java), [AiToolRegistryAndInternalToolsTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/tools/AiToolRegistryAndInternalToolsTest.java), [AiGatewayServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/service/AiGatewayServiceTest.java), [AiAssistantControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/AiAssistantControllerTest.java), [PostgresAiAuditRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/PostgresAiAuditRlsIntegrationTest.java) | **SIM (P019-FE liberado)** |
+| **P019-FE** | Assistente de IA Interativo, Chat com Ferramentas e Indicador de Custo/Origem             | **`APPROVED`** | 19/11/2026        | [docs/specs/P019-FE-ai-assistant-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P019-FE-ai-assistant-view/spec.md), [AiAssistantView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/aiassistant/AiAssistantView.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (P020-BE liberado)** |
 
 ---
 
@@ -990,3 +991,42 @@
      - Total geral do projeto: 598 testes automatizados aprovados sem regressões.
      - ModularArchitectureTest (ArchUnit): conformidade estrita mantida com zero dependências cíclicas.
 - **Resultado:** **`PROMPT P019-BE = APPROVED`**. O prompt subsequente (`P019-FE`) está formalmente liberado e transita para `READY`.
+
+---
+
+### Transição: PROMPT P019-FE $\rightarrow$ `APPROVED`
+
+- **Data/Hora:** 19/11/2026 15:52 BRT
+- **Avaliador:** Tech Lead / Staff Software Engineer
+- **Critérios Validados:**
+  1. **Histórico Tenant-Scoped e Sessão Segura (`AiAssistantView.tsx`, `ChatMessage`):**
+     - Sessão de chat mantida no escopo do tenant autenticado (`x-tenant-id`), isolando histórico, sugestões e consumo de IA.
+     - Indicador visual explícito do tenant ativo no cabeçalho do assistente.
+  2. **Indicação Transparente de Fontes e Data dos Dados (`AiSourcesDrawer.tsx`, `AiChatMessage.tsx`):**
+     - Cada resposta exibe lista de ferramentas/fontes invocadas (`catalog:marketplace_listings`, `pricing:PricingEngineService`, `analytics:connected_account_metrics`).
+     - Gaveta deslizante lateral (`AiSourcesDrawer`) acessível via teclado e clique para inspeção aprofundada dos dados brutos retornados pelas ferramentas, status de execução, notas de indisponibilidade e carimbos de data/hora (UTC e fuso local).
+  3. **Avisos de Estimativa e Respostas Não Alegam Ação Executada:**
+     - Respostas de IA acompanhadas de badge e alerta institucional: "Modo Consultivo / Informativo: Esta resposta é analítica e baseada em dados históricos/configurações. Nenhuma ação externa foi disparada ou executada em marketplaces."
+     - Disclaimer permanente destacando a natureza consultiva e ausência de alucinação (dados ausentes reportados com status explícito).
+  4. **Proibição Estrita de Botões de Execução Externa no MVP:**
+     - Nenhuma ação de mutação externa exposta na interface do assistente (sem botões como "alterar preço no Mercado Livre", "pausar anúncio no Shopee", etc.).
+     - Testes automatizados verificam explicitamente a ausência de termos de execução ou botões que aleguem alterar marketplaces externos.
+  5. **Erros e Limites Claros (`AiUsageMetricsPill.tsx`, RFC 7807):**
+     - Pill de métricas de consumo exibe contagem precisa de tokens (Prompt + Completion), latência em ms e custo financeiro estimado formatado em BRL (`R$ 0,0003`).
+     - Detecção e bloqueio de Prompt Injection reportados com banner amigável e seguro, indicando o código de segurança (`INSTRUCTION_OVERRIDE`, etc.) sem quebrar a interface ou vazar dados internos.
+  6. **Feedback de Resposta Operacional:**
+     - Botões de feedback "Útil" e "Não útil" por mensagem, permitindo registro de comentários do operador para aprimoramento contínuo.
+  7. **Aba de Auditoria de Consumo do Tenant:**
+     - Tabela dedicada de trilha de auditoria (`ai_usage_audits`) permitindo consulta de tokens, custo acumulado, ferramenta executada e status de segurança (inclusive tentativas bloqueadas).
+  8. **Acessibilidade e Responsividade:**
+     - Conformidade WCAG 2.1 AA (`role="log"`, `aria-live="polite"`, `role="tablist"`, touch targets $\ge 44$px, suporte a Escape).
+     - Layout adaptativo e utilizável em telas mobile ($\ge 360$px) sem overflow horizontal.
+  9. **Testes Automatizados & Builds:**
+     - 7 novos testes criados em `AiAssistantView.test.tsx` (100% aprovados).
+     - 1 novo teste de navegação em `AppShell.test.tsx` (15/15 testes aprovados).
+     - Suíte frontend: 208/208 testes aprovados em 31 arquivos (0 falhas).
+     - TypeScript verificado com zero erros (`npx tsc --noEmit`).
+     - Build de produção Next.js 15.1.7 (`next build`) aprovado com 46 rotas compiladas e geradas.
+     - Suíte backend: 398/398 testes aprovados (0 falhas, 0 erros, 0 skips).
+     - Total geral do projeto: 606 testes automatizados aprovados (398 backend + 208 frontend).
+- **Resultado:** **`PROMPT P019-FE = APPROVED`**. O prompt subsequente (`P020-BE`) está formalmente liberado e transita para `READY`.
