@@ -3417,3 +3417,90 @@ DOCUMENTATION UPDATED:
 - docs/IMPLEMENTATION_STATUS.md
 - docs/PROMPT_EXECUTION_LOG.md
 NEXT PROMPT: UNLOCKED (P021-BE liberado para READY).
+
+
+## PROMPT P021-BE: Exportação Assíncrona CSV/XLSX com Filtros Persistidos, Sanitização de Fórmulas e Auditoria
+- Date: 19/11/2026
+- Status: APPROVED
+FILES CREATED / MODIFIED:
+- backend/pom.xml (adição da dependência poi-ooxml 5.4.0)
+- backend/src/main/resources/db/migration/V18__async_export_jobs_and_audit.sql
+- backend/src/main/resources/db/migration-postgresql/V18_1__postgresql_rls_async_export.sql
+- backend/src/main/java/com/sellerintelligence/modules/reporting/model/ExportDataset.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/model/ExportFileFormat.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/model/ExportJobStatus.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/model/ExportAuditAction.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/model/ExportDataPage.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/model/ExportRequestDto.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/model/ExportJobResponseDto.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/model/ExportAuditLogDto.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/entity/ExportJob.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/entity/ExportAuditLog.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/repository/ExportJobRepository.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/repository/ExportAuditLogRepository.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/security/CsvFormulaSanitizer.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/security/ExportExpiredException.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/security/ExportAccessDeniedException.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/security/ExportNotFoundException.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/storage/TenantStorageService.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/generator/CsvExportGenerator.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/generator/XlsxExportGenerator.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/provider/ExportDataProvider.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/provider/FinancialFactsExportDataProvider.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/provider/OrdersExportDataProvider.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/provider/CatalogExportDataProvider.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/provider/MetricsExportDataProvider.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/provider/ExportDataProviderRegistry.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/service/ExportAuditService.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/service/ExportJobService.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/ExportJobController.java
+- backend/src/main/java/com/sellerintelligence/modules/reporting/ReportingExceptionHandler.java
+- backend/src/test/java/com/sellerintelligence/modules/reporting/security/CsvFormulaSanitizerTest.java
+- backend/src/test/java/com/sellerintelligence/modules/reporting/storage/TenantStorageServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/reporting/generator/CsvExportGeneratorTest.java
+- backend/src/test/java/com/sellerintelligence/modules/reporting/generator/XlsxExportGeneratorTest.java
+- backend/src/test/java/com/sellerintelligence/modules/reporting/service/ExportJobServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/reporting/ExportJobControllerTest.java
+- backend/src/test/java/com/sellerintelligence/modules/reporting/PostgresExportRlsIntegrationTest.java
+- docs/specs/P021-BE-async-export-and-audit/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+COMMANDS EXECUTED:
+- cd backend && ./mvnw test -Dtest=CsvFormulaSanitizerTest (28 testes aprovados)
+- cd backend && ./mvnw test -Dtest=TenantStorageServiceTest (4 testes aprovados)
+- cd backend && ./mvnw test -Dtest=CsvExportGeneratorTest (3 testes aprovados)
+- cd backend && ./mvnw test -Dtest=XlsxExportGeneratorTest (2 testes aprovados)
+- cd backend && ./mvnw test -Dtest=ExportJobServiceTest (6 testes aprovados)
+- cd backend && ./mvnw test -Dtest=ExportJobControllerTest (5 testes aprovados)
+- cd backend && ./mvnw test -Dtest=PostgresExportRlsIntegrationTest (1 teste de integração PostgreSQL 17 com RLS aprovado)
+- cd backend && ./mvnw test -Dtest=ModularArchitectureTest (3 testes ArchUnit aprovados, zero ciclos)
+- cd backend && ./mvnw test (478 testes de backend aprovados, 0 falhas, 0 erros, 0 skips)
+- cd frontend && npm test -- --run (218 testes de frontend mantidos com 100% de sucesso)
+TEST RESULTS:
+- Backend: 478/478 testes aprovados (0 falhas, 0 erros, 0 skips), totalizando 49 novos testes.
+- Frontend: 218/218 testes mantidos em 32 arquivos (100% de sucesso).
+- Total Geral do Projeto: 696 testes automatizados aprovados sem regressões.
+POLICY EVIDENCE:
+- Critério de Aceite 1: Exportação Não Cruza Tenant:
+  * Provedores de dados realizam consultas estritamente filtradas por tenantId. No download, a sessão ativa é comparada com o tenant proprietário do job; qualquer tentativa divergente é bloqueada com HTTP 403 Forbidden e auditoria EXPORT_CROSS_TENANT_ACCESS_BLOCKED.
+- Critério de Aceite 2: Fórmulas Perigosas Neutralizadas:
+  * CsvFormulaSanitizer neutraliza células iniciadas por '=', '+', '-', '@', '|', '\t' e '\r' prefixando apóstrofo ('), prevenindo CSV Formula Injection / DDE em Excel e Google Sheets, preservando valores puramente numéricos.
+- Critério de Aceite 3: Link Expira:
+  * URLs de download contêm token seguro e expiram conforme expiresAt (default 24h). Tentativas de download após expiração retornam HTTP 410 Gone com auditoria EXPORT_EXPIRED_ACCESS_ATTEMPT.
+- Critério de Aceite 4: Job Idempotente:
+  * Submissões com a mesma idempotencyKey pelo mesmo tenant retornam o job existente se estiver em andamento ou completado dentro da validade, prevenindo reprocessamentos desnecessários.
+- Critério de Aceite 5: Auditoria Registrada:
+  * ExportAuditService persiste eventos de auditoria (EXPORT_REQUESTED, EXPORT_COMPLETED, EXPORT_FAILED, EXPORT_DOWNLOADED, EXPORT_EXPIRED_ACCESS_ATTEMPT e EXPORT_CROSS_TENANT_ACCESS_BLOCKED) com tenant_id, job_id, user_id, IP e timestamp.
+- Critério de Aceite 6: Isolamento Multi-Tenant com PostgreSQL 17 RLS:
+  * Teste PostgresExportRlsIntegrationTest comprova via Testcontainers real que as tabelas export_jobs e export_audit_logs possuem RLS mandatório ativo, tornando os dados do Tenant Alpha totalmente invisíveis ao Tenant Beta.
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+DOCUMENTATION UPDATED:
+- docs/specs/P021-BE-async-export-and-audit/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+NEXT PROMPT: UNLOCKED (P021-FE liberado para READY).

@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P020-FE",
+  "currentPrompt": "P021-BE",
   "status": "APPROVED",
-  "nextPrompt": "P021-BE",
+  "nextPrompt": "P021-FE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-19T16:35:00-03:00",
+  "lastUpdated": "2026-11-19T17:08:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -45,7 +45,8 @@
     "P019-BE",
     "P019-FE",
     "P020-BE",
-    "P020-FE"
+    "P020-FE",
+    "P021-BE"
   ],
   "gates": {
     "P000": {
@@ -731,6 +732,27 @@
       "accessibleAndResponsiveVerified": true,
       "blockingIssues": 0,
       "prerequisites": ["P020-BE"]
+    },
+    "P021-BE": {
+      "name": "Exportação Assíncrona CSV/XLSX com Filtros Persistidos, Sanitização de Fórmulas e Auditoria",
+      "status": "APPROVED",
+      "startedAt": "2026-11-19T16:47:00-03:00",
+      "approvedAt": "2026-11-19T17:08:00-03:00",
+      "evidence": "docs/specs/P021-BE-async-export-and-audit/spec.md",
+      "testsExecuted": 49,
+      "testsPassed": 49,
+      "totalBackendSuiteTests": 478,
+      "totalFrontendSuiteTests": 218,
+      "totalProjectTests": 696,
+      "buildPassed": true,
+      "exportDoesNotCrossTenantVerified": true,
+      "dangerousFormulasNeutralizedVerified": true,
+      "linkExpiresVerified": true,
+      "jobIdempotentVerified": true,
+      "auditRecordedVerified": true,
+      "rlsPostgresIsolationVerified": true,
+      "blockingIssues": 0,
+      "prerequisites": ["P020-FE"]
     }
   },
   "maintenanceGates": {

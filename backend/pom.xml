@@ -82,6 +82,13 @@
             <artifactId>spring-modulith-starter-core</artifactId>
         </dependency>
 
+        <!-- Apache POI for secure XLSX exports -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.4.0</version>
+        </dependency>
+
         <!-- Testing Dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

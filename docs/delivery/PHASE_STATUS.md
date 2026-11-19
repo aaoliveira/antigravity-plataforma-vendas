@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P020-FE = `APPROVED` | P021-BE = `READY`  
+> **Status Vigente:** PROMPT P021-BE = `APPROVED` | P021-FE = `READY`  
 > **Data:** 19/11/2026
 
 ---
@@ -51,6 +51,7 @@
 | **P019-FE** | Assistente de IA Interativo, Chat com Ferramentas e Indicador de Custo/Origem             | **`APPROVED`** | 19/11/2026        | [docs/specs/P019-FE-ai-assistant-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P019-FE-ai-assistant-view/spec.md), [AiAssistantView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/aiassistant/AiAssistantView.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (P020-BE liberado)** |
 | **P020-BE** | Geração de Título e Descrição como Rascunho com Restrição de Claims                       | **`APPROVED`** | 19/11/2026        | [docs/specs/P020-BE-draft-listing-generation/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P020-BE-draft-listing-generation/spec.md), [ListingClaimGuardrailServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/guardrails/ListingClaimGuardrailServiceTest.java), [MarketplaceLimitCatalogTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/catalog/MarketplaceLimitCatalogTest.java), [DraftListingServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/service/DraftListingServiceTest.java), [DraftListingControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/DraftListingControllerTest.java), [PostgresDraftListingRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/PostgresDraftListingRlsIntegrationTest.java) | **SIM (P020-FE liberado)** |
 | **P020-FE** | Editor de Rascunho com Comparação, Contagem de Caracteres e Versões                      | **`APPROVED`** | 19/11/2026        | [docs/specs/P020-FE-draft-listing-editor-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P020-FE-draft-listing-editor-view/spec.md), [DraftListingEditorView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/draftlisting/DraftListingEditorView.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (P021-BE liberado)** |
+| **P021-BE** | Exportação Assíncrona CSV/XLSX com Sanitização de Fórmulas e Auditoria                   | **`APPROVED`** | 19/11/2026        | [docs/specs/P021-BE-async-export-and-audit/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P021-BE-async-export-and-audit/spec.md), [CsvFormulaSanitizerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/security/CsvFormulaSanitizerTest.java), [TenantStorageServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/storage/TenantStorageServiceTest.java), [CsvExportGeneratorTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/generator/CsvExportGeneratorTest.java), [XlsxExportGeneratorTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/generator/XlsxExportGeneratorTest.java), [ExportJobServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/service/ExportJobServiceTest.java), [ExportJobControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/ExportJobControllerTest.java), [PostgresExportRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/PostgresExportRlsIntegrationTest.java) | **SIM (P021-FE liberado)** |
 
 ---
 
@@ -1119,3 +1120,51 @@
      - Suíte backend: 429/429 testes mantidos com 100% de sucesso.
      - Total geral do projeto: 647 testes automatizados aprovados (429 backend + 218 frontend).
 - **Resultado:** **`PROMPT P020-FE = APPROVED`**. O prompt subsequente (`P021-BE`) está formalmente liberado e transita para `READY`.
+
+
+---
+
+### Transição: PROMPT P021-BE $\rightarrow$ `APPROVED`
+
+- **Data/Hora:** 19/11/2026 17:08 BRT
+- **Avaliador:** Tech Lead / Staff Software Engineer
+- **Critérios Validados:**
+  1. **Isolamento de Dados do Tenant (Zero Cross-Tenant Leakage):**
+     - O processamento de exportação coleta estritamente dados autorizados do próprio tenant (`FINANCIAL_FACTS`, `ORDERS`, `CATALOG`, `METRICS`) com cláusula mandatória `tenant_id = :tenantId`.
+     - O download do arquivo valida em tempo de execução:
+       * A sessão ativa do tenant (`TenantContextHolder.getRequiredTenantId()`) DEVE ser idêntica ao `tenantId` do job.
+       * Tentativas de download cross-tenant são bloqueadas com HTTP 403 Forbidden e RFC 7807 (`ExportAccessDeniedException`), registrando evento de auditoria `EXPORT_CROSS_TENANT_ACCESS_BLOCKED`.
+  2. **Sanitização Severa contra CSV Formula Injection (`CsvFormulaSanitizer.java`):**
+     - Células que iniciam com `=`, `+`, `-`, `@`, `|`, `\t` ou `\r` (incluindo variações com espaços em branco à esquerda) são neutralizadas prefixando `'` tanto no gerador CSV quanto nas células do Excel XLSX.
+     - Valores numéricos puros (ex: `-15.50`, `+100`) são preservados sem perda de tipagem nativa.
+     - Suíte exaustiva de testes parametrizados com vetores OWASP ASVS Nível 2 comprovam a neutralização.
+  3. **Storage Privado com Namespace por Tenant (`TenantStorageService.java`):**
+     - Armazenamento em diretório privado isolado: `tenants/{tenant_id}/exports/{job_id}.{csv|xlsx}`.
+     - Validação anti-path traversal no `tenantId` e `fileName`, rejeitando qualquer tentativa com `..`, `/` ou `\`.
+     - Nenhum arquivo é salvo em diretório estático público ou acessível diretamente via web.
+  4. **Expiração Automática e URLs Temporárias Assinadas:**
+     - Cada job completado gera token criptográfico seguro de 64 caracteres hex (`downloadToken`) e expiração finita (`expires_at`, padrão 24 horas).
+     - Tentativas de acesso com token inválido retornam HTTP 403 Forbidden.
+     - Tentativas de download após `expires_at` são bloqueadas com HTTP 410 Gone (`EXPORT_EXPIRED`) e evento de auditoria `EXPORT_EXPIRED_ACCESS_ATTEMPT`.
+  5. **Job Idempotente e Limite Rígido de Linhas:**
+     - Solicitações repetidas com a mesma chave `idempotencyKey` pelo mesmo tenant retornam o job existente se estiver em andamento ou completado dentro do prazo de validade, sem reprocessar dados ou reexecutar I/O.
+     - Suporte a limitação de linhas com teto rígido (`maxRows`, teto 50.000), sinalizando `is_truncated = true` caso o dataset ultrapasse o limite.
+  6. **Trilha de Auditoria Completa (`ExportAuditService.java`):**
+     - Registro persistente em banco de dados (`export_audit_logs`) para as ações: `EXPORT_REQUESTED`, `EXPORT_COMPLETED`, `EXPORT_FAILED`, `EXPORT_DOWNLOADED`, `EXPORT_EXPIRED_ACCESS_ATTEMPT` e `EXPORT_CROSS_TENANT_ACCESS_BLOCKED`.
+  7. **Isolamento em Profundidade com PostgreSQL 17 RLS:**
+     - Migrações Flyway `V18__async_export_jobs_and_audit.sql` e `V18_1__postgresql_rls_async_export.sql` com ativação mandatória de `FORCE ROW LEVEL SECURITY`.
+     - Teste de integração real com Testcontainers PostgreSQL 17 em `PostgresExportRlsIntegrationTest.java` comprova isolamento hermético entre tenants no banco de dados.
+  8. **Testes Automatizados & Arquitetura:**
+     - 49 novos testes de backend criados e aprovados:
+       - 28 testes em `CsvFormulaSanitizerTest`
+       - 4 testes em `TenantStorageServiceTest`
+       - 3 testes em `CsvExportGeneratorTest`
+       - 2 testes em `XlsxExportGeneratorTest`
+       - 6 testes em `ExportJobServiceTest`
+       - 5 testes em `ExportJobControllerTest`
+       - 1 teste de integração Testcontainers PostgreSQL 17 em `PostgresExportRlsIntegrationTest`
+     - Suíte backend: 478/478 testes aprovados (0 falhas, 0 erros, 0 skips).
+     - Suíte frontend: 218/218 testes aprovados em 32 arquivos (0 falhas).
+     - Total geral do projeto: 696 testes automatizados aprovados (478 backend + 218 frontend).
+     - `ModularArchitectureTest` (ArchUnit): conformidade estrita mantida com zero dependências cíclicas.
+- **Resultado:** **`PROMPT P021-BE = APPROVED`**. O prompt subsequente (`P021-FE`) está formalmente liberado e transita para `READY`.
