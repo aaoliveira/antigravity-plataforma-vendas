@@ -1,6 +1,6 @@
 # Status de Implementação e Quality Gates do Roadmap
 
-> **Status Atual Geral:** PROMPT P017-BE = `PASSED` | P017-FE = `READY`  
+> **Status Atual Geral:** PROMPT P017-FE = `IN_PROGRESS` | P018-BE = `READY`  
 > **Data da Última Atualização:** 19/11/2026  
 > **Regra de Transição:** O próximo prompt só é liberado para `IN_PROGRESS` quando o anterior atingir formalmente `PASSED`.
 
@@ -53,7 +53,8 @@
 | **P016-BE** | Empresas/CNPJs e Vínculo Financeiro de Contas Conectadas                                 | E07   | Backend    | **`PASSED`**   | P015-FE (`PASSED`)    | 19/11/2026     |
 | **P016-FE** | Cadastro de Empresas e Vínculo de Contas de Marketplace                                  | E07   | Frontend   | **`PASSED`**   | P016-BE (`PASSED`)    | 19/11/2026     |
 | **P017-BE** | Fatos Financeiros por Pedido/Item, Reconciliação e Trilha de Cálculo                     | E09   | Backend    | **`PASSED`**   | P016-FE (`PASSED`)    | 19/11/2026     |
-| **P017-FE** | Visão Financeira por Pedido/Item, Reconciliação e DRE Simplificada                       | E09   | Frontend   | `READY`        | P017-BE (`PASSED`)    | ---            |
+| **P017-FE** | Painel Financeiro, Filtros Combináveis e Detalhamento de Componentes                     | E09   | Frontend   | **`PASSED`**   | P017-BE (`PASSED`)    | 19/11/2026     |
+| **P018-BE** | Classificação de Despesas Fixas, Custos Operacionais e Rateio Financeiro                 | E09   | Backend    | `READY`        | P017-FE (`PASSED`)    | ---            |
 
 ---
 

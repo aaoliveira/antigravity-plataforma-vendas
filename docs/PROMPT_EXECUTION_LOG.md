@@ -2888,3 +2888,78 @@ DOCUMENTATION UPDATED:
 - docs/PROMPT_EXECUTION_LOG.md
 NEXT PROMPT: UNLOCKED (P017-FE liberado para READY).
 ```
+
+---
+
+## Execução: PROMPT 017-FE
+
+```text
+PROMPT ID: P017-FE
+FEATURE: Painel Financeiro, Filtros Combináveis, Detalhamento de Componentes, DRE Simplificada e Alertas de Incompletude
+STATUS: PASSED
+PRE-FLIGHT:
+- Verificado pré-requisito P017-BE como APPROVED em docs/delivery/phase-gate.json.
+- Verificadas as regras de anti-alucinação: proibição rigorosa de rotular Margem de Contribuição como Lucro Líquido.
+- Confirmado padrão BFF Next.js 15 e integração de testes com Vitest / React Testing Library.
+DOCUMENTS REVIEWED:
+- docs/PRD.md (RF-017, RF-018, RNF-001, RNF-004, RNF-005, RNF-006)
+- docs/ARCHITECTURE.md
+- docs/SECURITY.md
+- docs/ENGINEERING_RULES.md
+- .agents/rules/architecture-and-stack.md
+- .agents/rules/testing-and-quality.md
+- .agents/rules/phase-gates.md
+- docs/specs/P017-FE-financial-dashboard-view/spec.md
+DEPENDENCIES:
+- P017-BE (Aprovado).
+FILES CREATED:
+- docs/specs/P017-FE-financial-dashboard-view/spec.md
+- frontend/src/types/financial.ts
+- frontend/src/app/api/financial-facts/route.ts
+- frontend/src/app/api/financial-facts/summary/route.ts
+- frontend/src/app/api/financial-facts/orders/[orderId]/route.ts
+- frontend/src/app/api/financial-facts/orders/[orderId]/compute/route.ts
+- frontend/src/app/api/financial-facts/orders/[orderId]/reconcile/route.ts
+- frontend/src/components/financial/FinancialKpiCards.tsx
+- frontend/src/components/financial/FinancialFiltersBar.tsx
+- frontend/src/components/financial/FinancialFactsTable.tsx
+- frontend/src/components/financial/FinancialFactDetailDrawer.tsx
+- frontend/src/components/financial/ReconcileSettlementModal.tsx
+- frontend/src/components/financial/FinancialFactsDashboardView.tsx
+- frontend/src/components/financial/FinancialFactsDashboardView.test.tsx
+FILES MODIFIED:
+- frontend/src/components/AppShell.tsx
+- frontend/src/components/AppShell.test.tsx
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+COMMANDS EXECUTED:
+- cd frontend && npm test -- src/components/financial/FinancialFactsDashboardView.test.tsx (6 testes aprovados)
+- cd frontend && npm test -- src/components/AppShell.test.tsx (13 testes aprovados)
+- cd frontend && npm test -- --run (192 testes de frontend aprovados, 29 arquivos, 0 falhas)
+- cd frontend && npx tsc --noEmit (0 erros)
+- cd frontend && npm run build (52 rotas compiladas com sucesso)
+- cd backend && ./mvnw test (334 testes de backend aprovados, 0 falhas, 0 erros, 0 skips)
+TEST RESULTS:
+- Frontend: 192/192 testes aprovados (100% de sucesso em 29 arquivos de teste).
+  * 6 testes dedicados em FinancialFactsDashboardView.test.tsx: renderização de KPIs e banner anti-alucinação, acessibilidade de tooltips de definições formais e fórmulas, filtragem combinada com restauração de filtros, isolamento de pedidos com dados ausentes via alerta/badge, abertura da gaveta lateral com cascata DRE e trilha JSON auditável, e submissão do modal de conciliação de liquidação externa com recálculo de divergências.
+  * 13 testes de navegação e componentes em AppShell.test.tsx: integração completa do módulo RECONCILIATION_DRE no menu lateral e visualização correta do painel financeiro.
+- Backend: 334/334 testes mantidos com 100% de sucesso (3 unitários ArchUnit, 3 integração PostgreSQL 17 RLS, 7 serviço, 2 controller REST).
+- Total Geral do Projeto: 526 testes automatizados aprovados (334 backend + 192 frontend), 0 falhas, 0 erros, 0 skips.
+POLICY EVIDENCE:
+- Critério de Aceite 1: Totais Reconciliam: soma exata de itens, tabela de fatos, cards de resumo e cascata DRE (Receita Bruta - Descontos = Receita Líquida - Deduções Variáveis = Margem de Contribuição).
+- Critério de Aceite 2: Filtros Combináveis: período com presets (hoje, 7d, 30d, mês, personalizado), empresa/CNPJ, canal/marketplace (Mercado Livre, Shopee), conta, SKU e status de reconciliação.
+- Critério de Aceite 3: Definições Acessíveis dos Indicadores (Anti-Alucinação Estrita): PROIBIDO ROTULAR MARGEM DE CONTRIBUIÇÃO COMO LUCRO LÍQUIDO. Todos os cards de KPIs possuem botão de ajuda com acessibilidade ARIA (aria-label, role="tooltip"), definição conceitual, fórmula e aviso legal sobre despesas fixas não modeladas.
+- Critério de Aceite 4: Alertas de Incompletude: sinalização visual proativa de pedidos com pendências de custos de produtos ou regras de comissão ausentes, com filtro rápido de 1 clique.
+- Critério de Aceite 5: Responsivo & Acessível: touch targets >= 44px, grid adaptativo para telas pequenas (360px+), suporte a fechamento por Escape e navegação por teclado.
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+DOCUMENTATION UPDATED:
+- docs/specs/P017-FE-financial-dashboard-view/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+NEXT PROMPT: UNLOCKED (P018-BE liberado para READY).
+```

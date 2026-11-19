@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P017-BE = `APPROVED` | P017-FE = `READY`  
+> **Status Vigente:** PROMPT P017-FE = `APPROVED`  
 > **Data:** 19/11/2026
 
 ---
@@ -44,7 +44,7 @@
 | **P016-BE** | Entidades Company/BusinessUnit com CNPJ Sintático e Vínculo de Contas de Marketplace     | **`APPROVED`** | 19/11/2026        | [docs/specs/P016-BE-company-and-account-link/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P016-BE-company-and-account-link/spec.md), [CompanyServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/company/CompanyServiceTest.java), [CompanyAccountLinkServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/company/CompanyAccountLinkServiceTest.java), [CompanyControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/company/CompanyControllerTest.java), [CnpjValidatorTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/company/CnpjValidatorTest.java), [PostgresCompanyRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/company/PostgresCompanyRlsIntegrationTest.java)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | **SIM (P016-FE liberado)** |
 | **P016-FE** | Cadastro de Empresa e Vínculo de Contas de Marketplace com Proteção de CNPJ              | **`APPROVED`** | 19/11/2026        | [docs/specs/P016-FE-company-and-account-link-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P016-FE-company-and-account-link-view/spec.md), [CompaniesAndAccountsView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/company/CompaniesAndAccountsView.test.tsx), [cnpj.test.ts](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/utils/cnpj.test.ts), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (P017-BE liberado)** |
 | **P017-BE** | Fatos Financeiros por Pedido/Item, Reconciliação e Trilha de Cálculo                      | **`APPROVED`** | 19/11/2026        | [docs/specs/P017-BE-financial-facts-reconciliation/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P017-BE-financial-facts-reconciliation/spec.md), [OrderFinancialFactServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/OrderFinancialFactServiceTest.java), [OrderFinancialFactControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/OrderFinancialFactControllerTest.java), [PostgresFinancialFactsRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/PostgresFinancialFactsRlsIntegrationTest.java) | **SIM (P017-FE liberado)** |
-| **P017-FE** | Visão Financeira por Pedido/Item, Reconciliação e DRE Simplificada                       | `READY`        | 19/11/2026        | Aguardando início formal                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | Próximo prompt             |
+| **P017-FE** | Painel Financeiro, Filtros Combináveis, Detalhamento de Componentes e Alertas             | **`APPROVED`** | 19/11/2026        | [docs/specs/P017-FE-financial-dashboard-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P017-FE-financial-dashboard-view/spec.md), [FinancialFactsDashboardView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/financial/FinancialFactsDashboardView.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (P018-BE liberado)** |
 
 ---
 
@@ -845,3 +845,39 @@
      - Total geral do projeto: 519 testes automatizados aprovados sem regressões.
      - ModularArchitectureTest (ArchUnit): 3/3 regras de arquitetura limpa e sem ciclos aprovadas.
 - **Resultado:** **`PROMPT P017-BE = APPROVED`**. O prompt subsequente (`P017-FE`) está formalmente liberado e transita para `READY`.
+
+---
+
+### Transição: PROMPT P017-FE $\rightarrow$ `APPROVED`
+
+- **Data/Hora:** 19/11/2026 13:00 BRT
+- **Avaliador:** Tech Lead / Staff Frontend Engineer
+- **Critérios Validados:**
+  1. **Totais Reconciliam (Aditividade Estrita e DRE Gerencial em Cascata):**
+     - O painel financeiro exibe cards de KPI agregados: Receita Bruta, Descontos de Venda, Receita Líquida, Deduções Totais e Margem de Contribuição apurada.
+     - A soma das parcelas individuais da tabela e dos itens da gaveta lateral (`FinancialFactDetailDrawer`) bate rigorosamente com os agregados do pedido e do resumo (`/api/financial-facts/summary`).
+     - Cascata DRE gerencial simplificada calculada com exatidão: $\text{Receita Bruta} - \text{Descontos} = \text{Receita Líquida} - (\text{Comissões} + \text{Tarifas Fixas} + \text{Fretes} + \text{Custos de Produto} + \text{Impostos}) = \text{Margem de Contribuição}$.
+  2. **Filtros Combináveis:**
+     - Barra de filtros (`FinancialFiltersBar`) com suporte completo a presets de período (Hoje, Últimos 7 dias, Últimos 30 dias, Mês Atual, Personalizado).
+     - Filtros simultâneos e combináveis por Empresa/CNPJ, Canal/Marketplace (Todos, Mercado Livre, Shopee), Conta Conectada, SKU e Status de Reconciliação (`ESTIMATED`, `RECONCILED`, `DIVERGENT`, `MISSING_DATA`).
+     - Indicador de filtros ativos e botão "Limpar filtros" para restauração rápida.
+  3. **Definições Acessíveis dos Indicadores (Regra Anti-Alucinação Estrita):**
+     - **PROIBIDO ROTULAR OU EXIBIR MARGEM DE CONTRIBUIÇÃO COMO LUCRO LÍQUIDO:** Despesas fixas estruturais do negócio (aluguel, pró-labore, folha de pagamento, contabilidade, infraestrutura) não estão modeladas.
+     - Banner de disclaimer anti-alucinação persistente e em destaque: *"Aviso de Conformidade Financeira: Os indicadores apuram estritamente a Margem de Contribuição após custos e deduções variáveis diretas da venda. Despesas fixas estruturais do negócio não estão contempladas; é terminantemente proibido rotular este valor como Lucro Líquido."*
+     - Todos os cards de KPIs possuem botão de ajuda acessível com semântica ARIA (`aria-label`, `role="tooltip"`), definição formal, fórmula matemática e o disclaimer anti-alucinação.
+  4. **Alertas e Gestão de Incompletude de Dados:**
+     - Identificação visual clara via badge pulsante e banner interativo quando há pedidos com custos ausentes (`PRODUCT_COST_MISSING`) ou regras de taxas não cadastradas (`MARKETPLACE_FEE_RULE_MISSING`).
+     - Filtro com 1 clique para isolar pedidos incompletos e orientações acionáveis para cadastrar custos no módulo financeiro.
+  5. **Detalhamento de Componentes (Drawer & Modal de Reconciliação Externa):**
+     - Gaveta lateral (`FinancialFactDetailDrawer`) com DRE em cascata do pedido, tabela de itens com rateio proporcional de frete e tarifas, e exibição expandível da trilha de cálculo JSON auditável (`calculation_trace_json`) com versão da fórmula (`v1.0.0`).
+     - Modal de conciliação de liquidação externa (`ReconcileSettlementModal`) permitindo registrar ID do repasse, data e tarifas confirmadas, com cálculo de divergência em tempo real e reprocessamento idempotente via BFF Next.js.
+  6. **Acessibilidade, Responsividade & Usabilidade:**
+     - Layout móvel fluido com cards em grid responsivo, tabelas com scroll horizontal seguro, touch targets $\ge 44\text{px}$, suporte integral a navegação por teclado e tecla `Escape` para fechar modais e gavetas.
+  7. **Testes Automatizados, TypeScript & Build de Produção:**
+     - 7 novos testes de frontend aprovados (6 em `FinancialFactsDashboardView.test.tsx`, 1 em `AppShell.test.tsx`).
+     - 192/192 testes de frontend mantidos com 100% de sucesso em 29 arquivos.
+     - 334/334 testes de backend mantidos com 100% de sucesso.
+     - Total geral do projeto: 526 testes automatizados aprovados (0 falhas, 0 erros, 0 skips).
+     - TypeScript verificado com zero erros (`tsc --noEmit`).
+     - Next.js 15.1.7 build de produção compilado com 52 rotas limpas.
+- **Resultado:** **`PROMPT P017-FE = APPROVED`**. O prompt subsequente (`P018-BE`) está formalmente liberado e transita para `READY`.

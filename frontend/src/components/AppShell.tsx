@@ -17,6 +17,7 @@ import { MarketSearchView } from './MarketSearchView';
 import { ProductMonitoringView } from './ProductMonitoringView';
 import { PricingAndCostsView } from './pricing/PricingAndCostsView';
 import { CompaniesAndAccountsView } from './company/CompaniesAndAccountsView';
+import { FinancialFactsDashboardView } from './financial/FinancialFactsDashboardView';
 
 export interface NavModule {
   id: string;
@@ -114,7 +115,7 @@ export const navModules: NavModule[] = [
     pillarKey: 'FINANCE',
     pillarName: 'Seller Control & Finanças',
     description: 'Visão gerencial de resultado (Caixa vs Competência) e conciliação de repasses.',
-    status: 'PLANNED',
+    status: 'READY',
     provenience: 'IMPORTED / RECONCILED',
   },
 
@@ -429,6 +430,8 @@ export const AppShell: React.FC = () => {
             <ProductMonitoringView onOpenMarketSearch={() => setActiveModuleId('MARKET')} />
           ) : activeModule.id === 'FINANCIAL' ? (
             <PricingAndCostsView />
+          ) : activeModule.id === 'RECONCILIATION_DRE' ? (
+            <FinancialFactsDashboardView />
           ) : activeModule.id === 'COMPANIES' ? (
             <CompaniesAndAccountsView />
           ) : (

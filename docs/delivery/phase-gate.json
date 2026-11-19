@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P017-BE",
+  "currentPrompt": "P017-FE",
   "status": "APPROVED",
-  "nextPrompt": "P017-FE",
+  "nextPrompt": "P018-BE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-19T12:05:00-03:00",
+  "lastUpdated": "2026-11-19T13:00:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -38,7 +38,8 @@
     "P015-FE",
     "P016-BE",
     "P016-FE",
-    "P017-BE"
+    "P017-BE",
+    "P017-FE"
   ],
   "gates": {
     "P000": {
@@ -578,6 +579,33 @@
       "rlsPostgresIsolationVerified": true,
       "blockingIssues": 0,
       "prerequisites": ["P016-FE"]
+    },
+    "P017-FE": {
+      "name": "Painel Financeiro, Filtros Combináveis, Detalhamento de Componentes e Alertas de Incompletude",
+      "status": "APPROVED",
+      "startedAt": "2026-11-19T12:46:00-03:00",
+      "approvedAt": "2026-11-19T13:00:00-03:00",
+      "evidence": "docs/specs/P017-FE-financial-dashboard-view/spec.md",
+      "testsExecuted": 7,
+      "testsPassed": 7,
+      "totalBackendSuiteTests": 334,
+      "totalFrontendSuiteTests": 192,
+      "totalProjectTests": 526,
+      "buildPassed": true,
+      "combinableFiltersVerified": true,
+      "additiveTotalsReconciled": true,
+      "waterfallComponentBreakdownVerified": true,
+      "missingDataAlertsAndFiltersVerified": true,
+      "antiHallucinationStrictDisclaimerAndAriaA11yVerified": true,
+      "externalSettlementReconciliationModalVerified": true,
+      "blockingIssues": 0,
+      "prerequisites": ["P017-BE"]
+    },
+    "P018-BE": {
+      "name": "Classificação de Despesas Fixas, Custos Operacionais e Rateio Financeiro",
+      "status": "READY",
+      "prerequisites": ["P017-FE"],
+      "blockingIssues": 0
     }
   },
   "maintenanceGates": {

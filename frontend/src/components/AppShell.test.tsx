@@ -1,12 +1,22 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { AppShell } from './AppShell';
 
 describe('AppShell Component (Shell Responsivo & Navegação)', () => {
   beforeEach(() => {
     localStorage.clear();
     document.documentElement.classList.remove('dark');
+    vi.spyOn(global, 'fetch').mockImplementation(() =>
+      Promise.resolve({
+        ok: true,
+        json: async () => ({ content: [], totalElements: 0 }),
+      } as unknown as Response)
+    );
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it('deve renderizar o cabeçalho master com logo, título, tenant e status Fail-Closed', () => {
@@ -176,6 +186,17 @@ describe('AppShell Component (Shell Responsivo & Navegação)', () => {
 
     expect(
       screen.getByRole('heading', { name: /Empresas & Unidades de Negócio/i })
+    ).toBeInTheDocument();
+  });
+
+  it('deve renderizar a tela FinancialFactsDashboardView ao selecionar o módulo RECONCILIATION_DRE (DRE Gerencial & Conciliação)', () => {
+    render(<AppShell />);
+
+    const dreBtns = screen.getAllByRole('button', { name: /DRE Gerencial & Conciliação/i });
+    fireEvent.click(dreBtns[0]);
+
+    expect(
+      screen.getByRole('heading', { name: /Painel Financeiro & Conciliação/i })
     ).toBeInTheDocument();
   });
 });
