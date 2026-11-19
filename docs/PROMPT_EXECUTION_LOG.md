@@ -3131,3 +3131,88 @@ DOCUMENTATION UPDATED:
 - docs/PROMPT_EXECUTION_LOG.md
 NEXT PROMPT: UNLOCKED (P019-BE liberado para READY).
 ```
+
+
+```markdown
+=== PROMPT P019-BE EXECUTION LOG ===
+PROMPT ID: P019-BE
+DATE: 2026-11-19
+STATUS: APPROVED
+DESCRIPTION: Gateway Multi-Provider com Secrets em Secret Manager, Limites de Custo/Tokens, Timeout, Retry Seguro, Logging sem PII, Versionamento de Prompts, Defesa contra Prompt Injection e Tool Calling Read-Only.
+CHANGES MADE:
+- docs/specs/P019-BE-ai-gateway-and-readonly-tools/spec.md
+- backend/src/main/resources/db/migration/V16__ai_gateway_and_audit.sql
+- backend/src/main/resources/db/migration-postgresql/V16_1__postgresql_rls_ai_gateway.sql
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/gateway/AiProvider.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/gateway/AiSecretManager.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/gateway/DefaultAiSecretManager.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/gateway/AiModelConfig.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/gateway/AiProviderClient.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/gateway/DefaultAiProviderClient.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/security/PromptInjectionException.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/security/PiiSanitizer.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/security/PromptInjectionDefenseService.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/prompts/PromptTemplate.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/prompts/PromptCatalog.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/tools/ToolExecutionResult.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/tools/AiTool.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/tools/InternalAiTools.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/tools/AiToolRegistry.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/entity/AiUsageAuditRecord.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/repository/AiUsageAuditRepository.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/model/AiUsageMetricsDto.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/model/AiPromptRequestDto.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/model/StructuredAiResponseDto.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/model/AiToolDefinitionDto.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/service/AiGatewayService.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/AiAssistantController.java
+- backend/src/main/java/com/sellerintelligence/modules/aiassistant/AiAssistantExceptionHandler.java
+- backend/src/test/java/com/sellerintelligence/modules/aiassistant/security/PromptInjectionDefenseServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/aiassistant/gateway/DefaultAiSecretManagerTest.java
+- backend/src/test/java/com/sellerintelligence/modules/aiassistant/tools/AiToolRegistryAndInternalToolsTest.java
+- backend/src/test/java/com/sellerintelligence/modules/aiassistant/service/AiGatewayServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/aiassistant/AiAssistantControllerTest.java
+- backend/src/test/java/com/sellerintelligence/modules/aiassistant/PostgresAiAuditRlsIntegrationTest.java
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+COMMANDS EXECUTED:
+- cd backend && ./mvnw test -Dtest=PromptInjectionDefenseServiceTest (11 testes aprovados)
+- cd backend && ./mvnw test -Dtest=DefaultAiSecretManagerTest (4 testes aprovados)
+- cd backend && ./mvnw test -Dtest=AiToolRegistryAndInternalToolsTest (7 testes aprovados)
+- cd backend && ./mvnw test -Dtest=AiGatewayServiceTest (5 testes aprovados)
+- cd backend && ./mvnw test -Dtest=AiAssistantControllerTest (7 testes aprovados)
+- cd backend && ./mvnw test -Dtest=PostgresAiAuditRlsIntegrationTest (1 teste de integração PostgreSQL 17 aprovado com RLS)
+- cd backend && ./mvnw test -Dtest=ModularArchitectureTest (3 testes ArchUnit aprovados, zero ciclos, core isolado de módulos)
+- cd backend && ./mvnw test (398 testes de backend aprovados, 0 falhas, 0 erros, 0 skips)
+- cd frontend && npm test -- --run (200 testes de frontend aprovados em 30 arquivos, 100% de sucesso)
+TEST RESULTS:
+- Backend: 398/398 testes aprovados (0 falhas, 0 erros, 0 skips), totalizando 24 novos testes no módulo aiassistant.
+- Frontend: 200/200 testes mantidos com 100% de sucesso.
+- Total Geral do Projeto: 598 testes automatizados aprovados (398 backend + 200 frontend).
+POLICY EVIDENCE:
+- Critério de Aceite 1: Tool Não Acessa Outro Tenant:
+  * As tools executam sob o tenantId do TenantContextHolder autenticado no JWT e recusam parâmetros arbitrários.
+  * O registro AiToolRegistry bloqueia tentativas do LLM de injetar argumentos tenantId ou tenant_id divergentes, lançando SecurityException imediata.
+  * Row-Level Security no PostgreSQL 17 com FORCE ROW LEVEL SECURITY na tabela ai_usage_audits impede qualquer vazamento cross-tenant comprovado em teste de integração.
+- Critério de Aceite 2: Prompt Injection Não Altera Políticas:
+  * Defesa em profundidade no PromptInjectionDefenseService com detecção de INSTRUCTION_OVERRIDE, JAILBREAK_PERSONA, PROMPT_LEAKAGE_ATTEMPT, DELIMITER_INJECTION e DATA_EXFILTRATION_SQL.
+  * Envelopamento e neutralização de conteúdo não confiável de terceiros em tags <untrusted_external_content context="..." sanitized="true">.
+  * Bloqueio imediato com PromptInjectionException e registro de auditoria com status BLOCKED_SECURITY.
+- Critério de Aceite 3: Resposta sem Dado Informa Indisponibilidade:
+  * Ausência de registros no catálogo ou de métricas no período retorna status UNAVAILABLE ou INSUFFICIENT_DATA com notas explícitas e fontes documentadas.
+  * Inclusão permanente de aviso anti-alucinação declarando que cálculos são determinísticos e métricas indisponíveis não são inventadas.
+- Critério de Aceite 4: Custo e Latência Monitorados:
+  * Cada chamada audita tokens de entrada, tokens de saída, latência em milissegundos e custo estimado em BRL na tabela ai_usage_audits.
+- Critério de Aceite 5: Segredo Nunca Logado:
+  * AiSecretManager mascara chaves com sk-***[last4] ou ***[last4], falha closed se credenciais estiverem ausentes e jamais grava chaves em texto claro em logs.
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+DOCUMENTATION UPDATED:
+- docs/specs/P019-BE-ai-gateway-and-readonly-tools/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+NEXT PROMPT: UNLOCKED (P019-FE liberado para READY).
+```

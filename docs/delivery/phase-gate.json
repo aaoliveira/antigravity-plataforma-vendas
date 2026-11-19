@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P018-FE",
+  "currentPrompt": "P019-BE",
   "status": "APPROVED",
-  "nextPrompt": "P019-BE",
+  "nextPrompt": "P019-FE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-19T14:12:00-03:00",
+  "lastUpdated": "2026-11-19T15:37:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -41,7 +41,8 @@
     "P017-BE",
     "P017-FE",
     "P018-BE",
-    "P018-FE"
+    "P018-FE",
+    "P019-BE"
   ],
   "gates": {
     "P000": {
@@ -645,10 +646,25 @@
       "prerequisites": ["P018-BE"]
     },
     "P019-BE": {
-      "name": "Inteligência Artificial Assistiva e Auditoria de Qualidade de Anúncios",
-      "status": "READY",
-      "prerequisites": ["P018-FE"],
-      "blockingIssues": 0
+      "name": "Gateway Multi-Provider com Secrets, Defesa Prompt Injection e Tool Calling Read-Only",
+      "status": "APPROVED",
+      "startedAt": "2026-11-19T15:13:00-03:00",
+      "approvedAt": "2026-11-19T15:37:00-03:00",
+      "evidence": "docs/specs/P019-BE-ai-gateway-and-readonly-tools/spec.md",
+      "testsExecuted": 24,
+      "testsPassed": 24,
+      "totalBackendSuiteTests": 398,
+      "totalFrontendSuiteTests": 200,
+      "totalProjectTests": 598,
+      "buildPassed": true,
+      "hermeticTenantIsolationInToolsVerified": true,
+      "promptInjectionDefenseInDepthVerified": true,
+      "noSilentHallucinationExplicitUnavailabilityVerified": true,
+      "costAndLatencyAuditedVerified": true,
+      "secretsMaskedNeverLoggedVerified": true,
+      "rlsPostgresIsolationVerified": true,
+      "blockingIssues": 0,
+      "prerequisites": ["P018-FE"]
     }
   },
   "maintenanceGates": {
