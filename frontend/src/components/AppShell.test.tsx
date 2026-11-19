@@ -221,4 +221,15 @@ describe('AppShell Component (Shell Responsivo & Navegação)', () => {
       screen.getByRole('heading', { name: /Assistente de IA & Governança Analítica/i })
     ).toBeInTheDocument();
   });
+
+  it('deve renderizar a tela DraftListingEditorView ao selecionar o módulo AI_STUDIO (AI Listing Studio)', () => {
+    render(<AppShell />);
+
+    const studioBtns = screen.getAllByRole('button', { name: /AI Listing Studio/i });
+    fireEvent.click(studioBtns[0]);
+
+    expect(
+      screen.getByRole('region', { name: /Editor de Rascunho de Anúncios/i })
+    ).toBeInTheDocument();
+  });
 });

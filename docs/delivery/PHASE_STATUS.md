@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P020-BE = `APPROVED` (P020-FE Liberado)  
+> **Status Vigente:** PROMPT P020-FE = `APPROVED` | P021-BE = `READY`  
 > **Data:** 19/11/2026
 
 ---
@@ -50,7 +50,7 @@
 | **P019-BE** | Gateway Multi-Provider com Secrets, Defesa Prompt Injection e Tool Calling Read-Only     | **`APPROVED`** | 19/11/2026        | [docs/specs/P019-BE-ai-gateway-and-readonly-tools/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P019-BE-ai-gateway-and-readonly-tools/spec.md), [DefaultAiSecretManagerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/gateway/DefaultAiSecretManagerTest.java), [PromptInjectionDefenseServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/security/PromptInjectionDefenseServiceTest.java), [AiToolRegistryAndInternalToolsTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/tools/AiToolRegistryAndInternalToolsTest.java), [AiGatewayServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/service/AiGatewayServiceTest.java), [AiAssistantControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/AiAssistantControllerTest.java), [PostgresAiAuditRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/PostgresAiAuditRlsIntegrationTest.java) | **SIM (P019-FE liberado)** |
 | **P019-FE** | Assistente de IA Interativo, Chat com Ferramentas e Indicador de Custo/Origem             | **`APPROVED`** | 19/11/2026        | [docs/specs/P019-FE-ai-assistant-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P019-FE-ai-assistant-view/spec.md), [AiAssistantView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/aiassistant/AiAssistantView.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (P020-BE liberado)** |
 | **P020-BE** | Geração de Título e Descrição como Rascunho com Restrição de Claims                       | **`APPROVED`** | 19/11/2026        | [docs/specs/P020-BE-draft-listing-generation/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P020-BE-draft-listing-generation/spec.md), [ListingClaimGuardrailServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/guardrails/ListingClaimGuardrailServiceTest.java), [MarketplaceLimitCatalogTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/catalog/MarketplaceLimitCatalogTest.java), [DraftListingServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/service/DraftListingServiceTest.java), [DraftListingControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/DraftListingControllerTest.java), [PostgresDraftListingRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/PostgresDraftListingRlsIntegrationTest.java) | **SIM (P020-FE liberado)** |
-| **P020-FE** | Editor de Rascunho com Comparação, Contagem de Caracteres e Versões                      | `READY`        | ---               | [docs/specs/P020-FE-draft-listing-editor-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P020-FE-draft-listing-editor-view/spec.md) | Não (Aguardando P020-FE)   |
+| **P020-FE** | Editor de Rascunho com Comparação, Contagem de Caracteres e Versões                      | **`APPROVED`** | 19/11/2026        | [docs/specs/P020-FE-draft-listing-editor-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P020-FE-draft-listing-editor-view/spec.md), [DraftListingEditorView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/draftlisting/DraftListingEditorView.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (P021-BE liberado)** |
 
 ---
 
@@ -1079,3 +1079,43 @@
      - Total geral do projeto: 637 testes automatizados aprovados (429 backend + 208 frontend).
      - `ModularArchitectureTest` (ArchUnit): conformidade estrita mantida com zero dependências cíclicas.
 - **Resultado:** **`PROMPT P020-BE = APPROVED`**. O prompt subsequente (`P020-FE`) está formalmente liberado e transita para `READY`.
+
+
+---
+
+### Transição: PROMPT P020-FE $\rightarrow$ `APPROVED`
+
+- **Data/Hora:** 19/11/2026 16:35 BRT
+- **Avaliador:** Tech Lead / Staff Software Engineer
+- **Critérios Validados:**
+  1. **Edição Preservada e Versionamento Incremental (`DraftListingEditorView.tsx`, `VersionHistoryDrawer.tsx`):**
+     - O operador edita título e descrição, submetendo para o backend via BFF Next.js (`PUT /api/ai/drafts/[id]/edit`).
+     - Cada edição incrementa a versão (`versionNumber = n + 1`), atualiza o status para `REVIEWED` e sinaliza `userEdited = true`.
+     - Versões anteriores são imutáveis e podem ser inspecionadas detalhadamente na linha do tempo do `VersionHistoryDrawer`.
+  2. **Limite Configurável e Validação em Tempo Real (`CharacterLimitGauge.tsx`):**
+     - Suporte dinâmico e em tempo real aos limites comprovados por canal (`MERCADO_LIVRE`: máx. 60 chars no título; `SHOPEE`: 20 a 120 chars no título, 20 a 3000 chars na descrição).
+     - Barra de progresso visual com três faixas de criticidade (verde < 80%, âmbar 80-99%, vermelho >= 100%), indicador de caracteres restantes/excedidos e alerta de limite mínimo não atingido.
+     - Bloqueio preventivo na interface: o botão "Salvar Nova Versão" fica desabilitado quando as regras de tamanho do canal selecionado são violadas.
+  3. **Revisão Humana Evidente e Transparência de IA (`DraftDiffViewer.tsx`, Badges de Governança):**
+     - Banner institucional persistente: "MODO RASCUNHO ASSISTIDO &bull; REVISÃO HUMANA MANDATÓRIA".
+     - Badges ostensivos de status e autoria: "IA Original", "Editado pelo Operador", "Aprovado Localmente".
+     - Visualizador lado a lado (`DraftDiffViewer`) permitindo ao lojista contrastar diretamente o texto gerado pela IA com o texto revisado pelo operador antes da aprovação.
+  4. **Proibição Estrita — Sem Botão Publicar no MVP:**
+     - Nenhuma ação de mutação externa ou publicação em marketplace exposta na interface (ausência total de botões "Publicar no Mercado Livre", "Publicar na Shopee").
+     - Operações permitidas limitam-se a: "Salvar Nova Versão", "Aprovar Rascunho Local", "Rejeitar Rascunho", "Copiar Título/Descrição" e "Exportar TXT/JSON".
+     - Testes automatizados garantem regressão zero contra a presença de botões ou ações que sugiram publicação externa.
+  5. **Copiar para Clipboard e Exportação Segura:**
+     - Ações de um clique com feedback visual imediato ("Copiado!") para transferência segura manual.
+     - Exportação de dados estruturados em JSON ou texto formatado em TXT contendo metadados completos de conformidade.
+  6. **Acessibilidade e Responsividade:**
+     - Conformidade WCAG 2.1 AA (`role="region"`, `role="dialog"`, `role="progressbar"`, touch targets $\ge 44$px, suporte a Escape para fechamento de gaveta e modais).
+     - Design flexível e responsivo, utilizável em dispositivos móveis ($\ge 360$px) sem quebras ou scroll horizontal.
+  7. **Testes Automatizados & Builds:**
+     - 9 novos testes unitários e de integração de componentes criados em `DraftListingEditorView.test.tsx` (100% aprovados).
+     - 1 novo teste de integração de rota no `AppShell.test.tsx` (16/16 aprovados).
+     - Suíte frontend: 218/218 testes aprovados em 32 arquivos (0 falhas).
+     - TypeScript verificado com zero erros (`npx tsc --noEmit`).
+     - Build de produção Next.js 15.1.7 (`next build`) aprovado com 49 rotas geradas com sucesso.
+     - Suíte backend: 429/429 testes mantidos com 100% de sucesso.
+     - Total geral do projeto: 647 testes automatizados aprovados (429 backend + 218 frontend).
+- **Resultado:** **`PROMPT P020-FE = APPROVED`**. O prompt subsequente (`P021-BE`) está formalmente liberado e transita para `READY`.

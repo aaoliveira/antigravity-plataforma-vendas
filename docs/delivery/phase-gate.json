@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P020-BE",
+  "currentPrompt": "P020-FE",
   "status": "APPROVED",
-  "nextPrompt": "P020-FE",
+  "nextPrompt": "P021-BE",
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-19T16:21:30-03:00",
+  "lastUpdated": "2026-11-19T16:35:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -44,7 +44,8 @@
     "P018-FE",
     "P019-BE",
     "P019-FE",
-    "P020-BE"
+    "P020-BE",
+    "P020-FE"
   ],
   "gates": {
     "P000": {
@@ -710,6 +711,26 @@
       "rlsPostgresIsolationVerified": true,
       "blockingIssues": 0,
       "prerequisites": ["P019-FE"]
+    },
+    "P020-FE": {
+      "name": "Editor de Rascunho com Comparação, Contagem de Caracteres e Versões",
+      "status": "APPROVED",
+      "startedAt": "2026-11-19T16:25:00-03:00",
+      "approvedAt": "2026-11-19T16:35:00-03:00",
+      "evidence": "docs/specs/P020-FE-draft-listing-editor-view/spec.md",
+      "testsExecuted": 10,
+      "testsPassed": 10,
+      "totalBackendSuiteTests": 429,
+      "totalFrontendSuiteTests": 218,
+      "totalProjectTests": 647,
+      "buildPassed": true,
+      "editionPreservedVerified": true,
+      "configurableLimitVerified": true,
+      "humanReviewEvidentVerified": true,
+      "noPublishButtonVerified": true,
+      "accessibleAndResponsiveVerified": true,
+      "blockingIssues": 0,
+      "prerequisites": ["P020-BE"]
     }
   },
   "maintenanceGates": {

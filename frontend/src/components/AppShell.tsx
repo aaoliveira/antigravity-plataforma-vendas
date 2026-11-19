@@ -20,6 +20,7 @@ import { CompaniesAndAccountsView } from './company/CompaniesAndAccountsView';
 import { FinancialFactsDashboardView } from './financial/FinancialFactsDashboardView';
 import { ListingAnalyticsDashboardView } from './listinganalytics/ListingAnalyticsDashboardView';
 import { AiAssistantView } from './aiassistant/AiAssistantView';
+import { DraftListingEditorView } from './draftlisting/DraftListingEditorView';
 
 export interface NavModule {
   id: string;
@@ -95,7 +96,7 @@ export const navModules: NavModule[] = [
     pillarKey: 'AI',
     pillarName: 'AI Commerce',
     description: 'Auditoria de score de anúncios e redação assistida sob guardrails anti-alucinação.',
-    status: 'PLANNED',
+    status: 'READY',
     provenience: 'AI_GENERATED (Rascunho)',
   },
   {
@@ -450,6 +451,8 @@ export const AppShell: React.FC = () => {
             <CompaniesAndAccountsView />
           ) : activeModule.id === 'ASSISTANT' ? (
             <AiAssistantView />
+          ) : activeModule.id === 'AI_STUDIO' ? (
+            <DraftListingEditorView />
           ) : (
             <ModulePlaceholder
               moduleId={activeModule.id}

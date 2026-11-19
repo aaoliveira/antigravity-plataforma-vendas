@@ -3361,3 +3361,59 @@ DOCUMENTATION UPDATED:
 - docs/PROMPT_EXECUTION_LOG.md
 NEXT PROMPT: UNLOCKED (P020-FE liberado para READY).
 ```
+
+
+## PROMPT P020-FE: Editor de Rascunho com Comparação, Contagem de Caracteres e Histórico de Versões
+- Date: 19/11/2026
+- Status: APPROVED
+FILES CREATED / MODIFIED:
+- docs/specs/P020-FE-draft-listing-editor-view/spec.md
+- frontend/src/types/draftlisting.ts
+- frontend/src/app/api/ai/drafts/route.ts
+- frontend/src/app/api/ai/drafts/generate/route.ts
+- frontend/src/app/api/ai/drafts/rules/route.ts
+- frontend/src/app/api/ai/drafts/[id]/route.ts
+- frontend/src/app/api/ai/drafts/[id]/edit/route.ts
+- frontend/src/app/api/ai/drafts/[id]/approve/route.ts
+- frontend/src/app/api/ai/drafts/[id]/reject/route.ts
+- frontend/src/components/draftlisting/CharacterLimitGauge.tsx
+- frontend/src/components/draftlisting/DraftDiffViewer.tsx
+- frontend/src/components/draftlisting/VersionHistoryDrawer.tsx
+- frontend/src/components/draftlisting/DraftListingEditorView.tsx
+- frontend/src/components/draftlisting/DraftListingEditorView.test.tsx
+- frontend/src/components/AppShell.tsx
+- frontend/src/components/AppShell.test.tsx
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+COMMANDS EXECUTED:
+- npx tsc --noEmit (0 erros)
+- npx vitest run src/components/draftlisting/DraftListingEditorView.test.tsx (9 testes aprovados)
+- npx vitest run src/components/AppShell.test.tsx (16 testes aprovados)
+- npm test -- --run (218 testes de frontend aprovados em 32 arquivos)
+- cd frontend && npm run build (Build de produção Next.js 15.1.7 aprovado com 49 rotas estáticas e dinâmicas)
+TEST RESULTS:
+- Frontend: 218/218 testes aprovados em 32 arquivos (10 novos testes, 0 falhas).
+- Backend: 429/429 testes mantidos (100% de sucesso).
+- Total Geral do Projeto: 647 testes automatizados aprovados (0 falhas).
+POLICY EVIDENCE:
+- Critério de Aceite 1: Edição Preservada:
+  * Operador edita título e descrição, enviando PUT para o backend que gera nova versão incremental (v = n + 1) com status REVIEWED e userEdited = true. Histórico mantido íntegro e imutável.
+- Critério de Aceite 2: Limite Configurável / Validado:
+  * Componente CharacterLimitGauge aplica limites oficiais validados por canal (Mercado Livre: máx 60 caracteres no título; Shopee: 20-120 no título, 20-3000 na descrição). Botão de salvar nova versão é bloqueado se os limites forem violados.
+- Critério de Aceite 3: Revisão Humana Evidente:
+  * Banner ostensivo MODO RASCUNHO ASSISTIDO - REVISÃO HUMANA MANDATÓRIA, badges de autoria (IA Original vs Editado pelo Operador vs Aprovado Localmente) e visualizador de diferenças DraftDiffViewer destacando lado a lado as alterações do operador.
+- Critério de Aceite 4: Sem Botão Publicar no MVP:
+  * Ausência total de qualquer botão ou trigger de publicação externa ("Publicar no Mercado Livre", "Publicar na Shopee"). Apenas ações locais de "Salvar Nova Versão", "Aprovar Rascunho Local", "Rejeitar Rascunho", "Copiar" e "Exportar TXT/JSON".
+- Critério de Aceite 5: Acessibilidade & Responsividade:
+  * Atributos ARIA (role="region", role="dialog", role="progressbar", aria-valuenow), suporte à tecla Escape para fechamento de modais/drawers, touch targets >= 44px e layout mobile-friendly >= 360px.
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+DOCUMENTATION UPDATED:
+- docs/specs/P020-FE-draft-listing-editor-view/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+NEXT PROMPT: UNLOCKED (P021-BE liberado para READY).

@@ -1,6 +1,6 @@
 # Status de Implementação e Quality Gates do Roadmap
 
-> **Status Atual Geral:** PROMPT P019-BE = `IN_PROGRESS` | P019-FE = `PLANNED`  
+> **Status Atual Geral:** PROMPT P020-FE = `PASSED` | P021-BE = `READY`  
 > **Data da Última Atualização:** 19/11/2026  
 > **Regra de Transição:** O próximo prompt só é liberado para `IN_PROGRESS` quando o anterior atingir formalmente `PASSED`.
 
@@ -59,7 +59,8 @@
 | **P019-BE** | Gateway Multi-Provider com Secrets, Defesa Prompt Injection e Tool Calling Read-Only     | E10   | Backend    | **`PASSED`**   | P018-FE (`PASSED`)    | 19/11/2026     |
 | **P019-FE** | Assistente de IA Interativo, Chat com Ferramentas e Indicador de Custo/Origem             | E10   | Frontend   | **`PASSED`**   | P019-BE (`PASSED`)    | 19/11/2026     |
 | **P020-BE** | Geração Assistida de Título e Descrição como Rascunho com Restrição de Claims             | E10   | Backend    | **`PASSED`**   | P019-FE (`PASSED`)    | 19/11/2026     |
-| **P020-FE** | Editor de Rascunho com Original/Gerado, Contagem de Caracteres e Histórico de Versões     | E10   | Frontend   | `READY`        | P020-BE (`PASSED`)    | ---            |
+| **P020-FE** | Editor de Rascunho com Original/Gerado, Contagem de Caracteres e Histórico de Versões     | E10   | Frontend   | **`PASSED`**   | P020-BE (`PASSED`)    | 19/11/2026     |
+| **P021-BE** | Exportação Segura de Relatórios e Auditoria de Download                                   | E11   | Backend    | `READY`        | P020-FE (`PASSED`)    | ---            |
 
 ---
 
