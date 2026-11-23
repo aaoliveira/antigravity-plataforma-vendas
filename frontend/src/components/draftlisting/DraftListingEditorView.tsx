@@ -57,7 +57,9 @@ export const DraftListingEditorView: React.FC = () => {
       const res = await fetch('/api/ai/drafts/rules');
       if (res.ok) {
         const data = await res.json();
-        setRules(data);
+        if (Array.isArray(data)) {
+          setRules(data);
+        }
       }
     } catch {
       // Silencioso ou fallback
@@ -125,7 +127,9 @@ export const DraftListingEditorView: React.FC = () => {
   }, [selectedDraftId, fetchDraftDetail]);
 
   // Validação de Limites
-  const limits = activeDraft?.marketplaceLimits || rules.find((r) => r.marketplace === activeDraft?.targetMarketplace);
+  const limits =
+    activeDraft?.marketplaceLimits ||
+    (Array.isArray(rules) ? rules.find((r) => r.marketplace === activeDraft?.targetMarketplace) : undefined);
   const minTitle = limits?.minTitleLength ?? 1;
   const maxTitle = limits?.maxTitleLength ?? 60;
   const minDesc = limits?.minDescriptionLength ?? 1;
@@ -368,8 +372,10 @@ ${descriptionInput}
             {/* Filtros */}
             <div className="grid grid-cols-2 gap-2 text-xs">
               <div>
-                <label className="block text-slate-500 dark:text-slate-400 mb-1">Marketplace</label>
+                <label htmlFor="filter-marketplace" className="block text-slate-500 dark:text-slate-400 mb-1">Marketplace</label>
                 <select
+                  id="filter-marketplace"
+                  aria-label="Filtrar rascunhos por marketplace"
                   value={marketplaceFilter}
                   onChange={(e) => setMarketplaceFilter(e.target.value)}
                   className="w-full p-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg"
@@ -380,8 +386,10 @@ ${descriptionInput}
                 </select>
               </div>
               <div>
-                <label className="block text-slate-500 dark:text-slate-400 mb-1">Status</label>
+                <label htmlFor="filter-status" className="block text-slate-500 dark:text-slate-400 mb-1">Status</label>
                 <select
+                  id="filter-status"
+                  aria-label="Filtrar rascunhos por status"
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
                   className="w-full p-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg"
@@ -398,9 +406,9 @@ ${descriptionInput}
             {/* Lista com Scroll */}
             <div className="flex flex-col gap-2 max-h-[500px] overflow-y-auto mt-2 pr-1">
               {isLoading ? (
-                <div className="text-center py-8 text-xs text-slate-400">Carregando rascunhos...</div>
+                <div className="text-center py-8 text-xs text-slate-600 dark:text-slate-400">Carregando rascunhos...</div>
               ) : drafts.length === 0 ? (
-                <div className="text-center py-8 text-xs text-slate-400">
+                <div className="text-center py-8 text-xs text-slate-600 dark:text-slate-400">
                   Nenhum rascunho encontrado para os filtros selecionados.
                 </div>
               ) : (
@@ -449,7 +457,7 @@ ${descriptionInput}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
                       {activeDraft.targetMarketplace}
                     </span>
                     <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">
@@ -507,6 +515,7 @@ ${descriptionInput}
                 />
                 <input
                   type="text"
+                  aria-label="Título do anúncio"
                   value={titleInput}
                   onChange={(e) => setTitleInput(e.target.value)}
                   placeholder="Título do anúncio..."
@@ -534,6 +543,7 @@ ${descriptionInput}
                 />
                 <textarea
                   rows={10}
+                  aria-label="Descrição do anúncio"
                   value={descriptionInput}
                   onChange={(e) => setDescriptionInput(e.target.value)}
                   placeholder="Descrição do anúncio..."
@@ -552,10 +562,12 @@ ${descriptionInput}
 
               {/* Apontamentos do Operador (Opcional) */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                <label htmlFor="editor-review-notes" className="text-xs font-medium text-slate-700 dark:text-slate-300">
                   Notas de Revisão (Opcional)
                 </label>
                 <input
+                  id="editor-review-notes"
+                  aria-label="Notas de Revisão"
                   type="text"
                   value={reviewNotesInput}
                   onChange={(e) => setReviewNotesInput(e.target.value)}
@@ -578,7 +590,7 @@ ${descriptionInput}
                   <button
                     onClick={handleApprove}
                     disabled={activeDraft.status === 'APPROVED' || isSaving}
-                    className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white rounded-lg text-xs font-bold transition-colors min-h-[44px]"
+                    className="px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 disabled:opacity-50 text-white rounded-lg text-xs font-bold transition-colors min-h-[44px]"
                   >
                     {activeDraft.status === 'APPROVED' ? '✓ Aprovado Localmente' : 'Aprovar Rascunho Local'}
                   </button>
@@ -621,7 +633,7 @@ ${descriptionInput}
               </div>
             </div>
           ) : (
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-12 text-center text-slate-400 text-sm">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-12 text-center text-slate-600 dark:text-slate-400 text-sm">
               Selecione um rascunho na lista ou clique em &quot;+ Novo Rascunho&quot; para iniciar.
             </div>
           )}
@@ -667,10 +679,12 @@ ${descriptionInput}
             <form onSubmit={handleCreateDraft} className="flex flex-col gap-3 text-xs">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
+                  <label htmlFor="modal-new-mkt" className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
                     Marketplace Alvo *
                   </label>
                   <select
+                    id="modal-new-mkt"
+                    aria-label="Marketplace Alvo"
                     value={newMkt}
                     onChange={(e) => setNewMkt(e.target.value)}
                     className="w-full p-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg"
@@ -681,10 +695,12 @@ ${descriptionInput}
                 </div>
 
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
+                  <label htmlFor="modal-new-tone" className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
                     Tom de Redação
                   </label>
                   <select
+                    id="modal-new-tone"
+                    aria-label="Tom de Redação"
                     value={newTone}
                     onChange={(e) => setNewTone(e.target.value as DraftTone)}
                     className="w-full p-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg"
@@ -698,10 +714,12 @@ ${descriptionInput}
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
+                  <label htmlFor="modal-new-brand" className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
                     Marca Confirmada
                   </label>
                   <input
+                    id="modal-new-brand"
+                    aria-label="Marca Confirmada"
                     type="text"
                     value={newBrand}
                     onChange={(e) => setNewBrand(e.target.value)}
@@ -710,10 +728,12 @@ ${descriptionInput}
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
+                  <label htmlFor="modal-new-model" className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
                     Modelo Confirmado
                   </label>
                   <input
+                    id="modal-new-model"
+                    aria-label="Modelo Confirmado"
                     type="text"
                     value={newModel}
                     onChange={(e) => setNewModel(e.target.value)}
@@ -724,10 +744,12 @@ ${descriptionInput}
               </div>
 
               <div>
-                <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
+                <label htmlFor="modal-new-category" className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
                   Categoria
                 </label>
                 <input
+                  id="modal-new-category"
+                  aria-label="Categoria"
                   type="text"
                   value={newCategory}
                   onChange={(e) => setNewCategory(e.target.value)}
@@ -737,10 +759,12 @@ ${descriptionInput}
               </div>
 
               <div>
-                <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
+                <label htmlFor="modal-new-materials" className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
                   Materiais Confirmados (separados por vírgula)
                 </label>
                 <input
+                  id="modal-new-materials"
+                  aria-label="Materiais Confirmados"
                   type="text"
                   value={newMaterials}
                   onChange={(e) => setNewMaterials(e.target.value)}
@@ -751,10 +775,12 @@ ${descriptionInput}
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
+                  <label htmlFor="modal-new-dimensions" className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
                     Dimensões / Medidas
                   </label>
                   <input
+                    id="modal-new-dimensions"
+                    aria-label="Dimensões / Medidas"
                     type="text"
                     value={newDimensions}
                     onChange={(e) => setNewDimensions(e.target.value)}
@@ -763,10 +789,12 @@ ${descriptionInput}
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
+                  <label htmlFor="modal-new-warranty" className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
                     Garantia
                   </label>
                   <input
+                    id="modal-new-warranty"
+                    aria-label="Garantia"
                     type="text"
                     value={newWarranty}
                     onChange={(e) => setNewWarranty(e.target.value)}
@@ -777,10 +805,12 @@ ${descriptionInput}
               </div>
 
               <div>
-                <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
+                <label htmlFor="modal-new-keywords" className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
                   Palavras-Chave de Busca (separadas por vírgula)
                 </label>
                 <input
+                  id="modal-new-keywords"
+                  aria-label="Palavras-Chave de Busca"
                   type="text"
                   value={newKeywords}
                   onChange={(e) => setNewKeywords(e.target.value)}
@@ -789,7 +819,7 @@ ${descriptionInput}
                 />
               </div>
 
-              <div className="bg-slate-100 dark:bg-slate-800/60 p-2.5 rounded-lg text-[11px] text-slate-500 italic mt-1">
+              <div className="bg-slate-100 dark:bg-slate-800/60 p-2.5 rounded-lg text-[11px] text-slate-600 dark:text-slate-400 italic mt-1">
                 Guardrail de Segurança: O motor de IA só utilizará os dados acima. Certificações não comprovadas e superlativos enganosos serão bloqueados.
               </div>
 

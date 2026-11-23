@@ -156,7 +156,7 @@ export const ExecutiveKpiCards: React.FC<ExecutiveKpiCardsProps> = ({
               </svg>
               Detalhamento de Deduções, CMV e Despesas Variáveis
             </span>
-            <span className="text-slate-500 font-normal">
+            <span className="text-slate-600 dark:text-slate-400 font-normal">
               Total: <strong className="text-slate-900 dark:text-white font-semibold">{formatCurrency(summary.totalDeductions)}</strong>
             </span>
           </summary>

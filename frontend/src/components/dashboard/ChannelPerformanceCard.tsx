@@ -122,7 +122,7 @@ export const ChannelPerformanceCard: React.FC<ChannelPerformanceCardProps> = ({
                 {/* Métricas secundárias */}
                 <div className="grid grid-cols-2 pt-1 border-t border-slate-200/60 dark:border-slate-800 text-[11px] text-slate-600 dark:text-slate-400">
                   <div>
-                    Margem: <strong className="text-teal-600 dark:text-teal-400">{formatCurrency(chan.contributionMarginAmount)}</strong>
+                    Margem: <strong className="text-teal-800 dark:text-teal-300">{formatCurrency(chan.contributionMarginAmount)}</strong>
                   </div>
                   <div className="text-right">
                     Margem %: <strong className="text-slate-900 dark:text-white">{formatPercent(chan.averageContributionMarginRatio)}</strong>

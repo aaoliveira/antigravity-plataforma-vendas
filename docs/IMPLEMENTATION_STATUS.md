@@ -1,6 +1,6 @@
 # Status de Implementação e Quality Gates do Roadmap
 
-> **Status Atual Geral:** PROMPT P023-BE/QA = `PASSED`  
+> **Status Atual Geral:** PROMPT P023-FE = `IN_PROGRESS`  
 > **Data da Última Atualização:** 23/11/2026  
 > **Regra de Transição:** O próximo prompt só é liberado para `IN_PROGRESS` quando o anterior atingir formalmente `PASSED`.
 
@@ -65,6 +65,7 @@
 | **P022-BE** | Endpoints Agregados Read-Only, Cache Tenant-Aware e Invalidação por Evento               | E11   | Backend    | **`PASSED`**   | P021-FE (`PASSED`)    | 23/11/2026     |
 | **P022-FE** | Dashboard Executivo com KPIs, Desempenho por Canal, Sincronização e Alertas de Qualidade | E11   | Frontend   | **`PASSED`**   | P022-BE (`PASSED`)    | 23/11/2026     |
 | **P023-BE/QA** | Cenários E2E, Resiliência e Integração Ponta a Ponta | E12   | QA/E2E     | **`PASSED`**   | P022-FE (`PASSED`)    | 23/11/2026     |
+| **P023-FE**    | Playwright Desktop/Mobile, Acessibilidade WCAG e Regressão Visual | E12 | QA/Frontend | **`PASSED`** | P023-BE/QA (`PASSED`) | 23/11/2026     |
 
 ---
 

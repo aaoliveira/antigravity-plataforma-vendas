@@ -70,7 +70,7 @@ export function TenantSwitcher() {
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         aria-label={`Organização ativa: ${currentTenant.name}. Pressione para alternar organização.`}
-        className="flex items-center gap-2 px-3 py-2 text-left rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 min-h-[44px]"
+        className="flex items-center gap-2 px-3 py-2 text-left rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 min-h-[44px]"
       >
         <div className="w-6 h-6 rounded-md bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-400 font-bold flex items-center justify-center text-xs shrink-0">
           {currentTenant.name.charAt(0).toUpperCase()}

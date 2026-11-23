@@ -171,7 +171,7 @@ export const ExportJobStatusCard: React.FC<ExportJobStatusCardProps> = ({
       {/* Grid de Informações Detalhadas */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1 text-xs">
         <div>
-          <span className="block text-[11px] text-slate-400 dark:text-slate-500">Registros</span>
+          <span className="block text-[11px] text-slate-600 dark:text-slate-400">Registros</span>
           <div className="flex items-center gap-1.5 mt-0.5">
             <span className="font-semibold text-slate-800 dark:text-slate-200">
               {job.status === 'COMPLETED' ? job.totalRows.toLocaleString('pt-BR') : '—'}
@@ -188,21 +188,21 @@ export const ExportJobStatusCard: React.FC<ExportJobStatusCardProps> = ({
         </div>
 
         <div>
-          <span className="block text-[11px] text-slate-400 dark:text-slate-500">Tamanho</span>
+          <span className="block text-[11px] text-slate-600 dark:text-slate-400">Tamanho</span>
           <span className="font-semibold text-slate-800 dark:text-slate-200 mt-0.5 block font-mono">
             {formatFileSize(job.fileSizeBytes)}
           </span>
         </div>
 
         <div>
-          <span className="block text-[11px] text-slate-400 dark:text-slate-500">Criado em</span>
+          <span className="block text-[11px] text-slate-600 dark:text-slate-400">Criado em</span>
           <span className="text-slate-700 dark:text-slate-300 mt-0.5 block">
             {formatDate(job.createdAt)}
           </span>
         </div>
 
         <div>
-          <span className="block text-[11px] text-slate-400 dark:text-slate-500">Validade</span>
+          <span className="block text-[11px] text-slate-600 dark:text-slate-400">Validade</span>
           <span className="text-slate-700 dark:text-slate-300 mt-0.5 block">
             {job.status === 'COMPLETED' ? (
               expired ? (
@@ -233,7 +233,7 @@ export const ExportJobStatusCard: React.FC<ExportJobStatusCardProps> = ({
 
           {job.checksumSha256 && (
             <div className="flex items-center gap-1.5 flex-shrink-0">
-              <span className="text-slate-400 dark:text-slate-500">SHA-256:</span>
+              <span className="text-slate-600 dark:text-slate-400">SHA-256:</span>
               <span className="font-mono text-slate-600 dark:text-slate-400 text-[10px]">
                 {job.checksumSha256.substring(0, 10)}...
               </span>
@@ -260,7 +260,7 @@ export const ExportJobStatusCard: React.FC<ExportJobStatusCardProps> = ({
 
       {/* Ações Autorizadas */}
       <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
-        <span className="text-[11px] text-slate-400 dark:text-slate-500">
+        <span className="text-[11px] text-slate-600 dark:text-slate-400">
           Solicitado por <span className="font-medium text-slate-600 dark:text-slate-300">{job.requestedBy}</span>
         </span>
 
@@ -287,7 +287,7 @@ export const ExportJobStatusCard: React.FC<ExportJobStatusCardProps> = ({
               onClick={() => onDownload(job)}
               disabled={isDownloading}
               aria-label={`Baixar arquivo seguro ${job.fileName || job.dataset}`}
-              className="px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white transition-all shadow-sm flex items-center gap-2 min-h-[40px] disabled:opacity-50"
+              className="px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-700 hover:bg-emerald-800 text-white transition-all shadow-sm flex items-center gap-2 min-h-[40px] disabled:opacity-50"
             >
               {isDownloading ? (
                 <>
@@ -309,7 +309,7 @@ export const ExportJobStatusCard: React.FC<ExportJobStatusCardProps> = ({
           )}
 
           {effectiveStatus === 'EXPIRED' && (
-            <span className="text-[11px] text-slate-400 italic">
+            <span className="text-[11px] text-slate-600 dark:text-slate-400 italic">
               Arquivo removido por expiração de segurança.
             </span>
           )}

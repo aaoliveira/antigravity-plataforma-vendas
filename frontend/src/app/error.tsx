@@ -33,7 +33,7 @@ export default function GlobalError({ error, reset }: ErrorProps) {
           {safeMessage}
         </p>
 
-        <p className="text-[11px] text-slate-400 dark:text-slate-500">
+        <p className="text-[11px] text-slate-600 dark:text-slate-400">
           O sistema opera em modo Fail-Closed para garantir a integridade dos dados e o isolamento entre organizações.
         </p>
 

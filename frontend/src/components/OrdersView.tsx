@@ -577,7 +577,7 @@ export const OrdersView: React.FC = () => {
                           {order.buyerName ? (
                             <span className="truncate max-w-[140px] block">{order.buyerName}</span>
                           ) : (
-                            <span className="text-xs px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500">
+                            <span className="text-xs px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium">
                               Não informado
                             </span>
                           )}
@@ -593,7 +593,7 @@ export const OrdersView: React.FC = () => {
                               {order.trackingNumber}
                             </span>
                           ) : (
-                            <span className="text-xs text-slate-400 dark:text-slate-500 italic">
+                            <span className="text-xs text-slate-600 dark:text-slate-400 italic">
                               Sem rastreio
                             </span>
                           )}
@@ -665,23 +665,23 @@ export const OrdersView: React.FC = () => {
 
                   <div className="grid grid-cols-2 gap-2 text-xs text-slate-600 dark:text-slate-400">
                     <div>
-                      <span className="block text-slate-400 dark:text-slate-500">Comprador:</span>
+                      <span className="block text-slate-600 dark:text-slate-400">Comprador:</span>
                       <span className="font-medium text-slate-800 dark:text-slate-200 truncate block">
                         {order.buyerName || 'Não informado'}
                       </span>
                     </div>
                     <div>
-                      <span className="block text-slate-400 dark:text-slate-500">Rastreio:</span>
+                      <span className="block text-slate-600 dark:text-slate-400">Rastreio:</span>
                       <span className="font-mono text-slate-800 dark:text-slate-200 truncate block">
                         {order.trackingNumber || 'Sem rastreio'}
                       </span>
                     </div>
                     <div>
-                      <span className="block text-slate-400 dark:text-slate-500">Data do Pedido:</span>
+                      <span className="block text-slate-600 dark:text-slate-400">Data do Pedido:</span>
                       <span>{formatDate(order.orderCreatedAt)}</span>
                     </div>
                     <div>
-                      <span className="block text-slate-400 dark:text-slate-500">Total:</span>
+                      <span className="block text-slate-600 dark:text-slate-400">Total:</span>
                       <span className="font-bold text-slate-900 dark:text-white text-sm">
                         {formatCurrency(order.totalAmount, order.currency)}
                       </span>
@@ -689,7 +689,7 @@ export const OrdersView: React.FC = () => {
                   </div>
 
                   <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                    <span className="text-[11px] text-slate-400">
+                    <span className="text-[11px] text-slate-600 dark:text-slate-400">
                       Sync: {formatDate(order.syncedAt)}
                     </span>
                     <button
@@ -710,6 +710,7 @@ export const OrdersView: React.FC = () => {
               <span>Exibindo</span>
               <select
                 id={pageSizeSelectId}
+                aria-label="Quantidade de pedidos por página"
                 value={pageSize}
                 onChange={(e) => {
                   setPageSize(Number(e.target.value));

@@ -339,21 +339,21 @@ export const ReportsExportView: React.FC = () => {
       {/* 3. Cards de Resumo / KPIs */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
-          <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">Total de Exportações</span>
+          <span className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">Total de Exportações</span>
           <p className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">
             {stats.total}
           </p>
         </div>
 
         <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
-          <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">Concluídos (Disponíveis)</span>
+          <span className="text-[11px] text-emerald-800 dark:text-emerald-300 font-medium">Concluídos (Disponíveis)</span>
           <p className="text-xl sm:text-2xl font-black text-emerald-700 dark:text-emerald-300 mt-1">
             {stats.completed}
           </p>
         </div>
 
         <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
-          <span className="text-[11px] text-blue-600 dark:text-blue-400 font-medium flex items-center gap-1.5">
+          <span className="text-[11px] text-blue-800 dark:text-blue-300 font-medium flex items-center gap-1.5">
             <span>Em Processamento</span>
             {stats.processing > 0 && <span className="w-2 h-2 rounded-full bg-blue-500 animate-ping" />}
           </span>
@@ -363,7 +363,7 @@ export const ReportsExportView: React.FC = () => {
         </div>
 
         <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
-          <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Expirados / Falhas</span>
+          <span className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">Expirados / Falhas</span>
           <p className="text-xl sm:text-2xl font-black text-slate-700 dark:text-slate-300 mt-1">
             {stats.failedOrExpired}
           </p>

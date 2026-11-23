@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P023-BE/QA",
+  "currentPrompt": "P023-FE",
   "status": "APPROVED",
   "nextPrompt": null,
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-23T10:15:00-03:00",
+  "lastUpdated": "2026-11-23T11:05:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -50,7 +50,8 @@
     "P021-FE",
     "P022-BE",
     "P022-FE",
-    "P023-BE/QA"
+    "P023-BE/QA",
+    "P023-FE"
   ],
   "gates": {
     "P000": {
@@ -845,6 +846,32 @@
       "antiHallucinationVerified": true,
       "blockingIssues": 0,
       "prerequisites": ["P022-FE"]
+    },
+    "P023-FE": {
+      "name": "Playwright Desktop/Mobile, Acessibilidade WCAG e Regressão Visual",
+      "status": "APPROVED",
+      "startedAt": "2026-11-23T10:19:00-03:00",
+      "approvedAt": "2026-11-23T11:05:00-03:00",
+      "evidence": "docs/specs/P023-FE-playwright-e2e-a11y-and-visual-regression/spec.md",
+      "testsExecuted": 14,
+      "testsPassed": 14,
+      "playwrightDesktopTests": 7,
+      "playwrightMobileTests": 7,
+      "totalBackendSuiteTests": 509,
+      "totalFrontendVitestTests": 260,
+      "totalPlaywrightTests": 14,
+      "totalProjectTests": 783,
+      "buildPassed": true,
+      "desktopBreakpointTested": true,
+      "mobileBreakpointTested": true,
+      "wcagAccessibilityPassed": true,
+      "zeroCriticalViolations": true,
+      "zeroSeriousViolations": true,
+      "zeroCriticalConsoleErrors": true,
+      "noScreenshotIsolatedApproval": true,
+      "antiHallucinationVerified": true,
+      "blockingIssues": 0,
+      "prerequisites": ["P023-BE/QA"]
     }
   },
   "maintenanceGates": {

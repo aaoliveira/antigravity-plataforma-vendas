@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P023-BE/QA = `APPROVED`  
+> **Status Vigente:** PROMPT P023-FE = `APPROVED`  
 > **Data:** 23/11/2026
 
 ---
@@ -55,7 +55,8 @@
 | **P021-FE** | Central de Relatórios e Downloads Auditados (Seleção, Progresso, Histórico e Download)    | **`APPROVED`** | 23/11/2026     | [docs/specs/P021-FE-reports-export-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P021-FE-reports-export-view/spec.md), [ExportRequestModal.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/reporting/ExportRequestModal.test.tsx), [ExportJobStatusCard.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/reporting/ExportJobStatusCard.test.tsx), [ReportsExportView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/reporting/ReportsExportView.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (P022-BE liberado)** |
 | **P022-BE** | Endpoints Agregados Read-Only, Cache Tenant-Aware e Invalidação por Evento               | **`APPROVED`** | 23/11/2026     | [docs/specs/P022-BE-aggregated-kpi-endpoints/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P022-BE-aggregated-kpi-endpoints/spec.md), [AggregatedKpiServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/aggregation/AggregatedKpiServiceTest.java), [TenantAwareKpiCacheServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/aggregation/TenantAwareKpiCacheServiceTest.java), [AggregatedKpiPerformanceBenchmarkTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/aggregation/AggregatedKpiPerformanceBenchmarkTest.java), [AggregatedKpiControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/aggregation/AggregatedKpiControllerTest.java) | **SIM (P022-FE liberado)** |
 | **P022-FE** | Dashboard Executivo com KPIs, Desempenho por Canal, Sincronização e Alertas de Qualidade | **`APPROVED`** | 23/11/2026     | [docs/specs/P022-FE-executive-kpi-dashboard/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P022-FE-executive-kpi-dashboard/spec.md), [ExecutiveDashboardView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/dashboard/ExecutiveDashboardView.test.tsx), [ExecutiveKpiCards.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/dashboard/ExecutiveKpiCards.test.tsx), [ChannelPerformanceCard.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/dashboard/ChannelPerformanceCard.test.tsx), [DataQualityAlerts.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/dashboard/DataQualityAlerts.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (P023-BE/QA liberado)** |
-| **P023-BE/QA** | Cenários E2E, Resiliência e Integração Ponta a Ponta | **`APPROVED`** | 23/11/2026     | [docs/specs/P023-BE-QA-e2e-and-resilience-scenarios/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P023-BE-QA-e2e-and-resilience-scenarios/spec.md), [EndToEndLifecycleIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/e2e/EndToEndLifecycleIntegrationTest.java), [SystemResilienceAndSecurityIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/e2e/SystemResilienceAndSecurityIntegrationTest.java), [E2E_PIPELINE_EXECUTION.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/runbooks/E2E_PIPELINE_EXECUTION.md) | **SIM (MVP Completo & Homologado)** |
+| **P023-BE/QA** | Cenários E2E, Resiliência e Integração Ponta a Ponta | **`APPROVED`** | 23/11/2026     | [docs/specs/P023-BE-QA-e2e-and-resilience-scenarios/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P023-BE-QA-e2e-and-resilience-scenarios/spec.md), [EndToEndLifecycleIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/e2e/EndToEndLifecycleIntegrationTest.java), [SystemResilienceAndSecurityIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/e2e/SystemResilienceAndSecurityIntegrationTest.java), [E2E_PIPELINE_EXECUTION.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/runbooks/E2E_PIPELINE_EXECUTION.md) | **SIM (P023-FE liberado)** |
+| **P023-FE** | Playwright Desktop/Mobile, Acessibilidade WCAG e Regressão Visual | **`APPROVED`** | 23/11/2026     | [docs/specs/P023-FE-playwright-e2e-a11y-and-visual-regression/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P023-FE-playwright-e2e-a11y-and-visual-regression/spec.md), [frontend/e2e/](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/e2e/) | **SIM (MVP Completo)** |
 
 ---
 
@@ -1333,3 +1334,33 @@
      - Suíte frontend total: **260 testes aprovados** (0 falhas, 0 erros, 0 skips).
      - Total do projeto: **769 testes automatizados aprovados**, 100% green.
 - **Resultado:** **`PROMPT P023-BE/QA = APPROVED`**. Todos os critérios de aceite foram atendidos e comprovados com evidências formais de teste e runbook operacional.
+
+---
+
+### 2.48 Avaliação do Gate P023-FE (Playwright Desktop/Mobile, Acessibilidade WCAG e Regressão Visual)
+- **Data:** 23/11/2026
+- **Status:** **`APPROVED`**
+- **Escopo Implementado & Verificado:**
+  1. **Matriz de Testes Playwright (14 Execuções Automatizadas - 100% Passando):**
+     - Cobertura em dois perfis de viewport obrigatórios: **Desktop Chromium (1280x800)** e **Mobile Chromium (375x667 com emulação mobile e touch)**.
+     - **Fluxo 01 (`01-auth-lifecycle.spec.ts`):** Validação de tela de login, rejeição de credenciais inválidas, expiração de sessão com alerta `role="alert"` e redirecionamento, e autenticação com injeção segura de cookie `seller_access_token`.
+     - **Fluxo 02 (`02-executive-dashboard.spec.ts`):** Renderização dos 6 KPIs principais com precisão decimal, performance por canal (Mercado Livre vs Shopee), banner de cache ativo, salvaguarda contábil anti-alucinação no drawer de catálogo de fórmulas ("terminantemente proibido rotular este resultado como Lucro Líquido") e alternância de tema Claro/Escuro.
+     - **Fluxo 03 (`03-catalog-and-orders.spec.ts`):** Consulta de anúncios no catálogo, paginação, filtros e tabela de pedidos com apuração contábil determinística.
+     - **Fluxo 04 (`04-pricing-simulator.spec.ts`):** Simulador de precificação e margem de contribuição, rejeição de "Lucro Líquido" e validação de salvaguardas contábeis.
+     - **Fluxo 05 (`05-reports-and-exports.spec.ts`):** Abertura de modal de exportação, solicitação de relatório com filtros de período e dataset, polling de progresso de job assíncrono e validação de link de download auditado.
+     - **Fluxo 06 (`06-ai-and-studio.spec.ts`):** Consulta ao assistente de IA com indicação de fontes e timestamps, abertura do AI Listing Studio com badges explícitas "MODO RASCUNHO ASSISTIDO" e "REVISÃO HUMANA MANDATÓRIA", e verificação da ausência de qualquer botão de publicação externa no MVP.
+     - **Fluxo 07 (`07-mobile-and-responsive.spec.ts`):** Zero overflow horizontal (`scrollWidth <= clientWidth`), funcionamento do menu gaveta (drawer), fechamento com tecla Escape e touch responsiveness.
+  2. **Auditoria de Acessibilidade Essencial (@axe-core/playwright):**
+     - Varredura de conformidade WCAG 2.0 / 2.1 níveis A e AA (`wcag2a`, `wcag2aa`, `wcag21aa`) integrada em cada fluxo.
+     - Zero violações com impacto `critical` ou `serious` aprovadas.
+     - Correções pontuais de contraste de cores (> 4.5:1) e atributos de rótulo acessível (`aria-label`, `htmlFor`/`id`) aplicadas em `OrdersView.tsx`, `ExportJobStatusCard.tsx`, `ExecutiveKpiCards.tsx`, `ChannelPerformanceCard.tsx`, `ReportsExportView.tsx`, `DraftListingEditorView.tsx` e `error.tsx`.
+  3. **Monitoramento Estrito de Runtime & Console:**
+     - `ConsoleMonitor` monitorou `page.on('console')` e `page.on('pageerror')` em todas as rotas. Zero erros críticos ou exceções de runtime detectadas.
+  4. **Sem Aprovação por Screenshot Isolado:**
+     - Validação comportamental, funcional e semântica diretamente através de locators, asserções de conteúdo textual e verificações de regras anti-alucinação no DOM.
+  5. **Métricas Totais do Projeto Monorrepositório:**
+     - Suíte Backend (Spring Boot / Maven): **509 testes aprovados** (0 falhas).
+     - Suíte Frontend Unitária & Integração (Vitest / JSDOM): **260 testes aprovados** (0 falhas).
+     - Suíte Frontend E2E & A11y (Playwright / Chromium Desktop & Mobile): **14 testes aprovados** (0 falhas).
+     - **Total do Projeto:** **783 testes automatizados aprovados**, 100% green.
+- **Resultado:** **`PROMPT P023-FE = APPROVED`**. Todos os critérios de aceite estabelecidos no PRD e no prompt P023-FE foram plenamente cumpridos.

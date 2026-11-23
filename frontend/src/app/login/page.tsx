@@ -119,7 +119,7 @@ function LoginForm() {
             >
               Senha
             </label>
-            <span className="text-[11px] text-slate-400 font-mono">OWASP ASVS</span>
+            <span className="text-[11px] text-slate-600 dark:text-slate-400 font-mono">OWASP ASVS</span>
           </div>
           <input
             id="password-input"
@@ -155,7 +155,7 @@ function LoginForm() {
 
       {/* Atalhos para Contas de Homologação / Testes Locais */}
       <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800">
-        <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2 text-center">
+        <p className="text-[11px] font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2 text-center">
           Contas de Demonstração (Seed V2)
         </p>
         <div className="grid grid-cols-2 gap-2 text-xs">
@@ -164,16 +164,16 @@ function LoginForm() {
             onClick={() => fillQuickAccount('seller@example.com', 'Password@123')}
             className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 text-left transition-colors"
           >
-            <span className="font-bold text-indigo-600 dark:text-indigo-400 block truncate">Alpha Seller</span>
-            <span className="text-[10px] text-slate-500 block truncate">seller@example.com</span>
+            <span className="font-bold text-indigo-700 dark:text-indigo-400 block truncate">Alpha Seller</span>
+            <span className="text-[10px] text-slate-600 dark:text-slate-400 block truncate">seller@example.com</span>
           </button>
           <button
             type="button"
             onClick={() => fillQuickAccount('competitor@example.com', 'Password@123')}
             className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 text-left transition-colors"
           >
-            <span className="font-bold text-amber-600 dark:text-amber-400 block truncate">Beta Store</span>
-            <span className="text-[10px] text-slate-500 block truncate">competitor@example.com</span>
+            <span className="font-bold text-amber-800 dark:text-amber-300 block truncate">Beta Store</span>
+            <span className="text-[10px] text-slate-600 dark:text-slate-400 block truncate">competitor@example.com</span>
           </button>
         </div>
       </div>
