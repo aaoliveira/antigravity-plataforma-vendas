@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P021-FE = `APPROVED`  
+> **Status Vigente:** PROMPT P022-BE = `APPROVED`  
 > **Data:** 23/11/2026
 
 ---
@@ -52,7 +52,8 @@
 | **P020-BE** | Geração de Título e Descrição como Rascunho com Restrição de Claims                       | **`APPROVED`** | 19/11/2026        | [docs/specs/P020-BE-draft-listing-generation/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P020-BE-draft-listing-generation/spec.md), [ListingClaimGuardrailServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/guardrails/ListingClaimGuardrailServiceTest.java), [MarketplaceLimitCatalogTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/catalog/MarketplaceLimitCatalogTest.java), [DraftListingServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/service/DraftListingServiceTest.java), [DraftListingControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/DraftListingControllerTest.java), [PostgresDraftListingRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/PostgresDraftListingRlsIntegrationTest.java) | **SIM (P020-FE liberado)** |
 | **P020-FE** | Editor de Rascunho com Comparação, Contagem de Caracteres e Versões                      | **`APPROVED`** | 19/11/2026        | [docs/specs/P020-FE-draft-listing-editor-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P020-FE-draft-listing-editor-view/spec.md), [DraftListingEditorView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/draftlisting/DraftListingEditorView.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (P021-BE liberado)** |
 | **P021-BE** | Exportação Assíncrona CSV/XLSX com Sanitização de Fórmulas e Auditoria                   | **`APPROVED`** | 19/11/2026        | [docs/specs/P021-BE-async-export-and-audit/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P021-BE-async-export-and-audit/spec.md), [CsvFormulaSanitizerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/security/CsvFormulaSanitizerTest.java), [TenantStorageServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/storage/TenantStorageServiceTest.java), [CsvExportGeneratorTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/generator/CsvExportGeneratorTest.java), [XlsxExportGeneratorTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/generator/XlsxExportGeneratorTest.java), [ExportJobServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/service/ExportJobServiceTest.java), [ExportJobControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/ExportJobControllerTest.java), [PostgresExportRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/PostgresExportRlsIntegrationTest.java) | **SIM (P021-FE liberado)** |
-| **P021-FE** | Central de Relatórios e Downloads Auditados (Seleção, Progresso, Histórico e Download)    | **`APPROVED`** | 23/11/2026     | [docs/specs/P021-FE-reports-export-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P021-FE-reports-export-view/spec.md), [ExportRequestModal.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/reporting/ExportRequestModal.test.tsx), [ExportJobStatusCard.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/reporting/ExportJobStatusCard.test.tsx), [ReportsExportView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/reporting/ReportsExportView.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (Ciclo MVP Concluído)** |
+| **P021-FE** | Central de Relatórios e Downloads Auditados (Seleção, Progresso, Histórico e Download)    | **`APPROVED`** | 23/11/2026     | [docs/specs/P021-FE-reports-export-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P021-FE-reports-export-view/spec.md), [ExportRequestModal.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/reporting/ExportRequestModal.test.tsx), [ExportJobStatusCard.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/reporting/ExportJobStatusCard.test.tsx), [ReportsExportView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/reporting/ReportsExportView.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (P022-BE liberado)** |
+| **P022-BE** | Endpoints Agregados Read-Only, Cache Tenant-Aware e Invalidação por Evento               | **`APPROVED`** | 23/11/2026     | [docs/specs/P022-BE-aggregated-kpi-endpoints/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P022-BE-aggregated-kpi-endpoints/spec.md), [AggregatedKpiServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/aggregation/AggregatedKpiServiceTest.java), [TenantAwareKpiCacheServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/aggregation/TenantAwareKpiCacheServiceTest.java), [AggregatedKpiPerformanceBenchmarkTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/aggregation/AggregatedKpiPerformanceBenchmarkTest.java), [AggregatedKpiControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/aggregation/AggregatedKpiControllerTest.java) | **SIM (Ciclo Concluído / MVP Completo)** |
 
 ---
 
@@ -1207,3 +1208,46 @@
      - Total do projeto: 718 testes automatizados aprovados (0 falhas, 0 skips).
      - Build de produção Next.js 15: compilado com sucesso com todas as 70 rotas ativas.
 - **Resultado:** **`PROMPT P021-FE = APPROVED`**. Todos os critérios de aceite foram atendidos e comprovados com evidências formais de teste.
+
+---
+
+### 2.45 Avaliação do Gate P022-BE (Endpoints Agregados Read-Only, Cache Tenant-Aware e Invalidação por Evento)
+- **Data:** 23/11/2026
+- **Status:** **`APPROVED`**
+- **Escopo Implementado & Verificado:**
+  1. **Endpoints Agregados Read-Only (`AggregatedKpiController.java`):**
+     - Endpoints analíticos sob `/api/v1/analytics/kpis`:
+       - `GET /summary`: Consolidação de 18 KPIs com filtros combináveis (`companyId`, `marketplace`, `sellerAccountId`, `startDate`, `endDate`).
+       - `GET /by-channel`: Agregação comparativa por marketplace com share percentual de receita e margem.
+       - `GET /by-period`: Série temporal histórica com granularidade configurável (`DAILY`, `WEEKLY`, `MONTHLY`).
+       - `GET /by-company`: Agregação comparativa por empresa/CNPJ vinculado com share relativo.
+       - `GET /definitions`: Catálogo formal documentado dos 18 KPIs com fórmulas, unidades e proveniência.
+       - `POST /cache/invalidate`: Invalidação sob demanda do cache analítico do tenant autenticado.
+  2. **Separação Rigorosa de Responsabilidades & Não Duplicação:**
+     - Nenhum cálculo financeiro em controllers: todo o processamento bancário determinístico reside em `AggregatedKpiService.java`.
+     - Precisão em `BigDecimal` com escala 4 e arredondamento `HALF_EVEN`.
+  3. **Cache Tenant-Aware & Prevenção de Contaminação (`TenantAwareKpiCacheService.java`):**
+     - Chaves com prefixo seguro via `TenantCacheKeyGenerator` (`tenant:{tenantId}:kpis:...`).
+     - Dupla verificação de integridade no cache hit: validação de TTL e conferência estrita do `tenantId` do payload.
+     - Isolamento total comprovado em testes unitários: Tenant Alpha não lê, não sobrescreve e não invalida cache de Tenant Beta.
+  4. **Invalidação por Eventos do Domínio (`KpiCacheInvalidationListener.java`):**
+     - Listener `@EventListener` escuta `FinancialFactMutatedEvent` emitido pelo `OrderFinancialFactService` nas mutações de fatos ou conciliação externa, invalidando seletivamente apenas as entradas do tenant afetado.
+  5. **Medição Formal de Performance e p95 (`AggregatedKpiPerformanceBenchmarkTest.java`):**
+     - Benchmark automatizado com 1.000 fatos financeiros sintéticos:
+       - Sequencial (150 iterações com mix 20% uncached / 80% cached): **Média 0.2053 ms**, **p50 0.0257 ms**, **p90 1.0462 ms**, **p95 1.2911 ms**, **p99 1.5918 ms**.
+       - Concorrente (10 threads simultâneas, 250 requisições): **Média 0.3329 ms**, **p95 2.2385 ms**.
+       - Ambos estritamente conformes com a meta de SLA ($P_{95} < 500$ ms, meta < 100 ms sob cache hit).
+  6. **Catálogo Oficial e Regra Anti-Alucinação (`KpiCatalog.java`):**
+     - 18 KPIs catalogados com documentação de proveniência de dados (`CONFIRMED`, `ESTIMATED`, `USER_INFORMED`, `MISSING`).
+     - Aviso anti-alucinação persistido e visível em todos os resumos proibindo categoricamente o rótulo de Lucro Líquido sem os custos fixos estruturais modelados.
+  7. **Testes Automatizados & Arquitetura:**
+     - 21 novos testes de backend criados e aprovados:
+       - 5 testes em `TenantAwareKpiCacheServiceTest`
+       - 7 testes em `AggregatedKpiServiceTest`
+       - 7 testes em `AggregatedKpiControllerTest`
+       - 2 testes em `AggregatedKpiPerformanceBenchmarkTest`
+     - Suíte backend: 499/499 testes aprovados (0 falhas, 0 erros, 0 skips).
+     - Suíte frontend: 240/240 testes aprovados em 35 arquivos (0 falhas).
+     - Total do projeto: 739 testes automatizados aprovados sem regressões.
+     - ArchUnit: `ModularArchitectureTest` 100% aprovado, mantendo independência de módulos sem dependências cíclicas.
+- **Resultado:** **`PROMPT P022-BE = APPROVED`**. Todos os critérios de aceite foram atendidos e comprovados com evidências formais de benchmark e testes.

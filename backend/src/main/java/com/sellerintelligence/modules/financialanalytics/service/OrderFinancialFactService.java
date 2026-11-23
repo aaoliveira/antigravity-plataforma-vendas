@@ -26,8 +26,11 @@ import com.sellerintelligence.modules.pricing.model.FeeType;
 import com.sellerintelligence.modules.pricing.model.ResolvedFeeItem;
 import com.sellerintelligence.modules.pricing.repository.ProductCostRepository;
 import com.sellerintelligence.modules.pricing.service.FeeResolutionService;
+import com.sellerintelligence.modules.financialanalytics.aggregation.FinancialFactMutatedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -66,6 +69,7 @@ public class OrderFinancialFactService {
     private final OrderFinancialFactRepository orderFinancialFactRepository;
     private final OrderItemFinancialFactRepository orderItemFinancialFactRepository;
     private final ObjectMapper objectMapper;
+    private final ApplicationEventPublisher eventPublisher;
 
     public OrderFinancialFactService(
             OrderRepository orderRepository,
@@ -77,6 +81,23 @@ public class OrderFinancialFactService {
             OrderItemFinancialFactRepository orderItemFinancialFactRepository,
             ObjectMapper objectMapper
     ) {
+        this(orderRepository, orderItemRepository, companyAccountLinkRepository, productCostRepository,
+                feeResolutionService, orderFinancialFactRepository, orderItemFinancialFactRepository,
+                objectMapper, null);
+    }
+
+    @Autowired
+    public OrderFinancialFactService(
+            OrderRepository orderRepository,
+            OrderItemRepository orderItemRepository,
+            CompanyAccountLinkRepository companyAccountLinkRepository,
+            ProductCostRepository productCostRepository,
+            FeeResolutionService feeResolutionService,
+            OrderFinancialFactRepository orderFinancialFactRepository,
+            OrderItemFinancialFactRepository orderItemFinancialFactRepository,
+            ObjectMapper objectMapper,
+            ApplicationEventPublisher eventPublisher
+    ) {
         this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
         this.companyAccountLinkRepository = companyAccountLinkRepository;
@@ -85,6 +106,7 @@ public class OrderFinancialFactService {
         this.orderFinancialFactRepository = orderFinancialFactRepository;
         this.orderItemFinancialFactRepository = orderItemFinancialFactRepository;
         this.objectMapper = objectMapper;
+        this.eventPublisher = eventPublisher;
     }
 
     /**
@@ -535,6 +557,10 @@ public class OrderFinancialFactService {
             savedItemFacts.add(orderItemFinancialFactRepository.save(itemFact));
         }
 
+        if (eventPublisher != null) {
+            eventPublisher.publishEvent(new FinancialFactMutatedEvent(tenantId, orderId, "FACT_COMPUTED"));
+        }
+
         return mapToDto(orderFact, savedItemFacts);
     }
 
@@ -640,6 +666,10 @@ public class OrderFinancialFactService {
 
             item.updateReconciledFees(itemFee, itemFixed, itemShip);
             orderItemFinancialFactRepository.save(item);
+        }
+
+        if (eventPublisher != null) {
+            eventPublisher.publishEvent(new FinancialFactMutatedEvent(tenantId, orderId, "FACT_RECONCILED"));
         }
 
         return mapToDto(orderFact, itemFacts);

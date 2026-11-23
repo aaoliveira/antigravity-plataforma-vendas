@@ -3558,5 +3558,65 @@ DOCUMENTATION UPDATED:
 - docs/delivery/PHASE_STATUS.md
 - docs/IMPLEMENTATION_STATUS.md
 - docs/PROMPT_EXECUTION_LOG.md
-NEXT PROMPT: UNLOCKED (Ciclo MVP dos prompts concluído).
+NEXT PROMPT: UNLOCKED (P022-BE liberado para READY).
+
+---
+
+DATE: 2026-11-23
+PROMPT ID: P022-BE
+GOAL: Criar endpoints agregados read-only com filtros e cache tenant-aware. Não duplicar lógica financeira em controllers. Documentar definições de cada KPI e invalidar cache em eventos relevantes. Medir p95 de latência e garantir integridade de dados e isolamento entre tenants.
+PHASE GATE: APPROVED
+FILES MODIFIED / CREATED:
+- docs/specs/P022-BE-aggregated-kpi-endpoints/spec.md
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/aggregation/KpiDefinitionDto.java
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/aggregation/KpiCatalog.java
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/aggregation/KpiGranularity.java
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/aggregation/AggregatedKpiFilter.java
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/aggregation/AggregatedKpiSummaryDto.java
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/aggregation/ChannelKpiAggregateDto.java
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/aggregation/PeriodicKpiAggregateDto.java
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/aggregation/CompanyKpiAggregateDto.java
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/aggregation/FinancialFactMutatedEvent.java
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/aggregation/TenantAwareKpiCacheService.java
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/aggregation/KpiCacheInvalidationListener.java
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/aggregation/AggregatedKpiService.java
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/aggregation/AggregatedKpiController.java
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/repository/OrderFinancialFactRepository.java
+- backend/src/main/java/com/sellerintelligence/modules/financialanalytics/service/OrderFinancialFactService.java
+- backend/src/test/java/com/sellerintelligence/modules/financialanalytics/aggregation/TenantAwareKpiCacheServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/financialanalytics/aggregation/AggregatedKpiServiceTest.java
+- backend/src/test/java/com/sellerintelligence/modules/financialanalytics/aggregation/AggregatedKpiControllerTest.java
+- backend/src/test/java/com/sellerintelligence/modules/financialanalytics/aggregation/AggregatedKpiPerformanceBenchmarkTest.java
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+COMMANDS EXECUTED:
+- cd backend && ./mvnw test -Dtest="*Kpi*,TenantAwareKpiCacheServiceTest,ModularArchitectureTest" (24 testes de KPI e arquitetura aprovados)
+- cd backend && ./mvnw test (499 testes de backend mantidos com 100% de sucesso)
+- cd frontend && npm test -- --run (240 testes de frontend mantidos com 100% de sucesso)
+TEST RESULTS:
+- Backend: 499/499 testes aprovados (0 falhas, 0 erros, 0 skips).
+- Frontend: 240/240 testes aprovados em 35 arquivos (0 falhas).
+- Total Geral do Projeto: 739 testes automatizados aprovados sem regressões.
+POLICY EVIDENCE:
+- Critério de Aceite 1: Agregações Conferem com Fontes & Lógica em Service:
+  * Agregação realizada estritamente pelo AggregatedKpiService utilizando precisão bancária BigDecimal (escala 4, HALF_EVEN). Controllers são 100% read-only e delegam chamadas sem duplicar lógica contábil.
+- Critério de Aceite 2: Cache Não Mistura Tenant:
+  * TenantAwareKpiCacheService gera chaves com prefixo tenant:{tenantId}:kpis:... e valida o tenantId em profundidade no payload em cache antes de retornar, impedindo vazamentos ou contaminação cross-tenant.
+- Critério de Aceite 3: Invalidação por Eventos do Domínio:
+  * KpiCacheInvalidationListener escuta FinancialFactMutatedEvent disparado nas mutações financeiras pelo OrderFinancialFactService e invalida seletivamente o cache do tenant correspondente.
+- Critério de Aceite 4: p95 Medido Formalmente:
+  * AggregatedKpiPerformanceBenchmarkTest comprovou p95 sequencial de 1.2911 ms e concorrente (10 threads simultâneas) de 2.2385 ms, cumprindo com ampla folga o requisito de p95 < 500 ms (meta < 100 ms).
+- Critério de Aceite 5: Contrato Documentado & Anti-Alucinação:
+  * Catálogo oficial com 18 KPIs documentados sob GET /api/v1/analytics/kpis/definitions e disclaimer explícito proibindo o rótulo de Lucro Líquido.
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+DOCUMENTATION UPDATED:
+- docs/specs/P022-BE-aggregated-kpi-endpoints/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+NEXT PROMPT: UNLOCKED (Ciclo MVP dos prompts concluído com sucesso).
 

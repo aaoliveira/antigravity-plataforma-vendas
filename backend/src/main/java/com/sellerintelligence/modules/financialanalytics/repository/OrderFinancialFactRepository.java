@@ -56,4 +56,23 @@ public interface OrderFinancialFactRepository extends JpaRepository<OrderFinanci
             @Param("startDate") Instant startDate,
             @Param("endDate") Instant endDate
     );
+
+    @Query("""
+        SELECT f FROM OrderFinancialFactRecord f
+        WHERE f.tenantId = :tenantId
+          AND (:companyId IS NULL OR f.companyId = :companyId)
+          AND (:marketplace IS NULL OR f.marketplace = :marketplace)
+          AND (:sellerAccountId IS NULL OR f.sellerAccountId = :sellerAccountId)
+          AND (:startDate IS NULL OR f.orderDate >= :startDate)
+          AND (:endDate IS NULL OR f.orderDate <= :endDate)
+        ORDER BY f.orderDate ASC
+    """)
+    List<OrderFinancialFactRecord> findForAggregation(
+            @Param("tenantId") UUID tenantId,
+            @Param("companyId") UUID companyId,
+            @Param("marketplace") String marketplace,
+            @Param("sellerAccountId") UUID sellerAccountId,
+            @Param("startDate") Instant startDate,
+            @Param("endDate") Instant endDate
+    );
 }
