@@ -233,6 +233,17 @@ describe('AppShell Component (Shell Responsivo & Navegação)', () => {
     ).toBeInTheDocument();
   });
 
+  it('deve renderizar a tela ExecutiveDashboardView ao selecionar o módulo EXECUTIVE_DASHBOARD (Dashboard Executivo & KPIs)', () => {
+    render(<AppShell />);
+
+    const dashboardBtns = screen.getAllByRole('button', { name: /Dashboard Executivo & KPIs/i });
+    fireEvent.click(dashboardBtns[0]);
+
+    expect(
+      screen.getByRole('heading', { name: /Dashboard Executivo/i })
+    ).toBeInTheDocument();
+  });
+
   it('deve renderizar a tela ReportsExportView ao selecionar o módulo REPORTS (Relatórios & Exportações)', () => {
     render(<AppShell />);
 

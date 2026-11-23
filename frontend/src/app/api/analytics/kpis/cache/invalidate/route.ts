@@ -1,0 +1,45 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+
+const BACKEND_URL = process.env.INTERNAL_BACKEND_URL || process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8082';
+
+export async function POST(request: NextRequest) {
+  const cookieStore = await cookies();
+  const token =
+    cookieStore.get('seller_access_token')?.value ||
+    request.headers.get('Authorization')?.replace('Bearer ', '');
+
+  if (!token) {
+    return NextResponse.json(
+      { error: 'UNAUTHORIZED', message: 'Sessão não autenticada.' },
+      { status: 401 }
+    );
+  }
+
+  const backendUrl = `${BACKEND_URL}/api/v1/analytics/kpis/cache/invalidate`;
+
+  try {
+    const res = await fetch(backendUrl, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      cache: 'no-store',
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      return NextResponse.json(
+        { error: 'CACHE_INVALIDATION_FAILED', message: err.detail || err.message || 'Falha ao invalidar cache.' },
+        { status: res.status }
+      );
+    }
+
+    return new NextResponse(null, { status: 204 });
+  } catch {
+    return NextResponse.json(
+      { error: 'INTERNAL_ERROR', message: 'Erro de comunicação com o serviço de cache de KPIs.' },
+      { status: 500 }
+    );
+  }
+}

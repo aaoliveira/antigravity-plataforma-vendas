@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P022-BE",
+  "currentPrompt": "P022-FE",
   "status": "APPROVED",
   "nextPrompt": null,
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-23T09:32:00-03:00",
+  "lastUpdated": "2026-11-23T09:42:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -48,7 +48,8 @@
     "P020-FE",
     "P021-BE",
     "P021-FE",
-    "P022-BE"
+    "P022-BE",
+    "P022-FE"
   ],
   "gates": {
     "P000": {
@@ -796,6 +797,28 @@
       "antiHallucinationVerified": true,
       "blockingIssues": 0,
       "prerequisites": ["P021-FE"]
+    },
+    "P022-FE": {
+      "name": "Dashboard Executivo com KPIs, Desempenho por Canal, Sincronização e Alertas de Qualidade",
+      "status": "APPROVED",
+      "startedAt": "2026-11-23T09:35:00-03:00",
+      "approvedAt": "2026-11-23T09:42:00-03:00",
+      "evidence": "docs/specs/P022-FE-executive-kpi-dashboard/spec.md",
+      "testsExecuted": 20,
+      "testsPassed": 20,
+      "totalBackendSuiteTests": 499,
+      "totalFrontendSuiteTests": 260,
+      "totalProjectTests": 759,
+      "buildPassed": true,
+      "numbersMatchApiVerified": true,
+      "themePersistsVerified": true,
+      "breakpointsTestedVerified": true,
+      "wcagAccessibilityVerified": true,
+      "zeroOverflowVerified": true,
+      "skeletonEmptyErrorStaleStatesVerified": true,
+      "antiHallucinationDisclaimerVerified": true,
+      "blockingIssues": 0,
+      "prerequisites": ["P022-BE"]
     }
   },
   "maintenanceGates": {

@@ -1,7 +1,7 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P022-BE = `APPROVED`  
+> **Status Vigente:** PROMPT P022-FE = `APPROVED`  
 > **Data:** 23/11/2026
 
 ---
@@ -53,7 +53,8 @@
 | **P020-FE** | Editor de Rascunho com Comparação, Contagem de Caracteres e Versões                      | **`APPROVED`** | 19/11/2026        | [docs/specs/P020-FE-draft-listing-editor-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P020-FE-draft-listing-editor-view/spec.md), [DraftListingEditorView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/draftlisting/DraftListingEditorView.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (P021-BE liberado)** |
 | **P021-BE** | Exportação Assíncrona CSV/XLSX com Sanitização de Fórmulas e Auditoria                   | **`APPROVED`** | 19/11/2026        | [docs/specs/P021-BE-async-export-and-audit/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P021-BE-async-export-and-audit/spec.md), [CsvFormulaSanitizerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/security/CsvFormulaSanitizerTest.java), [TenantStorageServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/storage/TenantStorageServiceTest.java), [CsvExportGeneratorTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/generator/CsvExportGeneratorTest.java), [XlsxExportGeneratorTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/generator/XlsxExportGeneratorTest.java), [ExportJobServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/service/ExportJobServiceTest.java), [ExportJobControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/ExportJobControllerTest.java), [PostgresExportRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/PostgresExportRlsIntegrationTest.java) | **SIM (P021-FE liberado)** |
 | **P021-FE** | Central de Relatórios e Downloads Auditados (Seleção, Progresso, Histórico e Download)    | **`APPROVED`** | 23/11/2026     | [docs/specs/P021-FE-reports-export-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P021-FE-reports-export-view/spec.md), [ExportRequestModal.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/reporting/ExportRequestModal.test.tsx), [ExportJobStatusCard.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/reporting/ExportJobStatusCard.test.tsx), [ReportsExportView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/reporting/ReportsExportView.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (P022-BE liberado)** |
-| **P022-BE** | Endpoints Agregados Read-Only, Cache Tenant-Aware e Invalidação por Evento               | **`APPROVED`** | 23/11/2026     | [docs/specs/P022-BE-aggregated-kpi-endpoints/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P022-BE-aggregated-kpi-endpoints/spec.md), [AggregatedKpiServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/aggregation/AggregatedKpiServiceTest.java), [TenantAwareKpiCacheServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/aggregation/TenantAwareKpiCacheServiceTest.java), [AggregatedKpiPerformanceBenchmarkTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/aggregation/AggregatedKpiPerformanceBenchmarkTest.java), [AggregatedKpiControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/aggregation/AggregatedKpiControllerTest.java) | **SIM (Ciclo Concluído / MVP Completo)** |
+| **P022-BE** | Endpoints Agregados Read-Only, Cache Tenant-Aware e Invalidação por Evento               | **`APPROVED`** | 23/11/2026     | [docs/specs/P022-BE-aggregated-kpi-endpoints/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P022-BE-aggregated-kpi-endpoints/spec.md), [AggregatedKpiServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/aggregation/AggregatedKpiServiceTest.java), [TenantAwareKpiCacheServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/aggregation/TenantAwareKpiCacheServiceTest.java), [AggregatedKpiPerformanceBenchmarkTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/aggregation/AggregatedKpiPerformanceBenchmarkTest.java), [AggregatedKpiControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/financialanalytics/aggregation/AggregatedKpiControllerTest.java) | **SIM (P022-FE liberado)** |
+| **P022-FE** | Dashboard Executivo com KPIs, Desempenho por Canal, Sincronização e Alertas de Qualidade | **`APPROVED`** | 23/11/2026     | [docs/specs/P022-FE-executive-kpi-dashboard/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P022-FE-executive-kpi-dashboard/spec.md), [ExecutiveDashboardView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/dashboard/ExecutiveDashboardView.test.tsx), [ExecutiveKpiCards.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/dashboard/ExecutiveKpiCards.test.tsx), [ChannelPerformanceCard.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/dashboard/ChannelPerformanceCard.test.tsx), [DataQualityAlerts.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/dashboard/DataQualityAlerts.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (Ciclo Concluído / Sistema Completo)** |
 
 ---
 
@@ -1251,3 +1252,46 @@
      - Total do projeto: 739 testes automatizados aprovados sem regressões.
      - ArchUnit: `ModularArchitectureTest` 100% aprovado, mantendo independência de módulos sem dependências cíclicas.
 - **Resultado:** **`PROMPT P022-BE = APPROVED`**. Todos os critérios de aceite foram atendidos e comprovados com evidências formais de benchmark e testes.
+
+---
+
+### 2.46 Avaliação do Gate P022-FE (Dashboard Executivo com KPIs, Desempenho por Canal, Sincronização e Alertas de Qualidade)
+- **Data:** 23/11/2026
+- **Status:** **`APPROVED`**
+- **Escopo Implementado & Verificado:**
+  1. **Indicadores Executivos e Reconciliação com a API (`ExecutiveKpiCards.tsx`):**
+     - Renderização fiel dos 6 cartões executivos consumindo os dados agregados da API (`totalOrders`, `totalGrossRevenue`, `totalNetRevenue`, `totalContributionMarginAmount` & `averageContributionMarginRatio`, `averageOrderValue`, `reconciliationRatePercent`).
+     - Detalhamento retrátil de deduções diretas e custos variáveis (`totalMarketplaceFees`, `totalFixedFees`, `totalShippingCost`, `totalProductCost`, `totalPackagingCost`, `totalTaxAmount`).
+     - Formatação monetária consistente em BRL (`R$`) e percentual (`%`).
+  2. **Desempenho Comparativo por Canal (`ChannelPerformanceCard.tsx`):**
+     - Quebra analítica por marketplace (`MERCADO_LIVRE`, `SHOPEE`) exibindo contagem de pedidos, receita bruta, margem de contribuição e barra visual de participação na receita (`revenueSharePercent`).
+  3. **Evolução Temporal e Granularidade (`PeriodicTrendChart.tsx`):**
+     - Série temporal com seletor de granularidade (`DAILY`, `WEEKLY`, `MONTHLY`), barras estilizadas e tooltips com valores de receita e margem.
+  4. **Alertas de Integridade e Qualidade dos Dados (`DataQualityAlerts.tsx`):**
+     - Sinalização explícita de pedidos com dados incompletos ou ausentes (`ordersWithMissingDataCount`), pedidos com divergência financeira (`divergentCount`), liquidações pendentes e confirmação de 100% conciliado.
+  5. **Status de Sincronização e Aviso de Stale Data (`StaleDataBanner.tsx`):**
+     - Exibição da data/hora da apuração calculada (`calculatedAt`), badge visual indicando `Cache Ativo (15m TTL)` ou `Tempo Real`, e botão interativo para forçar invalidação do cache do tenant e reatualização imediata.
+  6. **Catálogo de Fórmulas e Regra Anti-Alucinação (`KpiDefinitionsDrawer.tsx`):**
+     - Gaveta lateral acessível exibindo as definições, fórmulas matemáticas e proveniência dos 18 KPIs oficiais.
+     - Presença inamovível do aviso contábil anti-alucinação proibindo terminantemente rotular margem de contribuição como lucro líquido.
+  7. **Persistência de Tema (Light Mode Padrão / Dark Mode Opcional):**
+     - Light mode ativado por padrão; dark mode opcional acionado via `ThemeToggle` e persistido em `localStorage.getItem('seller_theme')`.
+     - Contraste visual $\ge 4.5:1$ em ambos os temas.
+  8. **Responsividade de 360 px a Desktop & Zero Overflow:**
+     - Layout flexível com contenção explícita de scroll horizontal (`overflow-x-hidden`).
+     - Testes automatizados em breakpoints simulados (360px, 768px, 1024px, 1280px) com touch targets $\ge 44$ px.
+  9. **Acessibilidade WCAG 2.1 AA:**
+     - Landmarks semânticos (`role="region"`, `role="status"`, `role="alert"`, `role="dialog"`).
+     - Fechamento da gaveta de catálogo via tecla `Escape`.
+  10. **Testes Automatizados & Build de Produção:**
+      - 20 novos testes frontend criados e aprovados:
+        - 4 testes em `ExecutiveKpiCards.test.tsx`
+        - 3 testes em `ChannelPerformanceCard.test.tsx`
+        - 4 testes em `DataQualityAlerts.test.tsx`
+        - 8 testes em `ExecutiveDashboardView.test.tsx`
+        - 1 teste em `AppShell.test.tsx`
+      - Suíte frontend: 260/260 testes aprovados em 39 arquivos (0 falhas).
+      - Suíte backend: 499/499 testes aprovados (0 falhas).
+      - Total do projeto: 759 testes automatizados aprovados sem regressões.
+      - Build de produção Next.js 15: compilado com 100% de sucesso gerando 76 rotas ativas.
+- **Resultado:** **`PROMPT P022-FE = APPROVED`**. Todos os critérios de aceite foram atendidos e comprovados com evidências formais de teste.

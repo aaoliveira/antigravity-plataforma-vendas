@@ -22,6 +22,7 @@ import { ListingAnalyticsDashboardView } from './listinganalytics/ListingAnalyti
 import { AiAssistantView } from './aiassistant/AiAssistantView';
 import { DraftListingEditorView } from './draftlisting/DraftListingEditorView';
 import { ReportsExportView } from './reporting/ReportsExportView';
+import { ExecutiveDashboardView } from './dashboard/ExecutiveDashboardView';
 
 export interface NavModule {
   id: string;
@@ -36,6 +37,16 @@ export interface NavModule {
 
 export const navModules: NavModule[] = [
   // 1. Business Intelligence & Ações
+  {
+    id: 'EXECUTIVE_DASHBOARD',
+    name: 'Dashboard Executivo & KPIs',
+    shortLabel: 'Dashboard',
+    pillarKey: 'BI',
+    pillarName: 'Business Intelligence & Ações',
+    description: 'Painel executivo com KPIs de receita, margem de contribuição determinística, desempenho por canal e alertas de integridade contábil.',
+    status: 'READY',
+    provenience: 'AGGREGATED_KPIS_API',
+  },
   {
     id: 'ACTION_CENTER',
     name: 'Smart Alerts & Action Center',
@@ -454,6 +465,8 @@ export const AppShell: React.FC = () => {
             <ProductMonitoringView onOpenMarketSearch={() => setActiveModuleId('MARKET')} />
           ) : activeModule.id === 'LISTING_ANALYTICS' ? (
             <ListingAnalyticsDashboardView />
+          ) : activeModule.id === 'EXECUTIVE_DASHBOARD' ? (
+            <ExecutiveDashboardView />
           ) : activeModule.id === 'FINANCIAL' ? (
             <PricingAndCostsView />
           ) : activeModule.id === 'RECONCILIATION_DRE' ? (

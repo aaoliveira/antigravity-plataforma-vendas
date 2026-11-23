@@ -1,6 +1,6 @@
 # Status de Implementação e Quality Gates do Roadmap
 
-> **Status Atual Geral:** PROMPT P022-BE = `PASSED`  
+> **Status Atual Geral:** PROMPT P022-FE = `PASSED`  
 > **Data da Última Atualização:** 23/11/2026  
 > **Regra de Transição:** O próximo prompt só é liberado para `IN_PROGRESS` quando o anterior atingir formalmente `PASSED`.
 
@@ -63,6 +63,7 @@
 | **P021-BE** | Exportação Segura de Relatórios e Auditoria de Download                                   | E11   | Backend    | **`PASSED`**   | P020-FE (`PASSED`)    | 19/11/2026     |
 | **P021-FE** | Central de Relatórios e Downloads Auditados                                              | E11   | Frontend   | **`PASSED`**   | P021-BE (`PASSED`)    | 23/11/2026     |
 | **P022-BE** | Endpoints Agregados Read-Only, Cache Tenant-Aware e Invalidação por Evento               | E11   | Backend    | **`PASSED`**   | P021-FE (`PASSED`)    | 23/11/2026     |
+| **P022-FE** | Dashboard Executivo com KPIs, Desempenho por Canal, Sincronização e Alertas de Qualidade | E11   | Frontend   | **`PASSED`**   | P022-BE (`PASSED`)    | 23/11/2026     |
 
 ---
 
