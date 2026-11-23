@@ -21,6 +21,7 @@ import { FinancialFactsDashboardView } from './financial/FinancialFactsDashboard
 import { ListingAnalyticsDashboardView } from './listinganalytics/ListingAnalyticsDashboardView';
 import { AiAssistantView } from './aiassistant/AiAssistantView';
 import { DraftListingEditorView } from './draftlisting/DraftListingEditorView';
+import { ReportsExportView } from './reporting/ReportsExportView';
 
 export interface NavModule {
   id: string;
@@ -184,6 +185,16 @@ export const navModules: NavModule[] = [
     description: 'Monitoramento contínuo de termos dos marketplaces com proteção Fail-Closed.',
     status: 'READY',
     provenience: 'POLICY_AUDIT',
+  },
+  {
+    id: 'REPORTS',
+    name: 'Relatórios & Exportações',
+    shortLabel: 'Relatórios',
+    pillarKey: 'GOVERNANCE',
+    pillarName: 'Segurança & Governança',
+    description: 'Central de exportação assíncrona CSV/XLSX, acompanhamento de jobs, histórico e download autorizado.',
+    status: 'READY',
+    provenience: 'AUDITED_EXPORT_SERVICE',
   },
   {
     id: 'HEALTH',
@@ -453,6 +464,8 @@ export const AppShell: React.FC = () => {
             <AiAssistantView />
           ) : activeModule.id === 'AI_STUDIO' ? (
             <DraftListingEditorView />
+          ) : activeModule.id === 'REPORTS' ? (
+            <ReportsExportView />
           ) : (
             <ModulePlaceholder
               moduleId={activeModule.id}

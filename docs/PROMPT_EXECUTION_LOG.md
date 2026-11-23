@@ -3504,3 +3504,59 @@ DOCUMENTATION UPDATED:
 - docs/IMPLEMENTATION_STATUS.md
 - docs/PROMPT_EXECUTION_LOG.md
 NEXT PROMPT: UNLOCKED (P021-FE liberado para READY).
+
+---
+
+DATE: 2026-11-23
+PROMPT ID: P021-FE
+GOAL: Implementar Central de Relatórios e Downloads Auditados (Seleção de Colunas/Filtros, Progresso, Histórico e Download Autorizado) sem expor link permanente público, com conformidade mobile e suporte a estados de job.
+PHASE GATE: APPROVED
+FILES MODIFIED / CREATED:
+- docs/specs/P021-FE-reports-export-view/spec.md
+- frontend/src/types/reports.ts
+- frontend/src/app/api/reports/exports/route.ts
+- frontend/src/app/api/reports/exports/[id]/route.ts
+- frontend/src/app/api/reports/exports/[id]/download/route.ts
+- frontend/src/app/api/reports/exports/audit/route.ts
+- frontend/src/components/reporting/ExportRequestModal.tsx
+- frontend/src/components/reporting/ExportJobStatusCard.tsx
+- frontend/src/components/reporting/ExportAuditLogsDrawer.tsx
+- frontend/src/components/reporting/ReportsExportView.tsx
+- frontend/src/components/reporting/ExportRequestModal.test.tsx
+- frontend/src/components/reporting/ExportJobStatusCard.test.tsx
+- frontend/src/components/reporting/ReportsExportView.test.tsx
+- frontend/src/components/AppShell.tsx
+- frontend/src/components/AppShell.test.tsx
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+COMMANDS EXECUTED:
+- cd frontend && npx tsc --noEmit (validação estrita de tipos TypeScript)
+- cd frontend && npx vitest run src/components/reporting/ (20 testes de relatórios aprovados)
+- cd frontend && npm test -- --run (240 testes de frontend aprovados em 35 arquivos)
+- cd frontend && npm run build (build de produção Next.js 15 compilado com sucesso, 70 rotas geradas)
+- cd backend && ./mvnw test (478 testes de backend mantidos com 100% de sucesso)
+TEST RESULTS:
+- Frontend: 240/240 testes aprovados em 35 arquivos (0 falhas, 0 erros, 0 skips).
+- Backend: 478/478 testes aprovados (0 falhas, 0 erros, 0 skips).
+- Total Geral do Projeto: 718 testes automatizados aprovados sem regressões.
+POLICY EVIDENCE:
+- Critério de Aceite 1: Estados de Job:
+  * Interface mapeia e exibe visualmente todos os 5 estados (`PENDING`, `PROCESSING`, `COMPLETED`, `FAILED`, `EXPIRED`) com badges específicos, contadores e polling reativo inteligente a cada 4s para jobs ativos.
+- Critério de Aceite 2: Download Exige Autorização & Zero Links Permanentes Públicos:
+  * É proibida e inexistente qualquer tag `<a href="...">` para URLs estáticas ou públicas. O download é acionado por clique em botão autorizado que requisita `/api/reports/exports/{id}/download?token=...` repassando headers de sessão (`Authorization: Bearer <token>`, `X-Tenant-Id`) ao backend Spring Boot.
+  * O arquivo binário é recebido como Blob e disparado via URL temporária em memória (`URL.createObjectURL(blob)`), revogada imediatamente (`URL.revokeObjectURL(url)`).
+  * Tentativas de download com link expirado (HTTP 410) atualizam o estado local para EXPIRED com feedback amigável.
+- Critério de Aceite 3: Mobile Permite Consultar Status:
+  * Layout responsivo em formato de cards sem quebra ou scroll horizontal em telas estreitas (>= 360px), com touch targets >= 44px e atributos semânticos ARIA (role="status", role="dialog", aria-modal="true").
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+DOCUMENTATION UPDATED:
+- docs/specs/P021-FE-reports-export-view/spec.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+NEXT PROMPT: UNLOCKED (Ciclo MVP dos prompts concluído).
+

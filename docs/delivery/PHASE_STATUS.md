@@ -1,8 +1,8 @@
 # Status de Entregas e Phase Gates (Phase Status)
 
 > **Governança Sequencial de Release** &middot; **Versão:** 1.0.0  
-> **Status Vigente:** PROMPT P021-BE = `APPROVED` | P021-FE = `READY`  
-> **Data:** 19/11/2026
+> **Status Vigente:** PROMPT P021-FE = `APPROVED`  
+> **Data:** 23/11/2026
 
 ---
 
@@ -52,6 +52,7 @@
 | **P020-BE** | Geração de Título e Descrição como Rascunho com Restrição de Claims                       | **`APPROVED`** | 19/11/2026        | [docs/specs/P020-BE-draft-listing-generation/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P020-BE-draft-listing-generation/spec.md), [ListingClaimGuardrailServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/guardrails/ListingClaimGuardrailServiceTest.java), [MarketplaceLimitCatalogTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/catalog/MarketplaceLimitCatalogTest.java), [DraftListingServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/service/DraftListingServiceTest.java), [DraftListingControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/DraftListingControllerTest.java), [PostgresDraftListingRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/aiassistant/draft/PostgresDraftListingRlsIntegrationTest.java) | **SIM (P020-FE liberado)** |
 | **P020-FE** | Editor de Rascunho com Comparação, Contagem de Caracteres e Versões                      | **`APPROVED`** | 19/11/2026        | [docs/specs/P020-FE-draft-listing-editor-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P020-FE-draft-listing-editor-view/spec.md), [DraftListingEditorView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/draftlisting/DraftListingEditorView.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (P021-BE liberado)** |
 | **P021-BE** | Exportação Assíncrona CSV/XLSX com Sanitização de Fórmulas e Auditoria                   | **`APPROVED`** | 19/11/2026        | [docs/specs/P021-BE-async-export-and-audit/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P021-BE-async-export-and-audit/spec.md), [CsvFormulaSanitizerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/security/CsvFormulaSanitizerTest.java), [TenantStorageServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/storage/TenantStorageServiceTest.java), [CsvExportGeneratorTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/generator/CsvExportGeneratorTest.java), [XlsxExportGeneratorTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/generator/XlsxExportGeneratorTest.java), [ExportJobServiceTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/service/ExportJobServiceTest.java), [ExportJobControllerTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/ExportJobControllerTest.java), [PostgresExportRlsIntegrationTest.java](file:///home/alexandre/Projetos/antigravity-avantepro-clone/backend/src/test/java/com/sellerintelligence/modules/reporting/PostgresExportRlsIntegrationTest.java) | **SIM (P021-FE liberado)** |
+| **P021-FE** | Central de Relatórios e Downloads Auditados (Seleção, Progresso, Histórico e Download)    | **`APPROVED`** | 23/11/2026     | [docs/specs/P021-FE-reports-export-view/spec.md](file:///home/alexandre/Projetos/antigravity-avantepro-clone/docs/specs/P021-FE-reports-export-view/spec.md), [ExportRequestModal.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/reporting/ExportRequestModal.test.tsx), [ExportJobStatusCard.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/reporting/ExportJobStatusCard.test.tsx), [ReportsExportView.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/reporting/ReportsExportView.test.tsx), [AppShell.test.tsx](file:///home/alexandre/Projetos/antigravity-avantepro-clone/frontend/src/components/AppShell.test.tsx) | **SIM (Ciclo MVP Concluído)** |
 
 ---
 
@@ -1168,3 +1169,41 @@
      - Total geral do projeto: 696 testes automatizados aprovados (478 backend + 218 frontend).
      - `ModularArchitectureTest` (ArchUnit): conformidade estrita mantida com zero dependências cíclicas.
 - **Resultado:** **`PROMPT P021-BE = APPROVED`**. O prompt subsequente (`P021-FE`) está formalmente liberado e transita para `READY`.
+
+---
+
+### 2.44 Avaliação do Gate P021-FE (Central de Relatórios e Downloads Auditados)
+- **Data:** 23/11/2026
+- **Status:** **`APPROVED`**
+- **Escopo Implementado & Verificado:**
+  1. **Seleção de Colunas e Filtros Combináveis (`ExportRequestModal.tsx`):**
+     - Seleção de datasets autorizados do próprio tenant (`FINANCIAL_FACTS`, `ORDERS`, `CATALOG`, `METRICS`).
+     - Formatos de saída configuráveis (`CSV` com RFC 4180 e UTF-8 BOM, ou `XLSX` nativo Excel).
+     - Limite de linhas configurável (`maxRows` de 100 até o teto rígido de 50.000).
+     - Filtros persistidos: intervalo de datas com validação estrita (`startDate <= endDate`), presets rápidos (7d, 30d, 90d, custom), marketplace (`MERCADO_LIVRE`, `SHOPEE`), status operacional e conta.
+     - Preview dinâmico de colunas incluídas por dataset.
+  2. **Estados do Job e Progresso Reativo (`ExportJobStatusCard.tsx`):**
+     - Mapeamento e exibição visual de todos os 5 estados do ciclo de vida: `PENDING` (Na Fila), `PROCESSING` (Processando...), `COMPLETED` (Concluído), `FAILED` (Falhou) e `EXPIRED` (Expirado).
+     - Informações completas: contagem de linhas (`totalRows`), sinalização de truncamento (`isTruncated`), tamanho formatado em bytes/KB/MB, hash SHA-256 com botão de cópia rápida para integridade e tempo restante de validade.
+     - Polling automático inteligente e reativo a cada 4 segundos enquanto houver jobs ativos (`PENDING` / `PROCESSING`), cessando imediatamente quando todos os jobs atingem estado terminal.
+  3. **Download Estritamente Autorizado & Zero Links Públicos Permanentes:**
+     - Conformidade estrita com o guardrail anti-alucinação: **nenhum link público permanente (`<a href="s3/...">`) é renderizado no DOM**.
+     - O download é intermediado pela rota BFF autenticada `/api/reports/exports/[id]/download?token=...`, encaminhando a sessão do operador (`Authorization: Bearer <token>`, `X-Tenant-Id`) ao backend Spring Boot.
+     - No navegador, a resposta binária é recebida como `Blob`, o link temporário em memória é acionado programaticamente (`URL.createObjectURL(blob)`) e revogado de imediato (`URL.revokeObjectURL(url)`).
+     - Tratamento seguro de expiração (HTTP 410): atualiza o estado local para `EXPIRED` e informa ao operador para solicitar nova exportação.
+  4. **Trilha de Auditoria Transparente (`ExportAuditLogsDrawer.tsx`):**
+     - Gaveta lateral acessível listando auditorias de segurança (`EXPORT_REQUESTED`, `EXPORT_COMPLETED`, `EXPORT_DOWNLOADED`, `EXPORT_FAILED`, `EXPORT_EXPIRED_ACCESS_ATTEMPT`, `EXPORT_CROSS_TENANT_ACCESS_BLOCKED`) com timestamp ISO, operador, IP e detalhes.
+  5. **Mobile e Acessibilidade (WCAG 2.1 AA):**
+     - Suporte completo a dispositivos móveis ($\ge 360$px) sem quebras de layout ou overflow horizontal.
+     - Touch targets com $\ge 44$px de altura.
+     - Fechamento de modal e gaveta via tecla `Escape`.
+     - Atributos semânticos ARIA (`role="status"`, `role="region"`, `role="dialog"`, `aria-modal="true"`).
+  6. **Integração ao AppShell:**
+     - Módulo `REPORTS` ('Relatórios & Exportações') integrado ao menu de navegação sob o pilar `GOVERNANCE`.
+  7. **Testes Automatizados & Builds:**
+     - 22 novos testes frontend criados em `ExportRequestModal.test.tsx`, `ExportJobStatusCard.test.tsx` e `ReportsExportView.test.tsx`.
+     - Suíte frontend: 240/240 testes aprovados em 35 arquivos (0 falhas).
+     - Suíte backend: 478/478 testes aprovados (0 falhas).
+     - Total do projeto: 718 testes automatizados aprovados (0 falhas, 0 skips).
+     - Build de produção Next.js 15: compilado com sucesso com todas as 70 rotas ativas.
+- **Resultado:** **`PROMPT P021-FE = APPROVED`**. Todos os critérios de aceite foram atendidos e comprovados com evidências formais de teste.

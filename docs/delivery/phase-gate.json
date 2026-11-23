@@ -1,9 +1,9 @@
 {
-  "currentPrompt": "P021-BE",
+  "currentPrompt": "P021-FE",
   "status": "APPROVED",
-  "nextPrompt": "P021-FE",
+  "nextPrompt": null,
   "nextPromptPrerequisiteMet": true,
-  "lastUpdated": "2026-11-19T17:08:00-03:00",
+  "lastUpdated": "2026-11-23T09:10:00-03:00",
   "approvedPrompts": [
     "P000",
     "P001-BE",
@@ -46,7 +46,8 @@
     "P019-FE",
     "P020-BE",
     "P020-FE",
-    "P021-BE"
+    "P021-BE",
+    "P021-FE"
   ],
   "gates": {
     "P000": {
@@ -753,6 +754,26 @@
       "rlsPostgresIsolationVerified": true,
       "blockingIssues": 0,
       "prerequisites": ["P020-FE"]
+    },
+    "P021-FE": {
+      "name": "Central de Relatórios e Downloads Auditados (Seleção, Progresso, Histórico e Download Autorizado)",
+      "status": "APPROVED",
+      "startedAt": "2026-11-23T08:53:00-03:00",
+      "approvedAt": "2026-11-23T09:10:00-03:00",
+      "evidence": "docs/specs/P021-FE-reports-export-view/spec.md",
+      "testsExecuted": 22,
+      "testsPassed": 22,
+      "totalBackendSuiteTests": 478,
+      "totalFrontendSuiteTests": 240,
+      "totalProjectTests": 718,
+      "buildPassed": true,
+      "jobStatesVerified": true,
+      "downloadRequiresAuthVerified": true,
+      "noPermanentPublicLinkVerified": true,
+      "mobileStatusConsultationVerified": true,
+      "accessibleAndResponsiveVerified": true,
+      "blockingIssues": 0,
+      "prerequisites": ["P021-BE"]
     }
   },
   "maintenanceGates": {

@@ -232,4 +232,15 @@ describe('AppShell Component (Shell Responsivo & Navegação)', () => {
       screen.getByRole('region', { name: /Editor de Rascunho de Anúncios/i })
     ).toBeInTheDocument();
   });
+
+  it('deve renderizar a tela ReportsExportView ao selecionar o módulo REPORTS (Relatórios & Exportações)', () => {
+    render(<AppShell />);
+
+    const reportBtns = screen.getAllByRole('button', { name: /Relatórios & Exportações/i });
+    fireEvent.click(reportBtns[0]);
+
+    expect(
+      screen.getByRole('region', { name: /Central de Relatórios e Exportações/i })
+    ).toBeInTheDocument();
+  });
 });
