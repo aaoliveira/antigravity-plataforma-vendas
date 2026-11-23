@@ -3685,3 +3685,53 @@ DOCUMENTATION UPDATED:
 - docs/PROMPT_EXECUTION_LOG.md
 NEXT PROMPT: UNLOCKED (Todos os 23 pares de prompts MVP P000 a P022-FE concluídos com 100% de aprovação e conformidade).
 
+---
+
+DATE: 2026-11-23
+PROMPT ID: P023-BE/QA
+GOAL: Criar cenários E2E e de integração para o ciclo completo da plataforma (autenticar -> tenant -> conectar marketplace sandbox -> sincronizar dados -> consultar catálogo/pedidos -> simular margem -> consultar dashboard -> exportar), incluindo suíte de resiliência e falhas críticas (OAuth, 503, rate limit, token expirado, retry/idempotência, DLQ, duplicidade de exportação e isolamento cross-tenant).
+PHASE GATE: APPROVED
+FILES MODIFIED / CREATED:
+- docs/specs/P023-BE-QA-e2e-and-resilience-scenarios/spec.md
+- backend/src/test/java/com/sellerintelligence/e2e/EndToEndLifecycleIntegrationTest.java
+- backend/src/test/java/com/sellerintelligence/e2e/SystemResilienceAndSecurityIntegrationTest.java
+- docs/runbooks/E2E_PIPELINE_EXECUTION.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+COMMANDS EXECUTED:
+- cd backend && ./mvnw test -Dtest="EndToEndLifecycleIntegrationTest,SystemResilienceAndSecurityIntegrationTest" (10 testes de E2E e resiliência executados com sucesso)
+- cd backend && ./mvnw test (509 testes backend executados com sucesso, 0 falhas)
+- cd frontend && npm test -- --run (260 testes frontend executados com sucesso, 0 falhas)
+TEST RESULTS:
+- E2E & Resiliência: 10/10 testes aprovados (1 teste de ciclo de vida completo de 8 passos + 9 testes de falhas críticas).
+- Backend Total: 509/509 testes aprovados (0 falhas, 0 erros, 0 skips).
+- Frontend Total: 260/260 testes aprovados em 39 suítes (0 falhas).
+- Total Geral do Projeto: 769 testes automatizados aprovados sem regressões.
+POLICY EVIDENCE:
+- Pipeline E2E Completo em 8 Etapas:
+  * Autenticação JWT -> Tenant Resolution -> Conexão Marketplace Sandbox (PKCE) -> Ingestão e Apuração Contábil -> Consulta Catálogo/Pedidos -> Simulação de Margem Determinística -> Dashboard Agregado com Cache -> Exportação Assíncrona e Download Auditado.
+- 8 Cenários Críticos de Resiliência e Segurança:
+  * Falha 1 (OAuth State Incorreto): Rejeição imediata com HTTP 400 (OAuthStateMismatchException), protegendo contra CSRF.
+  * Falha 2 (API Indisponível / 503): Circuit breaker atua fail-closed após falhas consecutivas, preservando a estabilidade do sistema.
+  * Falha 3 (Rate Limiting 429): Token bucket bloqueia excesso de requisições retornando HTTP 429 com cabeçalho Retry-After.
+  * Falha 4 (Token JWT Expirado): Chamadas com tokens expirados são rejeitadas com HTTP 401 Unauthorized.
+  * Falha 5 (Retry & Idempotência Contábil): Apuração de pedidos repetida de forma segura sem duplicação de dados contábeis.
+  * Falha 6 (Dead Letter Queue): Payloads corrompidos/tóxicos são isolados em DLQ com causa raiz preservada para auditoria.
+  * Falha 7 (Duplicidade de Exportação): Chamadas repetidas com idempotencyKey retornam o job existente sem retrabalho de storage.
+  * Falha 8 (Isolamento Cross-Tenant): Acesso do Tenant Beta a dados, faturas, arquivos e KPIs do Tenant Alpha rigorosamente barrado com 403 / 404 via RLS.
+- Salvaguarda Anti-Alucinação:
+  * Cálculos financeiros executados deterministamente com BigDecimal (HALF_EVEN); estrita ausência do termo "Lucro Líquido".
+OPEN QUESTIONS:
+- Nenhuma dúvida impeditiva em aberto.
+DOCUMENTATION UPDATED:
+- docs/specs/P023-BE-QA-e2e-and-resilience-scenarios/spec.md
+- docs/runbooks/E2E_PIPELINE_EXECUTION.md
+- docs/delivery/phase-gate.json
+- docs/delivery/PHASE_STATUS.md
+- docs/IMPLEMENTATION_STATUS.md
+- docs/PROMPT_EXECUTION_LOG.md
+NEXT PROMPT: UNLOCKED (Todos os requisitos de QA e E2E do MVP foram concluídos e homologados).
+
+
